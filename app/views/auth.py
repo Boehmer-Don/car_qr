@@ -211,6 +211,7 @@ def logo_upload(user_unique_id: str):
         return redirect(url_for("main.index"))
 
     if request.method == "POST":
+        # Uplaod logo image file
         file = request.files["file"]
         log(log.INFO, "File uploaded: [%s]", file)
         # file.save("/path/to/save/file.txt")
