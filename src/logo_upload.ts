@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
         xhr.open('POST', window.location.href, true);
         xhr.onload = () => {
             if (xhr.status === 200) {
-                // alert('File uploaded successfully!');
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     dropZone.innerHTML = '<img src="' + e.target.result + '" alt="Preview style="width: 100%; height: auto;">';
