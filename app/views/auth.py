@@ -212,6 +212,7 @@ def logo_upload(user_unique_id: str):
 
     if request.method == "POST":
         file = request.files["file"]
+        log(log.INFO, "File uploaded: [%s]", file)
         # file.save("/path/to/save/file.txt")
 
     log(log.INFO, "Uploaded logo for user: [%s]", user)
