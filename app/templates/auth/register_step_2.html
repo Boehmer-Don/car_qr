@@ -7,52 +7,51 @@
 
 <div class="dark:bg-gray-900 pt-20">
   <section>
-    <div class="w-full h-screen lg:w-4/12 px-4 mx-auto pt-6">
+    <div class="w-full h-screen px-4 mx-auto pt-6">
       <!-- prettier-ignore -->
-      <div class="w-full lg:max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
-        <div class="flex w-full h-3 bg-green-300">
-          <div class="w-5 h-1 bg-indigo-700"></div>
-          <div class="w-1/5 h-1 bg-indigo-700"></div>
-          <div class="w-1/5 h-1 bg-indigo-700"></div>
-          <div class="w-1/5 h-1 bg-indigo-700"></div>
+      <div class="w-full lg:max-w-xl mx-auto p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
+        <div class="flex w-full h-1 bg-gray-300 rounded-sm">
+          <div class="w-1/5 h-1 bg-indigo-700 rounded-l-sm"></div>
           <div class="w-1/5 h-1 bg-indigo-700"></div>
         </div>
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
           Sign Up
         </h2>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <p class="text-4xl font-bold text-gray-900 dark:text-white">
           Step 2: Contact Info
-        </h1>
-        <form class="mt-8 space-y-6 from" role="form"
+        </p>
+        <form class="mt-8 space-y-3 from" role="form"
           action="{{ url_for('auth.activate', reset_password_uid=reset_password_uid) }}" method="post">
           {{ form.hidden_tag() }}
 
-          <div>
-            {{form.first_name.label(class='block mb-2 text-sm font-medium
-            text-gray-900 dark:text-white')}}
-            {{form.first_name(
-            class="car_input"
-            )
-            }}
+          <div class="doubled_inputs">
+            <div class="short_input_container short_input_container_left">
+              {{form.first_name.label(class='block text-sm font-medium
+              text-gray-900 dark:text-white')}}
+              {{form.first_name(
+              class="car_input"
+              )
+              }}
 
-            {% for error in form.errors.first_name %}
-            <small class="text-danger">{{error}}</small>
-            {% endfor %}
+              {% for error in form.errors.first_name %}
+              <small class="text-danger">{{error}}</small>
+              {% endfor %}
+            </div>
+
+            <div class="short_input_container short_input_container_right">
+              {{form.last_name.label(class='block text-sm font-medium
+              text-gray-900 dark:text-white')}}
+              {{form.last_name(
+              class="car_input"
+              )
+              }}{% for error in form.errors.last_name %}
+              <small class="text-danger">{{error}}</small>
+              {% endfor %}
+            </div>
           </div>
 
           <div>
-            {{form.last_name.label(class='block mb-2 text-sm font-medium
-            text-gray-900 dark:text-white')}}
-            {{form.last_name(
-            class="car_input"
-            )
-            }}{% for error in form.errors.last_name %}
-            <small class="text-danger">{{error}}</small>
-            {% endfor %}
-          </div>
-
-          <div>
-            {{form.name_of_dealership.label(class='block mb-2 text-sm
+            {{form.name_of_dealership.label(class='block text-sm
             font-medium text-gray-900 dark:text-white')}}
             {{form.name_of_dealership(
             class="car_input"
@@ -64,7 +63,7 @@
           </div>
 
           <div>
-            {{form.address_of_dealership.label(class='block mb-2 text-sm
+            {{form.address_of_dealership.label(class='block text-sm
             font-medium text-gray-900 dark:text-white')}}
             {{form.address_of_dealership(
             class="car_input"
@@ -75,56 +74,60 @@
             {% endfor %}
           </div>
 
-          <div>
-            {{form.country.label(class='block mb-2 text-sm
-            font-medium text-gray-900 dark:text-white')}}
-            {{form.country(
-            class="car_input"
-            )
-            }}
-            {% for error in form.errors.country %}
-            <small class="text-danger">{{error}}</small>
-            {% endfor %}
+          <div class="doubled_inputs">
+            <div class="short_input_container short_input_container_left">
+              {{form.country.label(class='block text-sm
+              font-medium text-gray-900 dark:text-white')}}
+              {{form.country(
+              class="car_input"
+              )
+              }}
+              {% for error in form.errors.country %}
+              <small class="text-danger">{{error}}</small>
+              {% endfor %}
+            </div>
+
+            <div class="short_input_container short_input_container_right">
+              {{form.province.label(class='block text-sm
+              font-medium text-gray-900 dark:text-white')}}
+              {{form.province(
+              class="car_input"
+              )
+              }}
+              {% for error in form.errors.province %}
+              <small class="text-danger">{{error}}</small>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="doubled_inputs">
+            <div class="short_input_container short_input_container_left">
+              {{form.city.label(class='block text-sm
+              font-medium text-gray-900 dark:text-white')}}
+              {{form.city(
+              class="car_input"
+              )
+              }}
+              {% for error in form.errors.city %}
+              <small class="text-danger">{{error}}</small>
+              {% endfor %}
+            </div>
+
+            <div class="short_input_container short_input_container_right">
+              {{form.postal_code.label(class='block text-sm
+              font-medium text-gray-900 dark:text-white')}}
+              {{form.postal_code(
+              class="car_input"
+              )
+              }}
+              {% for error in form.errors.postal_code %}
+              <small class="text-danger">{{error}}</small>
+              {% endfor %}
+            </div>
           </div>
 
           <div>
-            {{form.province.label(class='block mb-2 text-sm
-            font-medium text-gray-900 dark:text-white')}}
-            {{form.province(
-            class="car_input"
-            )
-            }}
-            {% for error in form.errors.province %}
-            <small class="text-danger">{{error}}</small>
-            {% endfor %}
-          </div>
-
-          <div>
-            {{form.city.label(class='block mb-2 text-sm
-            font-medium text-gray-900 dark:text-white')}}
-            {{form.city(
-            class="car_input"
-            )
-            }}
-            {% for error in form.errors.city %}
-            <small class="text-danger">{{error}}</small>
-            {% endfor %}
-          </div>
-
-          <div>
-            {{form.postal_code.label(class='block mb-2 text-sm
-            font-medium text-gray-900 dark:text-white')}}
-            {{form.postal_code(
-            class="car_input"
-            )
-            }}
-            {% for error in form.errors.postal_code %}
-            <small class="text-danger">{{error}}</small>
-            {% endfor %}
-          </div>
-
-          <div>
-            {{form.phone.label(class='block mb-2 text-sm
+            {{form.phone.label(class='block text-sm
             font-medium text-gray-900 dark:text-white')}}
             {{form.phone(
             class="car_input"
@@ -136,7 +139,7 @@
           </div>
 
           <button type="submit"
-            class="w-full px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+            class="w-full px-5 pt-1 pb-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
             Next step >
           </button>
           <div class="text-sm font-medium text-gray-900 dark:text-white">

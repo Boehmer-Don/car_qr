@@ -1,6 +1,6 @@
 //webpack.config.js
 const path = require('path');
-const {merge} = require('webpack-merge');
+const { merge } = require('webpack-merge');
 
 const defaultConfig = {
   resolve: {
@@ -36,7 +36,27 @@ const userConfig = {
   },
 };
 
-const configs = [baseConfig, userConfig].map(conf =>
+const customConfig = {
+  entry: {
+    main: './src/custom.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/custom.js', // <--- Will be compiled to this single file
+  },
+};
+
+const logoUploadConfig = {
+  entry: {
+    main: './src/logo_upload.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/logo_upload.js', // <--- Will be compiled to this single file
+  },
+};
+
+const configs = [baseConfig, userConfig, customConfig, logoUploadConfig,].map(conf =>
   merge(defaultConfig, conf),
 );
 

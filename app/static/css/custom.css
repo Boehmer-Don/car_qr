@@ -11,6 +11,10 @@
     /* background-clip: content-box; */
 }
 
+.car_input_short {
+    width: 48%;
+}
+
 .car_input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 100px white inset !important;
     box-shadow: 0 0 0 100px white inset !important;
@@ -24,4 +28,46 @@
     border: none !important;
     border-bottom: 2px solid rgb(81 69 205) !important;
     box-shadow: 0 0 0 100px white inset !important;
+}
+
+.doubled_inputs {
+    width: 100%;
+    display: flex;
+}
+
+@media screen and (max-width: 768px) {
+    .doubled_inputs {
+        flex-direction: column;
+    }
+
+    .car_input_short {
+        width: 100%;
+    }
+}
+
+.short_input_container {
+    width: 48%;
+}
+
+.short_input_container_left {
+    margin-right: 2%;
+}
+
+.short_input_container_right {
+    margin-left: 2%;
+}
+
+@media screen and (max-width: 768px) {
+    .short_input_container {
+        width: 100%;
+    }
+
+    .short_input_container_left {
+        margin-right: 0;
+    }
+
+    .short_input_container_right {
+        margin-top: 15px;
+        margin-left: 0;
+    }
 }

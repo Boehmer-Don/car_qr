@@ -186,3 +186,20 @@ def test_login_and_logout(client: FlaskClient):
     # Correct credentials should login
     response = login(client, "sam@test.com")
     assert b"Login successful." in response.data
+
+
+def test_upload_logo(client: FlaskClient):
+    TEST_FILENAME = "s2b_logo.png"
+
+    register(TEST_EMAIL)
+    user: m.User = db.session.scalar(m.User.select().where(m.User.email == TEST_EMAIL))
+    assert user
+    with open(f"tests/{TEST_FILENAME}", "rb") as file:
+        response = client.post(
+            f"/auth/logo-upload/{user.unique_id}", data={"file": file}
+        )
+    assert response.status_code == 200
+    user: m.User = db.session.scalar(m.User.select().where(m.User.email == TEST_EMAIL))
+    assert user.logo
+    assert user.logo[0].filename == TEST_FILENAME
+    assert user.logo[0].mimetype == "image/png"

@@ -2,7 +2,7 @@ from flask_mail import Message
 from flask import Blueprint, render_template, url_for, redirect, flash, request, session
 from flask import current_app as app
 from flask_login import login_user, logout_user, login_required, current_user
-
+import sqlalchemy as sa
 from app import models as m
 from app import forms as f
 from app import mail, db
@@ -136,7 +136,9 @@ def plan(user_unique_id: str):
         user.plan = form.selected_plan.data
         user.save()
         log(log.INFO, "Pay plan is chosen. User: [%s]", user)
-        return redirect(url_for("auth.payment", user_unique_id=user.unique_id))
+        if user.plan == "basic":
+            return redirect(url_for("auth.payment", user_unique_id=user.unique_id))
+        return redirect(url_for("auth.logo_upload", user_unique_id=user.unique_id))
     elif form.is_submitted():
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
 
@@ -196,6 +198,40 @@ def payment(user_unique_id: str):
         "auth/register_payment.html",
         user=user,
         form=form,
+        user_unique_id=user_unique_id,
+    )
+
+
+@auth_blueprint.route("/logo-upload/<user_unique_id>", methods=["GET", "POST"])
+def logo_upload(user_unique_id: str):
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
+
+    if request.method == "POST":
+        # Uplaod logo image file
+        file = request.files["file"]
+        log(log.INFO, "File uploaded: [%s]", file)
+
+        with db.begin() as session:
+            session.execute(sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id))
+            session.add(
+                m.UserLogo(
+                    user_id=user.id,
+                    filename=file.filename.split("/")[-1],
+                    file=file.read(),
+                    mimetype=file.mimetype,
+                )
+            )
+
+    log(log.INFO, "Uploaded logo for user: [%s]", user)
+    return render_template(
+        "auth/register_logo_upload.html",
+        user=user,
         user_unique_id=user_unique_id,
     )
 

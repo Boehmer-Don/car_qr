@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block links %}
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+{% endblock %}
+<!-- prettier-ignore -->
+{% block body %}
+
+<div class="dark:bg-gray-900 pt-20">
+  <section>
+    <div class="w-full h-screen px-4 mx-auto pt-6">
+      <!-- prettier-ignore -->
+      <div class="w-full lg:max-w-xl mx-auto p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
+        <div class="flex w-full h-1 bg-gray-300 rounded-sm">
+          <div class="w-1/5 h-1 bg-indigo-700 rounded-l-sm"></div>
+          <div class="w-1/5 h-1 bg-indigo-700"></div>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+          Sign Up
+        </h2>
+        <p class="text-4xl font-bold text-gray-900 dark:text-white">
+          Premium Step: Upload Logo
+        </p>
+
+        <p>Upload an image of your dealership’s logo:</p>
+        <div id="drop_zone"
+          class="w-full h-60 border-2 border-gray-300 flex justify-center items-center overflow-hidden">
+          <p class="text-gray-400">png, jpg, svg files only</p>
+        </div>
+
+        <a href="{{ url_for('auth.payment', user_unique_id=user_unique_id) }}">
+          <button type="button"
+            class="w-full mt-3 px-5 pt-1 pb-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+            Next step >
+          </button>
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+<!-- prettier-ignore -->
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/logo_upload.js') }}" type="text/javascript"></script>
+{% endblock %}
