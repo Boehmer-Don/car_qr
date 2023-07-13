@@ -27,12 +27,13 @@
           <form action="{{ url_for('auth.plan', user_unique_id=user.unique_id) }}" method="post">
             {{ form.hidden_tag() }}
             <div class="w-full h-90 flex testing_class justify-around">
-              <div id="basic_plan_card"
-                class="w-60 h-72 m-2 p-1 bg-white rounded-lg dark:bg-gray-800 border-2 border-gray-400 cursor-pointer">
-                <p class="text-base">Basic</p>
-                <p class="text-3xl">$99</p>
-                <p class="text-base font-bold">per year</p>
-                <p class="text-base font-bold">Good for trying out, or the occassional sale.</p>
+              <!-- <div id="basic_plan_card"
+                class="w-60 h-72 m-2 p-1 bg-white rounded-lg dark:bg-gray-800 border-2 border-gray-400 cursor-pointer"> -->
+              <div id="basic_plan_card" class="plan_card">
+                <p class="text-sm mb-5">Basic</p>
+                <p class="text-3xl mb-5 font-bold">$99</p>
+                <p class="text-sm mb-5 font-bold">per year</p>
+                <p class="text-sm font-bold mb-5">Good for trying out, or the occassional sale.</p>
                 <ul class="list-disc list-inside mt-3 ms-2">
                   <li class="text-xs">Unlimited QR codes</li>
                   <li class="text-xs">Activation Fee per Label</li>
@@ -40,12 +41,11 @@
                 </ul>
               </div>
 
-              <div id="advanced_plan_card"
-                class="w-60 h-72 m-2 bg-white rounded-lg dark:bg-gray-800 border-2 border-gray-400 cursor-pointer">
-                <p class="text-base">Advanced</p>
-                <p class="text-3xl">$299</p>
-                <p class="text-base font-bold">per year</p>
-                <p class="text-base font-bold">Great for a medium to large scale dealerships.</p>
+              <div id="advanced_plan_card" class="plan_card">
+                <p class="text-sm mb-5">Advanced</p>
+                <p class="text-3xl mb-5 font-bold">$299</p>
+                <p class="text-sm mb-5 font-bold">per year</p>
+                <p class="text-sm font-bold mb-5">Great for a medium to large scale dealerships.</p>
                 <ul class="list-disc list-inside mt-3 ms-2">
                   <li class="text-xs">Unlimited QR Code Labels</li>
                   <li class="text-xs">Activation Fee per Label</li>
