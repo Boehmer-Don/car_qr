@@ -1,6 +1,6 @@
-/* .indigo {
+.indigo {
     background-color: rgb(81 69 205);
-} */
+}
 
 .car_input {
     width: 100%;
@@ -70,4 +70,14 @@
         margin-top: 15px;
         margin-left: 0;
     }
+}
+
+.plan_card {
+    height: 573px;
+    width: 48%;
+    margin-inline: 1%;
+    padding: 12px;
+    border: 1px solid lightgrey;
+    border-radius: 12px;
+    cursor: pointer;
 }
