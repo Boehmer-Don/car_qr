@@ -200,6 +200,28 @@ def payment(user_unique_id: str):
     )
 
 
+@auth_blueprint.route("/logo-upload/<user_unique_id>", methods=["GET", "POST"])
+def logo_upload(user_unique_id: str):
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
+
+    if request.method == "POST":
+        file = request.files["file"]
+        # file.save("/path/to/save/file.txt")
+
+    log(log.INFO, "Uploaded logo for user: [%s]", user)
+    return render_template(
+        "auth/register_logo_upload.html",
+        user=user,
+        user_unique_id=user_unique_id,
+    )
+
+
 @auth_blueprint.route("/thankyou/<user_unique_id>", methods=["GET", "POST"])
 def thankyou(user_unique_id: str):
     query = m.User.select().where(m.User.unique_id == user_unique_id)
