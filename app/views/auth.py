@@ -136,7 +136,9 @@ def plan(user_unique_id: str):
         user.plan = form.selected_plan.data
         user.save()
         log(log.INFO, "Pay plan is chosen. User: [%s]", user)
-        return redirect(url_for("auth.payment", user_unique_id=user.unique_id))
+        if user.plan == "basic":
+            return redirect(url_for("auth.payment", user_unique_id=user.unique_id))
+        return redirect(url_for("auth.logo_upload", user_unique_id=user.unique_id))
     elif form.is_submitted():
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
 
