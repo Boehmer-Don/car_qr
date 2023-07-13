@@ -1,0 +1,27 @@
+/* .indigo {
+    background-color: rgb(81 69 205);
+} */
+
+.car_input {
+    width: 100%;
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: 2px solid lightgrey;
+    border-left: none !important;
+    /* background-clip: content-box; */
+}
+
+.car_input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px white inset !important;
+    box-shadow: 0 0 0 100px white inset !important;
+}
+
+.car_input:focus,
+.car_input:active,
+.car_input:hover,
+.car_input:visited,
+.car_input:target {
+    border: none !important;
+    border-bottom: 2px solid rgb(81 69 205) !important;
+    box-shadow: 0 0 0 100px white inset !important;
+}
