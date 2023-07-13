@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
             basicPlanButton.checked = false;
         } else {
             basicPlanButton.checked = true;
+            basicPlanButton.style.display = "none";
         }
     });
 
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
             advancedPlanButton.checked = false;
         } else {
             advancedPlanButton.checked = true;
+            advancedPlanButton.style.display = "none";
         }
     });
 });

@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const dropZone: HTMLElement = document.querySelector('#drop_zone');
-    console.log(dropZone);
-    console.log(window.location.href);
 
     dropZone.addEventListener('dragover', function (e) {
         e.preventDefault();
