@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.append('file', file);
 
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/logo-upload/<user_unique_id>', true);
+        xhr.open('POST', '/logo-upload/6ec64e2f-5bdf-4113-ae67-8809f97c41aa', true);
         xhr.onload = function () {
             if (xhr.status === 200) {
                 alert('File uploaded successfully!');
