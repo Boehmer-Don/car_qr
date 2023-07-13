@@ -2,7 +2,7 @@ from flask_mail import Message
 from flask import Blueprint, render_template, url_for, redirect, flash, request, session
 from flask import current_app as app
 from flask_login import login_user, logout_user, login_required, current_user
-
+import sqlalchemy as sa
 from app import models as m
 from app import forms as f
 from app import mail, db
@@ -214,7 +214,17 @@ def logo_upload(user_unique_id: str):
         # Uplaod logo image file
         file = request.files["file"]
         log(log.INFO, "File uploaded: [%s]", file)
-        # file.save("/path/to/save/file.txt")
+
+        with db.begin() as session:
+            session.execute(sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id))
+            session.add(
+                m.UserLogo(
+                    user_id=user.id,
+                    filename=file.filename.split("/")[-1],
+                    file=file.read(),
+                    mimetype=file.mimetype,
+                )
+            )
 
     log(log.INFO, "Uploaded logo for user: [%s]", user)
     return render_template(
