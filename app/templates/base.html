@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark:bg-gray-800">
   <head>
     <meta charset="utf-8" />
     <title>{{ config.APP_NAME }}</title>
@@ -76,7 +76,7 @@
     <!-- prettier-ignore -->
     {% include 'sidebar.html' %}
 
-    <div class="sm:ml-64 mt-14 h-full overflow-x-scroll">
+    <div class="sm:ml-64 mt-14 h-full dark:bg-gray-800">
       <!-- Main Content -->
       {% block content %}{% endblock %}
     </div>
