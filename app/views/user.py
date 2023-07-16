@@ -1,3 +1,4 @@
+# flake8: noqa E712
 from flask import (
     Blueprint,
     render_template,
@@ -22,7 +23,7 @@ bp = Blueprint("user", __name__, url_prefix="/user")
 @login_required
 def get_all():
     q = request.args.get("q", type=str, default=None)
-    query = m.User.select().order_by(m.User.id)
+    query = m.User.select().where(m.User.activated).order_by(m.User.id)
     count_query = sa.select(sa.func.count()).select_from(m.User)
     if q:
         query = (
@@ -48,7 +49,7 @@ def get_all():
         page=pagination,
         search_query=q,
         pending_users=db.session.scalars(
-            sa.select(m.User).where(m.User.activated == True)
+            sa.select(m.User).where(m.User.activated == False)
         ).all(),
     )
 
