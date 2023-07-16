@@ -3,8 +3,8 @@
 {% block content %}
 <div class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
   <h1 class="text-4xl font-bold mt-24 mb-12 px-5">User management</h1>
-  <div class="flex flex-col lg:flex-row text-xs md:text-base md:px-5 md:pb-5">
-    <div class="w-full md:w-1/2 px-3">
+  <div class="flex flex-col lg:flex-row text-xs md:text-sm md:px-5 md:pb-5">
+    <div class="w-full sm:w-2/5 px-3">
       <h3 class="text-lg font-bold">Users</h3>
 
       <p class="my-5">Current users active on this platform. To invite a new user to join please click the button below.
@@ -56,51 +56,9 @@
     </div>
   </div>
 
-  <hr>
-  <hr>
-  <hr>
-  <hr>
-  <hr>
-  <hr>
-  <hr>
 
-  <div class="flex flex-col lg:flex-row text-xs md:text-base md:px-5 md:pb-5">
-    <div class="w-full md:w-1/2 px-3">
-      <h3 class="text-lg font-bold">Pending invite</h3>
-
-      <p class="my-5">
-        Invite a user to create account
-      </p>
-    </div>
-
-    <div class="w-full bg-gray-100 dark:bg-gray-800">
-      <div class="flex p-3 font-bold text-gray-400 dark:text-white">
-        <div class="w-1/12">#</div>
-        <div class="w-8/12">Email</div>
-        <div class="w-3/12">Actions</div>
-      </div>
-
-      {% for user in users %}
-      <div class="flex p-3">
-        <div class="w-1/12">{{ loop.index + page.skip }}</div>
-        <div class="w-8/12">{{ user.email }}</div>
-        <div class="w-3/12">
-          <button type="button" data-target="{{user.json}}"
-            class="user-edit-button inline-flex items-center px-3 py-2 text-sm font-medium text-center text-gray-700 rounded-lg hover:bg-gray-100 hover:text-blue-500 focus:ring-4 focus:ring-blue-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800 dark:text-white">
-            Resend invite
-          </button>
-
-          <button data-user-id={{ user.id }} type="button"
-            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-grey-600 rounded-lg text-gray-700 hover:text-red-500 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900 delete-user-btn dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800  dark:text-white">
-            Revoke invite
-          </button>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-
-  </div>
 </div>
+
 
 {% if page.pages > 1 %}
 <div class="container content-center mt-3 flex bg-white dark:bg-gray-800">
@@ -179,9 +137,49 @@
     </ul>
   </nav>
 </div>
-</div>
 {% endif %}
+
+<!-- Under pagination block -->
+
+
+<div class="flex flex-col lg:flex-row text-xs md:text-sm mt-12 md:px-5 md:pb-5">
+  <div class="w-full sm:w-2/5 px-3">
+    <h3 class="text-lg font-bold">Pending invite</h3>
+
+    <p class="my-5">
+      Invite a user to create account
+    </p>
+  </div>
+
+  <div class="w-full bg-gray-100 dark:bg-gray-800">
+    <div class="flex p-3 font-bold text-gray-400 dark:text-white">
+      <div class="w-1/12">#</div>
+      <div class="w-6/12">Email</div>
+      <div class="w-5/12">Actions</div>
+    </div>
+
+    {% for user in pending_users %}
+    <div class="flex p-3">
+      <div class="w-1/12 items-center px-3 py-2">{{ loop.index + page.skip }}</div>
+      <div class="w-6/12 items-center px-3 py-2">{{ user.email }}</div>
+      <div class="w-5/12 flex">
+        <button type="button" data-target="{{user.json}}"
+          class="user-edit-button inline-flex items-center mr-2 px-2 text-xs font-medium text-center bg-indigo-700 text-white border border-indigo-700 rounded-lg hover:bg-white hover:text-indigo-700 focus:ring-4 focus:ring-blue-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800 dark:text-white">
+          Resend invite
+        </button>
+
+        <button data-user-id={{ user.id }} type="button"
+          class="inline-flex items-center px-2 text-xs font-medium text-center text-red-700 border border-red-700 rounded-lg hover:bg-red-700 hover:text-white focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900 delete-user-btn dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800  dark:text-white">
+          Revoke invite
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 </div>
+
+<!-- Under pagination block -->
+
 {% include 'user/edit.html' %}
 {% include 'user/add.html' %}
 <!-- prettier-ignore -->
