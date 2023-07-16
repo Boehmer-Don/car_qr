@@ -2708,6 +2708,16 @@ input:checked + .toggle-bg {
   .md\:pb-5 {
     padding-bottom: 1.25rem;
   }
+
+  .md\:text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  .md\:text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
 }
 
 @media (min-width: 1024px) {
