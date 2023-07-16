@@ -2019,6 +2019,10 @@ input:checked + .toggle-bg {
   padding-right: 1.25rem;
 }
 
+.pb-5 {
+  padding-bottom: 1.25rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -2699,6 +2703,10 @@ input:checked + .toggle-bg {
 
   .md\:pr-5 {
     padding-right: 1.25rem;
+  }
+
+  .md\:pb-5 {
+    padding-bottom: 1.25rem;
   }
 }
 
