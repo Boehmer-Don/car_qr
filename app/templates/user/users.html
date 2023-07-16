@@ -1,5 +1,9 @@
-<!-- prettier-ignore -->
 {% extends 'base.html' %}
+
+{% block links %}
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+{% endblock %}
+
 {% block content %}
 <div class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
   <h1 class="text-4xl font-bold mt-12 mb-10 px-5">User management</h1>
@@ -151,7 +155,8 @@
     </p>
   </div>
 
-  <div class="w-full bg-gray-100 dark:bg-gray-800">
+  <div
+    class="w-full h-40 overflow-y-scroll scrollbar-w-6 scrollbar-track-red-100 scrollbar-thumb-red-700 hover:scrollbar-thumb-red-500 bg-gray-100 dark:bg-gray-800">
     <div class="flex p-3 font-bold text-gray-400 dark:text-white">
       <div class="w-1/12">#</div>
       <div class="w-6/12">Email</div>
