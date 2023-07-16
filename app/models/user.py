@@ -22,10 +22,18 @@ class UsersPlan(enum.Enum):
     advanced = "advanced"
 
 
+class UsersRole(enum.Enum):
+    admin = "admin"
+    dealer = "dealer"
+
+
 class User(db.Model, UserMixin, ModelMixin):
     __tablename__ = "users"
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
+    role: orm.Mapped[UsersPlan] = orm.mapped_column(
+        sa.Enum(UsersRole), default=UsersRole.dealer
+    )
     email: orm.Mapped[str] = orm.mapped_column(
         sa.String(255),
         unique=True,
