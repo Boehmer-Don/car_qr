@@ -10,12 +10,12 @@ from flask import (
 from flask_login import login_required
 from flask_mail import Message
 import sqlalchemy as sa
-from app.controllers import create_pagination
 
-from app import models as m, db
+from flask import current_app as app
+from app.controllers import create_pagination
+from app import models as m, db, mail
 from app import forms as f
 from app.logger import log
-from app import app
 
 
 bp = Blueprint("user", __name__, url_prefix="/user")
@@ -108,9 +108,9 @@ def resend_invite():
         if not user:
             log(log.ERROR, "Not found user by id : [%s]", form.user_id.data)
             flash("Failed to find user", "danger")
+
         log(log.INFO, "Sending an invite for user: [%s]", user)
         user.email = form.email.data
-
         msg = Message(
             subject="New password",
             sender=app.config["MAIL_DEFAULT_SENDER"],
@@ -121,7 +121,13 @@ def resend_invite():
             reset_password_uid=user.unique_id,
             _external=True,
         )
-
+        msg.html = render_template(
+            "email/confirm.htm",
+            user=user,
+            url=url,
+        )
+        mail.send(msg)
+        flash("Your invite has been successfully sent!", "success")
         log(log.INFO, "Invite is resend for user: [%s]", user)
         if form.next_url.data:
             return redirect(form.next_url.data)
