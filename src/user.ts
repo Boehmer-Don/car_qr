@@ -51,7 +51,10 @@ $buttonElements.forEach(e =>
 const resendInviteButtons = document.querySelectorAll('.resend-invite-button');
 resendInviteButtons.forEach(e =>
   e.addEventListener('click', () => {
-    resendInvite(JSON.parse(e.getAttribute('data-target')));
+    const user = JSON.parse(e.getAttribute('data-target'));
+    console.log("resendInviteButtons click user: ", user);
+
+    resendInvite(user);
   }),
 );
 
@@ -117,22 +120,15 @@ function editUser(user: IUser) {
 }
 
 function resendInvite(user: IUser) {
-  let input: HTMLInputElement = document.querySelector('#user-edit-id');
+  let input: HTMLInputElement = document.querySelector('#resend-invite-id');
+  console.log("user: ", user);
+  console.log('resend-invite-id', input);
   input.value = user.id.toString();
   input = document.querySelector('#resend-invite-email');
+  console.log('resend-invite-email', input);
   input.value = user.email;
-  input = document.querySelector('#user-edit-next_url');
+  input = document.querySelector('#resend-invite-next_url');
+  console.log('resend-invite-next_url', input);
   input.value = window.location.href;
   resenrInviteModal.show();
-}
-
-
-function sendInvite() {
-  let input: HTMLInputElement = document.querySelector('#user-edit-password');
-  input.value = '*******';
-  input = document.querySelector('#user-edit-password_confirmation');
-  input.value = '*******';
-  input = document.querySelector('#user-edit-next_url');
-  input.value = window.location.href;
-  modal.show();
 }
