@@ -2658,6 +2658,10 @@ input:checked + .toggle-bg {
     margin-left: 12rem;
   }
 
+  .md\:flex {
+    display: flex;
+  }
+
   .md\:hidden {
     display: none;
   }
