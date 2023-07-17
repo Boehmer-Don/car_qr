@@ -7,7 +7,7 @@
 {% block content %}
 <div class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
   <h1 class="text-4xl font-bold mt-12 mb-10 px-5">User management</h1>
-  <div class="flex flex-col lg:flex-row text-xs md:text-sm md:px-5 md:pb-5">
+  <div class="flex flex-col lg:flex-row text-xs lg:text-sm md:px-5 md:pb-5">
     <div class="w-full sm:w-2/5 p-3">
       <h3 class="text-lg font-bold">Users</h3>
 
@@ -24,14 +24,14 @@
 
     <div class="w-full bg-gray-100 dark:bg-gray-800">
       <div class="flex p-3 font-bold text-gray-400 dark:text-white">
-        <div class="w-1/12">#</div>
+        <div class="w-1/12 pl-3">#</div>
         <div class="w-8/12">Email</div>
         <div class="w-3/12">Actions</div>
       </div>
 
       {% for user in users %}
       <div class="flex p-3">
-        <div class="w-1/12">{{ loop.index + page.skip }}</div>
+        <div class="w-1/12 pl-3">{{ loop.index + page.skip }}</div>
         <div class="w-8/12">{{ user.email }}</div>
         <div class="w-3/12">
           <button type="button" data-target="{{user.json}}"
@@ -146,7 +146,7 @@
 <!-- Under pagination block -->
 
 
-<div class="flex flex-col lg:flex-row text-xs md:text-sm mt-12 md:px-5 md:pb-5 dark:text-white">
+<div class="flex flex-col lg:flex-row text-xs lg:text-sm mt-12 md:px-5 md:pb-5 dark:text-white">
   <div class="w-full sm:w-2/5 p-3">
     <h3 class="text-lg font-bold">Pending invites</h3>
 
@@ -158,7 +158,7 @@
   <div
     class="w-full h-40 overflow-y-scroll scrollbar-w-6 scrollbar-track-red-100 scrollbar-thumb-red-700 hover:scrollbar-thumb-red-500 bg-gray-100 dark:bg-gray-800">
     <div class="flex p-3 font-bold text-gray-400 dark:text-white">
-      <div class="w-1/12">#</div>
+      <div class="w-1/12 pl-3">#</div>
       <div class="w-6/12">Email</div>
       <div class="w-5/12">Actions</div>
     </div>

@@ -1393,6 +1393,10 @@ input:checked + .toggle-bg {
   width: 100%;
 }
 
+.w-48 {
+  width: 12rem;
+}
+
 .min-w-0 {
   min-width: 0px;
 }
@@ -1970,6 +1974,22 @@ input:checked + .toggle-bg {
 
 .pt-6 {
   padding-top: 1.5rem;
+}
+
+.pl-2 {
+  padding-left: 0.5rem;
+}
+
+.pb-8 {
+  padding-bottom: 2rem;
+}
+
+.pb-3 {
+  padding-bottom: 0.75rem;
+}
+
+.pt-2\.5 {
+  padding-top: 0.625rem;
 }
 
 .text-center {
@@ -2598,6 +2618,10 @@ input:checked + .toggle-bg {
     margin-left: 16rem;
   }
 
+  .sm\:ml-48 {
+    margin-left: 12rem;
+  }
+
   .sm\:w-2\/5 {
     width: 40%;
   }
@@ -2673,5 +2697,10 @@ input:checked + .toggle-bg {
 
   .lg\:pl-3 {
     padding-left: 0.75rem;
+  }
+
+  .lg\:text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 }
