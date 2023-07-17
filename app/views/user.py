@@ -94,3 +94,29 @@ def delete(id: int):
     log(log.INFO, "User deleted. User: [%s]", u)
     flash("User deleted!", "success")
     return "ok", 200
+
+
+@bp.route("/resend-invite", methods=["POST"])
+@login_required
+def resend_invite():
+    form: f.UserForm() = f.UserForm()
+    if form.validate_on_submit():
+        query = m.User.select().where(m.User.id == int(form.user_id.data))
+        user: m.User | None = db.session.scalar(query)
+        if not user:
+            log(log.ERROR, "Not found user by id : [%s]", form.user_id.data)
+            flash("Failed to find user", "danger")
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.email = form.email.data
+        if form.password.data.strip("*\n "):
+            user.password = form.password.data
+        user.save()
+        if form.next_url.data:
+            return redirect(form.next_url.data)
+        return redirect(url_for("user.get_all"))
+
+    else:
+        log(log.ERROR, "User save errors: [%s]", form.errors)
+        flash(f"{form.errors}", "danger")
+        return redirect(url_for("user.get_all"))

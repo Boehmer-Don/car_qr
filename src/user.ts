@@ -16,6 +16,7 @@ interface IUser {
 }
 
 const $modalElement: HTMLElement = document.querySelector('#editUserModal');
+const $modalresendInviteElement: HTMLElement = document.querySelector('#resendInviteModal');
 const $addUserModalElement: HTMLElement =
   document.querySelector('#add-user-modal');
 
@@ -37,12 +38,20 @@ const modalOptions: ModalOptions = {
 };
 
 const modal: ModalInterface = new Modal($modalElement, modalOptions);
+const resenrInviteModal: ModalInterface = new Modal($modalresendInviteElement, modalOptions);
 const addModal: ModalInterface = new Modal($addUserModalElement, modalOptions);
 
 const $buttonElements = document.querySelectorAll('.user-edit-button');
 $buttonElements.forEach(e =>
   e.addEventListener('click', () => {
     editUser(JSON.parse(e.getAttribute('data-target')));
+  }),
+);
+
+const resendInviteButtons = document.querySelectorAll('.resend-invite-button');
+resendInviteButtons.forEach(e =>
+  e.addEventListener('click', () => {
+    resendInvite(JSON.parse(e.getAttribute('data-target')));
   }),
 );
 
@@ -100,6 +109,35 @@ function editUser(user: IUser) {
   input = document.querySelector('#user-edit-email');
   input.value = user.email;
   input = document.querySelector('#user-edit-password');
+  input.value = '*******';
+  input = document.querySelector('#user-edit-password_confirmation');
+  input.value = '*******';
+  input = document.querySelector('#user-edit-next_url');
+  input.value = window.location.href;
+  modal.show();
+}
+
+function resendInvite(user: IUser) {
+  let input: HTMLInputElement = document.querySelector('#user-edit-firstname');
+  input.value = user.first_name;
+  input = document.querySelector('#user-edit-lastname');
+  input.value = user.last_name;
+  input = document.querySelector('#user-edit-id');
+  input.value = user.id.toString();
+  input = document.querySelector('#user-edit-email');
+  input.value = user.email;
+  input = document.querySelector('#user-edit-password');
+  input.value = '*******';
+  input = document.querySelector('#user-edit-password_confirmation');
+  input.value = '*******';
+  input = document.querySelector('#user-edit-next_url');
+  input.value = window.location.href;
+  resenrInviteModal.show();
+}
+
+
+function sendInvite() {
+  let input: HTMLInputElement = document.querySelector('#user-edit-password');
   input.value = '*******';
   input = document.querySelector('#user-edit-password_confirmation');
   input.value = '*******';
