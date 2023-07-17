@@ -3,8 +3,10 @@
   aria-label="Sidebar">
   <div class="h-full px-3 pb-4 overflow-y-auto bg-gray-800 text-white">
     <ul class="space-y-2 font-medium">
+      {% if current_user %}
       <li class="pl-1 pt-3 text-xs">{{ current_user.role.name }}</li>
       <li class="pl-1 py-2">{{ current_user.first_name }} {{ current_user.last_name }}</li>
+      {% endif %}
 
       <li>
         <a href="{{ url_for('user.get_all') }}"

@@ -119,16 +119,16 @@ function editUser(user: IUser) {
   modal.show();
 }
 
-function resendInvite(user: IUser) {
-  let input: HTMLInputElement = document.querySelector('#resend-invite-id');
-  console.log("user: ", user);
-  console.log('resend-invite-id', input);
-  input.value = user.id.toString();
-  input = document.querySelector('#resend-invite-email');
-  console.log('resend-invite-email', input);
-  input.value = user.email;
+function resendInvite(user?: IUser) {
+  let input: HTMLInputElement;
+
+  if (user) {
+    input = document.querySelector('#resend-invite-id');
+    input.value = user.id.toString();
+    input = document.querySelector('#resend-invite-email');
+    input.value = user.email;
+  }
   input = document.querySelector('#resend-invite-next_url');
-  console.log('resend-invite-next_url', input);
   input.value = window.location.href;
   resenrInviteModal.show();
 }

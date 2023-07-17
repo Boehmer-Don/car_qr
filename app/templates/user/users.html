@@ -14,12 +14,10 @@
       <p class="my-5">Current users active on this platform. To invite a new user to join please click the button below.
       </p>
 
-      <a href="{{ url_for('auth.payment', user_unique_id=user_unique_id) }}">
-        <button type="button"
-          class="w-full my-3 md:my-10 px-5 pt-1 pb-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
-          Invite user >
-        </button>
-      </a>
+      <button type="button"
+        class="resend-invite-button w-full my-3 md:my-10 px-5 pt-1 pb-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+        Invite user >
+      </button>
     </div>
 
     <div class="w-full bg-gray-100 dark:bg-gray-800">

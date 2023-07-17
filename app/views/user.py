@@ -106,8 +106,11 @@ def resend_invite():
         query = m.User.select().where(m.User.id == int(form.user_id.data))
         user: m.User | None = db.session.scalar(query)
         if not user:
-            log(log.ERROR, "Not found user by id : [%s]", form.user_id.data)
-            flash("Failed to find user", "danger")
+            log(log.ERROR, "Not found user by id. Creating a new user.")
+            user = m.User(email=form.email.data)
+            log(log.INFO, "User created: [%s]", user)
+            user.save()
+            flash("A new user created", "info")
 
         log(log.INFO, "Sending an invite for user: [%s]", user)
         user.email = form.email.data
@@ -122,7 +125,7 @@ def resend_invite():
             _external=True,
         )
         msg.html = render_template(
-            "email/confirm.htm",
+            "email/confirm_invite.htm",
             user=user,
             url=url,
         )
