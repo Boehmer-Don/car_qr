@@ -1337,6 +1337,10 @@ input:checked + .toggle-bg {
   max-height: 100%;
 }
 
+.max-h-44 {
+  max-height: 11rem;
+}
+
 .w-1\/12 {
   width: 8.333333%;
 }
@@ -1399,6 +1403,14 @@ input:checked + .toggle-bg {
 
 .w-full {
   width: 100%;
+}
+
+.w-4\/12 {
+  width: 33.333333%;
+}
+
+.w-7\/12 {
+  width: 58.333333%;
 }
 
 .min-w-0 {
@@ -2699,6 +2711,14 @@ input:checked + .toggle-bg {
     width: 50%;
   }
 
+  .md\:w-4\/12 {
+    width: 33.333333%;
+  }
+
+  .md\:w-7\/12 {
+    width: 58.333333%;
+  }
+
   .md\:translate-x-0 {
     --tw-translate-x: 0px;
     transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
@@ -2779,5 +2799,11 @@ input:checked + .toggle-bg {
   .lg\:text-sm {
     font-size: 0.875rem;
     line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:block {
+    display: block;
   }
 }
