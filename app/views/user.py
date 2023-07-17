@@ -58,8 +58,6 @@ def get_all():
 @login_required
 def save():
     form: f.UserForm() = f.UserForm()
-    # form.first_name.data = request.form.get("firstname")
-    # form.last_name.data = request.form.get("lasttname")
     if form.validate_on_submit():
         query = m.User.select().where(m.User.id == int(form.user_id.data))
         user: m.User | None = db.session.scalar(query)
