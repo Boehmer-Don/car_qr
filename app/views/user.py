@@ -57,19 +57,19 @@ def get_all():
 @bp.route("/save", methods=["POST"])
 @login_required
 def save():
-    form = f.UserForm()
+    form: f.UserForm() = f.UserForm()
     if form.validate_on_submit():
         query = m.User.select().where(m.User.id == int(form.user_id.data))
-        u: m.User | None = db.session.scalar(query)
-        if not u:
+        user: m.User | None = db.session.scalar(query)
+        if not user:
             log(log.ERROR, "Not found user by id : [%s]", form.user_id.data)
-            flash("Cannot save user data", "danger")
-        u.username = form.username.data
-        u.email = form.email.data
-        u.activated = form.activated.data
+            flash("Failed to find user", "danger")
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.email = form.email.data
         if form.password.data.strip("*\n "):
-            u.password = form.password.data
-        u.save()
+            user.password = form.password.data
+        user.save()
         if form.next_url.data:
             return redirect(form.next_url.data)
         return redirect(url_for("user.get_all"))
@@ -77,22 +77,6 @@ def save():
     else:
         log(log.ERROR, "User save errors: [%s]", form.errors)
         flash(f"{form.errors}", "danger")
-        return redirect(url_for("user.get_all"))
-
-
-@bp.route("/create", methods=["POST"])
-@login_required
-def create():
-    form = f.NewUserForm()
-    if form.validate_on_submit():
-        user = m.User(
-            email=form.email.data,
-            password=form.password.data,
-            activated=form.activated.data,
-        )
-        log(log.INFO, "Form submitted. User: [%s]", user)
-        flash("User added!", "success")
-        user.save()
         return redirect(url_for("user.get_all"))
 
 
