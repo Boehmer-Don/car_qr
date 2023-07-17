@@ -6,7 +6,11 @@ TEST_ADMIN_PASSWORD = "password"
 
 
 def register(email=TEST_ADMIN_EMAIL, password=TEST_ADMIN_PASSWORD):
-    user = User(email=email)
+    user = User(
+        email=email,
+        first_name=TEST_ADMIN_NAME,
+        last_name="Simple2B",
+    )
     user.password = password
     user.save()
     return user.id

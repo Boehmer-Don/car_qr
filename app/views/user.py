@@ -139,3 +139,58 @@ def resend_invite():
         log(log.ERROR, "User save errors: [%s]", form.errors)
         flash(f"{form.errors}", "danger")
         return redirect(url_for("user.get_all"))
+
+
+@bp.route("/account/<user_unique_id>", methods=["GET", "POST"])
+@login_required
+def account(user_unique_id: str):
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
+
+    form: f.PaymentForm = f.PaymentForm()
+    if request.method == "GET":
+        form.email.data = user.email
+        form.password.data = user.password
+        form.password_confirmation.data = user.password
+        form.first_name.data = user.first_name
+        form.last_name.data = user.last_name
+        form.name_of_dealership.data = user.name_of_dealership
+        form.address_of_dealership.data = user.address_of_dealership
+        form.country.data = user.country
+        form.province.data = user.province
+        form.city.data = user.city
+        form.postal_code.data = user.postal_code
+        form.plan.data = user.plan
+        form.phone.data = user.phone
+
+    if form.validate_on_submit():
+        user.email = form.email.data
+        user.password = form.password.data
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.name_of_dealership = form.name_of_dealership.data
+        user.address_of_dealership = form.address_of_dealership.data
+        user.country = form.country.data
+        user.province = form.province.data
+        user.city = form.city.data
+        user.postal_code = form.postal_code.data
+        user.plan = form.plan.data
+        user.phone = form.phone.data
+        user.save()
+        log(log.INFO, "User data updated. User: [%s]", user)
+        flash("Your account has been successfully updated", "success")
+
+    elif form.is_submitted():
+        log(log.ERROR, "User save errors: [%s]", form.errors)
+        flash(f"{form.errors}", "danger")
+
+    return render_template(
+        "user/account.html",
+        form=form,
+        user=user,
+    )
