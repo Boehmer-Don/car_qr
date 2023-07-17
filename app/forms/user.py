@@ -37,3 +37,9 @@ class UserForm(FlaskForm):
         )
         if db.session.scalar(query) is not None:
             raise ValidationError("This email is already registered.")
+
+
+class ResendInviteForm(FlaskForm):
+    next_url = StringField("next_url")
+    user_id = StringField("user_id", [DataRequired()])
+    email = StringField("email", [DataRequired(), Email()])

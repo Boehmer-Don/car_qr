@@ -63,11 +63,10 @@ if ($buttonClose) {
   });
 }
 
-// closing add user modal
-const addModalCloseBtn = document.querySelector('#modalAddCloseButton');
-if (addModalCloseBtn) {
-  addModalCloseBtn.addEventListener('click', () => {
-    addModal.hide();
+const resendInviteButtonClose = document.querySelector('#resendInviteModalCloseButton');
+if ($buttonClose) {
+  resendInviteButtonClose.addEventListener('click', () => {
+    resenrInviteModal.hide();
   });
 }
 
@@ -118,18 +117,10 @@ function editUser(user: IUser) {
 }
 
 function resendInvite(user: IUser) {
-  let input: HTMLInputElement = document.querySelector('#user-edit-firstname');
-  input.value = user.first_name;
-  input = document.querySelector('#user-edit-lastname');
-  input.value = user.last_name;
-  input = document.querySelector('#user-edit-id');
+  let input: HTMLInputElement = document.querySelector('#user-edit-id');
   input.value = user.id.toString();
-  input = document.querySelector('#user-edit-email');
+  input = document.querySelector('#resend-invite-email');
   input.value = user.email;
-  input = document.querySelector('#user-edit-password');
-  input.value = '*******';
-  input = document.querySelector('#user-edit-password_confirmation');
-  input.value = '*******';
   input = document.querySelector('#user-edit-next_url');
   input.value = window.location.href;
   resenrInviteModal.show();

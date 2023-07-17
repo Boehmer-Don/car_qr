@@ -8,12 +8,14 @@ from flask import (
     url_for,
 )
 from flask_login import login_required
+from flask_mail import Message
 import sqlalchemy as sa
 from app.controllers import create_pagination
 
 from app import models as m, db
 from app import forms as f
 from app.logger import log
+from app import app
 
 
 bp = Blueprint("user", __name__, url_prefix="/user")
@@ -57,7 +59,7 @@ def get_all():
 @bp.route("/save", methods=["POST"])
 @login_required
 def save():
-    form: f.UserForm() = f.UserForm()
+    form: f.UserForm = f.UserForm()
     if form.validate_on_submit():
         query = m.User.select().where(m.User.id == int(form.user_id.data))
         user: m.User | None = db.session.scalar(query)
@@ -99,19 +101,28 @@ def delete(id: int):
 @bp.route("/resend-invite", methods=["POST"])
 @login_required
 def resend_invite():
-    form: f.UserForm() = f.UserForm()
+    form: f.ResendInviteForm = f.ResendInviteForm()
     if form.validate_on_submit():
         query = m.User.select().where(m.User.id == int(form.user_id.data))
         user: m.User | None = db.session.scalar(query)
         if not user:
             log(log.ERROR, "Not found user by id : [%s]", form.user_id.data)
             flash("Failed to find user", "danger")
-        user.first_name = form.first_name.data
-        user.last_name = form.last_name.data
+        log(log.INFO, "Sending an invite for user: [%s]", user)
         user.email = form.email.data
-        if form.password.data.strip("*\n "):
-            user.password = form.password.data
-        user.save()
+
+        msg = Message(
+            subject="New password",
+            sender=app.config["MAIL_DEFAULT_SENDER"],
+            recipients=[user.email],
+        )
+        url = url_for(
+            "auth.activate",
+            reset_password_uid=user.unique_id,
+            _external=True,
+        )
+
+        log(log.INFO, "Invite is resend for user: [%s]", user)
         if form.next_url.data:
             return redirect(form.next_url.data)
         return redirect(url_for("user.get_all"))
