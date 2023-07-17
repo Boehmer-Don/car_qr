@@ -6,36 +6,36 @@
 
 {% block content %}
 <div class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
-  <h1 class="text-4xl font-bold mt-12 mb-10 px-5">User management</h1>
+  <h1 class="hidden md:block text-4xl font-bold mt-12 mb-10 px-5">User management</h1>
   <div class="flex flex-col lg:flex-row text-xs lg:text-sm md:px-5 md:pb-5">
     <div class="w-full sm:w-2/5 p-3">
-      <h3 class="text-lg font-bold">Users</h3>
+      <h3 class="mt-6 md:mt-0 text-lg font-bold">Users</h3>
 
       <p class="my-5">Current users active on this platform. To invite a new user to join please click the button below.
       </p>
 
       <a href="{{ url_for('auth.payment', user_unique_id=user_unique_id) }}">
         <button type="button"
-          class="w-full my-10 px-5 pt-1 pb-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+          class="w-full my-3 md:my-10 px-5 pt-1 pb-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
           Invite user >
         </button>
       </a>
     </div>
 
     <div class="w-full bg-gray-100 dark:bg-gray-800">
-      <div class="flex p-3 font-bold text-gray-400 dark:text-white">
+      <div class="flex p-1 md:p-3 font-bold text-gray-400 dark:text-white">
         <div class="w-1/12 pl-3">#</div>
         <div class="w-8/12">Email</div>
         <div class="w-3/12">Actions</div>
       </div>
 
       {% for user in users %}
-      <div class="flex p-3">
+      <div class="flex p-1 md:p-3">
         <div class="w-1/12 pl-3">{{ loop.index + page.skip }}</div>
         <div class="w-8/12">{{ user.email }}</div>
         <div class="w-3/12">
           <button type="button" data-target="{{user.json}}"
-            class="user-edit-button inline-flex items-center px-3 py-2 text-sm font-medium text-center text-gray-700 rounded-lg hover:bg-gray-100 hover:text-blue-500 focus:ring-4 focus:ring-blue-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800 dark:text-white">
+            class="user-edit-button inline-flex items-center px-1 md:px-3 py-1 md:py-2 text-sm font-medium text-center text-gray-700 rounded-lg hover:bg-gray-100 hover:text-blue-500 focus:ring-4 focus:ring-blue-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800 dark:text-white">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
               <path fill-rule="evenodd"
