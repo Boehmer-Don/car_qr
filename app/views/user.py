@@ -170,7 +170,8 @@ def account(user_unique_id: str):
 
     if form.validate_on_submit():
         user.email = form.email.data
-        user.password = form.password.data
+        if form.password.data:
+            user.password = form.password.data
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
         user.name_of_dealership = form.name_of_dealership.data
@@ -184,6 +185,7 @@ def account(user_unique_id: str):
         user.save()
         log(log.INFO, "User data updated. User: [%s]", user)
         flash("Your account has been successfully updated", "success")
+        return redirect(url_for("user.account", user_unique_id=user_unique_id))
 
     elif form.is_submitted():
         log(log.ERROR, "User save errors: [%s]", form.errors)

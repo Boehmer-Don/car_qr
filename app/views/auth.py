@@ -164,7 +164,8 @@ def payment(user_unique_id: str):
     form: f.PaymentForm = f.PaymentForm()
     if request.method == "GET":
         form.email.data = user.email
-        form.password.data = user.password
+        # form.password.data = user.password
+        # form.password_confirmation.data = user.password
         form.first_name.data = user.first_name
         form.last_name.data = user.last_name
         form.name_of_dealership.data = user.name_of_dealership
@@ -178,7 +179,8 @@ def payment(user_unique_id: str):
 
     if form.validate_on_submit():
         user.email = form.email.data
-        user.password = form.password.data
+        if form.password.data:
+            user.password = form.password.data
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
         user.name_of_dealership = form.name_of_dealership.data
