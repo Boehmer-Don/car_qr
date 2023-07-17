@@ -2019,6 +2019,10 @@ input:checked + .toggle-bg {
   padding-top: 0.625rem;
 }
 
+.pr-0 {
+  padding-right: 0px;
+}
+
 .text-center {
   text-align: center;
 }
@@ -2742,8 +2746,17 @@ input:checked + .toggle-bg {
     padding-bottom: 0.5rem;
   }
 
+  .md\:py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
   .md\:pb-5 {
     padding-bottom: 1.25rem;
+  }
+
+  .md\:pl-3 {
+    padding-left: 0.75rem;
   }
 
   .md\:text-sm {
