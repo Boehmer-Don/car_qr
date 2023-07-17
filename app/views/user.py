@@ -113,7 +113,6 @@ def resend_invite():
             flash("A new user created", "info")
 
         log(log.INFO, "Sending an invite for user: [%s]", user)
-        user.email = form.email.data
         msg = Message(
             subject="New password",
             sender=app.config["MAIL_DEFAULT_SENDER"],

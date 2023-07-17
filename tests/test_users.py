@@ -3,6 +3,7 @@ from flask.testing import FlaskClient, FlaskCliRunner
 from click.testing import Result
 from app import models as m, db
 from tests.utils import login
+from app import mail
 
 
 def test_list(populate: FlaskClient):
@@ -51,3 +52,29 @@ def test_delete_user(populate: FlaskClient):
     response = populate.delete("/user/delete/1")
     assert db.session.query(m.User).count() < uc
     assert response.status_code == 200
+
+
+def test_invite_user(populate: FlaskClient):
+    login(populate)
+    TESTING_USER_ID = "1"
+    TESTING_EMAIL = "user@simple2b.com"
+    TESTING_NEXT_URL = "/user/"
+    with mail.record_messages() as outbox:
+        response = populate.post(
+            "/user/resend-invite",
+            data={
+                "user_id": TESTING_USER_ID,
+                "email": TESTING_EMAIL,
+                "next_url": TESTING_NEXT_URL,
+            },
+            follow_redirects=True,
+        )
+
+        assert response
+
+        assert b"Your invite has been successfully sent" in response.data
+        assert len(outbox) == 1
+
+        assert "toast" in response.data.decode()
+        assert "toast-success" in response.data.decode()
+        assert "toast-danger" not in response.data.decode()
