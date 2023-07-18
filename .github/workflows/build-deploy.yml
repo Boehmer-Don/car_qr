@@ -5,7 +5,8 @@ name: Bult & Deploy
 
 on:
   push:
-    branches: [develop]
+    tags:
+      - 'v*'
 
 jobs:
   tests:
