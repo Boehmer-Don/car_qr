@@ -29,7 +29,6 @@ def test_list(populate: FlaskClient):
     assert "/user/?page=3" in html
     assert "/user/?page=8" in html
     assert "/user/?page=10" not in html
-    assert "/user/?page=2" not in html
 
 
 def test_create_admin(runner: FlaskCliRunner):

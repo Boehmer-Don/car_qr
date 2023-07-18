@@ -4,7 +4,7 @@ from flask.testing import FlaskClient
 from app import mail
 from app import models as m
 from app import db
-from tests.utils import register, login, logout
+from tests.utils import register, login
 
 
 TEST_EMAIL = "denysburimov@gmail.com"
@@ -176,7 +176,6 @@ def test_forgot(client: FlaskClient):
 
 def test_login_and_logout(client: FlaskClient):
     # Access to logout view before login should fail.
-    response = logout(client)
     register("sam@test.com")
     response = login(client, "sam@test.com")
     assert b"Login successful." in response.data
