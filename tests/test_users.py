@@ -54,13 +54,13 @@ def test_delete_user(populate: FlaskClient):
     assert response.status_code == 200
 
 
-def test_invite_user(populate: FlaskClient):
-    login(populate)
+def test_invite_user(client: FlaskClient):
+    login(client)
     TESTING_USER_ID = "1"
     TESTING_EMAIL = "user@simple2b.com"
     TESTING_NEXT_URL = "/user/"
     with mail.record_messages() as outbox:
-        response = populate.post(
+        response = client.post(
             "/user/resend-invite",
             data={
                 "user_id": TESTING_USER_ID,
@@ -80,7 +80,7 @@ def test_invite_user(populate: FlaskClient):
         assert "toast-danger" not in response.data.decode()
 
 
-def test_account(populate: FlaskClient):
+def test_account(client: FlaskClient):
     TEST_EMAIL = "denysburimov@gmail.com"
     TEST_PASSWORD = "password"
     TEST_FIRSTNAME = "Denys"
@@ -93,11 +93,11 @@ def test_account(populate: FlaskClient):
     TEST_POSTAL_CODE = "10000"
     TEST_PHONE = "555-555-55-55"
 
-    login(populate)
+    login(client)
     user: m.User = db.session.scalar(sa.select(m.User).where(m.User.id == 1))
-    response = populate.get(f"/user/account/{user.unique_id}")
+    response = client.get(f"/user/account/{user.unique_id}")
     assert response.status_code == 200
-    response = populate.post(
+    response = client.post(
         f"/user/account/{user.unique_id}",
         data=dict(
             email=TEST_EMAIL,
@@ -114,6 +114,7 @@ def test_account(populate: FlaskClient):
             phone=TEST_PHONE,
             plan=m.UsersPlan.basic.value,
         ),
+        follow_redirects=True,
     )
     assert response.status_code == 200
     assert b"Your account has been successfully updated" in response.data
