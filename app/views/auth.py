@@ -190,6 +190,7 @@ def payment(user_unique_id: str):
         user.plan = form.plan.data
         user.phone = form.phone.data
         user.save()
+        login_user(user)
         return redirect(url_for("auth.thankyou", user_unique_id=user.unique_id))
     elif form.is_submitted():
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
