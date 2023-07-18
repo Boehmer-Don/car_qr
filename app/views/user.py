@@ -108,7 +108,7 @@ def delete(id: int):
 def resend_invite():
     form: f.ResendInviteForm = f.ResendInviteForm()
     if form.validate_on_submit():
-        query = m.User.select().where(m.User.id == int(form.user_id.data))
+        query = m.User.select().where(m.User.email == form.email.data)
         user: m.User | None = db.session.scalar(query)
         if not user:
             log(log.ERROR, "Not found user by id. Creating a new user.")
