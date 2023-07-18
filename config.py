@@ -32,7 +32,8 @@ class BaseConfig(BaseSettings):
     MAIL_DEFAULT_SENDER: str
 
     # Super admin
-    ADMIN_USERNAME: str
+    ADMIN_FIRST_NAME: str
+    ADMIN_LAST_NAME: str
     ADMIN_EMAIL: str
     ADMIN_PASSWORD: str
 

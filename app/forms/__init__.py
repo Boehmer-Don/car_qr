@@ -8,4 +8,4 @@ from .auth import (
     SubscriptionPlanForm,
     PaymentForm,
 )
-from .user import UserForm, NewUserForm
+from .user import UserForm, ResendInviteForm

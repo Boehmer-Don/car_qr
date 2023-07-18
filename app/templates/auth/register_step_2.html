@@ -7,7 +7,7 @@
 
 <div class="dark:bg-gray-900 pt-20">
   <section>
-    <div class="w-full h-screen px-4 mx-auto pt-6">
+    <div class="w-full h-full lg:w-1/2 px-1 md:px-4 py-6 mx-auto">
       <!-- prettier-ignore -->
       <div class="w-full lg:max-w-xl mx-auto p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
         <div class="flex w-full h-1 bg-gray-300 rounded-sm">
@@ -17,7 +17,7 @@
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
           Sign Up
         </h2>
-        <p class="text-4xl font-bold text-gray-900 dark:text-white">
+        <p class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">
           Step 2: Contact Info
         </p>
         <form class="mt-8 space-y-3 from" role="form"
@@ -29,7 +29,7 @@
               {{form.first_name.label(class='block text-sm font-medium
               text-gray-900 dark:text-white')}}
               {{form.first_name(
-              class="car_input"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
               )
               }}
 
@@ -42,7 +42,7 @@
               {{form.last_name.label(class='block text-sm font-medium
               text-gray-900 dark:text-white')}}
               {{form.last_name(
-              class="car_input"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
               )
               }}{% for error in form.errors.last_name %}
               <small class="text-danger">{{error}}</small>
@@ -54,7 +54,7 @@
             {{form.name_of_dealership.label(class='block text-sm
             font-medium text-gray-900 dark:text-white')}}
             {{form.name_of_dealership(
-            class="car_input"
+            class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
             )
             }}
             {% for error in form.errors.name_of_dealership %}
@@ -66,7 +66,7 @@
             {{form.address_of_dealership.label(class='block text-sm
             font-medium text-gray-900 dark:text-white')}}
             {{form.address_of_dealership(
-            class="car_input"
+            class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
             )
             }}
             {% for error in form.errors.address_of_dealership %}
@@ -79,7 +79,7 @@
               {{form.country.label(class='block text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.country(
-              class="car_input"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
               )
               }}
               {% for error in form.errors.country %}
@@ -91,7 +91,7 @@
               {{form.province.label(class='block text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.province(
-              class="car_input"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
               )
               }}
               {% for error in form.errors.province %}
@@ -105,7 +105,7 @@
               {{form.city.label(class='block text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.city(
-              class="car_input"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
               )
               }}
               {% for error in form.errors.city %}
@@ -117,7 +117,7 @@
               {{form.postal_code.label(class='block text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.postal_code(
-              class="car_input"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
               )
               }}
               {% for error in form.errors.postal_code %}
@@ -130,7 +130,7 @@
             {{form.phone.label(class='block text-sm
             font-medium text-gray-900 dark:text-white')}}
             {{form.phone(
-            class="car_input"
+            class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
             )
             }}
             {% for error in form.errors.phone %}

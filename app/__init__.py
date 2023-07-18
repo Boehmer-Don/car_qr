@@ -60,4 +60,9 @@ def create_app(environment="development"):
     def handle_http_error(exc):
         return render_template("error.html", error=exc), exc.code
 
+    # Jinja globals
+    from app.controllers.jinja_globals import form_hidden_tag
+
+    app.jinja_env.globals["form_hidden_tag"] = form_hidden_tag
+
     return app

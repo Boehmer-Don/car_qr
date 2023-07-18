@@ -9,7 +9,13 @@ class UserLogo(db.Model):
     filename: orm.Mapped[str] = orm.mapped_column(sa.String(256), nullable=False)
     mimetype: orm.Mapped[str] = orm.mapped_column(sa.String(32), default="image/png")
     file: orm.Mapped[bytes] = orm.mapped_column(sa.LargeBinary, nullable=False)
-    user_id: orm.Mapped[int] = orm.mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    user_id: orm.Mapped[int] = orm.mapped_column(
+        sa.Integer,
+        sa.ForeignKey(
+            "users.id",
+            ondelete="CASCADE",
+        ),
+    )
 
     user: orm.Mapped[User] = orm.relationship("User", backref="logo")
 

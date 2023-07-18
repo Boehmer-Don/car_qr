@@ -54,6 +54,7 @@ def gen_test_items(num_objects: int) -> Generator[str, None, None]:
 
 
 def populate(count: int = NUM_TEST_USERS):
+    users_counter = 0
     for (
         email,
         first_name,
@@ -66,10 +67,12 @@ def populate(count: int = NUM_TEST_USERS):
         postal_code,
         phone,
     ) in gen_test_items(count):
+        is_user_activated = False if users_counter < 7 else True
         m.User(
             email=email,
             first_name=first_name,
             last_name=last_name,
+            activated=is_user_activated,
             name_of_dealership=company,
             address_of_dealership=address,
             country=country,
@@ -78,5 +81,6 @@ def populate(count: int = NUM_TEST_USERS):
             postal_code=postal_code,
             phone=phone,
         ).save(False)
+        users_counter += 1
 
     db.session.commit()

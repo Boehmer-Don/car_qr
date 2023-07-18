@@ -1,5 +1,5 @@
-import {Modal} from 'flowbite';
-import type {ModalOptions, ModalInterface} from 'flowbite';
+import { Modal } from 'flowbite';
+import type { ModalOptions, ModalInterface } from 'flowbite';
 
 // /*
 //  * $editUserModal: required
@@ -10,12 +10,13 @@ import type {ModalOptions, ModalInterface} from 'flowbite';
 
 interface IUser {
   id: number;
-  username: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  activated: boolean;
 }
 
 const $modalElement: HTMLElement = document.querySelector('#editUserModal');
+const $modalresendInviteElement: HTMLElement = document.querySelector('#resendInviteModal');
 const $addUserModalElement: HTMLElement =
   document.querySelector('#add-user-modal');
 
@@ -37,12 +38,23 @@ const modalOptions: ModalOptions = {
 };
 
 const modal: ModalInterface = new Modal($modalElement, modalOptions);
+const resenrInviteModal: ModalInterface = new Modal($modalresendInviteElement, modalOptions);
 const addModal: ModalInterface = new Modal($addUserModalElement, modalOptions);
 
 const $buttonElements = document.querySelectorAll('.user-edit-button');
 $buttonElements.forEach(e =>
   e.addEventListener('click', () => {
     editUser(JSON.parse(e.getAttribute('data-target')));
+  }),
+);
+
+const resendInviteButtons = document.querySelectorAll('.resend-invite-button');
+resendInviteButtons.forEach(e =>
+  e.addEventListener('click', () => {
+    const user = JSON.parse(e.getAttribute('data-target'));
+    console.log("resendInviteButtons click user: ", user);
+
+    resendInvite(user);
   }),
 );
 
@@ -54,11 +66,10 @@ if ($buttonClose) {
   });
 }
 
-// closing add user modal
-const addModalCloseBtn = document.querySelector('#modalAddCloseButton');
-if (addModalCloseBtn) {
-  addModalCloseBtn.addEventListener('click', () => {
-    addModal.hide();
+const resendInviteButtonClose = document.querySelector('#resendInviteModalCloseButton');
+if ($buttonClose) {
+  resendInviteButtonClose.addEventListener('click', () => {
+    resenrInviteModal.hide();
   });
 }
 
@@ -91,8 +102,10 @@ deleteButtons.forEach(e => {
 });
 
 function editUser(user: IUser) {
-  let input: HTMLInputElement = document.querySelector('#user-edit-username');
-  input.value = user.username;
+  let input: HTMLInputElement = document.querySelector('#user-edit-firstname');
+  input.value = user.first_name;
+  input = document.querySelector('#user-edit-lastname');
+  input.value = user.last_name;
   input = document.querySelector('#user-edit-id');
   input.value = user.id.toString();
   input = document.querySelector('#user-edit-email');
@@ -101,9 +114,21 @@ function editUser(user: IUser) {
   input.value = '*******';
   input = document.querySelector('#user-edit-password_confirmation');
   input.value = '*******';
-  input = document.querySelector('#user-edit-activated');
-  input.checked = user.activated;
   input = document.querySelector('#user-edit-next_url');
   input.value = window.location.href;
   modal.show();
+}
+
+function resendInvite(user?: IUser) {
+  let input: HTMLInputElement;
+
+  if (user) {
+    input = document.querySelector('#resend-invite-id');
+    input.value = user.id.toString();
+    input = document.querySelector('#resend-invite-email');
+    input.value = user.email;
+  }
+  input = document.querySelector('#resend-invite-next_url');
+  input.value = window.location.href;
+  resenrInviteModal.show();
 }
