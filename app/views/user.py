@@ -195,4 +195,5 @@ def account(user_unique_id: str):
         "user/account.html",
         form=form,
         user=user,
+        user_unique_id=user_unique_id,
     )
