@@ -28,7 +28,7 @@ def get_all():
         return redirect(url_for("main.index"))
     q = request.args.get("q", type=str, default=None)
     query = m.User.select().where(m.User.activated).order_by(m.User.id)
-    count_query = sa.select(sa.func.count()).select_from(m.User)
+    count_query = sa.select(sa.func.count()).where(m.User.activated).select_from(m.User)
     if q:
         query = (
             m.User.select()
