@@ -7,7 +7,7 @@ from flask import (
     redirect,
     url_for,
 )
-from flask_login import login_required
+from flask_login import login_required, current_user
 from flask_mail import Message
 import sqlalchemy as sa
 
@@ -24,6 +24,8 @@ bp = Blueprint("user", __name__, url_prefix="/user")
 @bp.route("/", methods=["GET"])
 @login_required
 def get_all():
+    if current_user.role != m.UsersRole.admin:
+        return redirect(url_for("main.index"))
     q = request.args.get("q", type=str, default=None)
     query = m.User.select().where(m.User.activated).order_by(m.User.id)
     count_query = sa.select(sa.func.count()).select_from(m.User)
