@@ -92,7 +92,8 @@ def delete(id: int):
         return "no user", 404
 
     logo = db.session.scalar(sa.select(m.UserLogo).where(m.UserLogo.user_id == 109))
-    db.session.delete(logo)
+    if logo:
+        db.session.delete(logo)
     db.session.delete(user)
     db.session.commit()
     log(log.INFO, "User deleted. User: [%s]", user)
