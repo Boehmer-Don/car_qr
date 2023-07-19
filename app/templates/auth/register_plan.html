@@ -23,6 +23,10 @@
             Step 3: Select a plan
           </h1>
 
+          <div id="plan_chosen" {% if current_user.plan %} data-plan="{{ current_user.plan.value }}" {% else %}
+            data-plan="None" {% endif %}>
+          </div>
+
           <form action="{{ url_for('auth.plan', user_unique_id=user.unique_id) }}" method="post">
             {{ form.hidden_tag() }}
             <div class="w-full h-90 flex testing_class justify-around dark:text-white">

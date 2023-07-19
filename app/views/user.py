@@ -170,7 +170,7 @@ def account(user_unique_id: str):
         form.province.data = user.province
         form.city.data = user.city
         form.postal_code.data = user.postal_code
-        form.plan.data = user.plan
+        form.plan.data = user.plan.name
         form.phone.data = user.phone
 
     if form.validate_on_submit():
