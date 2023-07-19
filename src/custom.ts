@@ -8,7 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   basic_plan.addEventListener('click', () => {
     basic_plan.classList.add('indigo');
+    basic_plan.classList.add('text-white');
     advanced_plan.classList.remove('indigo');
+    advanced_plan.classList.remove('text-white');
 
     // basicPlanButton.style.display = "none";
 
@@ -22,7 +24,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   advanced_plan.addEventListener('click', () => {
     advanced_plan.classList.add('indigo');
+    advanced_plan.classList.add('text-white');
     basic_plan.classList.remove('indigo');
+    basic_plan.classList.remove('text-white');
 
     // basicPlanButton.style.display = "none";
 
