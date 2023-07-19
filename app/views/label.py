@@ -45,7 +45,13 @@ def label_details():
 @dealer_blueprint.route("/amount", methods=["GET", "POST"])
 @login_required
 def new_label_set_amount():
-    ...
+    return render_template("label/new_label.html")
+
+
+@dealer_blueprint.route("/reporting", methods=["GET", "POST"])
+@login_required
+def reporting():
+    return render_template("label/reporting.html")
 
 
 @dealer_blueprint.route("/details/<label_unique_id>", methods=["GET", "POST"])
