@@ -26,8 +26,6 @@
           <form action="{{ url_for('auth.plan', user_unique_id=user.unique_id) }}" method="post">
             {{ form.hidden_tag() }}
             <div class="w-full h-90 flex testing_class justify-around dark:text-white">
-              <!-- <div id="basic_plan_card"
-                class="w-60 h-72 m-2 p-1 bg-white rounded-lg dark:bg-gray-800 border-2 border-gray-400 cursor-pointer"> -->
               <div id="basic_plan_card" class="plan_card">
                 <p class="text-sm mb-5">Basic</p>
                 <p class="text-3xl mb-5 font-bold">$99</p>

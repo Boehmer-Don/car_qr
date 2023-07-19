@@ -7,7 +7,9 @@
 
       {% if current_user %}
       <li class="pl-1 pt-3 text-xs flex justify-between">
-        <p>{{ current_user.role.value }}</p>
+        <p>{{ current_user.role.value }} {% if current_user.role.value == "dealer" %}: {{current_user.plan.value}}
+          {% endif %}
+        </p>
         <button id="theme-toggle" type="button"
           class="md:hidden text-gray-500 mr-2 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 dark:focus:ring-gray-700 rounded-lg text-sm">
           <svg id="theme-toggle-dark-icon" class="hidden w-3 h-3" fill="currentColor" viewBox="0 0 20 20"
@@ -40,6 +42,7 @@
       </li>
       {% endif %}
 
+      {% if current_user.role.value == "admin" or current_user.plan.value == "advanced" %}
       <li>
         <a href="#" class="flex items-center p-2  rounded-lg text-white hover:bg-gray-700">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -51,6 +54,7 @@
           <span class="ml-3">Reportings</span>
         </a>
       </li>
+      {% endif %}
 
       <li>
         {% if current_user.role.value == "dealer" %}
