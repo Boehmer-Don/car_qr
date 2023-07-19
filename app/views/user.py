@@ -202,3 +202,35 @@ def account(user_unique_id: str):
         user=user,
         user_unique_id=user_unique_id,
     )
+
+
+@bp.route("/subscription/<user_unique_id>", methods=["GET", "POST"])
+@login_required
+def subscription(user_unique_id: str):
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
+
+    form: f.SubscriptionPlanForm = f.SubscriptionPlanForm()
+    if form.validate_on_submit():
+        user.plan = form.selected_plan.data
+        user.save()
+        log(log.INFO, "Pay plan is chosen. User: [%s]", user)
+        if user.plan == m.UsersPlan.advanced:
+            return redirect(url_for("auth.logo_upload", user_unique_id=user.unique_id))
+        flash("You are successfully changed your plan!", "success")
+        return redirect(url_for("auth.payment", user_unique_id=user.unique_id))
+    elif form.is_submitted():
+        flash("Something went wrong. Form submittion error", "danger")
+        log(log.ERROR, "Form submitted error: [%s]", form.errors)
+
+    return render_template(
+        "user/subscription.html",
+        form=form,
+        user=user,
+        user_unique_id=user_unique_id,
+    )
