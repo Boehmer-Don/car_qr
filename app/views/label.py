@@ -21,7 +21,7 @@ dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
 @dealer_blueprint.route("/active", methods=["GET"])
 @login_required
 def get_active_labels():
-    ...
+    return render_template("label/labels_active.html")
 
 
 @dealer_blueprint.route("/archived", methods=["GET"])
