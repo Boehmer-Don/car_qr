@@ -202,3 +202,9 @@ def account(user_unique_id: str):
         user=user,
         user_unique_id=user_unique_id,
     )
+
+
+@bp.route("/editor", methods=["GET", "POST"])
+@login_required
+def editor():
+    return render_template("user/editor.html")

@@ -1,0 +1,115 @@
+.tool_panel {
+    margin-top: 12px;
+    padding: 5px;
+    display: grid;
+    grid-template-rows: 42px 42px;
+    border: 1px solid teal;
+    border-radius: 5px;
+}
+
+.tool_panel_row {
+    display: flex;
+}
+
+.admin_input {
+    margin-top: 12px;
+    height: 500px;
+    overflow-y: scroll;
+    padding: 23px;
+    border: 1px solid teal;
+    border-radius: 5px;
+}
+
+.save_button {
+    width: 120px;
+    height: 60px;
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: royalblue;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.bold_button {
+    width: 32px;
+    height: 32px;
+    margin: 5px;
+    border: 1px solid teal;
+    border-radius: 5px;
+    background-color: transparent;
+    color: teal;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.source_button {
+    width: max-content;
+}
+
+.relative {
+    position: relative;
+}
+
+.emoji_box {
+    position: absolute;
+    top: 37px;
+    width: max-content;
+    padding: 5px;
+    border: 1px solid teal;
+    border-radius: 5px;
+    background-color: white;
+
+    display: grid;
+    grid-template-columns: 48px 48px 48px 48px 48px 48px;
+}
+
+.emoji_link {
+    width: max-content;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.invisible {
+    display: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: teal;
+    /* border-radius: 0 2.5px 2.5px 0; */
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: transparent;
+    border-radius: 0 5px 5px 0;
+}
+
+.admin_input {
+    margin-top: 12px;
+    height: 500px;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    padding: 23px;
+    border: 1px solid teal;
+    border-radius: 5px;
+}
