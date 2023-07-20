@@ -42,6 +42,7 @@
       </li>
       {% endif %}
 
+      {% if current_user.role and current_user.role.value == "dealer" %}
       <li>
         <a href="{{ url_for('labels.get_active_labels') }}"
           class="flex items-center p-2  rounded-lg text-white hover:bg-gray-700">
@@ -68,6 +69,7 @@
           <span class="ml-3">New label</span>
         </a>
       </li>
+      {% endif %}
 
       {% if current_user.role.value == "admin" or current_user.plan.value == "advanced" %}
       <li>
