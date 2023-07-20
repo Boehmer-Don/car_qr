@@ -100,7 +100,8 @@ def populate(count: int = NUM_TEST_USERS):
 
     with open("tests/db/test_labels.json", "r") as f:
         labels_data = json.load(f)
-    for label in labels_data:
+    for index, label in enumerate(labels_data):
+        active = True if index < 8 else False
         m.Label(
             name=label["name"],
             make=label["make"],
@@ -112,5 +113,6 @@ def populate(count: int = NUM_TEST_USERS):
             type_of_vehicle=label["type_of_vehicle"],
             price=label["price"],
             url=label["url"],
+            active=active,
             user_id=user_with_labels.id,
         ).save()

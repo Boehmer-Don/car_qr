@@ -21,24 +21,6 @@ def gen_label_unique_id() -> str:
 class Label(db.Model, ModelMixin):
     __tablename__ = "labels"
 
-    """
-    Label fields:
-    id
-    unique_id
-    name
-    make
-    vehicle_model
-    year
-    mileage
-    color
-    trim
-    type_of_vehicle
-    price
-    date_received
-    url
-
-    """
-
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     unique_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(36),
@@ -67,7 +49,7 @@ class Label(db.Model, ModelMixin):
         ),
     )
 
-    user: orm.Mapped[User] = orm.relationship("User", backref="label")
+    user: orm.Mapped[User] = orm.relationship("User", backref="labels")
 
     def __repr__(self):
         return f"<{self.id}:{self.name}>"

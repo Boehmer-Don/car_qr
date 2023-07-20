@@ -1,4 +1,5 @@
 import pytest
+import json
 from flask import Flask
 from flask.testing import FlaskClient
 
@@ -53,4 +54,22 @@ def populate(client: FlaskClient):
             activated=True,
         ).save(False)
     db.session.commit()
+
+    with open("tests/db/test_labels.json", "r") as f:
+        labels_data = json.load(f)
+
+    for label in labels_data:
+        m.Label(
+            name=label["name"],
+            make=label["make"],
+            vehicle_model=label["vehicle_model"],
+            year=label["year"],
+            mileage=label["mileage"],
+            color=label["color"],
+            trim=label["trim"],
+            type_of_vehicle=label["type_of_vehicle"],
+            price=label["price"],
+            url=label["url"],
+            user_id=1,
+        ).save()
     yield client

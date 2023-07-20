@@ -1,4 +1,6 @@
+from flask import current_app as app
 from flask.testing import FlaskClient
+from app import models as m, db
 from tests.utils import login
 
 
@@ -9,4 +11,8 @@ def test_labels_list(populate: FlaskClient):
     assert response.status_code == 200
     assert b"Active Labels" in response.data
     assert b"Welcome Back" in response.data
-    # assert b"My Account" in response.data
+
+    labels = db.session.scalars(m.Label.select()).all()
+    assert len(labels) == 10
+    for label in labels[: app.config["DEFAULT_PAGE_SIZE"]]:
+        assert label.name.encode() in response.data
