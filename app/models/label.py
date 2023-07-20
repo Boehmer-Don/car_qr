@@ -11,6 +11,7 @@ from app.database import db
 from .utils import ModelMixin
 from app.logger import log
 from app import schema as s
+from .user import User
 
 
 def gen_label_unique_id() -> str:
@@ -58,6 +59,15 @@ class Label(db.Model, ModelMixin):
     )
     url: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     active: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
+    user_id: orm.Mapped[int] = orm.mapped_column(
+        sa.Integer,
+        sa.ForeignKey(
+            "users.id",
+            ondelete="CASCADE",
+        ),
+    )
+
+    user: orm.Mapped[User] = orm.relationship("User", backref="label")
 
     def __repr__(self):
         return f"<{self.id}:{self.name}>"

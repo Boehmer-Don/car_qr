@@ -1,3 +1,4 @@
+import json
 from random import randint
 from typing import Generator
 from faker import Faker
@@ -6,19 +7,16 @@ from app import db
 from app import models as m
 
 
-faker = Faker()
+fake = Faker()
 
 NUM_TEST_USERS = 100
 
 
 def gen_test_items(num_objects: int) -> Generator[str, None, None]:
-    from faker import Faker
-
-    fake = Faker()
-
     DOMAINS = ("com", "com.br", "net", "net.br", "org", "org.br", "gov", "gov.br")
 
     i = db.session.query(func.max(m.User.id)).scalar()
+    # i = 0
 
     for _ in range(num_objects):
         i += 1
@@ -84,3 +82,35 @@ def populate(count: int = NUM_TEST_USERS):
         users_counter += 1
 
     db.session.commit()
+
+    user_with_labels = m.User(
+        email=fake.email(),
+        first_name=fake.first_name(),
+        last_name=fake.last_name(),
+        activated=True,
+        name_of_dealership=fake.company().split()[0].strip(","),
+        address_of_dealership=fake.address(),
+        country=fake.country(),
+        province=fake.country(),
+        city=fake.city(),
+        postal_code=randint(10000, 99999),
+        phone=fake.phone_number(),
+    )
+    user_with_labels.save()
+
+    with open("tests/db/test_labels.json", "r") as f:
+        labels_data = json.load(f)
+    for label in labels_data:
+        m.Label(
+            name=label["name"],
+            make=label["make"],
+            vehicle_model=label["vehicle_model"],
+            year=label["year"],
+            mileage=label["mileage"],
+            color=label["color"],
+            trim=label["trim"],
+            type_of_vehicle=label["type_of_vehicle"],
+            price=label["price"],
+            url=label["url"],
+            user_id=user_with_labels.id,
+        ).save()
