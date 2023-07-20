@@ -39,17 +39,25 @@ class Label(db.Model, ModelMixin):
     """
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
-    name: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
-    make: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     unique_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(36),
         default=gen_label_unique_id,
     )
-    created_at: orm.Mapped[datetime] = orm.mapped_column(
+    name: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
+    make: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
+    vehicle_model: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
+    year: orm.Mapped[str] = orm.mapped_column(sa.Integer, default=2000)
+    mileage: orm.Mapped[str] = orm.mapped_column(sa.Integer, default=10000)
+    color: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
+    trim: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
+    type_of_vehicle: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
+    price: orm.Mapped[str] = orm.mapped_column(sa.Integer, default=0)
+    date_received: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
         default=datetime.utcnow,
     )
-    activated: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
+    url: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
+    active: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
 
     def __repr__(self):
         return f"<{self.id}:{self.name}>"
