@@ -14,7 +14,7 @@ auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 @auth_blueprint.route("/register", methods=["GET", "POST"])
 def register():
-    form = f.RegistrationForm()
+    form: f.RegistrationForm = f.RegistrationForm()
     if form.validate_on_submit():
         user = m.User(
             email=form.email.data,
@@ -54,7 +54,7 @@ def register():
 
 @auth_blueprint.route("/login", methods=["GET", "POST"])
 def login():
-    form = f.LoginForm(request.form)
+    form: f.LoginForm = f.LoginForm(request.form)
     if form.validate_on_submit():
         user = m.User.authenticate(form.user_id.data, form.password.data)
         log(log.INFO, "Form submitted. User: [%s]", user)
@@ -62,7 +62,10 @@ def login():
             login_user(user)
             log(log.INFO, "Login successful.")
             flash("Login successful.", "success")
-            return redirect(url_for("main.index"))
+            if current_user.role == m.UsersRole.admin:
+                return redirect(url_for("user.get_all"))
+            else:
+                return redirect(url_for("labels.get_active_labels"))
         flash("Wrong user ID or password.", "danger")
 
     elif form.is_submitted():
@@ -172,7 +175,7 @@ def payment(user_unique_id: str):
         form.province.data = user.province
         form.city.data = user.city
         form.postal_code.data = user.postal_code
-        form.plan.data = user.plan
+        form.plan.data = user.plan.name
         form.phone.data = user.phone
 
     if form.validate_on_submit():

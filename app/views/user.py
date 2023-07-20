@@ -32,12 +32,20 @@ def get_all():
     if q:
         query = (
             m.User.select()
-            .where(m.User.username.like(f"{q}%") | m.User.email.like(f"{q}%"))
+            .where(
+                m.User.first_name.like(f"%{q}%")
+                | m.User.email.like(f"%{q}%")
+                | m.User.first_name.like(f"%{q}%")
+            )
             .order_by(m.User.id)
         )
         count_query = (
             sa.select(sa.func.count())
-            .where(m.User.username.like(f"{q}%") | m.User.email.like(f"{q}%"))
+            .where(
+                m.User.first_name.like(f"%{q}%")
+                | m.User.email.like(f"%{q}%")
+                | m.User.first_name.like(f"%{q}%")
+            )
             .select_from(m.User)
         )
 
@@ -170,7 +178,7 @@ def account(user_unique_id: str):
         form.province.data = user.province
         form.city.data = user.city
         form.postal_code.data = user.postal_code
-        form.plan.data = user.plan
+        form.plan.data = user.plan.name
         form.phone.data = user.phone
 
     if form.validate_on_submit():
@@ -198,6 +206,38 @@ def account(user_unique_id: str):
 
     return render_template(
         "user/account.html",
+        form=form,
+        user=user,
+        user_unique_id=user_unique_id,
+    )
+
+
+@bp.route("/subscription/<user_unique_id>", methods=["GET", "POST"])
+@login_required
+def subscription(user_unique_id: str):
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
+
+    form: f.SubscriptionPlanForm = f.SubscriptionPlanForm()
+    if form.validate_on_submit():
+        user.plan = form.selected_plan.data
+        user.save()
+        log(log.INFO, "Pay plan is chosen. User: [%s]", user)
+        if user.plan == m.UsersPlan.advanced:
+            return redirect(url_for("auth.logo_upload", user_unique_id=user.unique_id))
+        flash("You are successfully changed your plan!", "success")
+        return redirect(url_for("auth.payment", user_unique_id=user.unique_id))
+    elif form.is_submitted():
+        flash("Something went wrong. Form submittion error", "danger")
+        log(log.ERROR, "Form submitted error: [%s]", form.errors)
+
+    return render_template(
+        "user/subscription.html",
         form=form,
         user=user,
         user_unique_id=user_unique_id,

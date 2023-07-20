@@ -43,7 +43,7 @@ def test_populate_db(runner: FlaskCliRunner):
     count_before = db.session.query(m.User).count()
     res: Result = runner.invoke(args=["db-populate", "--count", f"{TEST_COUNT}"])
     assert f"populated by {TEST_COUNT}" in res.stdout
-    assert (db.session.query(m.User).count() - count_before) == TEST_COUNT
+    assert (db.session.query(m.User).count() - count_before) == TEST_COUNT + 1
 
 
 def test_delete_user(populate: FlaskClient):
@@ -118,3 +118,19 @@ def test_account(client: FlaskClient):
     )
     assert response.status_code == 200
     assert b"Your account has been successfully updated" in response.data
+
+
+def test_subsription(client: FlaskClient):
+    login(client)
+    user: m.User = db.session.scalar(sa.select(m.User).where(m.User.id == 1))
+    response = client.get(f"/user/subscription/{user.unique_id}")
+    assert response.status_code == 200
+    response = client.post(
+        f"/user/subscription/{user.unique_id}",
+        data=dict(
+            selected_plan=m.UsersPlan.basic.value,
+        ),
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"You are successfully changed your plan" in response.data

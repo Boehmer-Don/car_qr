@@ -1,0 +1,122 @@
+[
+    {
+        "name": "Gleaming Sedan",
+        "make": "Ford",
+        "vehicle_model": "Fusion",
+        "year": 2016,
+        "mileage": 42000,
+        "color": "White",
+        "trim": "SE",
+        "type_of_vehicle": "Sedan",
+        "price": 10000,
+        "url": "https://example.com/car6"
+    },
+    {
+        "name": "Adventurer SUV",
+        "make": "Jeep",
+        "vehicle_model": "Grand Cherokee",
+        "year": 2019,
+        "mileage": 25000,
+        "color": "Silver",
+        "trim": "Limited",
+        "type_of_vehicle": "SUV",
+        "price": 28000,
+        "url": "https://example.com/car7"
+    },
+    {
+        "name": "Urban Commuter",
+        "make": "Toyota",
+        "vehicle_model": "Corolla",
+        "year": 2020,
+        "mileage": 18000,
+        "color": "Black",
+        "trim": "LE",
+        "type_of_vehicle": "Sedan",
+        "price": 15000,
+        "url": "https://example.com/car8"
+    },
+    {
+        "name": "Family Van",
+        "make": "Honda",
+        "vehicle_model": "Odyssey",
+        "year": 2015,
+        "mileage": 55000,
+        "color": "Blue",
+        "trim": "EX-L",
+        "type_of_vehicle": "Minivan",
+        "price": 14000,
+        "url": "https://example.com/car9"
+    },
+    {
+        "name": "Compact Crossover",
+        "make": "Mazda",
+        "vehicle_model": "CX-5",
+        "year": 2018,
+        "mileage": 32000,
+        "color": "Red",
+        "trim": "Touring",
+        "type_of_vehicle": "Crossover",
+        "price": 17000,
+        "url": "https://example.com/car10"
+    },
+    {
+        "name": "Luxury Coupe",
+        "make": "Mercedes-Benz",
+        "vehicle_model": "C-Class",
+        "year": 2021,
+        "mileage": 8000,
+        "color": "Gray",
+        "trim": "C 300",
+        "type_of_vehicle": "Coupe",
+        "price": 40000,
+        "url": "https://example.com/car11"
+    },
+    {
+        "name": "Rugged Pickup",
+        "make": "Chevrolet",
+        "vehicle_model": "Silverado",
+        "year": 2017,
+        "mileage": 47000,
+        "color": "Black",
+        "trim": "LT",
+        "type_of_vehicle": "Truck",
+        "price": 25000,
+        "url": "https://example.com/car12"
+    },
+    {
+        "name": "Electric Commuter",
+        "make": "Nissan",
+        "vehicle_model": "Leaf",
+        "year": 2022,
+        "mileage": 10000,
+        "color": "Blue",
+        "trim": "SV",
+        "type_of_vehicle": "Electric",
+        "price": 24000,
+        "url": "https://example.com/car13"
+    },
+    {
+        "name": "Convertible Fun",
+        "make": "BMW",
+        "vehicle_model": "4 Series",
+        "year": 2019,
+        "mileage": 23000,
+        "color": "White",
+        "trim": "430i",
+        "type_of_vehicle": "Convertible",
+        "price": 38000,
+        "url": "https://example.com/car14"
+    },
+    {
+        "name": "City Explorer",
+        "make": "Hyundai",
+        "vehicle_model": "Kona",
+        "year": 2020,
+        "mileage": 15000,
+        "color": "Green",
+        "trim": "SEL",
+        "type_of_vehicle": "SUV",
+        "price": 19000,
+        "url": "https://example.com/car15"
+    }
+]

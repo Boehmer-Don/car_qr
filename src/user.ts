@@ -73,18 +73,40 @@ if ($buttonClose) {
   });
 }
 
-// search flow
-const searchInput: HTMLInputElement = document.querySelector(
-  '#table-search-users',
-);
+const searchInput: HTMLInputElement = document.querySelector('#table-search-users');
 const searchInputButton = document.querySelector('#table-search-user-button');
+
+let searchTimeoutId: NodeJS.Timeout | null = null;
+
+function performSearch() {
+  const url = new URL(window.location.href);
+  url.searchParams.set('q', searchInput.value);
+  window.location.href = url.href;
+}
+
+function debounceSearch() {
+  if (searchTimeoutId) {
+    clearTimeout(searchTimeoutId);
+  }
+  searchTimeoutId = setTimeout(() => {
+    performSearch();
+  }, 2000);
+}
+
 if (searchInputButton && searchInput) {
   searchInputButton.addEventListener('click', () => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('q', searchInput.value);
-    window.location.href = `${url.href}`;
+    performSearch();
   });
+
+  searchInput.addEventListener('keyup', (event) => {
+    if (event.key === 'Enter') {
+      performSearch();
+    }
+  });
+
+  searchInput.addEventListener('input', debounceSearch);
 }
+
 const deleteButtons = document.querySelectorAll('.delete-user-btn');
 
 deleteButtons.forEach(e => {

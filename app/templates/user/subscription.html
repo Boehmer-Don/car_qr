@@ -1,26 +1,18 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
 {% block links %}
 <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
 {% endblock %}
-<!-- prettier-ignore -->
-{% block body %}
 
-<div class="dark:bg-gray-900 pt-20">
+{% block content %}
+<div class="dark:bg-gray-900">
   <section>
-    <div class="w-full h-full lg:w-1/2 px-1 md:px-4 py-6 mx-auto">
+    <div class="w-full h-full md:w-4/5 lg:w-2/3 px-1 md:px-4 py-6 mx-auto">
       <div>
         <!-- prettier-ignore -->
-        <div class="w-full lg:max-w-xl p-1 space-y-8 md:p-8 bg-white rounded-lg dark:bg-gray-800">
-          <div class="flex w-full h-1 bg-gray-300 rounded-sm">
-            <div class="w-1/5 h-1 bg-indigo-700 rounded-l-sm"></div>
-            <div class="w-1/5 h-1 bg-indigo-700"></div>
-            <div class="w-1/5 h-1 bg-indigo-700"></div>
-          </div>
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
-            Sign Up
-          </h2>
-          <h1 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">
-            Step 3: Select a plan
+        <div class="w-full lg:max-w-xl p-1 md:p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            Subscription
           </h1>
 
           <div id="plan_chosen" {% if current_user.plan %} data-plan="{{ current_user.plan.value }}" {% else %}
@@ -75,8 +67,10 @@
     </div>
   </section>
 </div>
+<!-- prettier-ignore -->
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='js/user.js') }}" type="text/javascript" defer></script>
+<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
 {% endblock %}

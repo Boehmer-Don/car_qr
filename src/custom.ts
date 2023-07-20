@@ -6,9 +6,29 @@ document.addEventListener('DOMContentLoaded', function () {
   const advancedPlanButton: HTMLInputElement =
     document.querySelector('#advanced_radio');
 
+  const planChosen: HTMLDivElement = document.querySelector('#plan_chosen');
+  var planChosenData = planChosen.dataset.plan;
+  console.log(planChosenData);
+
+  if (planChosenData != "advanced") {
+    basic_plan.classList.add('indigo');
+    basic_plan.classList.add('text-white');
+    advanced_plan.classList.remove('indigo');
+    advanced_plan.classList.remove('text-white');
+    basicPlanButton.checked = true;
+  } else {
+    advanced_plan.classList.add('indigo');
+    advanced_plan.classList.add('text-white');
+    basic_plan.classList.remove('indigo');
+    basic_plan.classList.remove('text-white');
+    advancedPlanButton.checked = true;
+  }
+
   basic_plan.addEventListener('click', () => {
     basic_plan.classList.add('indigo');
+    basic_plan.classList.add('text-white');
     advanced_plan.classList.remove('indigo');
+    advanced_plan.classList.remove('text-white');
 
     // basicPlanButton.style.display = "none";
 
@@ -22,7 +42,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   advanced_plan.addEventListener('click', () => {
     advanced_plan.classList.add('indigo');
+    advanced_plan.classList.add('text-white');
     basic_plan.classList.remove('indigo');
+    basic_plan.classList.remove('text-white');
 
     // basicPlanButton.style.display = "none";
 
