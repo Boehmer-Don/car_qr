@@ -75,7 +75,7 @@ if ($buttonClose) {
 
 // search flow
 const searchInput: HTMLInputElement = document.querySelector(
-  '#table-search-users',
+  '#table-search-users'
 );
 const searchInputButton = document.querySelector('#table-search-user-button');
 if (searchInputButton && searchInput) {

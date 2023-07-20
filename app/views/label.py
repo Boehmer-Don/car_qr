@@ -1,3 +1,4 @@
+# flake8: noqa F401
 from flask import (
     Blueprint,
     render_template,
@@ -87,4 +88,4 @@ def new_label_payment(label_unique_id: str):
 @dealer_blueprint.route("/l/<label_unique_id>")
 def redirect_to_outer_url(label_unique_id: str):
     # Counter
-    return redirect(url_outer)
+    return redirect("url_outer")
