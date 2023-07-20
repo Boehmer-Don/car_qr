@@ -32,12 +32,20 @@ def get_all():
     if q:
         query = (
             m.User.select()
-            .where(m.User.username.like(f"{q}%") | m.User.email.like(f"{q}%"))
+            .where(
+                m.User.first_name.like(f"{q}%")
+                | m.User.email.like(f"{q}%")
+                | m.User.first_name.like(f"{q}%")
+            )
             .order_by(m.User.id)
         )
         count_query = (
             sa.select(sa.func.count())
-            .where(m.User.username.like(f"{q}%") | m.User.email.like(f"{q}%"))
+            .where(
+                m.User.first_name.like(f"{q}%")
+                | m.User.email.like(f"{q}%")
+                | m.User.first_name.like(f"{q}%")
+            )
             .select_from(m.User)
         )
 
