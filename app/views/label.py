@@ -32,6 +32,7 @@ def get_active_labels():
                 pagination.per_page
             )
         ).scalars(),
+        page=pagination,
     )
 
 
