@@ -6,7 +6,7 @@ from tests.utils import login
 
 def test_labels_active(populate: FlaskClient):
     login(populate)
-    response = populate.get("/labels/active/1")
+    response = populate.get("/labels/active")
     assert response
     assert response.status_code == 200
     assert b"Active Labels" in response.data
@@ -20,6 +20,6 @@ def test_labels_active(populate: FlaskClient):
 
 def test_labels_archived(populate: FlaskClient):
     login(populate)
-    response = populate.get("/labels/archived/1")
+    response = populate.get("/labels/archived")
     assert response
     assert response.status_code == 200

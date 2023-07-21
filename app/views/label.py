@@ -19,11 +19,21 @@ from app.logger import log
 dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
 
 
-@dealer_blueprint.route("/active/<user_unique_id>", methods=["GET"])
+@dealer_blueprint.route("/active", methods=["GET"])
 @login_required
-def get_active_labels(user_unique_id: str):
-    query = m.Label.select().order_by(m.Label.id)
-    count_query = sa.select(sa.func.count()).select_from(m.Label)
+def get_active_labels():
+    query = (
+        m.Label.select()
+        .where(m.Label.user_id == current_user.id)
+        .where(m.Label.active)
+        .order_by(m.Label.id)
+    )
+    count_query = (
+        sa.select(sa.func.count())
+        .select_from(m.Label)
+        .where(m.Label.user_id == current_user.id)
+        .where(m.Label.active)
+    )
     pagination = create_pagination(total=db.session.scalar(count_query))
     return render_template(
         "label/labels_active.html",
@@ -36,11 +46,21 @@ def get_active_labels(user_unique_id: str):
     )
 
 
-@dealer_blueprint.route("/archived/<user_unique_id>", methods=["GET"])
+@dealer_blueprint.route("/archived", methods=["GET"])
 @login_required
-def get_archived_labels(user_unique_id: str):
-    query = m.Label.select().order_by(m.Label.id)
-    count_query = sa.select(sa.func.count()).select_from(m.Label)
+def get_archived_labels():
+    query = (
+        m.Label.select()
+        .where(m.Label.user_id == current_user.id)
+        .where(m.Label.active == False)
+        .order_by(m.Label.id)
+    )
+    count_query = (
+        sa.select(sa.func.count())
+        .select_from(m.Label)
+        .where(m.Label.user_id == current_user.id)
+        .where(m.Label.active == False)
+    )
     pagination = create_pagination(total=db.session.scalar(count_query))
     return render_template(
         "label/labels_archived.html",
