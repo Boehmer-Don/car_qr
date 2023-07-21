@@ -1,14 +1,5 @@
 import { Modal } from 'flowbite';
 import type { ModalOptions, ModalInterface } from 'flowbite';
-console.log('user.ts loaded');
-
-
-// /*
-//  * $editUserModal: required
-//  * options: optional
-//  */
-
-// // For your js code
 
 interface IUser {
   id: number;

@@ -1,7 +1,5 @@
 import { Modal } from 'flowbite';
 import type { ModalOptions, ModalInterface } from 'flowbite';
-console.log('label.ts loaded');
-
 
 interface ILabel {
     id: number;
