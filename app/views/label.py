@@ -19,9 +19,9 @@ from app.logger import log
 dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
 
 
-@dealer_blueprint.route("/active", methods=["GET"])
+@dealer_blueprint.route("/active/<user_unique_id>", methods=["GET"])
 @login_required
-def get_active_labels():
+def get_active_labels(user_unique_id: str):
     query = m.Label.select().order_by(m.Label.id)
     count_query = sa.select(sa.func.count()).select_from(m.Label)
     pagination = create_pagination(total=db.session.scalar(count_query))
@@ -36,10 +36,21 @@ def get_active_labels():
     )
 
 
-@dealer_blueprint.route("/archived", methods=["GET"])
+@dealer_blueprint.route("/archived/<user_unique_id>", methods=["GET"])
 @login_required
-def get_archived_labels():
-    ...
+def get_archived_labels(user_unique_id: str):
+    query = m.Label.select().order_by(m.Label.id)
+    count_query = sa.select(sa.func.count()).select_from(m.Label)
+    pagination = create_pagination(total=db.session.scalar(count_query))
+    return render_template(
+        "label/labels_archived.html",
+        labels=db.session.execute(
+            query.offset((pagination.page - 1) * pagination.per_page).limit(
+                pagination.per_page
+            )
+        ).scalars(),
+        page=pagination,
+    )
 
 
 @dealer_blueprint.route("/deactivate/<label_unique_id>", methods=["GET", "POST"])

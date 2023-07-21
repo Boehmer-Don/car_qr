@@ -4,9 +4,9 @@ from app import models as m, db
 from tests.utils import login
 
 
-def test_labels_list(populate: FlaskClient):
+def test_labels_active(populate: FlaskClient):
     login(populate)
-    response = populate.get("/labels/active")
+    response = populate.get("/labels/active/1")
     assert response
     assert response.status_code == 200
     assert b"Active Labels" in response.data
@@ -16,3 +16,10 @@ def test_labels_list(populate: FlaskClient):
     assert len(labels) == 10
     for label in labels[: app.config["DEFAULT_PAGE_SIZE"]]:
         assert label.name.encode() in response.data
+
+
+def test_labels_archived(populate: FlaskClient):
+    login(populate)
+    response = populate.get("/labels/archived/1")
+    assert response
+    assert response.status_code == 200

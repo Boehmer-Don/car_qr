@@ -44,7 +44,7 @@
 
       {% if current_user.role and current_user.role.value == "dealer" %}
       <li>
-        <a href="{{ url_for('labels.get_active_labels') }}"
+        <a href="{{ url_for('labels.get_active_labels', user_unique_id=current_user.unique_id) }}"
           class="flex items-center p-2  rounded-lg text-white hover:bg-gray-700">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3"
             stroke="currentColor" class="w-6 h-6">
