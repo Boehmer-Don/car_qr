@@ -1,0 +1,147 @@
+<!-- Edit label modal -->
+<!-- prettier-ignore-->
+<div id="labelDetailsModal" tabindex="-1" aria-hidden="true"
+  class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  <div class="relative w-full max-w-2xl max-h-full">
+    <!-- Modal content -->
+    <form action="{{url_for('labels.label_details')}}" method="post"
+      class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+      {{ form_hidden_tag() }}
+      <input type="hidden" name="label_id" id="label-edit-id" value="0" />
+      <input type="hidden" name="user_id" id="label-edit-user-id" value="0" />
+      <input type="hidden" name="next_url" id="label-edit-next-url" value="" />
+      <!-- Modal header -->
+      <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white"> Edit label </h3>
+        <button id="modalCloseButton" type="button"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+          <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+      <!-- Modal body -->
+      <div class="p-6 space-y-6">
+        <div class="">
+          <div class="">
+            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Label Name
+            </label>
+            <input type="text" name="name" id="label-edit-name"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Label Name" />
+          </div>
+
+          <div class="">
+            <label for="make" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Make
+            </label>
+            <input type="text" name="make" id="label-edit-make"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Make" />
+          </div>
+
+          <div class="">
+            <label for="model" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Vechicle Model
+            </label>
+            <input type="text" name="model" id="label-edit-model"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Vehicle Model" />
+          </div>
+
+          <div class="">
+            <label for="year" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Year
+            </label>
+            <input type="text" name="year" id="label-edit-year"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Year" />
+          </div>
+
+          <div class="">
+            <label for="mileage" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Mileage
+            </label>
+            <input type="text" name="milage" id="label-edit-mileage"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Mileage" />
+          </div>
+
+          <div class="">
+            <label for="color" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Color
+            </label>
+            <input type="text" name="color" id="label-edit-color"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Color" />
+          </div>
+
+          <div class="">
+            <label for="trim" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Trim
+            </label>
+            <input type="text" name="trim" id="label-edit-trim"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Trim" />
+          </div>
+
+          <div class="">
+            <label for="vtype" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Type Of Vehicle
+            </label>
+            <input type="text" name="vtype" id="label-edit-type"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Type Of Vechicle" />
+          </div>
+
+          <div class="">
+            <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Price
+            </label>
+            <input type="text" name="price" id="label-edit-price"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Price" />
+          </div>
+
+          <div class="">
+            <label for="date_received" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Date Received
+            </label>
+            <input type="text" name="date_received" id="label-edit-date-received"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Date Received" />
+          </div>
+
+          <div class="">
+            <label for="url" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              URL
+            </label>
+            <input type="text" name="url" id="label-edit-url"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="URL" />
+          </div>
+
+          <div class="">
+            <label for="active" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Active
+            </label>
+            <input type="text" name="active" id="label-edit-active"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Active" />
+          </div>
+        </div>
+      </div>
+      <!-- Modal footer -->
+      <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+        <button name="submit" type="submit"
+          class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+          Update >
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

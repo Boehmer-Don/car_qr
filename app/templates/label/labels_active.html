@@ -77,14 +77,17 @@
       {% for label in labels %}
       <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
         <p class="w-1/12 flex items-center justify-center">{{ loop.index + page.skip }}</p>
-        <p class="w-1/2 md:w-full flex items-center justify-start">{{ label.name }} {{label.active}}</p>
+        <p id="label_details_button" data-target="{{label.json}}"
+          class="w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer">
+          {{ label.name }}
+        </p>
         <p class="w-1/12 flex items-center justify-center">12</p>
         <p class="w-3/12 hidden md:flex items-center justify-center">
           {{time_delta(label.date_received)}}
           <span class="hidden xl:block">&nbsp;days active</span>
         </p>
         <p class="w-3/12 flex items-center justify-center">{{ label.date_received.strftime('%Y-%m-%d') }}</p>
-        <p class="w-1/12 flex items-center justify-center">
+        <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
             stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -177,11 +180,10 @@
 </div>
 
 
-{% include 'user/edit.html' %}
-{% include 'user/resend_invite.html' %}
+{% include 'label/edit_label.html' %}
 <!-- prettier-ignore -->
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/user.js') }}" type="text/javascript" defer></script>
+<script src="{{ url_for('static', filename='js/label.js') }}" type="text/javascript" defer></script>
 {% endblock %}

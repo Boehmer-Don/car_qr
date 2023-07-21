@@ -56,5 +56,5 @@ class Label(db.Model, ModelMixin):
 
     @property
     def json(self):
-        u = s.User.from_orm(self)
-        return u.json()
+        label = s.Label.from_orm(self)
+        return label.json()

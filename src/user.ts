@@ -1,5 +1,7 @@
 import { Modal } from 'flowbite';
 import type { ModalOptions, ModalInterface } from 'flowbite';
+console.log('user.ts loaded');
+
 
 // /*
 //  * $editUserModal: required
@@ -67,7 +69,7 @@ if ($buttonClose) {
 }
 
 const resendInviteButtonClose = document.querySelector('#resendInviteModalCloseButton');
-if ($buttonClose) {
+if (resendInviteButtonClose) {
   resendInviteButtonClose.addEventListener('click', () => {
     resenrInviteModal.hide();
   });
