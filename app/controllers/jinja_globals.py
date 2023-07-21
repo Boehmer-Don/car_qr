@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_wtf import FlaskForm
 
 
@@ -5,3 +6,7 @@ from flask_wtf import FlaskForm
 def form_hidden_tag():
     form = FlaskForm()
     return form.hidden_tag()
+
+
+def time_delta(created_at: datetime):
+    return (datetime.utcnow() - created_at).days
