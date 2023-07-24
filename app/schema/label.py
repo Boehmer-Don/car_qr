@@ -15,9 +15,11 @@ class Label(BaseModel):
     type_of_vehicle: str
     price: int
     date_received: datetime
+    date_deactivated: datetime | None
     url: str
     active: bool
     user_id: int
+    views: int
 
     class Config:
         orm_mode = True

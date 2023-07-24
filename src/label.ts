@@ -17,6 +17,7 @@ interface ILabel {
     url: string;
     active: boolean;
     user_id: number;
+    views: number;
 }
 
 const $modalElement: HTMLElement = document.querySelector('#labelDetailsModal');
@@ -63,10 +64,10 @@ function getLabelDetails(label: ILabel) {
     }
     const labelUrl: HTMLInputElement = document.querySelector('#label-edit-url');
     labelUrl.value = label.url;
-    const labelActive: HTMLInputElement = document.querySelector('#label-edit-active');
-    labelActive.checked = label.active;
+    const labelViews: HTMLInputElement = document.querySelector('#label-edit-views');
+    labelViews.value = label.views;
     const labelId: HTMLInputElement = document.querySelector('#label-edit-id');
-    labelId.value = label.id.toString();
+    labelId.value = label.unique_id.toString();
     const labelUserId: HTMLInputElement = document.querySelector('#label-edit-user-id');
     labelUserId.value = label.user_id.toString();
     // const labelUniqueId: HTMLInputElement = document.querySelector('#label-edit-unique-id');

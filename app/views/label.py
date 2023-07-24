@@ -83,24 +83,30 @@ def deactivate_label(label_unique_id: str):
 @dealer_blueprint.route("/edit", methods=["GET", "POST"])
 @login_required
 def label_details():
-    form: f.UserForm = f.UserForm()
+    form: f.LabelForm = f.LabelForm()
     if form.validate_on_submit():
-        query = m.User.select().where(m.User.id == int(form.user_id.data))
-        user: m.User | None = db.session.scalar(query)
-        if not user:
-            log(log.ERROR, "Not found user by id : [%s]", form.user_id.data)
-            flash("Failed to find user", "danger")
-        user.first_name = form.first_name.data
-        user.last_name = form.last_name.data
-        user.email = form.email.data
-        if form.password.data.strip("*\n "):
-            user.password = form.password.data
-        user.save()
+        label = db.session.scalar(
+            sa.select(m.Label).where(m.Label.unique_id == form.unique_id.data)
+        )
+        if not label:
+            log(log.ERROR, "Failed to find label : [%s]", form.unique_id.data)
+            flash("Failed to find label", "danger")
+        label.name = form.name.data
+        label.make = form.make.data
+        label.vehicle_model = form.vehicle_model.data
+        label.year = form.year.data
+        label.mileage = form.mileage.data
+        label.color = form.color.data
+        label.trim = form.trim.data
+        label.type_of_vehicle = form.type_of_vehicle.data
+        label.price = form.price.data
+        label.url = form.url.data
+        label.save()
         if form.next_url.data:
             return redirect(form.next_url.data)
         return redirect(url_for("user.get_all"))
 
-    else:
+    elif form.is_submitted():
         log(log.ERROR, "User save errors: [%s]", form.errors)
         flash(f"{form.errors}", "danger")
         return redirect(url_for("user.get_all"))
