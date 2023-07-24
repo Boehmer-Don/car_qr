@@ -1,3 +1,4 @@
+# flake8: noqa E712
 from flask import current_app as app
 from flask.testing import FlaskClient
 from app import models as m, db
@@ -25,3 +26,10 @@ def test_labels_archived(populate: FlaskClient):
     response = populate.get("/labels/archived")
     assert response
     assert response.status_code == 200
+    assert b"Archived Labels" in response.data
+    assert b"Date Sold" in response.data
+    archived_labels = db.session.scalars(
+        m.Label.select().where(m.Label.active == False)
+    ).all()
+    for label in archived_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
+        assert label.name.encode() in response.data

@@ -62,13 +62,14 @@ def get_archived_labels():
         .where(m.Label.active == False)
     )
     pagination = create_pagination(total=db.session.scalar(count_query))
+    labels = db.session.execute(
+        query.offset((pagination.page - 1) * pagination.per_page).limit(
+            pagination.per_page
+        )
+    ).scalars()
     return render_template(
         "label/labels_archived.html",
-        labels=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
-        ).scalars(),
+        labels=labels,
         page=pagination,
     )
 

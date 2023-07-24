@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timedelta
 from random import randint
 from typing import Generator
 from faker import Faker
@@ -102,6 +103,7 @@ def populate(count: int = NUM_TEST_USERS):
         labels_data = json.load(f)
     for index, label in enumerate(labels_data):
         active = True if index < 8 else False
+        date_deactivated = datetime.now() + timedelta(days=2) if not active else None
         m.Label(
             name=label["name"],
             make=label["make"],
@@ -113,6 +115,7 @@ def populate(count: int = NUM_TEST_USERS):
             type_of_vehicle=label["type_of_vehicle"],
             price=label["price"],
             url=label["url"],
-            active=active,
             user_id=user_with_labels.id,
+            active=active,
+            date_deactivated=date_deactivated,
         ).save()
