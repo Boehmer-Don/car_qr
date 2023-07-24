@@ -31,7 +31,7 @@ const modalOptions: ModalOptions = {
         console.log('modal is hidden');
     },
     onShow: () => {
-        console.log('user id: ');
+        console.log('label details modal is shown');
     },
     onToggle: () => {
         console.log('modal has been toggled');
@@ -39,8 +39,6 @@ const modalOptions: ModalOptions = {
 };
 
 function getLabelDetails(label: ILabel) {
-    console.log('label: ', label);
-
     const labelName: HTMLInputElement = document.querySelector('#label-edit-name');
     labelName.value = label.name;
     const labelMake: HTMLInputElement = document.querySelector('#label-edit-make');
@@ -60,7 +58,9 @@ function getLabelDetails(label: ILabel) {
     const labelPrice: HTMLInputElement = document.querySelector('#label-edit-price');
     labelPrice.value = label.price.toString();
     const labelDateReceived: HTMLInputElement = document.querySelector('#label-edit-date-received');
-    labelDateReceived.value = label.date_received;
+    if (label.date_received) {
+        labelDateReceived.value = label.date_received.split('T')[0];
+    }
     const labelUrl: HTMLInputElement = document.querySelector('#label-edit-url');
     labelUrl.value = label.url;
     const labelActive: HTMLInputElement = document.querySelector('#label-edit-active');
@@ -82,8 +82,6 @@ const labelDetailsModalWindow: ModalInterface = new Modal($modalElement, modalOp
 const labels = document.querySelectorAll('#label_details_button');
 labels.forEach(e =>
     e.addEventListener('click', () => {
-        console.log('label details button clicked');
-
         getLabelDetails(JSON.parse(e.getAttribute('data-target')));
     }),
 );
@@ -91,8 +89,6 @@ labels.forEach(e =>
 const closeButton = document.querySelector('#modalCloseButton');
 if (closeButton) {
     closeButton.addEventListener('click', () => {
-        console.log('close button clicked');
-
         labelDetailsModalWindow.hide();
     });
 }
