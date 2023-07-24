@@ -50,7 +50,7 @@ def test_delete_user(populate: FlaskClient):
     login(populate)
     uc = db.session.query(m.User).count()
     response = populate.delete("/user/delete/1")
-    assert db.session.query(m.User).count() < uc
+    assert db.session.query(m.User).filter(m.User.deleted is False).count() < uc
     assert response.status_code == 200
 
 

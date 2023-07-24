@@ -41,6 +41,7 @@ class User(db.Model, UserMixin, ModelMixin):
     )
     password_hash: orm.Mapped[str] = orm.mapped_column(sa.String(255), default="")
     activated: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
+    deleted: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False, nullable=True)
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
         default=datetime.utcnow,
