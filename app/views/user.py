@@ -103,7 +103,7 @@ def delete(id: int):
 
     user.deleted = True
     user.save()
-    
+
     log(log.INFO, "User [%s] is set to deleted.", user)
     flash("User deleted!", "success")
     return "ok", 200
