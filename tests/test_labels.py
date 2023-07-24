@@ -33,3 +33,19 @@ def test_labels_archived(populate: FlaskClient):
     ).all()
     for label in archived_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
         assert label.name.encode() in response.data
+
+
+def test_views_counter(populate: FlaskClient):
+    login(populate)
+    all_labels = db.session.scalars(m.Label.select()).all()
+    label: m.Label = all_labels[0]
+    views_before = label.views
+    response = populate.get(f"labels/l/{label.unique_id}")
+    assert response
+    assert response.status_code == 302
+    assert response.location == label.url
+
+    label = db.session.scalar(
+        m.Label.select().where(m.Label.unique_id == label.unique_id)
+    )
+    assert label.views > views_before

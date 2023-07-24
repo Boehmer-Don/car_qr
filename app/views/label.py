@@ -150,5 +150,9 @@ def new_label_payment(label_unique_id: str):
 
 @dealer_blueprint.route("/l/<label_unique_id>")
 def redirect_to_outer_url(label_unique_id: str):
-    # Counter
-    return redirect("url_outer")
+    label: m.Label = db.session.scalar(
+        m.Label.select().where(m.Label.unique_id == label_unique_id)
+    )
+    label.views += 1
+    label.save()
+    return redirect(label.url)

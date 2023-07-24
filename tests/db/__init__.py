@@ -118,4 +118,5 @@ def populate(count: int = NUM_TEST_USERS):
             user_id=user_with_labels.id,
             active=active,
             date_deactivated=date_deactivated,
+            views=randint(0, 100),
         ).save()

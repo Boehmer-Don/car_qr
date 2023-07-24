@@ -81,7 +81,7 @@
           class="w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer">
           {{ label.name }}
         </p>
-        <p class="w-1/12 flex items-center justify-center">12</p>
+        <p class="w-1/12 flex items-center justify-center">{{ label.views }}</p>
         <p class="w-3/12 hidden md:flex items-center justify-center">
           {{time_delta(label.date_received)}}
           <span class="hidden xl:block">&nbsp;days active</span>
