@@ -12,9 +12,11 @@ def test_labels_active(populate: FlaskClient):
     assert b"Active Labels" in response.data
     assert b"Welcome Back" in response.data
 
-    labels = db.session.scalars(m.Label.select()).all()
-    assert len(labels) == 10
-    for label in labels[: app.config["DEFAULT_PAGE_SIZE"]]:
+    all_labels = db.session.scalars(m.Label.select()).all()
+    assert len(all_labels) == 10
+
+    active_labels = db.session.scalars(m.Label.select().where(m.Label.active)).all()
+    for label in active_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
         assert label.name.encode() in response.data
 
 
