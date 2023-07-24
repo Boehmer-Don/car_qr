@@ -9,6 +9,7 @@
       {{ form_hidden_tag() }}
       <input type="hidden" name="label_id" id="label-edit-id" value="0" />
       <input type="hidden" name="user_id" id="label-edit-user-id" value="0" />
+      <input type="hidden" name="unique_id" id="label-edit-unique-id" value="0" />
       <input type="hidden" name="next_url" id="label-edit-next-url" value="" />
       <!-- Modal header -->
       <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
@@ -51,7 +52,7 @@
               <label for="model" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                 Vechicle Model
               </label>
-              <input type="text" name="model" id="label-edit-model"
+              <input type="text" name="vehicle_model" id="label-edit-model"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                 placeholder="Vehicle Model" />
             </div>
@@ -71,7 +72,7 @@
               <label for="mileage" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                 Mileage
               </label>
-              <input type="text" name="milage" id="label-edit-mileage"
+              <input type="text" name="mileage" id="label-edit-mileage"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                 placeholder="Mileage" />
             </div>
@@ -100,7 +101,7 @@
               <label for="vtype" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                 Type Of Vehicle
               </label>
-              <input type="text" name="vtype" id="label-edit-type"
+              <input type="text" name="type_of_vehicle" id="label-edit-type"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                 placeholder="Type Of Vechicle" />
             </div>

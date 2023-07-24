@@ -46,6 +46,8 @@ function getLabelDetails(label: ILabel) {
     labelMake.value = label.make;
     const labelModel: HTMLInputElement = document.querySelector('#label-edit-model');
     labelModel.value = label.vehicle_model;
+    console.log(labelModel.value);
+
     const labelYear: HTMLInputElement = document.querySelector('#label-edit-year');
     labelYear.value = label.year;
     const labelMileage: HTMLInputElement = document.querySelector('#label-edit-mileage');
@@ -70,9 +72,8 @@ function getLabelDetails(label: ILabel) {
     labelId.value = label.unique_id.toString();
     const labelUserId: HTMLInputElement = document.querySelector('#label-edit-user-id');
     labelUserId.value = label.user_id.toString();
-    // const labelUniqueId: HTMLInputElement = document.querySelector('#label-edit-unique-id');
-    // labelUniqueId.value = label.unique_id;
-
+    const labelUniqueId: HTMLInputElement = document.querySelector('#label-edit-unique-id');
+    labelUniqueId.value = label.unique_id;
     const nextUrl: HTMLInputElement = document.querySelector('#label-edit-next-url');
     nextUrl.value = window.location.href;
     labelDetailsModalWindow.show();
