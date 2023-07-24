@@ -130,3 +130,8 @@
     position: absolute;
     bottom: 108px;
 }
+
+.absolute-bottom-12 {
+    position: absolute;
+    bottom: 60px;
+}
