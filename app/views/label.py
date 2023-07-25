@@ -172,9 +172,9 @@ def new_label_set_amount(user_unique_id: str):
     )
 
 
-@dealer_blueprint.route("/details/<user_unique_id>", methods=["GET", "POST"])
+@dealer_blueprint.route("/details/<user_unique_id>/<amount>", methods=["GET", "POST"])
 @login_required
-def new_label_set_details(user_unique_id: str):
+def new_label_set_details(user_unique_id: str, amount: int):
     """
     Label fields:
     id
@@ -193,9 +193,28 @@ def new_label_set_details(user_unique_id: str):
     views
 
     """
-    amount = request.args.get("amount")
+    # amount = request.args.get("amount")
     if request.method == "POST":
-        ...
+        for i in range(1, int(amount)):
+            label = m.Label(
+                name=request.form.get(f"name-{i}"),
+                make=request.form.get(f"make-{i}"),
+                vehicle_model=request.form.get(f"vehicle_model-{i}"),
+                year=request.form.get(f"year-{i}"),
+                mileage=request.form.get(f"mileage-{i}"),
+                color=request.form.get(f"color-{i}"),
+                trim=request.form.get(f"trim-{i}"),
+                type_of_vehicle=request.form.get(f"type_of_vehicle-{i}"),
+                price=request.form.get(f"price-{i}"),
+                url=request.form.get(f"url-{i}"),
+                user_id=current_user.id,
+            ).save(False)
+            log(log.INFO, "Created label [%s]", label)
+        db.session.commit()
+        log(log.INFO, "Created [%s] labels", amount)
+        return redirect(
+            url_for("labels.new_label_payment", user_unique_id=user_unique_id)
+        )
 
     return render_template(
         "label/new_labels_details.html",
@@ -204,10 +223,13 @@ def new_label_set_details(user_unique_id: str):
     )
 
 
-@dealer_blueprint.route("/payment/<label_unique_id>", methods=["GET", "POST"])
+@dealer_blueprint.route("/payment/<user_unique_id>", methods=["GET", "POST"])
 @login_required
-def new_label_payment(label_unique_id: str):
-    ...
+def new_label_payment(user_unique_id: str):
+    return render_template(
+        "label/new_labels_payment.html",
+        user_unique_id=user_unique_id,
+    )
 
 
 @dealer_blueprint.route("/l/<label_unique_id>")

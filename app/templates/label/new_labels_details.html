@@ -48,7 +48,7 @@
             <p class="w-1/12 flex items-center justify-center"></p>
         </div>
 
-        <form action="{{url_for('labels.new_label_set_details', user_unique_id=user_unique_id)}}" method="post" class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+        <form action="{{url_for('labels.new_label_set_details', user_unique_id=user_unique_id, amount=amount)}}" method="post" class="relative bg-white rounded-lg shadow dark:bg-gray-800">
         {{ form_hidden_tag() }}
         {% set amount_int = amount | int %}
         {% for i in range(amount_int) %}
