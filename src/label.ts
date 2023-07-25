@@ -82,7 +82,10 @@ function getLabelDetails(label: ILabel) {
 
 function deactivateLabel(label: ILabel) {
     const labelActive: HTMLInputElement = document.querySelector('#label-deactivate-active');
-    labelActive.value = label.active.toString();
+    console.log("labelActive", labelActive);
+    console.log("label.active", label.active);
+
+    labelActive.value = false.toString();
     const labelUniqueId: HTMLInputElement = document.querySelector('#label-deactivate-unique-id');
     labelUniqueId.value = label.unique_id;
     const nextUrl: HTMLInputElement = document.querySelector('#label-deactivate-next-url');
@@ -100,9 +103,12 @@ labels.forEach(e =>
     }),
 );
 
-const labelDeactivateButtons = document.querySelectorAll('#label_details_button');
+const labelDeactivateButtons = document.querySelectorAll('.label-deactivate-button');
+
 labelDeactivateButtons.forEach(e =>
     e.addEventListener('click', () => {
+        console.log("deactivate button clicked");
+
         deactivateLabel(JSON.parse(e.getAttribute('data-target')));
     }),
 );
