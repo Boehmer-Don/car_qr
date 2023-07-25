@@ -85,3 +85,16 @@ def test_label_edit(populate: FlaskClient):
     assert label.name == TEST_LABEL_NAME
     assert label.vehicle_model == TEST_LABEL_MODEL
     assert label.type_of_vehicle == TEST_LABEL_TYPE
+
+
+def test_deactivate_label(populate: FlaskClient):
+    label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
+    assert label
+    login(populate)
+    response = populate.get(f"labels/deactivate/{label.unique_id}")
+    assert response
+    assert response.status_code == 302
+
+    label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
+    assert label.active == False
+    assert label.date_deactivated
