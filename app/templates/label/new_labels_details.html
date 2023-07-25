@@ -52,7 +52,7 @@
       {% for i in range(amount_int) %}
       <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
         <p class="w-1/12 flex items-center justify-center">{{ i + 1 }}</p>
-        <p id="label_details_button" class="w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer">
+        <p class="new_label_details w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer">
           label.name
         </p>
         <p class="w-1/12 flex items-center justify-center"></p>
@@ -60,7 +60,7 @@
         <p class="w-3/12 flex items-center justify-center"></p>
         <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button"></p>
       </div>
-      <div class="w-full h-12 bg-pink-300">Form</div>
+      <div class="hidden w-full h-12 bg-pink-300">Form</div>
       {% endfor %}
     </div>
   </div>

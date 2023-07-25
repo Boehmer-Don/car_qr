@@ -144,3 +144,11 @@ if (decreaseQuantityButton && increaseQuantityButton && totalSum && quantityInpu
     );
 }
 
+const newLabelDetails = document.querySelectorAll('.new_label_details');
+newLabelDetails.forEach(e =>
+    e.addEventListener('click', () => {
+        const parentDiv = e.parentElement;
+        const nextDivToParent = parentDiv.nextElementSibling;
+        nextDivToParent.classList.toggle('hidden');
+    }),
+);
