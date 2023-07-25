@@ -1,5 +1,6 @@
 # flake8: noqa E712
 from flask import current_app as app
+from flask_login import current_user
 from flask.testing import FlaskClient
 from app import models as m, db
 from tests.utils import login
@@ -103,3 +104,21 @@ def test_deactivate_label(populate: FlaskClient):
     label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
     assert label.active == False
     assert label.date_deactivated
+
+
+def test_labels_amount(client: FlaskClient):
+    TEST_LABELS_AMOUNT = 5
+    login(client)
+    response = client.post(
+        f"labels/amount/{current_user.unique_id}",
+        data=dict(
+            user_unique_id=current_user.unique_id,
+            amount=TEST_LABELS_AMOUNT,
+        ),
+    )
+    assert response
+    assert response.status_code == 302
+    assert (
+        response.location
+        == f"/labels/details?user_unique_id={current_user.unique_id}&amount={TEST_LABELS_AMOUNT}"
+    )

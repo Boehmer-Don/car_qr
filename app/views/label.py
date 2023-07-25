@@ -140,19 +140,39 @@ def label_details():
         return redirect(url_for("user.get_all"))
 
 
-@dealer_blueprint.route("/amount", methods=["GET", "POST"])
-@login_required
-def new_label_set_amount():
-    return render_template("label/new_label.html")
-
-
 @dealer_blueprint.route("/reporting", methods=["GET", "POST"])
 @login_required
 def reporting():
     return render_template("label/reporting.html")
 
 
-@dealer_blueprint.route("/details/<label_unique_id>", methods=["GET", "POST"])
+@dealer_blueprint.route("/amount/<user_unique_id>", methods=["GET", "POST"])
+@login_required
+def new_label_set_amount(user_unique_id: str):
+    form: f.LabelsAmountForm = f.LabelsAmountForm()
+    if form.validate_on_submit():
+        labels_amount = form.amount.data
+        log(
+            log.INFO,
+            "Creating [%s] labels for user [%s]",
+            labels_amount,
+            user_unique_id,
+        )
+        return redirect(
+            url_for(
+                "labels.new_label_set_details",
+                user_unique_id=user_unique_id,
+                amount=labels_amount,
+            )
+        )
+    return render_template(
+        "label/new_label.html",
+        user_unique_id=user_unique_id,
+        form=form,
+    )
+
+
+@dealer_blueprint.route("/details", methods=["GET", "POST"])
 @login_required
 def new_label_set_details(label_unique_id: str):
     """

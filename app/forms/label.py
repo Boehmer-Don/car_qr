@@ -14,7 +14,6 @@ class LabelForm(FlaskForm):
     type_of_vehicle = StringField("Type of Vehicle")
     price = IntegerField("Price")
     date_received = StringField("Date Received")
-    # date_deactivated = DateTimeField("Date Deactivated")
     url = StringField("URL")
     active = BooleanField("Active")
     user_id = IntegerField("User ID")
@@ -26,3 +25,8 @@ class DeactivateLabelForm(FlaskForm):
     unique_id = StringField("Unique ID")
     active = BooleanField("Active")
     next_url = StringField("Next URL")
+
+
+class LabelsAmountForm(FlaskForm):
+    user_unique_id = StringField("User Unique ID")
+    amount = IntegerField("Amount")
