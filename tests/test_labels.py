@@ -88,10 +88,15 @@ def test_label_edit(populate: FlaskClient):
 
 
 def test_deactivate_label(populate: FlaskClient):
-    label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
+    label: m.Label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
     assert label
     login(populate)
-    response = populate.get(f"labels/deactivate/{label.unique_id}")
+    response = populate.post(
+        f"labels/deactivate",
+        data=dict(
+            unique_id=label.unique_id,
+        ),
+    )
     assert response
     assert response.status_code == 302
 

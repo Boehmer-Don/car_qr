@@ -75,26 +75,30 @@ def get_archived_labels():
     )
 
 
-@dealer_blueprint.route("/deactivate/<label_unique_id>", methods=["GET", "POST"])
+@dealer_blueprint.route("/deactivate", methods=["GET", "POST"])
 @login_required
-def deactivate_label(label_unique_id: str):
-    label: m.Label = db.session.scalar(
-        sa.select(m.Label).where(m.Label.unique_id == label_unique_id)
-    )
-    if not label:
-        log(log.ERROR, "Failed to find label : [%s]", label_unique_id)
-        flash("Failed to find label", "danger")
-        return redirect(
-            url_for(
-                "labels.get_active_labels",
-                user_unique_id=current_user.unique_id,
-            )
+def deactivate_label():
+    form: f.DeactivateLabelForm = f.DeactivateLabelForm()
+    if form.validate_on_submit():
+        label: m.Label = db.session.scalar(
+            sa.select(m.Label).where(m.Label.unique_id == form.unique_id.data)
         )
-    label.active = False
-    label.date_deactivated = datetime.utcnow()
-    label.save()
-
-    log(log.INFO, "Deactivated label : [%s]", label_unique_id)
+        if not label:
+            log(log.ERROR, "Failed to find label : [%s]", form.unique_id.data)
+            flash("Failed to find label", "danger")
+            return redirect(
+                url_for(
+                    "labels.get_active_labels",
+                    user_unique_id=current_user.unique_id,
+                )
+            )
+        label.active = False
+        label.date_deactivated = datetime.utcnow()
+        label.save()
+        log(log.INFO, "Deactivated label : [%s]", form.unique_id.data)
+    elif form.is_submitted():
+        log(log.ERROR, "User save errors: [%s]", form.errors)
+        flash(f"Failed to validate form: {form.errors}", "danger")
     return redirect(url_for("labels.get_archived_labels"))
 
 

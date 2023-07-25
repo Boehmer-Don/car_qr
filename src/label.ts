@@ -21,6 +21,7 @@ interface ILabel {
 }
 
 const $modalElement: HTMLElement = document.querySelector('#labelDetailsModal');
+const modalDeactivateLabel: HTMLElement = document.querySelector('#labelDeactivateModal');
 
 const modalOptions: ModalOptions = {
     placement: 'bottom-right',
@@ -79,12 +80,30 @@ function getLabelDetails(label: ILabel) {
     labelDetailsModalWindow.show();
 }
 
+function deactivateLabel(label: ILabel) {
+    const labelActive: HTMLInputElement = document.querySelector('#label-deactivate-active');
+    labelActive.value = label.active.toString();
+    const labelUniqueId: HTMLInputElement = document.querySelector('#label-deactivate-unique-id');
+    labelUniqueId.value = label.unique_id;
+    const nextUrl: HTMLInputElement = document.querySelector('#label-deactivate-next-url');
+    nextUrl.value = window.location.href;
+    labelDeactivateModalWindow.show();
+}
+
 const labelDetailsModalWindow: ModalInterface = new Modal($modalElement, modalOptions);
+const labelDeactivateModalWindow: ModalInterface = new Modal(modalDeactivateLabel, modalOptions);
 
 const labels = document.querySelectorAll('#label_details_button');
 labels.forEach(e =>
     e.addEventListener('click', () => {
         getLabelDetails(JSON.parse(e.getAttribute('data-target')));
+    }),
+);
+
+const labelDeactivateButtons = document.querySelectorAll('#label_details_button');
+labelDeactivateButtons.forEach(e =>
+    e.addEventListener('click', () => {
+        deactivateLabel(JSON.parse(e.getAttribute('data-target')));
     }),
 );
 

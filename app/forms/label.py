@@ -20,3 +20,9 @@ class LabelForm(FlaskForm):
     user_id = IntegerField("User ID")
     views = IntegerField("Views")
     next_url = StringField("Next URL")
+
+
+class DeactivateLabelForm(FlaskForm):
+    unique_id = StringField("Unique ID")
+    active = BooleanField("Active")
+    next_url = StringField("Next URL")
