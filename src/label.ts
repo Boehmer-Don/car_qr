@@ -67,7 +67,7 @@ function getLabelDetails(label: ILabel) {
     const labelUrl: HTMLInputElement = document.querySelector('#label-edit-url');
     labelUrl.value = label.url;
     const labelViews: HTMLInputElement = document.querySelector('#label-edit-views');
-    labelViews.value = label.views;
+    labelViews.value = label.views.toString();
     const labelId: HTMLInputElement = document.querySelector('#label-edit-id');
     labelId.value = label.unique_id.toString();
     const labelUserId: HTMLInputElement = document.querySelector('#label-edit-user-id');

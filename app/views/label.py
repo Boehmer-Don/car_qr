@@ -91,6 +91,12 @@ def label_details():
         if not label:
             log(log.ERROR, "Failed to find label : [%s]", form.unique_id.data)
             flash("Failed to find label", "danger")
+            return redirect(
+                url_for(
+                    "labels.get_active_labels",
+                    user_unique_id=current_user.unique_id,
+                )
+            )
         label.name = form.name.data
         label.make = form.make.data
         label.vehicle_model = form.vehicle_model.data
