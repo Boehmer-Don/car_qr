@@ -48,20 +48,129 @@
         <p class="w-1/12 flex items-center justify-center"></p>
       </div>
 
-      {% set amount_int = amount | int %}
-      {% for i in range(amount_int) %}
-      <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
-        <p class="w-1/12 flex items-center justify-center">{{ i + 1 }}</p>
-        <p class="new_label_details w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer">
-          label.name
-        </p>
-        <p class="w-1/12 flex items-center justify-center"></p>
-        <p class="w-3/12 hidden md:flex items-center justify-center"></p>
-        <p class="w-3/12 flex items-center justify-center"></p>
-        <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button"></p>
-      </div>
-      <div class="hidden w-full h-12 bg-pink-300">Form</div>
-      {% endfor %}
+        <form action="{{url_for('labels.label_details')}}" method="post" class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+        {{ form_hidden_tag() }}
+        {% set amount_int = amount | int %}
+        {% for i in range(amount_int) %}
+        <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
+            <p class="w-1/12 flex items-center justify-center">{{ i + 1 }}</p>
+            <p class="new_label_details w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer">
+            Label {{ i + 1 }}
+            </p>
+            <p class="w-1/12 flex items-center justify-center"></p>
+            <p class="w-3/12 hidden md:flex items-center justify-center"></p>
+            <p class="w-3/12 flex items-center justify-center"></p>
+            <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button"></p>
+        </div>
+        <div class="hidden w-full bg-gray-100 dark:bg-gray-700">
+            <input type="hidden" name="user_id" id="new-label-user-id" value="{{current_user.id}}" />
+            <div class="p-6 space-y-6">
+            <div class="w-full px-1">
+                <div class="w-full flex justify-between">
+                    <div class="w-full px-1">
+                        <label for="name" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Label Name
+                        </label>
+                        <input type="text" name="name" id="label-edit-name"
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="Label Name" />
+                    </div>
+
+                    <div class="w-full px-1">
+                        <label for="make" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Make
+                        </label>
+                        <input type="text" name="make" id="label-edit-make"
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="Make" />
+                    </div>
+                </div>
+
+                <div class="w-full flex justify-between">
+                    <div class="w-full px-1">
+                        <label for="model" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Vechicle Model
+                        </label>
+                        <input type="text" name="vehicle_model" id="label-edit-model"
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="Vehicle Model" />
+                    </div>
+
+                    <div class="w-full px-1">
+                        <label for="year" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Year
+                        </label>
+                        <input type="text" name="year" id="label-edit-year"
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="Year" />
+                    </div>
+                </div>
+
+                <div class="w-full flex justify-between">
+                    <div class="w-full px-1">
+                        <label for="mileage" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Mileage
+                        </label>
+                        <input type="text" name="mileage" id="label-edit-mileage"
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="Mileage" />
+                    </div>
+
+                    <div class="w-full px-1">
+                        <label for="color" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Color
+                        </label>
+                        <input type="text" name="color" id="label-edit-color"
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="Color" />
+                    </div>
+                </div>
+
+                <div class="w-full flex justify-between">
+                    <div class="w-full px-1">
+                        <label for="trim" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Trim
+                        </label>
+                        <input type="text" name="trim" id="label-edit-trim"
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="Trim" />
+                    </div>
+
+                    <div class="w-full px-1">
+                        <label for="vtype" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Type Of Vehicle
+                        </label>
+                        <input type="text" name="type_of_vehicle" id="label-edit-type"
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="Type Of Vechicle" />
+                    </div>
+                </div>
+
+                <div class="w-full flex justify-between">
+                    <div class="w-full px-1">
+                        <label for="price" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Price
+                        </label>
+                        <input type="text" name="price" id="label-edit-price"
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="Price" />
+                    </div>
+
+                    <div class="w-full px-1">
+                        <label for="url" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        URL
+                        </label>
+                        <input type="text" name="url" id="label-edit-url"
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="URL" />
+                    </div>
+                </div>
+
+            </div>
+            </div>
+        </div>
+        {% endfor %}
+    </form>
     </div>
   </div>
 </div>
