@@ -172,9 +172,9 @@ def new_label_set_amount(user_unique_id: str):
     )
 
 
-@dealer_blueprint.route("/details", methods=["GET", "POST"])
+@dealer_blueprint.route("/details/<user_unique_id>", methods=["GET", "POST"])
 @login_required
-def new_label_set_details(label_unique_id: str):
+def new_label_set_details(user_unique_id: str):
     """
     Label fields:
     id

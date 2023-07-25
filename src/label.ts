@@ -119,3 +119,27 @@ if (closeButton) {
         labelDetailsModalWindow.hide();
     });
 }
+
+const decreaseQuantityButton = document.querySelector('#decreaseQuantityButton');
+const increaseQuantityButton = document.querySelector('#increaseQuantityButton');
+const totalSum = document.querySelector('#totalSum');
+let quantityInput: HTMLInputElement = document.querySelector('#quantityInput');
+
+decreaseQuantityButton.addEventListener('click', () => {
+    let quantity = parseInt(quantityInput.value);
+    if (quantity > 1) {
+        quantity -= 1;
+        quantityInput.value = quantity.toString();
+    }
+    totalSum.innerHTML = "$" + (quantity * 20).toString() + ".00";
+});
+
+increaseQuantityButton.addEventListener('click', () => {
+    let quantity = parseInt(quantityInput.value);
+    quantity += 1;
+    quantityInput.value = quantity.toString();
+    totalSum.innerHTML = "$" + (quantity * 20).toString() + ".00";
+}
+);
+
+
