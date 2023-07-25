@@ -151,7 +151,7 @@ def reporting():
 def new_label_set_amount(user_unique_id: str):
     form: f.LabelsAmountForm = f.LabelsAmountForm()
     if form.validate_on_submit():
-        labels_amount = form.amount.data
+        labels_amount = int(form.amount.data)
         log(
             log.INFO,
             "Creating [%s] labels for user [%s]",
@@ -193,7 +193,12 @@ def new_label_set_details(user_unique_id: str):
     views
 
     """
-    ...
+    amount = request.args.get("amount")
+    return render_template(
+        "label/new_labels_details.html",
+        user_unique_id=user_unique_id,
+        amount=amount,
+    )
 
 
 @dealer_blueprint.route("/payment/<label_unique_id>", methods=["GET", "POST"])
