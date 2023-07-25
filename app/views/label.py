@@ -194,6 +194,9 @@ def new_label_set_details(user_unique_id: str):
 
     """
     amount = request.args.get("amount")
+    if request.method == "POST":
+        ...
+
     return render_template(
         "label/new_labels_details.html",
         user_unique_id=user_unique_id,
