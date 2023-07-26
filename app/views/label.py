@@ -175,27 +175,9 @@ def new_label_set_amount(user_unique_id: str):
 @dealer_blueprint.route("/details/<user_unique_id>/<amount>", methods=["GET", "POST"])
 @login_required
 def new_label_set_details(user_unique_id: str, amount: int):
-    """
-    Label fields:
-    id
-    label_unique_id
-    name
-    make
-    vehicle_model
-    year
-    mileage
-    color
-    trim
-    type_of_vehicle
-    price
-    date_received
-    url
-    views
-
-    """
     # amount = request.args.get("amount")
     if request.method == "POST":
-        for i in range(1, int(amount)):
+        for i in range(1, int(amount) + 1):
             label = m.Label(
                 name=request.form.get(f"name-{i}"),
                 make=request.form.get(f"make-{i}"),

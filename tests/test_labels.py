@@ -106,11 +106,11 @@ def test_deactivate_label(populate: FlaskClient):
     assert label.date_deactivated
 
 
-def test_labels_amount(client: FlaskClient):
+def test_add_new_labels(client: FlaskClient):
     TEST_LABELS_AMOUNT = 5
     login(client)
     response = client.post(
-        f"labels/amount/{current_user.unique_id}",
+        f"/labels/amount/{current_user.unique_id}",
         data=dict(
             user_unique_id=current_user.unique_id,
             amount=TEST_LABELS_AMOUNT,
@@ -120,5 +120,27 @@ def test_labels_amount(client: FlaskClient):
     assert response.status_code == 302
     assert (
         response.location
-        == f"/labels/details?user_unique_id={current_user.unique_id}&amount={TEST_LABELS_AMOUNT}"
+        == f"/labels/details/{current_user.unique_id}/{TEST_LABELS_AMOUNT}"
     )
+
+    forms = {}
+    for i in range(1, TEST_LABELS_AMOUNT):
+        forms[f"name-{i}"] = f"Test Label {i}"
+        forms[f"make-{i}"] = f"Test Make {i}"
+        forms[f"vehicle_model-{i}"] = f"Test Model {i}"
+        forms[f"year-{i}"] = 2000 + i
+        forms[f"mileage-{i}"] = 100000 + i
+        forms[f"color-{i}"] = f"Test Color {i}"
+        forms[f"trim-{i}"] = f"Test Trim {i}"
+        forms[f"type_of_vehicle-{i}"] = f"Test Type {i}"
+        forms[f"price-{i}"] = 10000 + i * 1000
+        forms[f"url-{i}"] = f"https://www.test.com/{i}"
+        forms[f"user_id-{i}"] = current_user.id
+
+    response = client.post(
+        f"/labels/details/{current_user.unique_id}/{TEST_LABELS_AMOUNT}",
+        data=forms,
+    )
+    assert response
+    assert response.status_code == 302
+    assert response.location == f"/labels/payment/{current_user.unique_id}"
