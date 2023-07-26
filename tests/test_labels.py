@@ -148,3 +148,9 @@ def test_add_new_labels(client: FlaskClient):
     assert len(labels) == TEST_LABELS_AMOUNT
     for label in labels:
         assert label.active
+
+    url = response.location
+    response = client.get(url)
+    assert response
+    assert response.status_code == 200
+    assert b"Order Details" in response.data

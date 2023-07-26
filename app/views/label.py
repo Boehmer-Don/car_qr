@@ -176,7 +176,7 @@ def new_label_set_amount(user_unique_id: str):
 @login_required
 def new_label_set_details(user_unique_id: str, amount: int):
     if request.method == "POST":
-        new_labels = []
+        new_labels_ids = ""
         for i in range(1, int(amount) + 1):
             label = m.Label(
                 name=request.form.get(f"name-{i}"),
@@ -191,16 +191,16 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 url=request.form.get(f"url-{i}"),
                 active=True,
                 user_id=current_user.id,
-            ).save(False)
-            new_labels.append(label)
+            ).save()
+            new_labels_ids += f"{label.unique_id},"
             log(log.INFO, "Created label [%s]", label)
-        db.session.commit()
-        log(log.INFO, "Created [%s] labels: [%s]", amount, new_labels)
+        # db.session.commit()
+        log(log.INFO, "Created [%s] labels: [%s]", amount, new_labels_ids)
         return redirect(
             url_for(
                 "labels.new_label_payment",
                 user_unique_id=user_unique_id,
-                labels=new_labels,
+                labels_ids=new_labels_ids,
             )
         )
 
@@ -211,10 +211,18 @@ def new_label_set_details(user_unique_id: str, amount: int):
     )
 
 
-@dealer_blueprint.route("/payment/<user_unique_id>", methods=["GET", "POST"])
+@dealer_blueprint.route(
+    "/payment/<user_unique_id>/<labels_ids>", methods=["GET", "POST"]
+)
 @login_required
-def new_label_payment(user_unique_id: str):
-    labels = request.args.get("labels")
+def new_label_payment(user_unique_id: str, labels_ids: str):
+    labels_ids_list = [label_id for label_id in labels_ids.split(",") if label_id]
+    labels = []
+    for label_id in labels_ids_list:
+        label = db.session.scalar(
+            sa.select(m.Label).where(m.Label.unique_id == label_id)
+        )
+        labels.append(label)
     return render_template(
         "label/new_labels_payment.html",
         user_unique_id=user_unique_id,
