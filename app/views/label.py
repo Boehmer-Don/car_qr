@@ -223,6 +223,10 @@ def new_label_payment(user_unique_id: str, labels_ids: str):
             sa.select(m.Label).where(m.Label.unique_id == label_id)
         )
         labels.append(label)
+    if request.method == "POST":
+        ...
+        log(log.INFO, "Payment edit labels: [%s]", labels)
+        flash("Your labels has been successfully edited", "success")
     return render_template(
         "label/new_labels_payment.html",
         user_unique_id=user_unique_id,
