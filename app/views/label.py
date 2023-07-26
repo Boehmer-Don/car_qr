@@ -177,6 +177,7 @@ def new_label_set_amount(user_unique_id: str):
 def new_label_set_details(user_unique_id: str, amount: int):
     # amount = request.args.get("amount")
     if request.method == "POST":
+        new_labels = []
         for i in range(1, int(amount) + 1):
             label = m.Label(
                 name=request.form.get(f"name-{i}"),
@@ -189,13 +190,19 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 type_of_vehicle=request.form.get(f"type_of_vehicle-{i}"),
                 price=request.form.get(f"price-{i}"),
                 url=request.form.get(f"url-{i}"),
+                active=True,
                 user_id=current_user.id,
             ).save(False)
+            new_labels.append(label)
             log(log.INFO, "Created label [%s]", label)
         db.session.commit()
-        log(log.INFO, "Created [%s] labels", amount)
+        log(log.INFO, "Created [%s] labels: [%s]", amount, new_labels)
         return redirect(
-            url_for("labels.new_label_payment", user_unique_id=user_unique_id)
+            url_for(
+                "labels.new_label_payment",
+                user_unique_id=user_unique_id,
+                labels=new_labels,
+            )
         )
 
     return render_template(
@@ -208,9 +215,11 @@ def new_label_set_details(user_unique_id: str, amount: int):
 @dealer_blueprint.route("/payment/<user_unique_id>", methods=["GET", "POST"])
 @login_required
 def new_label_payment(user_unique_id: str):
+    labels = request.args.get("labels")
     return render_template(
         "label/new_labels_payment.html",
         user_unique_id=user_unique_id,
+        labels=labels,
     )
 
 

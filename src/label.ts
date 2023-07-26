@@ -84,6 +84,8 @@ function deactivateLabel(label: ILabel) {
     const labelActive: HTMLInputElement = document.querySelector('#label-deactivate-active');
     console.log("labelActive", labelActive);
     console.log("label.active", label.active);
+    const labelInfo: HTMLInputElement = document.querySelector('#label-deactivate-info');
+    labelInfo.innerHTML = `${label.name} ${label.make} ${label.vehicle_model} ${label.year}`;
 
     labelActive.value = false.toString();
     const labelUniqueId: HTMLInputElement = document.querySelector('#label-deactivate-unique-id');

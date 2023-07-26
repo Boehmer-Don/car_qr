@@ -124,7 +124,7 @@ def test_add_new_labels(client: FlaskClient):
     )
 
     forms = {}
-    for i in range(1, TEST_LABELS_AMOUNT):
+    for i in range(1, TEST_LABELS_AMOUNT + 1):
         forms[f"name-{i}"] = f"Test Label {i}"
         forms[f"make-{i}"] = f"Test Make {i}"
         forms[f"vehicle_model-{i}"] = f"Test Model {i}"
@@ -143,4 +143,8 @@ def test_add_new_labels(client: FlaskClient):
     )
     assert response
     assert response.status_code == 302
-    assert response.location == f"/labels/payment/{current_user.unique_id}"
+    assert "/labels/payment/" in response.location
+    labels = db.session.scalars(m.Label.select()).all()
+    assert len(labels) == TEST_LABELS_AMOUNT
+    for label in labels:
+        assert label.active
