@@ -154,3 +154,4 @@ def test_add_new_labels(client: FlaskClient):
     assert response
     assert response.status_code == 200
     assert b"Order Details" in response.data
+    assert b"Credit Card Number" in response.data
