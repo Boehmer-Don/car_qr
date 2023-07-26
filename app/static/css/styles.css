@@ -1145,6 +1145,11 @@ input:checked + .toggle-bg {
   margin-bottom: 1.25rem;
 }
 
+.my-8 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
 .-mb-px {
   margin-bottom: -1px;
 }
@@ -1348,6 +1353,10 @@ input:checked + .toggle-bg {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-72 {
+  height: 18rem;
 }
 
 .max-h-full {
@@ -2777,6 +2786,10 @@ input:checked + .toggle-bg {
     width: auto;
   }
 
+  .sm\:w-3\/4 {
+    width: 75%;
+  }
+
   .sm\:p-8 {
     padding: 2rem;
   }
@@ -2863,6 +2876,10 @@ input:checked + .toggle-bg {
 
   .md\:w-full {
     width: 100%;
+  }
+
+  .md\:w-2\/3 {
+    width: 66.666667%;
   }
 
   .md\:translate-x-0 {
@@ -2967,6 +2984,14 @@ input:checked + .toggle-bg {
 
   .lg\:w-4\/12 {
     width: 33.333333%;
+  }
+
+  .lg\:w-40 {
+    width: 10rem;
+  }
+
+  .lg\:w-60 {
+    width: 15rem;
   }
 
   .lg\:max-w-xl {
