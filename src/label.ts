@@ -161,3 +161,17 @@ newLabelDetails.forEach(e =>
         nextDivToParent.classList.toggle('hidden');
     }),
 );
+
+const subTotal = document.querySelector('#sub-total');
+const taxes = document.querySelector('#taxes');
+const total = document.querySelector('#total');
+const quantityStr = document.querySelector('#labels-quantity');
+const quantity = parseInt(quantityStr.innerHTML);
+
+if (subTotal && taxes && total) {
+    subTotal.innerHTML = "$" + (quantity * 20).toString() + ".00";
+    const taxes_value = Math.round((quantity * 20 * 0.13) * 100) / 100;
+    taxes.innerHTML = "$" + taxes_value.toString();
+    total.innerHTML = "$" + (quantity * 20 * 1.13).toString();
+}
+
