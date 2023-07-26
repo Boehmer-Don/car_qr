@@ -95,18 +95,16 @@ def save():
 @bp.route("/delete/<int:id>", methods=["DELETE"])
 @login_required
 def delete(id: int):
-    user = db.session.scalar(m.User.select().where(m.User.id == id))
+    user: m.User = db.session.scalar(m.User.select().where(m.User.id == id))
     if not user:
         log(log.INFO, "There is no user with id: [%s]", id)
         flash("There is no such user", "danger")
         return "no user", 404
 
-    logo = db.session.scalar(sa.select(m.UserLogo).where(m.UserLogo.user_id == 109))
-    if logo:
-        db.session.delete(logo)
-    db.session.delete(user)
-    db.session.commit()
-    log(log.INFO, "User deleted. User: [%s]", user)
+    user.deleted = True
+    user.save()
+
+    log(log.INFO, "User [%s] is set to deleted.", user)
     flash("User deleted!", "success")
     return "ok", 200
 

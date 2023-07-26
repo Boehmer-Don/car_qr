@@ -44,7 +44,7 @@
 
       {% if current_user.role and current_user.role.value == "dealer" %}
       <li>
-        <a href="{{ url_for('labels.get_active_labels') }}"
+        <a href="{{ url_for('labels.get_active_labels', user_unique_id=current_user.unique_id) }}"
           class="flex items-center p-2  rounded-lg text-white hover:bg-gray-700">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3"
             stroke="currentColor" class="w-6 h-6">
@@ -57,7 +57,7 @@
       </li>
 
       <li>
-        <a href="{{ url_for('labels.new_label_set_amount') }}"
+        <a href="{{ url_for('labels.new_label_set_amount', user_unique_id=current_user.unique_id) }}"
           class="flex items-center p-2  rounded-lg text-white hover:bg-gray-700">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3"
             stroke="currentColor" class="w-6 h-6">
@@ -104,7 +104,7 @@
         {% endif %}
 
         <a href="{{ url_for('user.account', user_unique_id=current_user.unique_id) }}"
-          class="absolute bottom-12 left-3 w-40 flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          class="absolute absolute-bottom-12 left-3 w-40 flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round"

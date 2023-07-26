@@ -63,8 +63,10 @@ def create_app(environment="development"):
         return render_template("error.html", error=exc), exc.code
 
     # Jinja globals
-    from app.controllers.jinja_globals import form_hidden_tag
+    from app.controllers.jinja_globals import form_hidden_tag, time_delta, days_active
 
     app.jinja_env.globals["form_hidden_tag"] = form_hidden_tag
+    app.jinja_env.globals["time_delta"] = time_delta
+    app.jinja_env.globals["days_active"] = days_active
 
     return app

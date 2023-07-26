@@ -12,9 +12,9 @@ class UserLogo(db.Model):
     user_id: orm.Mapped[int] = orm.mapped_column(
         sa.Integer,
         sa.ForeignKey(
-            "users.id",
-            ondelete="CASCADE",
+            "users.id"
         ),
+        nullable=True
     )
 
     user: orm.Mapped[User] = orm.relationship("User", backref="logo")
