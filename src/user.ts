@@ -1,13 +1,6 @@
 import { Modal } from 'flowbite';
 import type { ModalOptions, ModalInterface } from 'flowbite';
 
-// /*
-//  * $editUserModal: required
-//  * options: optional
-//  */
-
-// // For your js code
-
 interface IUser {
   id: number;
   first_name: string;
@@ -16,7 +9,7 @@ interface IUser {
 }
 
 const $modalElement: HTMLElement = document.querySelector('#editUserModal');
-const $modalresendInviteElement: HTMLElement = document.querySelector('#resendInviteModal');
+const $modalResendInviteElement: HTMLElement = document.querySelector('#resendInviteModal');
 const $addUserModalElement: HTMLElement =
   document.querySelector('#add-user-modal');
 
@@ -38,7 +31,7 @@ const modalOptions: ModalOptions = {
 };
 
 const modal: ModalInterface = new Modal($modalElement, modalOptions);
-const resenrInviteModal: ModalInterface = new Modal($modalresendInviteElement, modalOptions);
+const resendInviteModal: ModalInterface = new Modal($modalResendInviteElement, modalOptions);
 const addModal: ModalInterface = new Modal($addUserModalElement, modalOptions);
 
 const $buttonElements = document.querySelectorAll('.user-edit-button');
@@ -67,9 +60,9 @@ if ($buttonClose) {
 }
 
 const resendInviteButtonClose = document.querySelector('#resendInviteModalCloseButton');
-if ($buttonClose) {
+if (resendInviteButtonClose) {
   resendInviteButtonClose.addEventListener('click', () => {
-    resenrInviteModal.hide();
+    resendInviteModal.hide();
   });
 }
 
@@ -152,5 +145,5 @@ function resendInvite(user?: IUser) {
   }
   input = document.querySelector('#resend-invite-next_url');
   input.value = window.location.href;
-  resenrInviteModal.show();
+  resendInviteModal.show();
 }

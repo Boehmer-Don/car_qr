@@ -46,6 +46,16 @@ const customConfig = {
   },
 };
 
+const labelConfig = {
+  entry: {
+    main: './src/label.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/label.js', // <--- Will be compiled to this single file
+  },
+};
+
 const logoUploadConfig = {
   entry: {
     main: './src/logo_upload.ts',
@@ -56,7 +66,13 @@ const logoUploadConfig = {
   },
 };
 
-const configs = [baseConfig, userConfig, customConfig, logoUploadConfig,].map(conf =>
+const configs = [
+  baseConfig,
+  userConfig,
+  customConfig,
+  logoUploadConfig,
+  labelConfig,
+].map(conf =>
   merge(defaultConfig, conf),
 );
 

@@ -113,7 +113,7 @@
 
     ::-webkit-scrollbar-track {
         /* background-color: rgb(55, 65, 81); */
-        background-color: red;
+        background-color: white;
     }
 
     ::-webkit-scrollbar-thumb {
@@ -129,4 +129,9 @@
 .absolute-bottom-22 {
     position: absolute;
     bottom: 108px;
+}
+
+.absolute-bottom-12 {
+    position: absolute;
+    bottom: 60px;
 }

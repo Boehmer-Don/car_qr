@@ -39,22 +39,26 @@ class Label(db.Model, ModelMixin):
         sa.DateTime,
         default=datetime.utcnow,
     )
+    date_deactivated: orm.Mapped[datetime] = orm.mapped_column(
+        sa.DateTime,
+        nullable=True,
+    )
     url: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     active: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
     user_id: orm.Mapped[int] = orm.mapped_column(
         sa.Integer,
         sa.ForeignKey(
-            "users.id",
-            ondelete="CASCADE",
+            "users.id"
         ),
     )
+    views: orm.Mapped[str] = orm.mapped_column(sa.Integer, nullable=True, default=0)
 
-    user: orm.Mapped[User] = orm.relationship("User", backref="label")
+    user: orm.Mapped[User] = orm.relationship("User", backref="labels")
 
     def __repr__(self):
         return f"<{self.id}:{self.name}>"
 
     @property
     def json(self):
-        u = s.User.from_orm(self)
-        return u.json()
+        label = s.Label.from_orm(self)
+        return label.json()
