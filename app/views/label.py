@@ -175,7 +175,6 @@ def new_label_set_amount(user_unique_id: str):
 @dealer_blueprint.route("/details/<user_unique_id>/<amount>", methods=["GET", "POST"])
 @login_required
 def new_label_set_details(user_unique_id: str, amount: int):
-    # amount = request.args.get("amount")
     if request.method == "POST":
         new_labels = []
         for i in range(1, int(amount) + 1):

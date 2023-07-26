@@ -122,6 +122,13 @@ if (closeButton) {
     });
 }
 
+const closeDeactivate = document.querySelector('#modalCloseDeactivate');
+if (closeDeactivate) {
+    closeDeactivate.addEventListener('click', () => {
+        labelDeactivateModalWindow.hide();
+    });
+}
+
 const decreaseQuantityButton = document.querySelector('#decreaseQuantityButton');
 const increaseQuantityButton = document.querySelector('#increaseQuantityButton');
 const totalSum = document.querySelector('#totalSum');
