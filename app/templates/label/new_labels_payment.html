@@ -17,8 +17,7 @@
           <p class="w-1/12 flex items-center justify-center"></p>
       </div>
 
-      <!-- add labels here -->
-      <form action="#" method="post" class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+      <form action="{{url_for('labels.new_label_payment', user_unique_id=user_unique_id, labels_ids=labels_ids)}}" method="post" class="relative bg-white rounded-lg shadow dark:bg-gray-800">
         {{ form_hidden_tag() }}
         {% for label in labels %}
         <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
@@ -219,9 +218,11 @@
     </div>
 
     <div class="w-full flex justify-center">
-      <button type="submit" class="w-2/3 lg:w-60 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 mb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
-        Review & Submit >
-      </button>
+      <a href="{{url_for('labels.stripe', user_unique_id=user_unique_id)}}">
+        <button type="submit" class="w-2/3 lg:w-60 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 mb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+          Review & Submit >
+        </button>
+      </a>
     </div>
   </div>
 </div>

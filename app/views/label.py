@@ -224,13 +224,30 @@ def new_label_payment(user_unique_id: str, labels_ids: str):
         )
         labels.append(label)
     if request.method == "POST":
-        ...
-        log(log.INFO, "Payment edit labels: [%s]", labels)
-        flash("Your labels has been successfully edited", "success")
+        for index, label in enumerate(labels):
+            label.name = request.form.get(f"name-{index + 1}")
+            label.make = request.form.get(f"make-{index + 1}")
+            label.vehicle_model = request.form.get(f"vehicle_model-{index + 1}")
+            label.year = request.form.get(f"year-{index + 1}")
+            label.mileage = request.form.get(f"mileage-{index + 1}")
+            label.color = request.form.get(f"color-{index + 1}")
+            label.trim = request.form.get(f"trim-{index + 1}")
+            label.type_of_vehicle = request.form.get(f"type_of_vehicle-{index + 1}")
+            label.price = request.form.get(f"price-{index + 1}")
+            label.url = request.form.get(f"url-{index + 1}")
+            label.save(False)
+        try:
+            db.session.commit()
+            log(log.INFO, "Payment edit labels: [%s]", labels)
+            flash("Your labels has been successfully edited", "success")
+        except Exception as e:
+            log(log.ERROR, "Failed to edit labels: [%s]", labels)
+            flash(f"Failed to edit labels: {e}", "danger")
     return render_template(
         "label/new_labels_payment.html",
         user_unique_id=user_unique_id,
         labels=labels,
+        labels_ids=labels_ids,
     )
 
 
@@ -242,3 +259,11 @@ def redirect_to_outer_url(label_unique_id: str):
     label.views += 1
     label.save()
     return redirect(label.url)
+
+
+@dealer_blueprint.route("/stripe/<user_unique_id>")
+def stripe(user_unique_id: str):
+    return render_template(
+        "label/stripe.html",
+        user_unique_id=user_unique_id,
+    )
