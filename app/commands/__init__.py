@@ -36,6 +36,7 @@ def init(app: Flask):
             for index, label in enumerate(labels_data):
                 active = True if index < 8 else False
                 m.Label(
+                    sticker_identifier=f"QR0000{index + 1}",
                     name=label["name"],
                     make=label["make"],
                     vehicle_model=label["vehicle_model"],

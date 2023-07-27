@@ -3,6 +3,7 @@ from wtforms import StringField, IntegerField, BooleanField
 
 
 class LabelForm(FlaskForm):
+    sticker_identifier = StringField("Unique ID")
     unique_id = StringField("Unique ID")
     name = StringField("Name")
     make = StringField("Make")

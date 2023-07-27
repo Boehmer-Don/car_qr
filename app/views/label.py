@@ -119,6 +119,7 @@ def label_details():
                     user_unique_id=current_user.unique_id,
                 )
             )
+        label.sticker_identifier = form.sticker_identifier.data
         label.name = form.name.data
         label.make = form.make.data
         label.vehicle_model = form.vehicle_model.data
@@ -179,6 +180,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
         new_labels_ids = ""
         for i in range(1, int(amount) + 1):
             label = m.Label(
+                sticker_identifier=request.form.get(f"sticker-number-{i}"),
                 name=request.form.get(f"name-{i}"),
                 make=request.form.get(f"make-{i}"),
                 vehicle_model=request.form.get(f"vehicle_model-{i}"),
@@ -225,6 +227,7 @@ def new_label_payment(user_unique_id: str, labels_ids: str):
         labels.append(label)
     if request.method == "POST":
         for index, label in enumerate(labels):
+            label.sticker_identifier = request.form.get(f"sticker-number-{index + 1}")
             label.name = request.form.get(f"name-{index + 1}")
             label.make = request.form.get(f"make-{index + 1}")
             label.vehicle_model = request.form.get(f"vehicle_model-{index + 1}")

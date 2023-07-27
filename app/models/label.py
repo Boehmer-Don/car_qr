@@ -26,6 +26,9 @@ class Label(db.Model, ModelMixin):
         sa.String(36),
         default=gen_label_unique_id,
     )
+    sticker_identifier: orm.Mapped[str] = orm.mapped_column(
+        sa.String(64), default="", nullable=True
+    )
     name: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     make: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     vehicle_model: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
@@ -47,9 +50,7 @@ class Label(db.Model, ModelMixin):
     active: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
     user_id: orm.Mapped[int] = orm.mapped_column(
         sa.Integer,
-        sa.ForeignKey(
-            "users.id"
-        ),
+        sa.ForeignKey("users.id"),
     )
     views: orm.Mapped[str] = orm.mapped_column(sa.Integer, nullable=True, default=0)
 

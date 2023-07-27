@@ -4,6 +4,7 @@ import type { ModalOptions, ModalInterface } from 'flowbite';
 interface ILabel {
     id: number;
     unique_id: string;
+    sticker_identifier: string;
     name: string;
     make: string;
     vehicle_model: string;
@@ -41,14 +42,13 @@ const modalOptions: ModalOptions = {
 };
 
 function getLabelDetails(label: ILabel) {
+    console.log(label);
     const labelName: HTMLInputElement = document.querySelector('#label-edit-name');
     labelName.value = label.name;
     const labelMake: HTMLInputElement = document.querySelector('#label-edit-make');
     labelMake.value = label.make;
     const labelModel: HTMLInputElement = document.querySelector('#label-edit-model');
     labelModel.value = label.vehicle_model;
-    console.log(labelModel.value);
-
     const labelYear: HTMLInputElement = document.querySelector('#label-edit-year');
     labelYear.value = label.year;
     const labelMileage: HTMLInputElement = document.querySelector('#label-edit-mileage');
@@ -75,6 +75,12 @@ function getLabelDetails(label: ILabel) {
     labelUserId.value = label.user_id.toString();
     const labelUniqueId: HTMLInputElement = document.querySelector('#label-edit-unique-id');
     labelUniqueId.value = label.unique_id;
+    const labelStickerIdentifier: HTMLInputElement = document.querySelector('#label-sticker-number');
+    labelStickerIdentifier.value = label.sticker_identifier;
+    console.log("labelStickerIdentifier", labelStickerIdentifier.value);
+    console.log("label.sticker_identifier", label.sticker_identifier);
+
+
     const nextUrl: HTMLInputElement = document.querySelector('#label-edit-next-url');
     nextUrl.value = window.location.href;
     labelDetailsModalWindow.show();
@@ -85,7 +91,7 @@ function deactivateLabel(label: ILabel) {
     console.log("labelActive", labelActive);
     console.log("label.active", label.active);
     const labelInfo: HTMLInputElement = document.querySelector('#label-deactivate-info');
-    labelInfo.innerHTML = `${label.name} ${label.make} ${label.vehicle_model} ${label.year}`;
+    labelInfo.innerHTML = `${label.name} ${label.make} ${label.vehicle_model} ${label.year} - ${label.sticker_identifier}`;
 
     labelActive.value = false.toString();
     const labelUniqueId: HTMLInputElement = document.querySelector('#label-deactivate-unique-id');

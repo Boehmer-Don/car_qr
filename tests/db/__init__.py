@@ -105,6 +105,7 @@ def populate(count: int = NUM_TEST_USERS):
         active = True if index < 8 else False
         date_deactivated = datetime.now() + timedelta(days=2) if not active else None
         m.Label(
+            sticker_identifier=f"QR0000{index + 1}",
             name=label["name"],
             make=label["make"],
             vehicle_model=label["vehicle_model"],
