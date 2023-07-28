@@ -67,7 +67,7 @@ def populate(count: int = NUM_TEST_USERS):
         phone,
     ) in gen_test_items(count):
         is_user_activated = False if users_counter < 7 else True
-        m.User(
+        user = m.User(
             email=email,
             first_name=first_name,
             last_name=last_name,
@@ -79,34 +79,22 @@ def populate(count: int = NUM_TEST_USERS):
             city=city,
             postal_code=postal_code,
             phone=phone,
-        ).save(False)
+        )
+        user.save()
         users_counter += 1
 
-    db.session.commit()
 
-    user_with_labels = m.User(
-        email=fake.email(),
-        first_name=fake.first_name(),
-        last_name=fake.last_name(),
-        activated=True,
-        name_of_dealership=fake.company().split()[0].strip(","),
-        address_of_dealership=fake.address(),
-        country=fake.country(),
-        province=fake.country(),
-        city=fake.city(),
-        postal_code=randint(10000, 99999),
-        phone=fake.phone_number(),
-    )
-    user_with_labels.save()
-
+def add_labels(user_id: int):
     with open("tests/db/test_labels.json", "r") as f:
         labels_data = json.load(f)
     for index, label in enumerate(labels_data):
-        active = True if index < 8 else False
-        date_deactivated = datetime.now() + timedelta(days=2) if not active else None
-        m.Label(
-            sticker_identifier=f"QR0000{index + 1}",
-            name=label["name"],
+        label_status = m.LabelStatus.active if index < 8 else m.LabelStatus.archived
+        date_deactivated = None
+        if label_status == m.LabelStatus.archived:
+            date_deactivated = datetime.now() + timedelta(days=2)
+        label = m.Label(
+            sticker_identifier=f"QR0000{index + user_id}",
+            name=label["name"] + str(user_id),
             make=label["make"],
             vehicle_model=label["vehicle_model"],
             year=label["year"],
@@ -116,8 +104,9 @@ def populate(count: int = NUM_TEST_USERS):
             type_of_vehicle=label["type_of_vehicle"],
             price=label["price"],
             url=label["url"],
-            user_id=user_with_labels.id,
-            active=active,
+            label_status=label_status,
             date_deactivated=date_deactivated,
-            views=randint(0, 100),
-        ).save()
+            user_id=user_id,
+        )
+        label.save()
+        # db.session.commit()

@@ -16,7 +16,6 @@ class LabelForm(FlaskForm):
     price = IntegerField("Price")
     date_received = StringField("Date Received")
     url = StringField("URL")
-    active = BooleanField("Active")
     user_id = IntegerField("User ID")
     views = IntegerField("Views")
     next_url = StringField("Next URL")

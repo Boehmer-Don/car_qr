@@ -18,7 +18,6 @@ class Label(BaseModel):
     date_received: datetime
     date_deactivated: datetime | None
     url: str
-    active: bool
     user_id: int
     views: int
 

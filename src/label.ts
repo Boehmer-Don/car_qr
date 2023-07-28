@@ -16,7 +16,6 @@ interface ILabel {
     price: number;
     date_received: string;
     url: string;
-    active: boolean;
     user_id: number;
     views: number;
 }
@@ -87,13 +86,8 @@ function getLabelDetails(label: ILabel) {
 }
 
 function deactivateLabel(label: ILabel) {
-    const labelActive: HTMLInputElement = document.querySelector('#label-deactivate-active');
-    console.log("labelActive", labelActive);
-    console.log("label.active", label.active);
     const labelInfo: HTMLInputElement = document.querySelector('#label-deactivate-info');
     labelInfo.innerHTML = `${label.name} ${label.make} ${label.vehicle_model} ${label.year} - ${label.sticker_identifier}`;
-
-    labelActive.value = false.toString();
     const labelUniqueId: HTMLInputElement = document.querySelector('#label-deactivate-unique-id');
     labelUniqueId.value = label.unique_id;
     const nextUrl: HTMLInputElement = document.querySelector('#label-deactivate-next-url');

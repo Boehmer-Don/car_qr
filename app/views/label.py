@@ -26,14 +26,14 @@ def get_active_labels():
     query = (
         m.Label.select()
         .where(m.Label.user_id == current_user.id)
-        .where(m.Label.active)
+        .where(m.Label.label_status == m.LabelStatus.active)
         .order_by(m.Label.id)
     )
     count_query = (
         sa.select(sa.func.count())
         .select_from(m.Label)
         .where(m.Label.user_id == current_user.id)
-        .where(m.Label.active)
+        .where(m.Label.label_status == m.LabelStatus.active)
     )
     pagination = create_pagination(total=db.session.scalar(count_query))
     return render_template(
@@ -53,14 +53,14 @@ def get_archived_labels():
     query = (
         m.Label.select()
         .where(m.Label.user_id == current_user.id)
-        .where(m.Label.active == False)
+        .where(m.Label.label_status == m.LabelStatus.archived)
         .order_by(m.Label.id)
     )
     count_query = (
         sa.select(sa.func.count())
         .select_from(m.Label)
         .where(m.Label.user_id == current_user.id)
-        .where(m.Label.active == False)
+        .where(m.Label.label_status == m.LabelStatus.archived)
     )
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels = db.session.execute(
@@ -92,7 +92,7 @@ def deactivate_label():
                     user_unique_id=current_user.unique_id,
                 )
             )
-        label.active = False
+        label.label_status = m.LabelStatus.archived
         label.date_deactivated = datetime.utcnow()
         label.save()
         log(log.INFO, "Deactivated label : [%s]", form.unique_id.data)
@@ -191,7 +191,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 type_of_vehicle=request.form.get(f"type_of_vehicle-{i}"),
                 price=request.form.get(f"price-{i}"),
                 url=request.form.get(f"url-{i}"),
-                active=True,
+                label_status=m.LabelStatus.cart,
                 user_id=current_user.id,
             ).save()
             new_labels_ids += f"{label.unique_id},"
@@ -264,8 +264,9 @@ def redirect_to_outer_url(label_unique_id: str):
     return redirect(label.url)
 
 
-@dealer_blueprint.route("/stripe/<user_unique_id>")
+@dealer_blueprint.route("/stripe/<user_unique_id>", methods=["GET", "POST"])
 def stripe(user_unique_id: str):
+    # All labels that are in cart
     return render_template(
         "label/stripe.html",
         user_unique_id=user_unique_id,

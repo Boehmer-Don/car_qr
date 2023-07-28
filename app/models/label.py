@@ -18,6 +18,12 @@ def gen_label_unique_id() -> str:
     return str(uuid4())
 
 
+class LabelStatus(enum.Enum):
+    active = "active"
+    cart = "cart"
+    archived = "archived"
+
+
 class Label(db.Model, ModelMixin):
     __tablename__ = "labels"
 
@@ -44,10 +50,13 @@ class Label(db.Model, ModelMixin):
     )
     date_deactivated: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
+        default=None,
         nullable=True,
     )
     url: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
-    active: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
+    label_status: orm.Mapped[LabelStatus] = orm.mapped_column(
+        sa.Enum(LabelStatus), default=LabelStatus.cart
+    )
     user_id: orm.Mapped[int] = orm.mapped_column(
         sa.Integer,
         sa.ForeignKey("users.id"),
