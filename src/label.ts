@@ -171,7 +171,13 @@ const quantity = parseInt(quantityStr.innerHTML);
 if (subTotal && taxes && total) {
     subTotal.innerHTML = "$" + (quantity * 20).toString() + ".00";
     const taxes_value = Math.round((quantity * 20 * 0.13) * 100) / 100;
-    taxes.innerHTML = "$" + taxes_value.toString();
-    total.innerHTML = "$" + (quantity * 20 * 1.13).toString();
+    taxes.innerHTML = "$" + taxes_value.toFixed(2).toString();
+    const total_value = Math.round((quantity * 20 * 1.13) * 100) / 100;
+    total.innerHTML = "$" + total_value.toFixed(2).toString();
+
+    // round to 2 decimal places
+    // Math.round((quantity * 20 * 1.13) * 100) / 100
+    // add zero if needed
+    // (quantity * 20 * 1.13).toFixed(2)
 }
 
