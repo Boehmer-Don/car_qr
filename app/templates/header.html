@@ -56,7 +56,7 @@
           </svg>
         </button>
 
-        <a href="#" class="relative">
+        <a href="{{url_for('labels.new_label_payment', user_unique_id=current_user.unique_id)}}" class="relative">
           <button id="cart" type="button"
             class="text-white ml-1 dark:hover:bg-gray-600 focus:outline-none focus:ring-4 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

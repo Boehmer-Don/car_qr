@@ -177,7 +177,6 @@ def new_label_set_amount(user_unique_id: str):
 @login_required
 def new_label_set_details(user_unique_id: str, amount: int):
     if request.method == "POST":
-        new_labels_ids = ""
         for i in range(1, int(amount) + 1):
             label = m.Label(
                 sticker_identifier=request.form.get(f"sticker-number-{i}"),
@@ -194,16 +193,11 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 label_status=m.LabelStatus.cart,
                 user_id=current_user.id,
             ).save()
-            new_labels_ids += f"{label.unique_id},"
             log(log.INFO, "Created label [%s]", label)
         # db.session.commit()
-        log(log.INFO, "Created [%s] labels: [%s]", amount, new_labels_ids)
+        # log(log.INFO, "Created [%s] labels: [%s]", amount)
         return redirect(
-            url_for(
-                "labels.new_label_payment",
-                user_unique_id=user_unique_id,
-                labels_ids=new_labels_ids,
-            )
+            url_for("labels.new_label_payment", user_unique_id=user_unique_id)
         )
 
     return render_template(
@@ -213,18 +207,12 @@ def new_label_set_details(user_unique_id: str, amount: int):
     )
 
 
-@dealer_blueprint.route(
-    "/payment/<user_unique_id>/<labels_ids>", methods=["GET", "POST"]
-)
+@dealer_blueprint.route("/payment/<user_unique_id>/", methods=["GET", "POST"])
 @login_required
-def new_label_payment(user_unique_id: str, labels_ids: str):
-    labels_ids_list = [label_id for label_id in labels_ids.split(",") if label_id]
-    labels = []
-    for label_id in labels_ids_list:
-        label = db.session.scalar(
-            sa.select(m.Label).where(m.Label.unique_id == label_id)
-        )
-        labels.append(label)
+def new_label_payment(user_unique_id: str):
+    labels = db.session.scalars(
+        m.Label.select().where(m.Label.label_status == m.LabelStatus.cart)
+    ).all()
     if request.method == "POST":
         for index, label in enumerate(labels):
             label.sticker_identifier = request.form.get(f"sticker-number-{index + 1}")
@@ -250,7 +238,6 @@ def new_label_payment(user_unique_id: str, labels_ids: str):
         "label/new_labels_payment.html",
         user_unique_id=user_unique_id,
         labels=labels,
-        labels_ids=labels_ids,
     )
 
 

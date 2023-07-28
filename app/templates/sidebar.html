@@ -27,7 +27,7 @@
       <li class="pl-1 flex items-center justify-between">
         <p>{{ current_user.first_name }} {{ current_user.last_name }}</p>
 
-        <a href="#" class="relative md:hidden">
+        <a href="{{url_for('labels.new_label_payment', user_unique_id=current_user.unique_id)}}" class="relative md:hidden">
           <button id="cart" type="button"
             class="text-white dark:hover:bg-gray-600 focus:outline-none focus:ring-4 dark:focus:ring-gray-700 rounded-lg text-xs p-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
