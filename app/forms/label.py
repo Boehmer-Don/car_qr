@@ -3,6 +3,7 @@ from wtforms import StringField, IntegerField, BooleanField
 
 
 class LabelForm(FlaskForm):
+    sticker_id = StringField("Unique ID")
     unique_id = StringField("Unique ID")
     name = StringField("Name")
     make = StringField("Make")
@@ -15,7 +16,6 @@ class LabelForm(FlaskForm):
     price = IntegerField("Price")
     date_received = StringField("Date Received")
     url = StringField("URL")
-    active = BooleanField("Active")
     user_id = IntegerField("User ID")
     views = IntegerField("Views")
     next_url = StringField("Next URL")

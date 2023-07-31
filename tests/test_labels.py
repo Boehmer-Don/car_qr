@@ -1,7 +1,8 @@
 # flake8: noqa E712
 from flask import current_app as app
 from flask_login import current_user
-from flask.testing import FlaskClient
+from flask.testing import FlaskClient, FlaskCliRunner
+from click.testing import Result
 from app import models as m, db
 from tests.utils import login
 
@@ -17,7 +18,7 @@ def test_labels_active(populate: FlaskClient):
     all_labels = db.session.scalars(m.Label.select()).all()
     assert len(all_labels) == 10
 
-    active_labels = db.session.scalars(m.Label.select().where(m.Label.active)).all()
+    active_labels = db.session.scalars(m.Label.select().where(m.Label.status)).all()
     for label in active_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
         assert label.name.encode() in response.data
 
@@ -30,7 +31,7 @@ def test_labels_archived(populate: FlaskClient):
     assert b"Archived Labels" in response.data
     assert b"Date Sold" in response.data
     archived_labels = db.session.scalars(
-        m.Label.select().where(m.Label.active == False)
+        m.Label.select().where(m.Label.status == m.LabelStatus.archived)
     ).all()
     for label in archived_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
         assert label.name.encode() in response.data
@@ -102,7 +103,7 @@ def test_deactivate_label(populate: FlaskClient):
     assert response.status_code == 302
 
     label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
-    assert label.active == False
+    assert label.status == m.LabelStatus.archived
     assert label.date_deactivated
 
 
@@ -147,7 +148,7 @@ def test_add_new_labels(client: FlaskClient):
     labels = db.session.scalars(m.Label.select()).all()
     assert len(labels) == TEST_LABELS_AMOUNT
     for label in labels:
-        assert label.active
+        assert label.status == m.LabelStatus.cart
 
     url = response.location
     response = client.get(url)
@@ -155,3 +156,11 @@ def test_add_new_labels(client: FlaskClient):
     assert response.status_code == 200
     assert b"Order Details" in response.data
     assert b"Credit Card Number" in response.data
+
+
+def test_add_labels(runner: FlaskCliRunner):
+    TEST_USER_ID = 1
+    count_before = db.session.query(m.Label).count()
+    res: Result = runner.invoke(args=["add-labels", "--user-id", f"{TEST_USER_ID}"])
+    assert "DB populated by 10 testing labels for user" in res.stdout
+    assert (db.session.query(m.Label).count() - count_before) == 10

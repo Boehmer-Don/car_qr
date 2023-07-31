@@ -26,14 +26,14 @@ def get_active_labels():
     query = (
         m.Label.select()
         .where(m.Label.user_id == current_user.id)
-        .where(m.Label.active)
+        .where(m.Label.status == m.LabelStatus.active)
         .order_by(m.Label.id)
     )
     count_query = (
         sa.select(sa.func.count())
         .select_from(m.Label)
         .where(m.Label.user_id == current_user.id)
-        .where(m.Label.active)
+        .where(m.Label.status == m.LabelStatus.active)
     )
     pagination = create_pagination(total=db.session.scalar(count_query))
     return render_template(
@@ -53,14 +53,14 @@ def get_archived_labels():
     query = (
         m.Label.select()
         .where(m.Label.user_id == current_user.id)
-        .where(m.Label.active == False)
+        .where(m.Label.status == m.LabelStatus.archived)
         .order_by(m.Label.id)
     )
     count_query = (
         sa.select(sa.func.count())
         .select_from(m.Label)
         .where(m.Label.user_id == current_user.id)
-        .where(m.Label.active == False)
+        .where(m.Label.status == m.LabelStatus.archived)
     )
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels = db.session.execute(
@@ -92,7 +92,7 @@ def deactivate_label():
                     user_unique_id=current_user.unique_id,
                 )
             )
-        label.active = False
+        label.status = m.LabelStatus.archived
         label.date_deactivated = datetime.utcnow()
         label.save()
         log(log.INFO, "Deactivated label : [%s]", form.unique_id.data)
@@ -119,6 +119,7 @@ def label_details():
                     user_unique_id=current_user.unique_id,
                 )
             )
+        label.sticker_id = form.sticker_id.data
         label.name = form.name.data
         label.make = form.make.data
         label.vehicle_model = form.vehicle_model.data
@@ -176,9 +177,9 @@ def new_label_set_amount(user_unique_id: str):
 @login_required
 def new_label_set_details(user_unique_id: str, amount: int):
     if request.method == "POST":
-        new_labels_ids = ""
         for i in range(1, int(amount) + 1):
             label = m.Label(
+                sticker_id=request.form.get(f"sticker-number-{i}"),
                 name=request.form.get(f"name-{i}"),
                 make=request.form.get(f"make-{i}"),
                 vehicle_model=request.form.get(f"vehicle_model-{i}"),
@@ -189,19 +190,13 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 type_of_vehicle=request.form.get(f"type_of_vehicle-{i}"),
                 price=request.form.get(f"price-{i}"),
                 url=request.form.get(f"url-{i}"),
-                active=True,
+                status=m.LabelStatus.cart,
                 user_id=current_user.id,
             ).save()
-            new_labels_ids += f"{label.unique_id},"
             log(log.INFO, "Created label [%s]", label)
-        # db.session.commit()
-        log(log.INFO, "Created [%s] labels: [%s]", amount, new_labels_ids)
+        # log(log.INFO, "Created [%s] labels: [%s]", amount)
         return redirect(
-            url_for(
-                "labels.new_label_payment",
-                user_unique_id=user_unique_id,
-                labels_ids=new_labels_ids,
-            )
+            url_for("labels.new_label_payment", user_unique_id=user_unique_id)
         )
 
     return render_template(
@@ -211,20 +206,15 @@ def new_label_set_details(user_unique_id: str, amount: int):
     )
 
 
-@dealer_blueprint.route(
-    "/payment/<user_unique_id>/<labels_ids>", methods=["GET", "POST"]
-)
+@dealer_blueprint.route("/payment/<user_unique_id>/", methods=["GET", "POST"])
 @login_required
-def new_label_payment(user_unique_id: str, labels_ids: str):
-    labels_ids_list = [label_id for label_id in labels_ids.split(",") if label_id]
-    labels = []
-    for label_id in labels_ids_list:
-        label = db.session.scalar(
-            sa.select(m.Label).where(m.Label.unique_id == label_id)
-        )
-        labels.append(label)
+def new_label_payment(user_unique_id: str):
+    labels = db.session.scalars(
+        m.Label.select().where(m.Label.status == m.LabelStatus.cart)
+    ).all()
     if request.method == "POST":
         for index, label in enumerate(labels):
+            label.sticker_id = request.form.get(f"sticker-number-{index + 1}")
             label.name = request.form.get(f"name-{index + 1}")
             label.make = request.form.get(f"make-{index + 1}")
             label.vehicle_model = request.form.get(f"vehicle_model-{index + 1}")
@@ -247,7 +237,6 @@ def new_label_payment(user_unique_id: str, labels_ids: str):
         "label/new_labels_payment.html",
         user_unique_id=user_unique_id,
         labels=labels,
-        labels_ids=labels_ids,
     )
 
 
@@ -261,8 +250,9 @@ def redirect_to_outer_url(label_unique_id: str):
     return redirect(label.url)
 
 
-@dealer_blueprint.route("/stripe/<user_unique_id>")
+@dealer_blueprint.route("/stripe/<user_unique_id>", methods=["GET", "POST"])
 def stripe(user_unique_id: str):
+    # All labels that are in cart
     return render_template(
         "label/stripe.html",
         user_unique_id=user_unique_id,

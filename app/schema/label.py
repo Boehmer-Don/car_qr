@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class Label(BaseModel):
     id: int
     unique_id: str
+    sticker_id: str
     name: str
     make: str
     vehicle_model: str
@@ -17,7 +18,6 @@ class Label(BaseModel):
     date_received: datetime
     date_deactivated: datetime | None
     url: str
-    active: bool
     user_id: int
     views: int
 

@@ -18,6 +18,12 @@ def gen_label_unique_id() -> str:
     return str(uuid4())
 
 
+class LabelStatus(enum.Enum):
+    cart = "cart"
+    active = "active"
+    archived = "archived"
+
+
 class Label(db.Model, ModelMixin):
     __tablename__ = "labels"
 
@@ -26,32 +32,38 @@ class Label(db.Model, ModelMixin):
         sa.String(36),
         default=gen_label_unique_id,
     )
-    name: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
+    sticker_id: orm.Mapped[str] = orm.mapped_column(
+        sa.String(16), default="", nullable=True
+    )
+    name: orm.Mapped[str] = orm.mapped_column(sa.String(256), default="")
     make: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     vehicle_model: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
-    year: orm.Mapped[str] = orm.mapped_column(sa.Integer, default=2000)
-    mileage: orm.Mapped[str] = orm.mapped_column(sa.Integer, default=10000)
+    year: orm.Mapped[int] = orm.mapped_column(sa.Integer, default=2000)
+    mileage: orm.Mapped[int] = orm.mapped_column(sa.Integer, default=10000)
     color: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     trim: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     type_of_vehicle: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
-    price: orm.Mapped[str] = orm.mapped_column(sa.Integer, default=0)
+    price: orm.Mapped[int] = orm.mapped_column(sa.Integer, default=0)
     date_received: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
         default=datetime.utcnow,
+        server_default=sa.func.now(),
     )
     date_deactivated: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
         nullable=True,
     )
     url: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
-    active: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
+    status: orm.Mapped[LabelStatus] = orm.mapped_column(
+        sa.Enum(LabelStatus), default=LabelStatus.cart
+    )
     user_id: orm.Mapped[int] = orm.mapped_column(
         sa.Integer,
-        sa.ForeignKey(
-            "users.id"
-        ),
+        sa.ForeignKey("users.id"),
     )
-    views: orm.Mapped[str] = orm.mapped_column(sa.Integer, nullable=True, default=0)
+    views: orm.Mapped[int] = orm.mapped_column(
+        sa.Integer, server_default="0", default=0
+    )
 
     user: orm.Mapped[User] = orm.relationship("User", backref="labels")
 

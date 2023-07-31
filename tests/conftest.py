@@ -60,9 +60,12 @@ def populate(client: FlaskClient):
         labels_data = json.load(f)
 
     for index, label in enumerate(labels_data):
-        active = True if index < 8 else False
-        date_deactivated = datetime.now() + timedelta(days=2) if not active else None
+        label_status = m.LabelStatus.active if index < 8 else m.LabelStatus.archived
+        date_deactivated = None
+        if label_status == m.LabelStatus.archived:
+            date_deactivated = datetime.now() + timedelta(days=2)
         m.Label(
+            sticker_id=f"QR0000{index + 1}",
             name=label["name"],
             make=label["make"],
             vehicle_model=label["vehicle_model"],
@@ -74,7 +77,7 @@ def populate(client: FlaskClient):
             price=label["price"],
             url=label["url"],
             user_id=1,
-            active=active,
+            status=label_status,
             date_deactivated=date_deactivated,
         ).save()
     yield client

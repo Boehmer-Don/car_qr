@@ -24,7 +24,21 @@
           </svg>
         </button>
       </li>
-      <li class="pl-1 py-2">{{ current_user.first_name }} {{ current_user.last_name }}</li>
+      <li class="pl-1 flex items-center justify-between">
+        <p>{{ current_user.first_name }} {{ current_user.last_name }}</p>
+
+        {% if current_user and current_user.role and current_user.role.value == "dealer" %}
+        <a href="{{url_for('labels.new_label_payment', user_unique_id=current_user.unique_id)}}" class="relative md:hidden">
+          <button id="cart" type="button"
+            class="text-white dark:hover:bg-gray-600 focus:outline-none focus:ring-4 dark:focus:ring-gray-700 rounded-lg text-xs p-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+            </svg>
+          </button>
+          <p class="absolute right-0 bottom-0 text-white text-xs">{{ labels_in_cart() }}</p>
+        </a>
+        {% endif %}
+      </li>
       {% endif %}
 
       {% if current_user.role.value == "admin" %}

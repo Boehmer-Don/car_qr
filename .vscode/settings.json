@@ -11,6 +11,7 @@
     "**/.venv/*/**": true
   },
   "cSpell.words": [
+    "backref",
     "flowbite",
     "jsonify",
     "pydantic",
@@ -26,7 +27,5 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
-  "python.testing.pytestArgs": [
-    "."
-  ]
+  "python.testing.pytestArgs": ["."]
 }

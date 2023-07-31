@@ -1,4 +1,3 @@
-import json
 import click
 from flask import Flask
 import sqlalchemy as sa
@@ -30,26 +29,10 @@ def init(app: Flask):
         @click.option("--user-id", default=2, type=int)
         def add_labels(user_id: int):
             """Fill DB by labels for a user."""
+            from tests.db import add_labels
 
-            with open("tests/db/test_labels.json", "r") as f:
-                labels_data = json.load(f)
-            for index, label in enumerate(labels_data):
-                active = True if index < 8 else False
-                m.Label(
-                    name=label["name"],
-                    make=label["make"],
-                    vehicle_model=label["vehicle_model"],
-                    year=label["year"],
-                    mileage=label["mileage"],
-                    color=label["color"],
-                    trim=label["trim"],
-                    type_of_vehicle=label["type_of_vehicle"],
-                    price=label["price"],
-                    url=label["url"],
-                    active=active,
-                    user_id=user_id,
-                ).save()
-            print(f"DB populated by 10 testing labels for user {user_id}")
+            add_labels(user_id)
+            print(f"DB populated by 10 testing labels for user [{user_id}]")
 
     @app.cli.command("create-admin")
     def create_admin():
