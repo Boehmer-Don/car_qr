@@ -29,7 +29,8 @@
               {{form.first_name.label(class='block text-sm font-medium
               text-gray-900 dark:text-white')}}
               {{form.first_name(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white",
+              placeholder="John"
               )
               }}
 
@@ -42,7 +43,8 @@
               {{form.last_name.label(class='block text-sm font-medium
               text-gray-900 dark:text-white')}}
               {{form.last_name(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white",
+              placeholder="Smith"
               )
               }}{% for error in form.errors.last_name %}
               <small class="text-danger">{{error}}</small>
@@ -54,7 +56,8 @@
             {{form.name_of_dealership.label(class='block text-sm
             font-medium text-gray-900 dark:text-white')}}
             {{form.name_of_dealership(
-            class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+            class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white",
+            placeholder="John's Auto"
             )
             }}
             {% for error in form.errors.name_of_dealership %}
@@ -66,7 +69,8 @@
             {{form.address_of_dealership.label(class='block text-sm
             font-medium text-gray-900 dark:text-white')}}
             {{form.address_of_dealership(
-            class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+            class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white",
+            placeholder="123 Main St."
             )
             }}
             {% for error in form.errors.address_of_dealership %}
@@ -79,7 +83,8 @@
               {{form.country.label(class='block text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.country(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white",
+              placeholder="Canada"
               )
               }}
               {% for error in form.errors.country %}
@@ -91,7 +96,8 @@
               {{form.province.label(class='block text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.province(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white",
+              placeholder="Ontario"
               )
               }}
               {% for error in form.errors.province %}
@@ -105,7 +111,8 @@
               {{form.city.label(class='block text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.city(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white",
+              placeholder="Ottawa"
               )
               }}
               {% for error in form.errors.city %}
@@ -117,7 +124,8 @@
               {{form.postal_code.label(class='block text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.postal_code(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="clean_number_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white",
+              placeholder="K0A"
               )
               }}
               {% for error in form.errors.postal_code %}
@@ -130,7 +138,8 @@
             {{form.phone.label(class='block text-sm
             font-medium text-gray-900 dark:text-white')}}
             {{form.phone(
-            class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+            class="clean_phone_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white",
+            placeholder="000-000-0000"
             )
             }}
             {% for error in form.errors.phone %}
@@ -156,4 +165,5 @@
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
 {% endblock %}

@@ -166,7 +166,7 @@ const subTotal = document.querySelector('#sub-total');
 const taxes = document.querySelector('#taxes');
 const total = document.querySelector('#total');
 const quantityStr = document.querySelector('#labels-quantity');
-const quantity = parseInt(quantityStr.innerHTML);
+const quantity = quantityStr ? parseInt(quantityStr.innerHTML) : 0;
 
 if (subTotal && taxes && total) {
     subTotal.innerHTML = "$" + (quantity * 20).toString() + ".00";
