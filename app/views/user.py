@@ -1,4 +1,5 @@
 # flake8: noqa E712
+from datetime import datetime
 from flask import (
     Blueprint,
     render_template,
@@ -27,11 +28,20 @@ def get_all():
     if current_user.role != m.UsersRole.admin:
         return redirect(url_for("main.index"))
     q = request.args.get("q", type=str, default=None)
-    query = m.User.select().where(m.User.activated).order_by(m.User.id)
-    count_query = sa.select(sa.func.count()).where(m.User.activated).select_from(m.User)
+    query = (
+        m.User.select()
+        .where(m.User.activated, m.User.deleted == False)
+        .order_by(m.User.id)
+    )
+    count_query = (
+        sa.select(sa.func.count())
+        .where(m.User.activated, m.User.deleted == False)
+        .select_from(m.User)
+    )
     if q:
         query = (
             m.User.select()
+            .where(m.User.activated, m.User.deleted == False)
             .where(
                 m.User.first_name.like(f"%{q}%")
                 | m.User.email.like(f"%{q}%")
@@ -41,6 +51,7 @@ def get_all():
         )
         count_query = (
             sa.select(sa.func.count())
+            .where(m.User.activated, m.User.deleted == False)
             .where(
                 m.User.first_name.like(f"%{q}%")
                 | m.User.email.like(f"%{q}%")
@@ -102,6 +113,7 @@ def delete(id: int):
         return "no user", 404
 
     user.deleted = True
+    user.email = f"{user.email}_{datetime.utcnow().isoformat()}"
     user.save()
 
     log(log.INFO, "User [%s] is set to deleted.", user)
