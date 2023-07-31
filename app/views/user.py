@@ -72,7 +72,9 @@ def get_all():
         page=pagination,
         search_query=q,
         pending_users=db.session.scalars(
-            sa.select(m.User).where(m.User.activated == False, m.User.role == "dealer")
+            sa.select(m.User)
+            .where(m.User.activated == False, m.User.deleted == False)
+            .where(m.User.activated == False, m.User.role == "dealer")
         ).all(),
     )
 
