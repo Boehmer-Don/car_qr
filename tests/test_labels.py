@@ -18,9 +18,7 @@ def test_labels_active(populate: FlaskClient):
     all_labels = db.session.scalars(m.Label.select()).all()
     assert len(all_labels) == 10
 
-    active_labels = db.session.scalars(
-        m.Label.select().where(m.Label.label_status)
-    ).all()
+    active_labels = db.session.scalars(m.Label.select().where(m.Label.status)).all()
     for label in active_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
         assert label.name.encode() in response.data
 
@@ -33,7 +31,7 @@ def test_labels_archived(populate: FlaskClient):
     assert b"Archived Labels" in response.data
     assert b"Date Sold" in response.data
     archived_labels = db.session.scalars(
-        m.Label.select().where(m.Label.label_status == m.LabelStatus.archived)
+        m.Label.select().where(m.Label.status == m.LabelStatus.archived)
     ).all()
     for label in archived_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
         assert label.name.encode() in response.data
@@ -105,7 +103,7 @@ def test_deactivate_label(populate: FlaskClient):
     assert response.status_code == 302
 
     label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
-    assert label.label_status == m.LabelStatus.archived
+    assert label.status == m.LabelStatus.archived
     assert label.date_deactivated
 
 
@@ -150,7 +148,7 @@ def test_add_new_labels(client: FlaskClient):
     labels = db.session.scalars(m.Label.select()).all()
     assert len(labels) == TEST_LABELS_AMOUNT
     for label in labels:
-        assert label.label_status == m.LabelStatus.cart
+        assert label.status == m.LabelStatus.cart
 
     url = response.location
     response = client.get(url)

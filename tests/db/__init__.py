@@ -93,7 +93,7 @@ def add_labels(user_id: int):
         if label_status == m.LabelStatus.archived:
             date_deactivated = datetime.now() + timedelta(days=2)
         label = m.Label(
-            sticker_identifier=f"QR0000{index + user_id}",
+            sticker_id=f"QR0000{index + user_id}",
             name=label["name"] + str(user_id),
             make=label["make"],
             vehicle_model=label["vehicle_model"],
@@ -104,7 +104,7 @@ def add_labels(user_id: int):
             type_of_vehicle=label["type_of_vehicle"],
             price=label["price"],
             url=label["url"],
-            label_status=label_status,
+            status=label_status,
             date_deactivated=date_deactivated,
             user_id=user_id,
         )

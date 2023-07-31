@@ -24,7 +24,7 @@ def labels_in_cart():
         labels = db.session.scalars(
             m.Label.select()
             .where(m.Label.user_id == current_user.id)
-            .where(m.Label.label_status == m.LabelStatus.cart)
+            .where(m.Label.status == m.LabelStatus.cart)
         ).all()
         return len(labels)
     return 0

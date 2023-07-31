@@ -65,7 +65,7 @@ def populate(client: FlaskClient):
         if label_status == m.LabelStatus.archived:
             date_deactivated = datetime.now() + timedelta(days=2)
         m.Label(
-            sticker_identifier=f"QR0000{index + 1}",
+            sticker_id=f"QR0000{index + 1}",
             name=label["name"],
             make=label["make"],
             vehicle_model=label["vehicle_model"],
@@ -77,7 +77,7 @@ def populate(client: FlaskClient):
             price=label["price"],
             url=label["url"],
             user_id=1,
-            label_status=label_status,
+            status=label_status,
             date_deactivated=date_deactivated,
         ).save()
     yield client
