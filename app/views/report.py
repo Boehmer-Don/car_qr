@@ -31,8 +31,8 @@ def dashboard():
     Model
     Price Range
     """
-    make_filter = None
-    model_filter = None
+    make_filter = "All"
+    model_filter = "All"
     if request.method == "POST":
         make_filter = request.form.get("make_filter")
         model_filter = request.form.get("model_filter")
@@ -46,10 +46,10 @@ def dashboard():
         .where(m.Label.user_id == current_user.id)
     )
 
-    if make_filter:
+    if make_filter and make_filter != "All":
         query = query.where(m.Label.make == make_filter)
         count_query = count_query.where(m.Label.make == make_filter)
-    if model_filter:
+    if model_filter and model_filter != "All":
         query = query.where(m.Label.vehicle_model == model_filter)
         count_query = count_query.where(m.Label.make == model_filter)
 
@@ -63,25 +63,29 @@ def dashboard():
         .scalars()
         .all()
     )
-    makes = [
-        label.make
-        for label in set(
-            db.session.scalars(
-                m.Label.select().where(m.Label.user_id == current_user.id)
-            ).all()
-        )
-    ]
-    if make_filter:
-        models = [
-            label.vehicle_model
-            for label in set(
-                db.session.scalars(
-                    m.Label.select()
-                    .where(m.Label.user_id == current_user.id)
-                    .where(m.Label.make == make_filter)
+    makes = list(
+        set(
+            [
+                label.make
+                for label in db.session.scalars(
+                    m.Label.select().where(m.Label.user_id == current_user.id)
                 ).all()
+            ]
+        )
+    )
+    if make_filter:
+        models = list(
+            set(
+                [
+                    label.vehicle_model
+                    for label in db.session.scalars(
+                        m.Label.select()
+                        .where(m.Label.user_id == current_user.id)
+                        .where(m.Label.make == make_filter)
+                    ).all()
+                ]
             )
-        ]
+        )
     else:
         models = [
             label.vehicle_model

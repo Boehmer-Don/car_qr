@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   filterMake.addEventListener('change', () => {
     let models: Array<string>;
-    // applyFiltersButton.click();
     fetch('/report/makefilter', {
       method: 'POST',
       headers: {
@@ -27,6 +26,9 @@ document.addEventListener('DOMContentLoaded', function () {
           optionElement.textContent = option;
           filterModel.appendChild(optionElement);
         });
+        setTimeout(() => {
+          applyFiltersButton.click();
+        }, 2000);
       })
       .catch(error => {
         console.error('Error sending data to Flask:', error);

@@ -71,6 +71,7 @@
           </label>
 
           <select id="filter-make" name="make_filter" class="">
+            <option value="All">All</option>
             {% for make in makes %} {% if make == make_filter %}
             <option value="{{ make_filter }}" selected>
               {{ make_filter }}
@@ -100,6 +101,7 @@
           </label>
 
           <select id="filter-model" name="model_filter" class="">
+            <option value="All">All</option>
             {% for model in models %} {% if model == model_filter %}
             <option value="{{ model_filter }}" selected>
               {{ model_filter }}
