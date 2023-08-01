@@ -47,7 +47,7 @@ def runner(app, client):
 
 @pytest.fixture
 def populate(client: FlaskClient):
-    NUM_TEST_USERS = 100
+    NUM_TEST_USERS = 15
     for i in range(NUM_TEST_USERS):
         m.User(
             email=f"user{i+1}@mail.com",

@@ -68,11 +68,13 @@ def populate(count: int = NUM_TEST_USERS):
     ) in gen_test_items(count):
         is_user_activated = False if users_counter < 7 else True
         email = "dealer@test.com" if users_counter == 7 else email
+        plan = m.UsersPlan.advanced if users_counter == 7 else m.UsersPlan.basic
         user = m.User(
             email=email,
             password="pass",
             first_name=first_name,
             last_name=last_name,
+            plan=plan,
             activated=is_user_activated,
             name_of_dealership=company,
             address_of_dealership=address,
@@ -86,14 +88,14 @@ def populate(count: int = NUM_TEST_USERS):
         users_counter += 1
 
 
-def add_labels(user_id: int):
+def add_labels(user_id: int = 9):
     with open("tests/db/test_labels.json", "r") as f:
         labels_data = json.load(f)
     for index, label in enumerate(labels_data):
         label_status = m.LabelStatus.active if index < 8 else m.LabelStatus.archived
         date_deactivated = None
         if label_status == m.LabelStatus.archived:
-            date_deactivated = datetime.now() + timedelta(days=2)
+            date_deactivated = datetime.now() + timedelta(days=randint(1, 30))
         label = m.Label(
             sticker_id=f"QR0000{index + user_id}",
             name=label["name"] + str(user_id),
@@ -109,6 +111,6 @@ def add_labels(user_id: int):
             status=label_status,
             date_deactivated=date_deactivated,
             user_id=user_id,
+            views=randint(0, 99),
         )
         label.save()
-        # db.session.commit()
