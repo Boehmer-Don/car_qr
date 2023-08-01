@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class Label(BaseModel):
     id: int
     unique_id: str
-    sticker_identifier: str
+    sticker_id: str
     name: str
     make: str
     vehicle_model: str
