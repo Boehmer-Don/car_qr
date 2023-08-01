@@ -20,9 +20,21 @@ from app.logger import log
 report_blueprint = Blueprint("report", __name__, url_prefix="/report")
 
 
-@report_blueprint.route("/all", methods=["GET"])
+@report_blueprint.route("/all", methods=["GET", "POST"])
 @login_required
 def dashboard():
+    """
+    Time of Day
+    Views
+    Vehicle Type
+    Make
+    Model
+    Price Range
+    """
+    make_filter = None
+    if request.method == "POST":
+        make_filter = request.form.get("make_filter")
+
     query = (
         m.Label.select().where(m.Label.user_id == current_user.id).order_by(m.Label.id)
     )
@@ -31,14 +43,34 @@ def dashboard():
         .select_from(m.Label)
         .where(m.Label.user_id == current_user.id)
     )
+
+    if make_filter:
+        query = query.where(m.Label.make == make_filter)
+        count_query = count_query.where(m.Label.make == make_filter)
     pagination = create_pagination(total=db.session.scalar(count_query))
-    return render_template(
-        "report/dashboard.html",
-        labels=db.session.execute(
+    labels = (
+        db.session.execute(
             query.offset((pagination.page - 1) * pagination.per_page).limit(
                 pagination.per_page
             )
-        ).scalars(),
+        )
+        .scalars()
+        .all()
+    )
+    makes = [
+        label.make
+        for label in set(
+            db.session.scalars(
+                m.Label.select().where(m.Label.user_id == current_user.id)
+            ).all()
+        )
+    ]
+
+    return render_template(
+        "report/dashboard.html",
+        labels=labels,
+        makes=makes,
+        make_filter=make_filter,
         page=pagination,
     )
 

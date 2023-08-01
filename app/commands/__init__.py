@@ -27,7 +27,7 @@ def init(app: Flask):
             print(f"DB populated by {count} instancies")
 
         @app.cli.command()
-        @click.option("--user-id", default=2, type=int)
+        @click.option("--user-id", default=9, type=int)
         def add_labels(user_id: int):
             """Fill DB by labels for a user."""
             from tests.db import add_labels

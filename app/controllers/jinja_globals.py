@@ -16,6 +16,8 @@ def time_delta(created_at: datetime):
 
 
 def days_active(date_received: datetime, date_deactivated: datetime):
+    if not date_deactivated:
+        return (datetime.now() - date_received).days
     return (date_deactivated - date_received).days
 
 

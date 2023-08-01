@@ -93,12 +93,13 @@ def add_labels(user_id: int = 9):
         labels_data = json.load(f)
     for index, label in enumerate(labels_data):
         label_status = m.LabelStatus.active if index < 8 else m.LabelStatus.archived
+        date_received = datetime.now() - timedelta(days=randint(1, 30))
         date_deactivated = None
         if label_status == m.LabelStatus.archived:
-            date_deactivated = datetime.now() + timedelta(days=randint(1, 30))
+            date_deactivated = date_received + timedelta(days=randint(1, 30))
         label = m.Label(
             sticker_id=f"QR0000{index + user_id}",
-            name=label["name"] + str(user_id),
+            name=f'{label["name"]} {label["make"]}',
             make=label["make"],
             vehicle_model=label["vehicle_model"],
             year=label["year"],
@@ -109,6 +110,7 @@ def add_labels(user_id: int = 9):
             price=label["price"],
             url=label["url"],
             status=label_status,
+            date_received=date_received,
             date_deactivated=date_deactivated,
             user_id=user_id,
             views=randint(0, 99),
