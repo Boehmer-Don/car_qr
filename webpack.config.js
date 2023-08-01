@@ -66,12 +66,23 @@ const logoUploadConfig = {
   },
 };
 
+const reports = {
+  entry: {
+    main: './src/report.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/report.js', // <--- Will be compiled to this single file
+  },
+};
+
 const configs = [
   baseConfig,
   userConfig,
   customConfig,
   logoUploadConfig,
   labelConfig,
+  reports,
 ].map(conf =>
   merge(defaultConfig, conf),
 );

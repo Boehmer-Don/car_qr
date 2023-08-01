@@ -32,8 +32,10 @@ def dashboard():
     Price Range
     """
     make_filter = None
+    model_filter = None
     if request.method == "POST":
         make_filter = request.form.get("make_filter")
+        model_filter = request.form.get("model_filter")
 
     query = (
         m.Label.select().where(m.Label.user_id == current_user.id).order_by(m.Label.id)
@@ -47,6 +49,10 @@ def dashboard():
     if make_filter:
         query = query.where(m.Label.make == make_filter)
         count_query = count_query.where(m.Label.make == make_filter)
+    if model_filter:
+        query = query.where(m.Label.vehicle_model == model_filter)
+        count_query = count_query.where(m.Label.make == model_filter)
+
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels = (
         db.session.execute(
@@ -65,18 +71,53 @@ def dashboard():
             ).all()
         )
     ]
+    if make_filter:
+        models = [
+            label.vehicle_model
+            for label in set(
+                db.session.scalars(
+                    m.Label.select()
+                    .where(m.Label.user_id == current_user.id)
+                    .where(m.Label.make == make_filter)
+                ).all()
+            )
+        ]
+    else:
+        models = [
+            label.vehicle_model
+            for label in set(
+                db.session.scalars(
+                    m.Label.select().where(m.Label.user_id == current_user.id)
+                ).all()
+            )
+        ]
 
     return render_template(
         "report/dashboard.html",
         labels=labels,
         makes=makes,
         make_filter=make_filter,
+        models=models,
+        model_filter=model_filter,
         page=pagination,
     )
 
 
+@report_blueprint.route("/makefilter", methods=["GET", "POST"])
+@login_required
+def makefilter():
+    make = request.json.get("makeSelected")
+    labels = db.session.scalars(
+        m.Label.select()
+        .where(m.Label.user_id == current_user.id)
+        .where(m.Label.make == make)
+    ).all()
+    models = list(set([label.vehicle_model for label in labels]))
+    return {"models": models}
+
+
 @report_blueprint.route("/delete", methods=["GET", "POST"])
 @login_required
-def deactivate_label():
+def delete():
     ...
     return redirect(url_for("report.get_all"))
