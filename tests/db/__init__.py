@@ -67,8 +67,10 @@ def populate(count: int = NUM_TEST_USERS):
         phone,
     ) in gen_test_items(count):
         is_user_activated = False if users_counter < 7 else True
+        email = "dealer@test.com" if users_counter == 7 else email
         user = m.User(
             email=email,
+            password="pass",
             first_name=first_name,
             last_name=last_name,
             activated=is_user_activated,
