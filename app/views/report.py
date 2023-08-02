@@ -23,15 +23,6 @@ report_blueprint = Blueprint("report", __name__, url_prefix="/report")
 @report_blueprint.route("/all", methods=["GET", "POST"])
 @login_required
 def dashboard():
-    """
-    Time of Day
-    Views
-    Vehicle Type
-    Make
-    Model
-    Price Range
-    """
-
     views_filter = "NA"
     type_filter = "All"
     make_filter = "All"
@@ -151,9 +142,9 @@ def dashboard():
     )
 
 
-@report_blueprint.route("/makefilter", methods=["GET", "POST"])
+@report_blueprint.route("/get_models", methods=["POST"])
 @login_required
-def makefilter():
+def get_models():
     make = request.json.get("makeSelected")
     labels = db.session.scalars(
         m.Label.select()

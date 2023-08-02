@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   const filterMake: HTMLSelectElement = document.querySelector('#filter-make');
+  const filterType: HTMLSelectElement =
+    document.querySelector('#type_of_vehicle');
   const filterModel: HTMLSelectElement =
     document.querySelector('#filter-model');
   const applyFiltersButton: HTMLButtonElement = document.querySelector(
@@ -8,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   filterMake.addEventListener('change', () => {
     let models: Array<string> = ['All'];
-    fetch('/report/makefilter', {
+    fetch('/report/get_models', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -26,13 +28,19 @@ document.addEventListener('DOMContentLoaded', function () {
           optionElement.textContent = option;
           filterModel.appendChild(optionElement);
         });
-        setTimeout(() => {
-          applyFiltersButton.click();
-        }, 2000);
+        applyFiltersButton.click();
       })
       .catch(error => {
         console.error('Error sending data to Flask:', error);
       });
+  });
+
+  filterModel.addEventListener('change', () => {
+    applyFiltersButton.click();
+  });
+
+  filterType.addEventListener('change', () => {
+    applyFiltersButton.click();
   });
 
   const viewsButton: Element = document.querySelector('#views-button');
