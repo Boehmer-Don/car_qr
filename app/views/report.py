@@ -32,17 +32,25 @@ def dashboard():
     Price Range
     """
 
-    view_filter = "NA"
+    views_filter = "NA"
     type_filter = "All"
     make_filter = "All"
     model_filter = "All"
     if request.method == "POST":
+        views_filter = request.form.get("views_filter")
         type_filter = request.form.get("type_filter")
         make_filter = request.form.get("make_filter")
         model_filter = request.form.get("model_filter")
 
+    if views_filter == "Asc":
+        order_by = m.Label.views.asc()
+    elif views_filter == "Desc":
+        order_by = m.Label.views.desc()
+    else:
+        order_by = m.Label.id
+
     query = (
-        m.Label.select().where(m.Label.user_id == current_user.id).order_by(m.Label.id)
+        m.Label.select().where(m.Label.user_id == current_user.id).order_by(order_by)
     )
     count_query = (
         sa.select(sa.func.count())
@@ -59,6 +67,10 @@ def dashboard():
     if type_filter and type_filter != "All":
         query = query.where(m.Label.type_of_vehicle == type_filter)
         count_query = count_query.where(m.Label.type_of_vehicle == type_filter)
+    if views_filter == "Asc":
+        query = query.order_by(m.Label.views.asc())
+    elif views_filter == "Desc":
+        query = query.order_by(m.Label.views.desc())
 
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels = (
@@ -124,6 +136,7 @@ def dashboard():
         model_filter=model_filter,
         types=types,
         type_filter=type_filter,
+        views_filter=views_filter,
         page=pagination,
     )
 

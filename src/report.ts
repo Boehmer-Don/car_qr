@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
   );
 
   filterMake.addEventListener('change', () => {
-    let models: Array<string>;
+    let models: Array<string> = ['All'];
     fetch('/report/makefilter', {
       method: 'POST',
       headers: {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })
       .then(response => response.json())
       .then(data => {
-        models = data.models;
+        models.push(...data.models);
         console.log('Response from Flask server:', models);
         filterModel.innerHTML = '';
         models.forEach(option => {
@@ -33,5 +33,31 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(error => {
         console.error('Error sending data to Flask:', error);
       });
+  });
+
+  const viewsButton: Element = document.querySelector('#views-button');
+  const viewsArrowDown: Element = document.querySelector('#views-arrow-down');
+  const viewsArrowUp: Element = document.querySelector('#views-arrow-up');
+  const viewsSelectNA: Element = document.querySelector('#views-na');
+  const viewsSelectAsc: Element = document.querySelector('#views-asc');
+  const viewsSelectDesc: Element = document.querySelector('#views-desc');
+  viewsButton.addEventListener('click', () => {
+    viewsArrowDown.classList.toggle('hidden');
+    viewsArrowUp.classList.toggle('hidden');
+    if (viewsSelectNA.hasAttribute('selected')) {
+      console.log('NA');
+
+      viewsSelectNA.removeAttribute('selected');
+      viewsSelectDesc.setAttribute('selected', 'selected');
+    } else if (viewsSelectAsc.hasAttribute('selected')) {
+      console.log('Asc');
+      viewsSelectAsc.removeAttribute('selected');
+      viewsSelectDesc.setAttribute('selected', 'selected');
+    } else if (viewsSelectDesc.hasAttribute('selected')) {
+      console.log('Desc');
+      viewsSelectDesc.removeAttribute('selected');
+      viewsSelectAsc.setAttribute('selected', 'selected');
+    }
+    applyFiltersButton.click();
   });
 });

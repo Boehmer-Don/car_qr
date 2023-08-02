@@ -52,7 +52,10 @@
         <div>Time of Day</div>
 
         <div>
-          <label for="type_of_vehicle" class="flex items-center">
+          <label
+            for="type_of_vehicle"
+            id="views-button"
+            class="flex items-center cursor-pointer">
             <p>Views</p>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -60,7 +63,8 @@
               viewBox="0 -3 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="w-3 h-3 ml-1">
+              id="views-arrow-down"
+              class="{% if views_filter == 'Asc' %}hidden{% endif %} w-3 h-3 ml-1">
               <path
                 stroke-width="2.5"
                 stroke-linecap="round"
@@ -73,7 +77,8 @@
               viewBox="0 -3 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="hidden w-3 h-3 ml-1">
+              id="views-arrow-up"
+              class="{% if views_filter == 'Desc' or views_filter == 'NA' %}hidden{% endif %} w-3 h-3 ml-1">
               <path
                 stroke-width="2.5"
                 stroke-linecap="round"
@@ -82,10 +87,10 @@
             </svg>
           </label>
 
-          <select id="views" name="views_filter" class="hidden">
-            <option value="NA" selected>NA</option>
-            <option value="Asc">Asc</option>
-            <option value="Desc">Desc</option>
+          <select id="views" name="views_filter" class="">
+            <option id="views-na" value="NA" {% if views_filter == 'NA' %}selected{% endif %}>NA</option>
+            <option id="views-asc" value="Asc" {% if views_filter == 'Asc' %}selected{% endif %}>Asc</option>
+            <option id="views-desc" value="Desc" {% if views_filter == 'Desc' %}selected{% endif %}>Desc</option>
           </select>
         </div>
 
