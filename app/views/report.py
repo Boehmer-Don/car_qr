@@ -29,6 +29,9 @@ def dashboard():
     model_filter = "All"
     price_lower = None
     price_upper = None
+    start_date = None
+    end_date = None
+    date_received = None
     if request.method == "POST":
         views_filter = request.form.get("views_filter")
         type_filter = request.form.get("type_filter")
@@ -36,6 +39,9 @@ def dashboard():
         model_filter = request.form.get("model_filter")
         price_lower = request.form.get("price-lower")
         price_upper = request.form.get("price-upper")
+        start_date = request.form.get("start_date")
+        end_date = request.form.get("end_date")
+        date_received = request.form.get("date_received")
 
     if views_filter == "Asc":
         order_by = m.Label.views.asc()
@@ -52,6 +58,15 @@ def dashboard():
         .select_from(m.Label)
         .where(m.Label.user_id == current_user.id)
     )
+
+    if start_date and end_date:
+        start_date = datetime.strptime(start_date, "%m/%d/%Y")
+        end_date = datetime.strptime(end_date, "%m/%d/%Y")
+        query = query.where(sa.func.DATE(m.Label.date_received) >= start_date)
+        query = query.where(sa.func.DATE(m.Label.date_received) <= end_date)
+    elif date_received:
+        date_received = datetime.strptime(date_received, "%m/%d/%Y").date()
+        query = query.where(sa.func.DATE(m.Label.date_received) == date_received)
 
     if make_filter and make_filter != "All":
         query = query.where(m.Label.make == make_filter)
