@@ -31,9 +31,13 @@ def dashboard():
     Model
     Price Range
     """
+
+    view_filter = "NA"
+    type_filter = "All"
     make_filter = "All"
     model_filter = "All"
     if request.method == "POST":
+        type_filter = request.form.get("type_filter")
         make_filter = request.form.get("make_filter")
         model_filter = request.form.get("model_filter")
 
@@ -51,7 +55,10 @@ def dashboard():
         count_query = count_query.where(m.Label.make == make_filter)
     if model_filter and model_filter != "All":
         query = query.where(m.Label.vehicle_model == model_filter)
-        count_query = count_query.where(m.Label.make == model_filter)
+        count_query = count_query.where(m.Label.vehicle_model == model_filter)
+    if type_filter and type_filter != "All":
+        query = query.where(m.Label.type_of_vehicle == type_filter)
+        count_query = count_query.where(m.Label.type_of_vehicle == type_filter)
 
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels = (
@@ -63,6 +70,16 @@ def dashboard():
         .scalars()
         .all()
     )
+    types = list(
+        set(
+            [
+                label.type_of_vehicle
+                for label in db.session.scalars(
+                    m.Label.select().where(m.Label.user_id == current_user.id)
+                ).all()
+            ]
+        )
+    )
     makes = list(
         set(
             [
@@ -73,7 +90,7 @@ def dashboard():
             ]
         )
     )
-    if make_filter:
+    if make_filter and make_filter != "All":
         models = list(
             set(
                 [
@@ -87,14 +104,16 @@ def dashboard():
             )
         )
     else:
-        models = [
-            label.vehicle_model
-            for label in set(
-                db.session.scalars(
-                    m.Label.select().where(m.Label.user_id == current_user.id)
-                ).all()
+        models = list(
+            set(
+                [
+                    label.vehicle_model
+                    for label in db.session.scalars(
+                        m.Label.select().where(m.Label.user_id == current_user.id)
+                    ).all()
+                ]
             )
-        ]
+        )
 
     return render_template(
         "report/dashboard.html",
@@ -103,6 +122,8 @@ def dashboard():
         make_filter=make_filter,
         models=models,
         model_filter=model_filter,
+        types=types,
+        type_filter=type_filter,
         page=pagination,
     )
 
