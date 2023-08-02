@@ -94,7 +94,7 @@
           </select>
         </div>
 
-        <div>
+        <div class="relative flex flex-col">
           <label for="type_of_vehicle" class="flex items-center">
             <p>Vehicle Type</p>
             <svg
@@ -112,7 +112,7 @@
             </svg>
           </label>
 
-          <select id="type_of_vehicle" name="type_filter" class="">
+          <select id="type_of_vehicle" name="type_filter" class="absolute w-full h-3 bg-transparent opacity-0 cursor-pointer">
             <option value="All">All</option>
             {% for type in types %} {% if type == type_filter %}
             <option value="{{ type_filter }}" selected>
@@ -124,7 +124,7 @@
           </select>
         </div>
 
-        <div class="flex flex-col">
+        <div class="relative flex flex-col">
           <label for="make" class="flex items-center">
             <p>Make</p>
             <svg
@@ -142,7 +142,7 @@
             </svg>
           </label>
 
-          <select id="filter-make" name="make_filter" class="">
+          <select id="filter-make" name="make_filter" class="absolute w-full h-3 bg-transparent opacity-0 cursor-pointer">
             <option value="All">All</option>
             {% for make in makes %} {% if make == make_filter %}
             <option value="{{ make_filter }}" selected>
@@ -154,7 +154,7 @@
           </select>
         </div>
 
-        <div class="flex flex-col">
+        <div class="relative flex flex-col">
           <label for="make" class="flex items-center">
             <p>Model</p>
             <svg
@@ -172,7 +172,7 @@
             </svg>
           </label>
 
-          <select id="filter-model" name="model_filter" class="">
+          <select id="filter-model" name="model_filter" class="absolute w-full h-3 bg-transparent opacity-0 cursor-pointer">
             <option value="All">All</option>
             {% for model in models %} {% if model == model_filter %}
             <option value="{{ model_filter }}" selected>
@@ -211,7 +211,7 @@
 
       <button
         type="submit"
-        class="w-full mb-5 px-5 py-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800"
+        class="w-full my-5 px-5 py-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800"
         id="apply-filters-button">
         Apply all filters >
       </button>
