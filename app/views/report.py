@@ -42,6 +42,7 @@ def dashboard():
         start_date = request.form.get("start_date")
         end_date = request.form.get("end_date")
         date_received = request.form.get("date_received")
+        views_options_filter = request.form.get("views_options_filter")
 
     if views_filter == "Asc":
         order_by = m.Label.views.asc()
@@ -87,6 +88,14 @@ def dashboard():
     if price_upper:
         query = query.where(m.Label.price <= price_upper)
         count_query = count_query.where(m.Label.price <= price_upper)
+    if views_options_filter == "0-10":
+        query = query.where(m.Label.views <= 10)
+    elif views_options_filter == "10-50":
+        query = query.where(m.Label.views >= 10).where(m.Label.views <= 50)
+    elif views_options_filter == "50-100":
+        query = query.where(m.Label.views >= 50).where(m.Label.views <= 100)
+    elif views_options_filter == "100-1000":
+        query = query.where(m.Label.views >= 100).where(m.Label.views <= 1000)
 
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels = (

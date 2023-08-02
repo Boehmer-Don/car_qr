@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(response => response.json())
       .then(data => {
         models.push(...data.models);
-        console.log('Response from Flask server:', models);
         filterModel.innerHTML = '';
         models.forEach(option => {
           const optionElement = document.createElement('option');
@@ -43,29 +42,9 @@ document.addEventListener('DOMContentLoaded', function () {
     applyFiltersButton.click();
   });
 
-  const viewsButton: Element = document.querySelector('#views-button');
-  const viewsArrowDown: Element = document.querySelector('#views-arrow-down');
-  const viewsArrowUp: Element = document.querySelector('#views-arrow-up');
-  const viewsSelectNA: Element = document.querySelector('#views-na');
-  const viewsSelectAsc: Element = document.querySelector('#views-asc');
-  const viewsSelectDesc: Element = document.querySelector('#views-desc');
-  viewsButton.addEventListener('click', () => {
-    viewsArrowDown.classList.toggle('hidden');
-    viewsArrowUp.classList.toggle('hidden');
-    if (viewsSelectNA.hasAttribute('selected')) {
-      console.log('NA');
-
-      viewsSelectNA.removeAttribute('selected');
-      viewsSelectDesc.setAttribute('selected', 'selected');
-    } else if (viewsSelectAsc.hasAttribute('selected')) {
-      console.log('Asc');
-      viewsSelectAsc.removeAttribute('selected');
-      viewsSelectDesc.setAttribute('selected', 'selected');
-    } else if (viewsSelectDesc.hasAttribute('selected')) {
-      console.log('Desc');
-      viewsSelectDesc.removeAttribute('selected');
-      viewsSelectAsc.setAttribute('selected', 'selected');
-    }
+  const viewsOptions: Element = document.querySelector('#views_options');
+  viewsOptions.addEventListener('change', () => {
+    console.log('viewsOptions selected');
     applyFiltersButton.click();
   });
   // prettier-ignore
@@ -78,16 +57,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const viewsColumnSelectDesc: Element = document.querySelector('#views-desc');
   viewsColumnButton.addEventListener('click', () => {
     if (viewsColumnSelectNA.hasAttribute('selected')) {
-      console.log('Column NA');
-
       viewsColumnSelectNA.removeAttribute('selected');
       viewsColumnSelectDesc.setAttribute('selected', 'selected');
     } else if (viewsColumnSelectAsc.hasAttribute('selected')) {
-      console.log('Column Asc');
       viewsColumnSelectAsc.removeAttribute('selected');
       viewsColumnSelectDesc.setAttribute('selected', 'selected');
     } else if (viewsColumnSelectDesc.hasAttribute('selected')) {
-      console.log('Column Desc');
       viewsColumnSelectDesc.removeAttribute('selected');
       viewsColumnSelectAsc.setAttribute('selected', 'selected');
     }
@@ -102,9 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const dateReceivedButton: HTMLInputElement =
     document.querySelector('#date_received');
-  console.log(dateReceivedButton);
   dateReceivedButton.addEventListener('input', () => {
-    console.log(dateReceivedButton.value);
     applyFiltersButton.click();
   });
 });
