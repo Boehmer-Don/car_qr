@@ -60,4 +60,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     applyFiltersButton.click();
   });
+
+  const priceButton: Element = document.querySelector('#price-button');
+  const priceInputs: Element = document.querySelector('#price-inputs');
+  priceButton.addEventListener('click', () => {
+    priceInputs.classList.toggle('hidden');
+  });
 });

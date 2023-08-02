@@ -36,11 +36,15 @@ def dashboard():
     type_filter = "All"
     make_filter = "All"
     model_filter = "All"
+    price_lower = None
+    price_upper = None
     if request.method == "POST":
         views_filter = request.form.get("views_filter")
         type_filter = request.form.get("type_filter")
         make_filter = request.form.get("make_filter")
         model_filter = request.form.get("model_filter")
+        price_lower = request.form.get("price-lower")
+        price_upper = request.form.get("price-upper")
 
     if views_filter == "Asc":
         order_by = m.Label.views.asc()
@@ -71,6 +75,12 @@ def dashboard():
         query = query.order_by(m.Label.views.asc())
     elif views_filter == "Desc":
         query = query.order_by(m.Label.views.desc())
+    if price_lower:
+        query = query.where(m.Label.price >= price_lower)
+        count_query = count_query.where(m.Label.price >= price_lower)
+    if price_upper:
+        query = query.where(m.Label.price <= price_upper)
+        count_query = count_query.where(m.Label.price <= price_upper)
 
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels = (
