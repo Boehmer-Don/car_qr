@@ -68,6 +68,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     applyFiltersButton.click();
   });
+  // prettier-ignore
+  const viewsColumnButton: Element = document.querySelector('#views-column-button');
+  // prettier-ignore
+  const viewsColumnSelectNA: Element = document.querySelector('#views-na');
+  // prettier-ignore
+  const viewsColumnSelectAsc: Element = document.querySelector('#views-asc');
+  // prettier-ignore
+  const viewsColumnSelectDesc: Element = document.querySelector('#views-desc');
+  viewsColumnButton.addEventListener('click', () => {
+    if (viewsColumnSelectNA.hasAttribute('selected')) {
+      console.log('Column NA');
+
+      viewsColumnSelectNA.removeAttribute('selected');
+      viewsColumnSelectDesc.setAttribute('selected', 'selected');
+    } else if (viewsColumnSelectAsc.hasAttribute('selected')) {
+      console.log('Column Asc');
+      viewsColumnSelectAsc.removeAttribute('selected');
+      viewsColumnSelectDesc.setAttribute('selected', 'selected');
+    } else if (viewsColumnSelectDesc.hasAttribute('selected')) {
+      console.log('Column Desc');
+      viewsColumnSelectDesc.removeAttribute('selected');
+      viewsColumnSelectAsc.setAttribute('selected', 'selected');
+    }
+    applyFiltersButton.click();
+  });
 
   const priceButton: Element = document.querySelector('#price-button');
   const priceInputs: Element = document.querySelector('#price-inputs');
