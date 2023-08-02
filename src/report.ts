@@ -74,4 +74,12 @@ document.addEventListener('DOMContentLoaded', function () {
   priceButton.addEventListener('click', () => {
     priceInputs.classList.toggle('hidden');
   });
+
+  const dateReceivedButton: HTMLInputElement =
+    document.querySelector('#date_received');
+  console.log(dateReceivedButton);
+  dateReceivedButton.addEventListener('input', () => {
+    console.log(dateReceivedButton.value);
+    applyFiltersButton.click();
+  });
 });

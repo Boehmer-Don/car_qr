@@ -38,13 +38,15 @@
       <h3 class="mt-6 md:mt-0 text-lg font-bold">Create a report</h3>
 
       <p class="my-5">
-        Alter the filters to see when your QR Code labels were most or least
+        Alter the filters to see when your QR Code labels
+        <br>
+        were most or least
         active.
       </p>
     </div>
 
     <form action="{{ url_for('report.dashboard') }}" method="post" class="">
-      <div class="w-full md:w-1/2 mt-2 mb-4 flex justify-between">
+      <div class="w-full md:w-1/2 mt-2 mb-4 pl-2 md:pl-0 flex justify-between">
         <div class="relative w-28 max-w-sm">
           <input datepicker type="text" name="start_date"
             class="border-0 text-black placeholder:text-black text-sm rounded-lg focus:ring-blue-500 block w-full p-0 dark:bg-gray-800 dark:placeholder-white dark:text-white dark:focus:ring-blue-500 cursor-pointer"
@@ -72,7 +74,7 @@
         </div>
 
         <div class="relative w-36 max-w-sm">
-          <input datepicker type="text" name="date_received"
+          <input datepicker type="text" name="date_received"  id="date_received"
             class="border-0 text-black placeholder:text-black text-sm rounded-lg focus:ring-blue-500 block w-full p-0 pl-3 dark:bg-gray-800 dark:placeholder-white dark:text-white dark:focus:ring-blue-500 cursor-pointer"
             placeholder="Date Received">
           <div class="absolute inset-y-0 right-0 flex items-center pointer-events-none">
@@ -90,7 +92,7 @@
       <div class="flex flex-col md:flex-row justify-between">
 
         <div class="flex w-full md:w-1/2 justify-between px-3 md:pl-0 md:pr-10 my-3 md:my-0">
-          <div>
+          <div class="">
             <label for="type_of_vehicle" id="daytime-button" class="flex items-center cursor-pointer">
               <p>Time of Day</p>
               <!-- prettier-ignore -->
