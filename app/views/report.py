@@ -1,4 +1,6 @@
 # flake8: noqa F401
+import io
+import csv
 from datetime import datetime
 from flask import (
     Blueprint,
@@ -7,6 +9,7 @@ from flask import (
     flash,
     redirect,
     url_for,
+    send_file,
 )
 from flask_login import login_required, current_user
 import sqlalchemy as sa
@@ -15,7 +18,7 @@ from app.controllers import create_pagination
 from app import models as m, db
 from app import forms as f
 from app.logger import log
-
+from app.controllers.jinja_globals import days_active
 
 report_blueprint = Blueprint("report", __name__, url_prefix="/report")
 
@@ -33,6 +36,7 @@ def dashboard():
     end_date = request.args.get("end_date")
     date_received = request.args.get("date_received")
     views_options_filter = request.args.get("views_options_filter")
+    download = request.args.get("download")
 
     if views_filter == "Asc":
         order_by = m.Label.views.asc()
@@ -146,6 +150,63 @@ def dashboard():
                     ).all()
                 ]
             )
+        )
+
+    if download == "true":
+        labels = db.session.scalars(query).all()
+        with io.StringIO() as proxy:
+            writer = csv.writer(proxy)
+            row = [
+                "sticker_id",
+                "name",
+                "make",
+                "vehicle_model",
+                "year",
+                "mileage",
+                "color",
+                "trim",
+                "type_of_vehicle",
+                "price",
+                "date_received",
+                "date_deactivated",
+                "days_active",
+                "url",
+                "views",
+            ]
+            writer.writerow(row)
+            for label in labels:
+                row = [
+                    label.sticker_id,
+                    label.name,
+                    label.make,
+                    label.vehicle_model,
+                    label.year,
+                    label.mileage,
+                    label.color,
+                    label.trim,
+                    label.type_of_vehicle,
+                    label.price,
+                    label.date_received,
+                    label.date_deactivated,
+                    days_active(label.date_received, label.date_deactivated),
+                    label.url,
+                    label.views,
+                ]
+                writer.writerow(row)
+
+            # Creating the byteIO object from the StringIO Object
+            mem = io.BytesIO()
+            mem.write(proxy.getvalue().encode("utf-8"))
+            mem.seek(0)
+
+        now = datetime.now()
+        return send_file(
+            mem,
+            as_attachment=True,
+            download_name=f"report_{current_user.first_name}_{current_user.last_name}_{now.strftime('%Y-%m-%d-%H-%M-%S')}.csv",
+            mimetype="text/csv",
+            max_age=0,
+            last_modified=now,
         )
 
     return render_template(

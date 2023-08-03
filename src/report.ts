@@ -78,4 +78,13 @@ document.addEventListener('DOMContentLoaded', function () {
   dateReceivedButton.addEventListener('input', () => {
     applyFiltersButton.click();
   });
+
+  const downloadButton: HTMLButtonElement =
+    document.querySelector('#download-button');
+  const downloadTrigger: HTMLInputElement = document.querySelector('#download');
+  console.log(downloadTrigger.value);
+  downloadButton.addEventListener('click', () => {
+    downloadTrigger.value = 'true';
+    applyFiltersButton.click();
+  });
 });
