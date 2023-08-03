@@ -55,10 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // prettier-ignore
   const viewsColumnSelectDesc: Element = document.querySelector('#views-desc');
   viewsColumnButton.addEventListener('click', () => {
-    if (viewsColumnSelectNA.hasAttribute('selected')) {
-      viewsColumnSelectNA.removeAttribute('selected');
-      viewsColumnSelectDesc.setAttribute('selected', 'selected');
-    } else if (viewsColumnSelectAsc.hasAttribute('selected')) {
+    console.log('has attribute selected`');
+
+    if (viewsColumnSelectAsc.hasAttribute('selected')) {
       viewsColumnSelectAsc.removeAttribute('selected');
       viewsColumnSelectDesc.setAttribute('selected', 'selected');
     } else if (viewsColumnSelectDesc.hasAttribute('selected')) {

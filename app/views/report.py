@@ -23,27 +23,6 @@ report_blueprint = Blueprint("report", __name__, url_prefix="/report")
 @report_blueprint.route("/all", methods=["GET", "POST"])
 @login_required
 def dashboard():
-    views_filter = "NA"
-    type_filter = "All"
-    make_filter = "All"
-    model_filter = "All"
-    price_lower = None
-    price_upper = None
-    start_date = None
-    end_date = None
-    date_received = None
-    # if request.method == "POST":
-    #     views_filter = request.form.get("views_filter")
-    #     type_filter = request.form.get("type_filter")
-    #     make_filter = request.form.get("make_filter")
-    #     model_filter = request.form.get("model_filter")
-    #     price_lower = request.form.get("price-lower")
-    #     price_upper = request.form.get("price-upper")
-    #     start_date = request.form.get("start_date")
-    #     end_date = request.form.get("end_date")
-    #     date_received = request.form.get("date_received")
-    #     views_options_filter = request.form.get("views_options_filter")
-
     views_filter = request.args.get("views_filter")
     type_filter = request.args.get("type_filter")
     make_filter = request.args.get("make_filter")
