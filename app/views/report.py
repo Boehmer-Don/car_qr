@@ -20,15 +20,15 @@ from app.logger import log
 report_blueprint = Blueprint("report", __name__, url_prefix="/report")
 
 
-@report_blueprint.route("/all", methods=["GET", "POST"])
+@report_blueprint.route("/create", methods=["GET", "POST"])
 @login_required
 def dashboard():
     views_filter = request.args.get("views_filter")
     type_filter = request.args.get("type_filter")
     make_filter = request.args.get("make_filter")
     model_filter = request.args.get("model_filter")
-    price_lower = request.args.get("price-lower")
-    price_upper = request.args.get("price-upper")
+    price_lower = request.args.get("price_lower")
+    price_upper = request.args.get("price_upper")
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
     date_received = request.args.get("date_received")
@@ -80,12 +80,18 @@ def dashboard():
         count_query = count_query.where(m.Label.price <= price_upper)
     if views_options_filter == "0-10":
         query = query.where(m.Label.views <= 10)
+        count_query = count_query.where(m.Label.views <= 10)
     elif views_options_filter == "10-50":
         query = query.where(m.Label.views >= 10).where(m.Label.views <= 50)
+        count_query = count_query.where(m.Label.views >= 10).where(m.Label.views <= 50)
     elif views_options_filter == "50-100":
         query = query.where(m.Label.views >= 50).where(m.Label.views <= 100)
+        count_query = count_query.where(m.Label.views >= 50).where(m.Label.views <= 100)
     elif views_options_filter == "100-1000":
         query = query.where(m.Label.views >= 100).where(m.Label.views <= 1000)
+        count_query = count_query.where(m.Label.views >= 100).where(
+            m.Label.views <= 1000
+        )
 
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels = (
@@ -173,6 +179,33 @@ def get_models():
     ).all()
     models = list(set([label.vehicle_model for label in labels]))
     return {"models": models}
+
+
+@report_blueprint.route("/all", methods=["GET", "POST"])
+@login_required
+def all():
+    query = (
+        m.Label.select()
+        .where(m.Label.user_id == current_user.id)
+        .where(m.Label.status == m.LabelStatus.active)
+        .order_by(m.Label.id)
+    )
+    count_query = (
+        sa.select(sa.func.count())
+        .select_from(m.Label)
+        .where(m.Label.user_id == current_user.id)
+        .where(m.Label.status == m.LabelStatus.active)
+    )
+    pagination = create_pagination(total=db.session.scalar(count_query))
+    return render_template(
+        "report/all.html",
+        labels=db.session.execute(
+            query.offset((pagination.page - 1) * pagination.per_page).limit(
+                pagination.per_page
+            )
+        ).scalars(),
+        page=pagination,
+    )
 
 
 @report_blueprint.route("/delete", methods=["GET", "POST"])
