@@ -31,19 +31,12 @@ const modalOptions: ModalOptions = {
   backdropClasses:
     'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
   closable: true,
-  onHide: () => {
-    console.log('modal is hidden');
-  },
-  onShow: () => {
-    console.log('label details modal is shown');
-  },
-  onToggle: () => {
-    console.log('modal has been toggled');
-  },
+  onHide: () => {},
+  onShow: () => {},
+  onToggle: () => {},
 };
 
 function getLabelDetails(label: ILabel) {
-  console.log(label);
   const labelName: HTMLInputElement =
     document.querySelector('#label-edit-name');
   labelName.value = label.name;
@@ -97,8 +90,6 @@ function getLabelDetails(label: ILabel) {
     '#label-sticker-number',
   );
   labelStickerIdentifier.value = label.sticker_id;
-  console.log('labelStickerIdentifier', labelStickerIdentifier.value);
-  console.log('label.sticker_id', label.sticker_id);
 
   const nextUrl: HTMLInputElement = document.querySelector(
     '#label-edit-next-url',
@@ -145,8 +136,6 @@ const labelDeactivateButtons = document.querySelectorAll(
 
 labelDeactivateButtons.forEach(e =>
   e.addEventListener('click', () => {
-    console.log('deactivate button clicked');
-
     deactivateLabel(JSON.parse(e.getAttribute('data-target')));
   }),
 );

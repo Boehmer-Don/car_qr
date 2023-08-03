@@ -1,5 +1,5 @@
-import { Modal } from 'flowbite';
-import type { ModalOptions, ModalInterface } from 'flowbite';
+import {Modal} from 'flowbite';
+import type {ModalOptions, ModalInterface} from 'flowbite';
 
 interface IUser {
   id: number;
@@ -9,7 +9,8 @@ interface IUser {
 }
 
 const $modalElement: HTMLElement = document.querySelector('#editUserModal');
-const $modalResendInviteElement: HTMLElement = document.querySelector('#resendInviteModal');
+const $modalResendInviteElement: HTMLElement =
+  document.querySelector('#resendInviteModal');
 const $addUserModalElement: HTMLElement =
   document.querySelector('#add-user-modal');
 
@@ -19,19 +20,16 @@ const modalOptions: ModalOptions = {
   backdropClasses:
     'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
   closable: true,
-  onHide: () => {
-    console.log('modal is hidden');
-  },
-  onShow: () => {
-    console.log('user id: ');
-  },
-  onToggle: () => {
-    console.log('modal has been toggled');
-  },
+  onHide: () => {},
+  onShow: () => {},
+  onToggle: () => {},
 };
 
 const modal: ModalInterface = new Modal($modalElement, modalOptions);
-const resendInviteModal: ModalInterface = new Modal($modalResendInviteElement, modalOptions);
+const resendInviteModal: ModalInterface = new Modal(
+  $modalResendInviteElement,
+  modalOptions,
+);
 const addModal: ModalInterface = new Modal($addUserModalElement, modalOptions);
 
 const $buttonElements = document.querySelectorAll('.user-edit-button');
@@ -45,8 +43,6 @@ const resendInviteButtons = document.querySelectorAll('.resend-invite-button');
 resendInviteButtons.forEach(e =>
   e.addEventListener('click', () => {
     const user = JSON.parse(e.getAttribute('data-target'));
-    console.log("resendInviteButtons click user: ", user);
-
     resendInvite(user);
   }),
 );
@@ -59,14 +55,18 @@ if ($buttonClose) {
   });
 }
 
-const resendInviteButtonClose = document.querySelector('#resendInviteModalCloseButton');
+const resendInviteButtonClose = document.querySelector(
+  '#resendInviteModalCloseButton',
+);
 if (resendInviteButtonClose) {
   resendInviteButtonClose.addEventListener('click', () => {
     resendInviteModal.hide();
   });
 }
 
-const searchInput: HTMLInputElement = document.querySelector('#table-search-users');
+const searchInput: HTMLInputElement = document.querySelector(
+  '#table-search-users',
+);
 const searchInputButton = document.querySelector('#table-search-user-button');
 
 let searchTimeoutId: NodeJS.Timeout | null = null;
@@ -91,7 +91,7 @@ if (searchInputButton && searchInput) {
     performSearch();
   });
 
-  searchInput.addEventListener('keyup', (event) => {
+  searchInput.addEventListener('keyup', event => {
     if (event.key === 'Enter') {
       performSearch();
     }

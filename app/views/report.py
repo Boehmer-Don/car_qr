@@ -32,17 +32,28 @@ def dashboard():
     start_date = None
     end_date = None
     date_received = None
-    if request.method == "POST":
-        views_filter = request.form.get("views_filter")
-        type_filter = request.form.get("type_filter")
-        make_filter = request.form.get("make_filter")
-        model_filter = request.form.get("model_filter")
-        price_lower = request.form.get("price-lower")
-        price_upper = request.form.get("price-upper")
-        start_date = request.form.get("start_date")
-        end_date = request.form.get("end_date")
-        date_received = request.form.get("date_received")
-        views_options_filter = request.form.get("views_options_filter")
+    # if request.method == "POST":
+    #     views_filter = request.form.get("views_filter")
+    #     type_filter = request.form.get("type_filter")
+    #     make_filter = request.form.get("make_filter")
+    #     model_filter = request.form.get("model_filter")
+    #     price_lower = request.form.get("price-lower")
+    #     price_upper = request.form.get("price-upper")
+    #     start_date = request.form.get("start_date")
+    #     end_date = request.form.get("end_date")
+    #     date_received = request.form.get("date_received")
+    #     views_options_filter = request.form.get("views_options_filter")
+
+    views_filter = request.args.get("views_filter")
+    type_filter = request.args.get("type_filter")
+    make_filter = request.args.get("make_filter")
+    model_filter = request.args.get("model_filter")
+    price_lower = request.args.get("price-lower")
+    price_upper = request.args.get("price-upper")
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+    date_received = request.args.get("date_received")
+    views_options_filter = request.args.get("views_options_filter")
 
     if views_filter == "Asc":
         order_by = m.Label.views.asc()
@@ -162,6 +173,12 @@ def dashboard():
         types=types,
         type_filter=type_filter,
         views_filter=views_filter,
+        price_lower=price_lower,
+        price_upper=price_upper,
+        start_date=start_date,
+        end_date=end_date,
+        date_received=date_received,
+        views_options_filter=views_options_filter,
         page=pagination,
     )
 

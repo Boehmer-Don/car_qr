@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const viewsOptions: Element = document.querySelector('#views_options');
   viewsOptions.addEventListener('change', () => {
-    console.log('viewsOptions selected');
     applyFiltersButton.click();
   });
   // prettier-ignore
