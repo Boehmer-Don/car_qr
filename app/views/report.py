@@ -27,15 +27,29 @@ report_blueprint = Blueprint("report", __name__, url_prefix="/report")
 @login_required
 def dashboard():
     views_filter = request.args.get("views_filter")
+    views_filter = views_filter if views_filter and views_filter != "None" else ""
     type_filter = request.args.get("type_filter")
+    type_filter = type_filter if type_filter and type_filter != "None" else ""
     make_filter = request.args.get("make_filter")
+    make_filter = make_filter if make_filter and make_filter != "None" else ""
     model_filter = request.args.get("model_filter")
+    model_filter = model_filter if model_filter and model_filter != "None" else ""
     price_lower = request.args.get("price_lower")
+    price_lower = price_lower if price_lower and price_lower != "None" else ""
     price_upper = request.args.get("price_upper")
+    price_upper = price_upper if price_upper and price_upper != "None" else ""
     start_date = request.args.get("start_date")
+    start_date = start_date if start_date and start_date != "None" else ""
     end_date = request.args.get("end_date")
+    end_date = end_date if end_date and end_date != "None" else ""
     date_received = request.args.get("date_received")
+    date_received = date_received if date_received and date_received != "None" else ""
     views_options_filter = request.args.get("views_options_filter")
+    views_options_filter = (
+        views_options_filter
+        if views_options_filter and views_options_filter != "None"
+        else ""
+    )
     download = request.args.get("download")
 
     if views_filter == "Asc":
@@ -58,8 +72,12 @@ def dashboard():
         start_date = datetime.strptime(start_date, "%m/%d/%Y")
         end_date = datetime.strptime(end_date, "%m/%d/%Y")
         query = query.where(sa.func.DATE(m.Label.date_received) >= start_date)
+        count_query = count_query.where(
+            sa.func.DATE(m.Label.date_received) >= start_date
+        )
         query = query.where(sa.func.DATE(m.Label.date_received) <= end_date)
-    elif date_received:
+        count_query = count_query.where(sa.func.DATE(m.Label.date_received) <= end_date)
+    elif date_received and date_received != "None":
         date_received = datetime.strptime(date_received, "%m/%d/%Y").date()
         query = query.where(sa.func.DATE(m.Label.date_received) == date_received)
 
