@@ -82,9 +82,26 @@ document.addEventListener('DOMContentLoaded', function () {
   const downloadButton: HTMLButtonElement =
     document.querySelector('#download-button');
   const downloadTrigger: HTMLInputElement = document.querySelector('#download');
-  console.log(downloadTrigger.value);
   downloadButton.addEventListener('click', () => {
     downloadTrigger.value = 'true';
     applyFiltersButton.click();
+  });
+
+  const excludeList: HTMLInputElement = document.querySelector('#exclude');
+  console.log(excludeList.value, typeof excludeList.value);
+  const deleteFromReportButtons = document.querySelectorAll(
+    '.delete-from-report',
+  );
+  deleteFromReportButtons.forEach((deleteFromReport: Element) => {
+    deleteFromReport.addEventListener('click', () => {
+      console.log(deleteFromReport.getAttribute('data-target'));
+      if (excludeList.value === 'None') {
+        excludeList.value = `${deleteFromReport.getAttribute('data-target')},`;
+        applyFiltersButton.click();
+        return;
+      }
+      excludeList.value += `${deleteFromReport.getAttribute('data-target')},`;
+      applyFiltersButton.click();
+    });
   });
 });

@@ -26,6 +26,7 @@ report_blueprint = Blueprint("report", __name__, url_prefix="/report")
 @report_blueprint.route("/create", methods=["GET", "POST"])
 @login_required
 def dashboard():
+    exclude = request.args.get("exclude")
     views_filter = request.args.get("views_filter")
     views_filter = views_filter if views_filter and views_filter != "None" else ""
     type_filter = request.args.get("type_filter")
@@ -67,6 +68,12 @@ def dashboard():
         .select_from(m.Label)
         .where(m.Label.user_id == current_user.id)
     )
+
+    if exclude:
+        exclude_list = exclude.split(",")
+        for label_to_exclude in exclude_list:
+            query = query.where(m.Label.unique_id != label_to_exclude)
+            count_query = count_query.where(m.Label.unique_id != label_to_exclude)
 
     if start_date and end_date:
         start_date = datetime.strptime(start_date, "%m/%d/%Y")
@@ -243,6 +250,7 @@ def dashboard():
         end_date=end_date,
         date_received=date_received,
         views_options_filter=views_options_filter,
+        exclude=exclude,
         page=pagination,
     )
 
@@ -285,10 +293,3 @@ def all():
         ).scalars(),
         page=pagination,
     )
-
-
-@report_blueprint.route("/delete", methods=["GET", "POST"])
-@login_required
-def delete():
-    ...
-    return redirect(url_for("report.get_all"))
