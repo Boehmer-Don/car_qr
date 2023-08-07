@@ -50,3 +50,19 @@ def init(app: Flask):
             role=m.UsersRole.admin,
         ).save()
         print("admin created")
+
+    @app.cli.command("get-products")
+    def get_products():
+        """Get stripe products and"""
+        from app.controllers.stripe import get_stripe_products
+
+        get_stripe_products()
+        print("Products created")
+
+    @app.cli.command("delete-products")
+    def delete_products():
+        """Delete stripe products and"""
+        from app.controllers.stripe import delete_stripe_products_local
+
+        delete_stripe_products_local()
+        print("Products deleted")

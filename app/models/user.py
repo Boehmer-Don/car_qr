@@ -18,8 +18,8 @@ def gen_password_reset_id() -> str:
 
 
 class UsersPlan(enum.Enum):
-    basic = "basic"
-    advanced = "advanced"
+    basic = "Basic Plan"
+    advanced = "Advanced Plan"
 
 
 class UsersRole(enum.Enum):

@@ -41,6 +41,10 @@ class BaseConfig(BaseSettings):
     DEFAULT_PAGE_SIZE: int
     PAGE_LINKS_NUMBER: int
 
+    # stripe env variables
+    STRIPE_SUBSCRIPTION_SUCCESS_URL: str
+    STRIPE_SUBSCRIPTION_CANCEL_URL: str
+
     @staticmethod
     def configure(app: Flask):
         # Implement this method to do further configuration on your app.

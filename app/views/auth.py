@@ -6,7 +6,7 @@ import sqlalchemy as sa
 from app import models as m
 from app import forms as f
 from app import mail, db
-from app.controllers import create_stripe_customer
+from app.controllers import create_stripe_customer, create_checkout_session
 from app.logger import log
 
 
@@ -63,11 +63,6 @@ def login():
             login_user(user)
             log(log.INFO, "Login successful.")
             flash("Login successful.", "success")
-            if not user.stripe_customer_id:
-                stripe_user = create_stripe_customer(user)
-                user.stripe_customer_id = stripe_user.id
-                user.save()
-                db.session.commit()
             if current_user.role == m.UsersRole.admin:
                 return redirect(url_for("user.get_all"))
             else:
@@ -201,7 +196,20 @@ def payment(user_unique_id: str):
         user.phone = form.phone.data
         user.save()
         login_user(user)
-        return redirect(url_for("auth.thankyou", user_unique_id=user.unique_id))
+
+        # get users stripe plan
+        product = db.session.scalar(
+            m.StripeProduct.select().where(m.StripeProduct.name == user.plan.value)
+        )
+        if not product:
+            log(log.ERROR, "Stripe product not found: [%s]", user.plan.value)
+
+        # create stripe customer
+        stripe_user = create_stripe_customer(user)
+        user.stripe_customer_id = stripe_user.id
+        user.save()
+        stripe_form_url = create_checkout_session(user, product)
+        return redirect(stripe_form_url)
     elif form.is_submitted():
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
 

@@ -40,7 +40,7 @@ class StripeProduct(db.Model, ModelMixin):
         default=datetime.utcnow,
     )
 
-    user: orm.Mapped[StripeProductPrice] = orm.relationship(
+    price: orm.Mapped[StripeProductPrice] = orm.relationship(
         "StripeProductPrice", backref="stripe_products"
     )
 
