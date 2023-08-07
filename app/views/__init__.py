@@ -4,3 +4,4 @@ from .main import main_blueprint
 from .user import bp as user_blueprint
 from .label import dealer_blueprint
 from .report import report_blueprint
+from .stripe import stripe_blueprint
