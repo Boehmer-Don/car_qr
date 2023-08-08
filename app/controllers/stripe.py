@@ -1,4 +1,3 @@
-import os
 import stripe
 from stripe.error import InvalidRequestError
 from flask import current_app as app
@@ -16,11 +15,22 @@ def create_stripe_customer(user: m.User):
             email=user.email,
             name=f"{user.first_name} {user.last_name}",
             phone=user.phone,
-            # shipping={
-            #     "address": {user.address_of_dealership},
-            #     "name": f"{user.first_name} {user.last_name}",
-            #     "phone": user.phone,
-            # },
+            address={
+                "city": user.city,
+                "country": user.country,
+                "line1": user.address_of_dealership,
+                "postal_code": user.postal_code,
+            },
+            shipping={
+                "address": {
+                    "city": user.city,
+                    "country": user.country,
+                    "line1": user.address_of_dealership,
+                    "postal_code": user.postal_code,
+                },
+                "name": f"{user.first_name} {user.last_name}",
+                "phone": user.phone,
+            },
         )
     except InvalidRequestError as e:
         log(log.ERROR, "create_stripe_customer: %s", e)
@@ -73,7 +83,9 @@ def delete_stripe_products_local():
         db.session.commit()
 
 
-def create_checkout_session(user: m.User, subscription_product: m.StripeProduct):
+def create_subscription_checkout_session(
+    user: m.User, subscription_product: m.StripeProduct
+):
     try:
         checkout_session = stripe.checkout.Session.create(
             customer=user.stripe_customer_id,
@@ -86,11 +98,56 @@ def create_checkout_session(user: m.User, subscription_product: m.StripeProduct)
                 },
             ],
             mode="subscription",
+            automatic_tax={
+                "enabled": True,
+            },
             # subscription_data={
             #     "trial_end": int((datetime.now() + timedelta(days=31)).timestamp()),
             # },
         )
     except InvalidRequestError as e:
+        log(log.ERROR, "Error while creating a checkout session - [%s]", e)
+        ...
+
+    return checkout_session.url
+
+
+def create_payment_subscription_checkout_session(
+    user: m.User,
+    label_names: list[str],
+    label_ids: list[str],
+    labels_quantity: int,
+):
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            customer=user.stripe_customer_id,
+            success_url=f"{app.config.get('STRIPE_SUBSCRIPTION_SUCCESS_URL')}/{user.unique_id}",
+            cancel_url=f"{app.config.get('STRIPE_SUBSCRIPTION_CANCEL_URL')}/{user.unique_id}",
+            line_items=[
+                {
+                    "price_data": {
+                        "currency": "cad",
+                        "unit_amount": 2000,
+                        "product_data": {
+                            "name": ",".join(label_names),
+                            "description": "Car QR Code Labels",
+                        },
+                    },
+                    "quantity": labels_quantity,
+                },
+            ],
+            payment_intent_data={
+                "metadata": {
+                    "user_unique_id": user.unique_id,
+                    "labels_unique_ids": ",".join(label_ids),
+                },
+            },
+            mode="payment",
+            automatic_tax={
+                "enabled": True,
+            },
+        )
+    except Exception as e:
         log(log.ERROR, "Error while creating a checkout session - [%s]", e)
         ...
 

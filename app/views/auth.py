@@ -6,7 +6,7 @@ import sqlalchemy as sa
 from app import models as m
 from app import forms as f
 from app import mail, db
-from app.controllers import create_stripe_customer, create_checkout_session
+from app.controllers import create_stripe_customer, create_subscription_checkout_session
 from app.logger import log
 
 
@@ -208,7 +208,7 @@ def payment(user_unique_id: str):
         stripe_user = create_stripe_customer(user)
         user.stripe_customer_id = stripe_user.id
         user.save()
-        stripe_form_url = create_checkout_session(user, product)
+        stripe_form_url = create_subscription_checkout_session(user, product)
         return redirect(stripe_form_url)
     elif form.is_submitted():
         log(log.ERROR, "Form submitted error: [%s]", form.errors)

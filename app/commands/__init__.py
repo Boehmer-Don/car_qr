@@ -66,3 +66,18 @@ def init(app: Flask):
 
         delete_stripe_products_local()
         print("Products deleted")
+
+    @app.cli.command("delete-user")
+    @click.option("--email", type=str)
+    def delete_user(email: str):
+        """Delete stripe products and"""
+
+        cart_labels = db.session.scalars(
+            m.Label.select().where(m.Label.status == "cart")
+        ).all()
+        for label in cart_labels:
+            db.session.delete(label)
+        user: m.User = db.session.scalar(m.User.select().where(m.User.email == email))
+        db.session.delete(user)
+        db.session.commit()
+        print(f"User {user} deleted")

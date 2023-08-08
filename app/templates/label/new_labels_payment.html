@@ -1,19 +1,14 @@
 {% extends 'base.html' %} {% block links %}
-<link
-  href="{{ url_for('static', filename='css/custom.css') }}"
-  rel="stylesheet" />
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
 {% endblock %} {% block content %}
-<div
-  class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
-  <h1
-    class="sm:w-3/4 md:w-2/3 mx-auto text-3xl md:text-4xl text-center md:text-left font-bold mt-12 mb-10">
+<div class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
+  <h1 class="sm:w-3/4 md:w-2/3 mx-auto text-3xl md:text-4xl text-center md:text-left font-bold mt-12 mb-10">
     Register new labels
   </h1>
   <div
     class="w-full sm:w-3/4 md:w-2/3 mx-auto dark:bg-gray-800 flex flex-col md:flex-row text-gray-700 dark:text-white">
     <div class="w-full dark:bg-gray-800">
-      <div
-        class="w-full flex text-xs text-white font-bold mb-2 px-1 py-3 md:p-3 bg-indigo-700 rounded-t-lg">
+      <div class="w-full flex text-xs text-white font-bold mb-2 px-1 py-3 md:p-3 bg-indigo-700 rounded-t-lg">
         <p class="w-1/2 md:w-full pl-3 flex items-center justify-start">
           Order Details
         </p>
@@ -23,13 +18,13 @@
         <p class="w-1/12 flex items-center justify-center"></p>
       </div>
 
-      <form
-        action="{{url_for('labels.new_label_payment', user_unique_id=user_unique_id, labels_ids=labels_ids)}}"
-        method="post"
+      <form action="{{url_for('labels.new_label_payment', user_unique_id=user_unique_id)}}" method="POST"
         class="relative bg-white rounded-lg shadow dark:bg-gray-800">
         {{ form_hidden_tag() }} {% for label in labels %}
-        <div
-          class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
+
+        <input type="hidden" name="edit" value="true">
+
+        <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
           <p
             class="new_label_details w-1/2 md:w-full pl-3 flex items-center justify-start hover:text-indigo-500 cursor-pointer">
             Label {{ loop.index }} - {{ label.name }}
@@ -38,191 +33,122 @@
           <p class="w-3/12 hidden md:flex items-center justify-center"></p>
           <p class="w-3/12 flex items-center justify-center"></p>
           <p
-            class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button"></p>
+            class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button">
+          </p>
         </div>
 
         <div class="hidden w-full bg-gray-100 dark:bg-gray-700">
-          <input
-            type="hidden"
-            name="user_id"
-            id="new-label-{{ loop.index }}-user-id"
-            value="{{current_user.id}}" />
+          <input type="hidden" name="user_id" id="new-label-{{ loop.index }}-user-id" value="{{current_user.id}}" />
           <div class="p-6 space-y-6">
             <div class="w-full px-1">
               <div class="w-full flex justify-between">
                 <div class="w-full px-1">
-                  <label
-                    for="name"
-                    class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label for="name" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Unique Label Identifier
                   </label>
-                  <input
-                    type="text"
-                    name="sticker-number-{{ loop.index }}"
-                    id="label-{{ loop.index }}-sticker-number"
+                  <input type="text" name="sticker-number-{{ loop.index }}" id="label-{{ loop.index }}-sticker-number"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="i.e. QR23456"
-                    value="{{ label.sticker_id }}" />
+                    placeholder="i.e. QR23456" value="{{ label.sticker_id }}" />
                 </div>
               </div>
 
               <div class="w-full flex justify-between">
                 <div class="w-full px-1">
-                  <label
-                    for="name"
-                    class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label for="name" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Label Name
                   </label>
-                  <input
-                    type="text"
-                    name="name-{{ loop.index }}"
-                    id="label-{{ loop.index }}-name"
+                  <input type="text" name="name-{{ loop.index }}" id="label-{{ loop.index }}-name"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Label Name"
-                    value="{{ label.name }}" />
+                    placeholder="Label Name" value="{{ label.name }}" />
                 </div>
 
                 <div class="w-full px-1">
-                  <label
-                    for="make"
-                    class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label for="make" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Make
                   </label>
-                  <input
-                    type="text"
-                    name="make-{{ loop.index }}"
-                    id="label-{{ loop.index }}-make"
+                  <input type="text" name="make-{{ loop.index }}" id="label-{{ loop.index }}-make"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Make"
-                    value="{{ label.make }}" />
+                    placeholder="Make" value="{{ label.make }}" />
                 </div>
               </div>
 
               <div class="w-full flex justify-between">
                 <div class="w-full px-1">
-                  <label
-                    for="model"
-                    class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label for="model" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Vehicle Model
                   </label>
-                  <input
-                    type="text"
-                    name="vehicle_model-{{ loop.index }}"
-                    id="label-{{ loop.index }}-model"
+                  <input type="text" name="vehicle_model-{{ loop.index }}" id="label-{{ loop.index }}-model"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Vehicle Model"
-                    value="{{ label.vehicle_model }}" />
+                    placeholder="Vehicle Model" value="{{ label.vehicle_model }}" />
                 </div>
 
                 <div class="w-full px-1">
-                  <label
-                    for="year"
-                    class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label for="year" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Year
                   </label>
-                  <input
-                    type="text"
-                    name="year-{{ loop.index }}"
-                    id="label-{{ loop.index }}-year"
+                  <input type="text" name="year-{{ loop.index }}" id="label-{{ loop.index }}-year"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Year"
-                    value="{{ label.year }}" />
+                    placeholder="Year" value="{{ label.year }}" />
                 </div>
               </div>
 
               <div class="w-full flex justify-between">
                 <div class="w-full px-1">
-                  <label
-                    for="mileage"
-                    class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label for="mileage" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Mileage
                   </label>
-                  <input
-                    type="text"
-                    name="mileage-{{ loop.index }}"
-                    id="label-{{ loop.index }}-mileage"
+                  <input type="text" name="mileage-{{ loop.index }}" id="label-{{ loop.index }}-mileage"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Mileage"
-                    value="{{ label.mileage }}" />
+                    placeholder="Mileage" value="{{ label.mileage }}" />
                 </div>
 
                 <div class="w-full px-1">
-                  <label
-                    for="color"
-                    class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label for="color" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Color
                   </label>
-                  <input
-                    type="text"
-                    name="color-{{ loop.index }}"
-                    id="label-{{ loop.index }}-color"
+                  <input type="text" name="color-{{ loop.index }}" id="label-{{ loop.index }}-color"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Color"
-                    value="{{ label.color }}" />
+                    placeholder="Color" value="{{ label.color }}" />
                 </div>
               </div>
 
               <div class="w-full flex justify-between">
                 <div class="w-full px-1">
-                  <label
-                    for="trim"
-                    class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label for="trim" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Trim
                   </label>
-                  <input
-                    type="text"
-                    name="trim-{{ loop.index }}"
-                    id="label-{{ loop.index }}-trim"
+                  <input type="text" name="trim-{{ loop.index }}" id="label-{{ loop.index }}-trim"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Trim"
-                    value="{{ label.trim }}" />
+                    placeholder="Trim" value="{{ label.trim }}" />
                 </div>
 
                 <div class="w-full px-1">
-                  <label
-                    for="vtype"
-                    class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label for="vtype" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Type Of Vehicle
                   </label>
-                  <input
-                    type="text"
-                    name="type_of_vehicle-{{ loop.index }}"
-                    id="label-{{ loop.index }}-type"
+                  <input type="text" name="type_of_vehicle-{{ loop.index }}" id="label-{{ loop.index }}-type"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Type Of Vehicle"
-                    value="{{ label.type_of_vehicle }}" />
+                    placeholder="Type Of Vehicle" value="{{ label.type_of_vehicle }}" />
                 </div>
               </div>
 
               <div class="w-full flex justify-between">
                 <div class="w-full px-1">
-                  <label
-                    for="price"
-                    class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label for="price" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Price
                   </label>
-                  <input
-                    type="text"
-                    name="price-{{ loop.index }}"
-                    id="label-{{ loop.index }}-price"
+                  <input type="text" name="price-{{ loop.index }}" id="label-{{ loop.index }}-price"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Price"
-                    value="{{ label.price }}" />
+                    placeholder="Price" value="{{ label.price }}" />
                 </div>
 
                 <div class="w-full px-1">
-                  <label
-                    for="url"
-                    class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label for="url" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     URL
                   </label>
-                  <input
-                    type="text"
-                    name="url-{{ loop.index }}"
-                    id="label-{{ loop.index }}-url"
+                  <input type="text" name="url-{{ loop.index }}" id="label-{{ loop.index }}-url"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="URL"
-                    value="{{ label.url }}" />
+                    placeholder="URL" value="{{ label.url }}" />
                 </div>
               </div>
             </div>
@@ -230,9 +156,7 @@
         </div>
         {% endfor %}
 
-        <button
-          name="submit"
-          type="submit"
+        <button name="submit" type="submit"
           class="ml-2 my-2 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
           Edit labels' data >
         </button>
@@ -240,69 +164,12 @@
     </div>
   </div>
 
-  <div class="w-full sm:w-3/4 md:w-2/3 mx-auto my-8">
-    <div class="w-full px-1">
-      <label
-        for="name"
-        class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
-        Name on Card
-      </label>
-      <input
-        type="text"
-        name="name-on-card"
-        id="name-on-card"
-        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-        placeholder="John Smith" />
-    </div>
-
-    <div class="w-full px-1">
-      <label
-        for="name"
-        class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
-        Credit Card Number
-      </label>
-      <input
-        type="text"
-        name="card-number"
-        id="card-number"
-        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-        placeholder="0000 0000 0000 0000" />
-    </div>
-
-    <div class="w-full flex justify-between">
-      <div class="w-full px-1">
-        <label
-          for="name"
-          class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
-          Expiry
-        </label>
-        <input
-          type="text"
-          name="expiry"
-          id="expiry"
-          class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-          placeholder="2030-07-30" />
-      </div>
-
-      <div class="w-full px-1">
-        <label
-          for="make"
-          class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
-          CVV
-        </label>
-        <input
-          type="text"
-          name="cvv"
-          id="cvv"
-          class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-          placeholder="777" />
-      </div>
-    </div>
-  </div>
-
-  <div
+  <form action="{{url_for('labels.new_label_payment', user_unique_id=user_unique_id)}}" method="post"
     class="sm:w-3/4 md:w-2/3 mx-auto my-3 p-3 bg-indigo-200 dark:bg-indigo-100 rounded-lg">
     {{ form_hidden_tag() }}
+
+    <input type="hidden" id="payment" name="payment" value="true">
+
     <div class="w-full py-3 mb-5 border-b border-black text-black">
       <p class="pb-3 font-bold text-black">Labels</p>
       <p id="labels-quantity" class="hidden">{{ labels | length }}</p>
@@ -333,21 +200,16 @@
     </div>
 
     <div class="w-full flex justify-center">
-      <a href="{{url_for('labels.stripe', user_unique_id=user_unique_id)}}">
-        <button
-          type="submit"
-          class="w-full md:w-2/3 lg:w-60 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 mb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
-          Review & Submit >
-        </button>
-      </a>
+      <button type="submit"
+        class="w-full md:w-2/3 lg:w-60 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 mb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+        Review & Submit >
+      </button>
     </div>
-  </div>
+  </form>
 
   <div class="w-full mt-8 mb-5 flex justify-center">
-    <a
-      href="{{ url_for('labels.new_label_set_amount', user_unique_id=current_user.unique_id) }}">
-      <button
-        type="submit"
+    <a href="{{ url_for('labels.new_label_set_amount', user_unique_id=current_user.unique_id) }}">
+      <button type="submit"
         class="w-full md:w-2/3 lg:w-60 text-red-700 border border-red-700 hover:bg-red-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 mb-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800">
         Add another label >
       </button>
@@ -356,8 +218,5 @@
 </div>
 
 {% endblock %} {% block scripts %}
-<script
-  src="{{ url_for('static', filename='js/label.js') }}"
-  type="text/javascript"
-  defer></script>
+<script src="{{ url_for('static', filename='js/label.js') }}" type="text/javascript" defer></script>
 {% endblock %}

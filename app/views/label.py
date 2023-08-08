@@ -11,7 +11,10 @@ from flask import (
 from flask_login import login_required, current_user
 import sqlalchemy as sa
 from flask import current_app as app
-from app.controllers import create_pagination
+from app.controllers import (
+    create_pagination,
+    create_payment_subscription_checkout_session,
+)
 from app import models as m, db
 from app import forms as f
 from app.logger import log
@@ -206,33 +209,41 @@ def new_label_set_details(user_unique_id: str, amount: int):
     )
 
 
-@dealer_blueprint.route("/payment/<user_unique_id>/", methods=["GET", "POST"])
+@dealer_blueprint.route("/payment/<user_unique_id>/", methods=["GET", "POST", "PUT"])
 @login_required
 def new_label_payment(user_unique_id: str):
     labels = db.session.scalars(
         m.Label.select().where(m.Label.status == m.LabelStatus.cart)
     ).all()
     if request.method == "POST":
-        for index, label in enumerate(labels):
-            label.sticker_id = request.form.get(f"sticker-number-{index + 1}")
-            label.name = request.form.get(f"name-{index + 1}")
-            label.make = request.form.get(f"make-{index + 1}")
-            label.vehicle_model = request.form.get(f"vehicle_model-{index + 1}")
-            label.year = request.form.get(f"year-{index + 1}")
-            label.mileage = request.form.get(f"mileage-{index + 1}")
-            label.color = request.form.get(f"color-{index + 1}")
-            label.trim = request.form.get(f"trim-{index + 1}")
-            label.type_of_vehicle = request.form.get(f"type_of_vehicle-{index + 1}")
-            label.price = request.form.get(f"price-{index + 1}")
-            label.url = request.form.get(f"url-{index + 1}")
-            label.save(False)
-        try:
-            db.session.commit()
-            log(log.INFO, "Payment edit labels: [%s]", labels)
-            flash("Your labels has been successfully edited", "success")
-        except Exception as e:
-            log(log.ERROR, "Failed to edit labels: [%s]", labels)
-            flash(f"Failed to edit labels: {e}", "danger")
+        if request.form.get("edit"):
+            for index, label in enumerate(labels):
+                label.sticker_id = request.form.get(f"sticker-number-{index + 1}")
+                label.name = request.form.get(f"name-{index + 1}")
+                label.make = request.form.get(f"make-{index + 1}")
+                label.vehicle_model = request.form.get(f"vehicle_model-{index + 1}")
+                label.year = request.form.get(f"year-{index + 1}")
+                label.mileage = request.form.get(f"mileage-{index + 1}")
+                label.color = request.form.get(f"color-{index + 1}")
+                label.trim = request.form.get(f"trim-{index + 1}")
+                label.type_of_vehicle = request.form.get(f"type_of_vehicle-{index + 1}")
+                label.price = request.form.get(f"price-{index + 1}")
+                label.url = request.form.get(f"url-{index + 1}")
+                label.user_id = current_user.id
+                label.save()
+
+        if request.form.get("payment"):
+            # stripe
+            stripe_form_url = create_payment_subscription_checkout_session(
+                current_user,
+                [label.name for label in labels],
+                [label.unique_id for label in labels],
+                len(labels),
+            )
+
+            if stripe_form_url:
+                log(log.INFO, "Payment redirect for labels: [%s]", labels)
+                return redirect(stripe_form_url)
     return render_template(
         "label/new_labels_payment.html",
         user_unique_id=user_unique_id,

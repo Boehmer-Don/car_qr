@@ -4,8 +4,6 @@ from sqlalchemy import orm
 from app.database import db
 from .utils import ModelMixin
 
-# from app import schema as s
-
 
 class StripeProductPrice(db.Model, ModelMixin):
     __tablename__ = "stripe_product_prices"
@@ -13,6 +11,7 @@ class StripeProductPrice(db.Model, ModelMixin):
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     stripe_price_id: orm.Mapped[str] = orm.mapped_column(sa.String(64), nullable=False)
     currency: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="cad")
+    # type of price: one_time, recurring
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
         default=datetime.utcnow,

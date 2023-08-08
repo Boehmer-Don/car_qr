@@ -19,6 +19,20 @@
       "justMyCode": false
     },
     {
+      "name": "S2B Redirect",
+      "type": "python",
+      "request": "launch",
+      "module": "flask",
+      "env": {
+        "FLASK_APP": "wsgi:app",
+        "APP_ENV": "development",
+        "FLASK_DEBUG": "1"
+      },
+      "args": ["run", "--port", "8000"],
+      "jinja": true,
+      "justMyCode": false
+    },
+    {
       "name": "cli get products",
       "type": "python",
       "request": "launch",
