@@ -98,6 +98,25 @@ def create_subscription_checkout_session(
                 },
             ],
             mode="subscription",
+            # shipping_options=[
+            #     {
+            #         "shipping_rate_data": {
+            #             "display_name": "Standard Shipping",
+            #             "type": "fixed_amount",
+            #             "tax_code": "txcd_10000000",
+            #         },
+            #     },
+            # ],
+            # tax_code="txcd_10000000",
+            customer_update={
+                "shipping": "auto",
+            },
+            shipping_address_collection={
+                "allowed_countries": [
+                    "US",
+                    "CA",
+                ],  # Specify the allowed countries for shipping
+            },
             automatic_tax={
                 "enabled": True,
             },

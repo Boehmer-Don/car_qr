@@ -42,8 +42,6 @@ def test_auth_pages(client: FlaskClient):
 
 
 def test_register(client: FlaskClient):
-    # TEST_EMAIL = "sam@test.com"
-
     with mail.record_messages() as outbox:
         response = client.post(
             "/auth/register",
