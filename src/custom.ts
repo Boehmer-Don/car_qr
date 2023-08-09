@@ -8,10 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const planChosen: HTMLDivElement = document.querySelector('#plan_chosen');
   if (planChosen) {
-
     var planChosenData = planChosen.dataset.plan;
 
-    if (planChosenData != "advanced") {
+    if (planChosenData != 'Advanced Plan') {
       basic_plan.classList.add('indigo');
       basic_plan.classList.add('text-white');
       advanced_plan.classList.remove('indigo');
@@ -35,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         basicPlanButton.checked = false;
       } else {
         basicPlanButton.checked = true;
-        basicPlanButton.style.display = "none";
+        basicPlanButton.style.display = 'none';
       }
     });
 
@@ -49,14 +48,14 @@ document.addEventListener('DOMContentLoaded', function () {
         advancedPlanButton.checked = false;
       } else {
         advancedPlanButton.checked = true;
-        advancedPlanButton.style.display = "none";
+        advancedPlanButton.style.display = 'none';
       }
     });
   }
 });
 
-
-const cleanEmail: HTMLInputElement = document.querySelector('.clean_email_input');
+const cleanEmail: HTMLInputElement =
+  document.querySelector('.clean_email_input');
 if (cleanEmail) {
   cleanEmail.addEventListener('input', (e: any) => {
     if (e.target.value) {
@@ -68,7 +67,7 @@ if (cleanEmail) {
 
 const cleanNameInputs = document.querySelectorAll('.clean_name_input');
 if (cleanNameInputs) {
-    cleanNameInputs.forEach((cleanNameInput) => {
+  cleanNameInputs.forEach(cleanNameInput => {
     cleanNameInput.addEventListener('input', (e: any) => {
       if (e.target.value) {
         const inputText = e.target.value.replace(/[^\w\d\s.-]/gi, '');
@@ -78,10 +77,9 @@ if (cleanNameInputs) {
   });
 }
 
-
 const cleanNumberInputs = document.querySelectorAll('.clean_number_input');
 if (cleanNumberInputs) {
-    cleanNumberInputs.forEach((cleanNumberInput) => {
+  cleanNumberInputs.forEach(cleanNumberInput => {
     cleanNumberInput.addEventListener('input', (e: any) => {
       if (e.target.value) {
         const inputText = e.target.value.replace(/[^\d]/gi, '');
@@ -91,13 +89,19 @@ if (cleanNumberInputs) {
   });
 }
 
-
-const cleanPhone: HTMLInputElement = document.querySelector('.clean_phone_input');
+const cleanPhone: HTMLInputElement =
+  document.querySelector('.clean_phone_input');
 if (cleanPhone) {
   cleanPhone.addEventListener('input', (e: any) => {
     if (e.target.value) {
-        const x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-        e.target.value = x[1] + (x[2] ? `-${x[2]}` : '') + (x[3] ? `-${x[3]}` : '') + (x[4] ? `-${x[4]}` : '');
+      const x = e.target.value
+        .replace(/\D/g, '')
+        .match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+      e.target.value =
+        x[1] +
+        (x[2] ? `-${x[2]}` : '') +
+        (x[3] ? `-${x[3]}` : '') +
+        (x[4] ? `-${x[4]}` : '');
     }
   });
 }
