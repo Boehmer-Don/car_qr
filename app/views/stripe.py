@@ -1,7 +1,5 @@
-# flake8: noqa F401
 import stripe
 import os
-from datetime import datetime
 from flask import (
     Blueprint,
     render_template,
@@ -11,18 +9,13 @@ from flask import (
     url_for,
     jsonify,
 )
-from flask_login import login_required, current_user
-import sqlalchemy as sa
-from flask import current_app as app
-from app.controllers import create_pagination
+from flask_login import current_user
 from app import models as m, db
 from app import forms as f
 from app.logger import log
-from app.controllers.jinja_globals import days_active
 
 stripe_blueprint = Blueprint("stripe", __name__, url_prefix="/stripe")
 
-# stripe.api_key = os.environ.get("STRIPE_PUBLIC_KEY")
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
 
 
@@ -51,10 +44,10 @@ def webhook():
         )
         if not user:
             log(log.ERROR, "User [%s] not found", response.customer)
-            return jsonify(success=False)
+            return jsonify(success=False), 404
         if not product:
             log(log.ERROR, "Product [%s] not found", response.plan.product)
-            return jsonify(success=False)
+            return jsonify(success=False), 404
         subscription = m.Subscription(
             stripe_subscription_id=response.id,
             user_id=user.id,
@@ -100,7 +93,7 @@ def webhook():
         user.activated = False
         user.save()
     else:
-        print("Unhandled event type {}".format(event["type"]))
+        log(log.ERROR, "Unhandled event type %s", event["type"])
 
     return jsonify(success=True)
 
@@ -113,12 +106,18 @@ def subscription():
         current_user.save()
         log(log.INFO, "Pay plan is chosen. User: [%s]", current_user)
         if current_user.plan == m.UsersPlan.advanced:
+            log(
+                log.INFO, "User [%s] is advanced. Redirect to logo upload", current_user
+            )
             return redirect(
                 url_for("auth.logo_upload", user_unique_id=current_user.unique_id)
             )
+        log(log.INFO, "User [%s] is basic. Redirect to auth.payment", current_user)
         return redirect(url_for("auth.payment", user_unique_id=current_user.unique_id))
     elif form.is_submitted():
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
+        flash("Something went wrong. Please try again later.", "danger")
+        return redirect(url_for("stripe.subscription"))
 
     flash("You are successfully changed your plan!", "success")
     return render_template(
@@ -131,14 +130,14 @@ def subscription():
 
 @stripe_blueprint.route("/portal", methods=["GET"])
 def portal():
-    # f"{request.scheme}://{request.host}{url_for('index')}"
     try:
+        log(log.INFO, "User [%s] is going to stripe portal", current_user)
         portal_response = stripe.billing_portal.Session.create(
             customer=current_user.stripe_customer_id,
-            # return_url=f"{request.scheme}://{request.host}{url_for('stripe.portal')}",
         )
     except Exception as e:
         log(log.ERROR, "stripe_portal: %s", e)
         flash("Something went wrong. Please try again later.", "danger")
 
+    log(log.INFO, "User [%s] is redirected to stripe portal", current_user)
     return redirect(portal_response.url, code=302)
