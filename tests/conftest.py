@@ -21,6 +21,17 @@ def app(monkeypatch):
         mock_create_subscription_checkout_session,
     )
 
+    def mock_create_stripe_customer(user: m.User):
+        class StripeCustomer:
+            id = "mock_stripe_customer_id"
+
+        return StripeCustomer
+
+    monkeypatch.setattr(
+        "app.controllers.create_stripe_customer",
+        mock_create_stripe_customer,
+    )
+
     app = create_app("testing")
     app.config.update(
         {
