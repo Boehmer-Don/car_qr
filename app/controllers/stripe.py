@@ -123,9 +123,6 @@ def create_subscription_checkout_session(
             automatic_tax={
                 "enabled": True,
             },
-            # subscription_data={
-            #     "trial_end": int((datetime.now() + timedelta(days=31)).timestamp()),
-            # },
         )
     except InvalidRequestError as e:
         log(log.ERROR, "Error while creating a checkout session - [%s]", e)

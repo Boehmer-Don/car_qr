@@ -110,7 +110,6 @@ def test_account(client: FlaskClient):
             city=TEST_CITY,
             postal_code=TEST_POSTAL_CODE,
             phone=TEST_PHONE,
-            # plan=m.UsersPlan.basic.value,
             plan="basic",
         ),
         follow_redirects=True,
