@@ -10,7 +10,17 @@ from tests.utils import register
 
 
 @pytest.fixture()
-def app():
+def app(monkeypatch):
+    def mock_create_subscription_checkout_session(
+        user: m.User, subscription_product: m.StripeProduct
+    ):
+        return "https://checkout.stripe.com/pay/cs_test_123"
+
+    monkeypatch.setattr(
+        "app.controllers.create_subscription_checkout_session",
+        mock_create_subscription_checkout_session,
+    )
+
     app = create_app("testing")
     app.config.update(
         {

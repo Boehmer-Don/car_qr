@@ -110,7 +110,8 @@ def test_account(client: FlaskClient):
             city=TEST_CITY,
             postal_code=TEST_POSTAL_CODE,
             phone=TEST_PHONE,
-            plan=m.UsersPlan.basic.value,
+            # plan=m.UsersPlan.basic.value,
+            plan="basic",
         ),
         follow_redirects=True,
     )
@@ -126,7 +127,7 @@ def test_subsription(client: FlaskClient):
     response = client.post(
         f"/user/subscription/{user.unique_id}",
         data=dict(
-            selected_plan=m.UsersPlan.basic.value,
+            selected_plan="basic",
         ),
         follow_redirects=True,
     )

@@ -6,8 +6,7 @@ import sqlalchemy as sa
 from app import models as m
 from app import forms as f
 from app import mail, db
-
-# from app.controllers import create_stripe_customer, create_subscription_checkout_session
+from app.controllers import create_stripe_customer, create_subscription_checkout_session
 from app.logger import log
 
 
@@ -159,11 +158,6 @@ def plan(user_unique_id: str):
 
 @auth_blueprint.route("/payment/<user_unique_id>", methods=["GET", "POST"])
 def payment(user_unique_id: str):
-    from app.controllers import (
-        create_stripe_customer,
-        create_subscription_checkout_session,
-    )
-
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
 

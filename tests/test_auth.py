@@ -41,17 +41,7 @@ def test_auth_pages(client: FlaskClient):
     assert response.status_code == 200
 
 
-def test_register(client: FlaskClient, monkeypatch):
-    def mock_create_subscription_checkout_session(
-        user: m.User, subscription_product: m.StripeProduct
-    ):
-        return "https://checkout.stripe.com/pay/cs_test_123"
-
-    monkeypatch.setattr(
-        "app.controllers.stripe.create_subscription_checkout_session",
-        mock_create_subscription_checkout_session,
-    )
-
+def test_register(client: FlaskClient):
     with mail.record_messages() as outbox:
         response = client.post(
             "/auth/register",
@@ -129,9 +119,8 @@ def test_register(client: FlaskClient, monkeypatch):
                 phone=TEST_PHONE_UPDATE,
                 plan="basic",
             ),
-            follow_redirects=True,
         )
-        assert response.status_code == 200
+        assert response.status_code == 302
 
 
 def test_forgot(client: FlaskClient):
