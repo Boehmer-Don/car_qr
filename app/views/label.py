@@ -233,7 +233,6 @@ def new_label_payment(user_unique_id: str):
                 label.save()
 
         if request.form.get("payment"):
-            # stripe
             stripe_form_url = create_payment_subscription_checkout_session(
                 current_user,
                 [label.name for label in labels],

@@ -1,5 +1,6 @@
 import stripe
 import os
+from datetime import datetime
 from flask import (
     Blueprint,
     render_template,
@@ -92,9 +93,21 @@ def webhook():
         )
         user.activated = False
         user.save()
+    elif event["type"] == "payment_intent.succeeded":
+        response = event["data"]["object"]
+        label_unique_ids = response.metadata.get("labels_unique_ids")
+        label_unique_ids_list = label_unique_ids.split(",")
+        for label_id in label_unique_ids_list:
+            label: m.Label = db.session.scalar(
+                m.Label.select().where(m.Label.unique_id == label_id)
+            )
+            label.date_activated = datetime.now()
+            label.status = m.LabelStatus.active
+            label.save()
     else:
         log(log.ERROR, "Unhandled event type %s", event["type"])
 
+    log(log.INFO, "payment_intent.succeeded, labels paid: %s", label_unique_ids_list)
     return jsonify(success=True)
 
 
