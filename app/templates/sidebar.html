@@ -86,7 +86,7 @@
         </a>
       </li>
       {% endif %} {% if current_user.role.value == "admin" or
-      current_user.plan.value == "advanced" %}
+      current_user.plan.value == "Advanced Plan" %}
       <li>
         <a href="{{ url_for('report.dashboard') }}"
           class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
@@ -99,7 +99,7 @@
 
           {% if current_user.role.value == "admin" %}
           <span class="ml-3">Reporting</span>
-          {% elif current_user.plan and current_user.plan.value == "advanced" %}
+          {% elif current_user.plan and current_user.plan.value == "Advanced Plan" %}
           <span class="ml-3">Create a report</span>
           {% endif %}
         </a>
