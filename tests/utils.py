@@ -12,6 +12,7 @@ def register(email=TEST_ADMIN_EMAIL, password=TEST_ADMIN_PASSWORD):
         first_name=TEST_ADMIN_NAME,
         last_name="Simple2B",
         role=m.UsersRole.admin,
+        activated=True,
     )
     user.password = password
     user.save()

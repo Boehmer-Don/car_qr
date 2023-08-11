@@ -57,16 +57,25 @@ def register():
 def login():
     form: f.LoginForm = f.LoginForm(request.form)
     if form.validate_on_submit():
-        user = m.User.authenticate(form.user_id.data, form.password.data)
+        user: m.User = m.User.authenticate(form.user_id.data, form.password.data)
         log(log.INFO, "Form submitted. User: [%s]", user)
-        if user:
-            login_user(user)
-            log(log.INFO, "Login successful.")
-            flash("Login successful.", "success")
-            if current_user.role == m.UsersRole.admin:
-                return redirect(url_for("user.get_all"))
-            else:
-                return redirect(url_for("labels.get_active_labels"))
+        if not user:
+            flash("Wrong user ID or password.", "danger")
+            return redirect(url_for("auth.login"))
+        if not user.activated:
+            flash(
+                "Your account is not activated yet. Please check your email to confirm it.",
+                "danger",
+            )
+            return redirect(url_for("auth.mail_check"))
+
+        login_user(user)
+        log(log.INFO, "Login successful.")
+        flash("Login successful.", "success")
+        if current_user.role == m.UsersRole.admin:
+            return redirect(url_for("user.get_all"))
+        else:
+            return redirect(url_for("labels.get_active_labels"))
 
         flash("Wrong user ID or password.", "danger")
 
@@ -254,22 +263,17 @@ def logo_upload(user_unique_id: str):
     )
 
 
-@auth_blueprint.route("/thankyou/<user_unique_id>", methods=["GET", "POST"])
-def thankyou(user_unique_id: str):
-    query = m.User.select().where(m.User.unique_id == user_unique_id)
-    user: m.User | None = db.session.scalar(query)
+@auth_blueprint.route("/thankyou", methods=["GET"])
+@login_required
+def thankyou():
+    log(log.INFO, "Payment succeeded. User: [%s]", current_user)
+    return render_template("auth/thankyou.html")
 
-    if not user:
-        log(log.INFO, "User not found")
-        flash("Incorrect reset password link", "danger")
-        return redirect(url_for("main.index"))
 
-    log(log.INFO, "Registration succeded. User: [%s]", user)
-    return render_template(
-        "auth/register_thankyou.html",
-        user=user,
-        user_unique_id=user_unique_id,
-    )
+@auth_blueprint.route("/cancel", methods=["GET"])
+def cancel():
+    log(log.INFO, "Payment failed. User: [%s]", current_user)
+    return render_template("auth/cancel.html")
 
 
 @auth_blueprint.route("/forgot", methods=["GET", "POST"])
