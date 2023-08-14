@@ -1,8 +1,8 @@
 """init
 
-Revision ID: defdfeb91033
+Revision ID: dc5a6a14b36b
 Revises: 
-Create Date: 2023-08-07 16:08:49.537081
+Create Date: 2023-08-11 16:25:00.053575
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'defdfeb91033'
+revision = 'dc5a6a14b36b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -65,6 +65,7 @@ def upgrade():
     sa.Column('type_of_vehicle', sa.String(length=64), nullable=False),
     sa.Column('price', sa.Integer(), nullable=False),
     sa.Column('date_received', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+    sa.Column('date_activated', sa.DateTime(), nullable=True),
     sa.Column('date_deactivated', sa.DateTime(), nullable=True),
     sa.Column('url', sa.String(length=64), nullable=False),
     sa.Column('status', sa.Enum('cart', 'active', 'archived', name='labelstatus'), nullable=False),

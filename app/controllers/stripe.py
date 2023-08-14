@@ -81,7 +81,6 @@ def get_stripe_products():
                     description=product.description,
                 ).save()
                 log(log.INFO, "New stripe_product is saved to db: %s", product)
-                flash("Stripe product are created successfully", "success")
 
 
 def delete_stripe_products_local():
