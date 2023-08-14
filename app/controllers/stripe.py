@@ -143,8 +143,8 @@ def create_payment_subscription_checkout_session(
     try:
         checkout_session = stripe.checkout.Session.create(
             customer=user.stripe_customer_id,
-            success_url=f"{app.config.get('STRIPE_SUBSCRIPTION_SUCCESS_URL')}/{user.unique_id}",
-            cancel_url=f"{app.config.get('STRIPE_SUBSCRIPTION_CANCEL_URL')}/{user.unique_id}",
+            success_url=f"{app.config.get('STRIPE_SUBSCRIPTION_SUCCESS_URL')}",
+            cancel_url=f"{app.config.get('STRIPE_SUBSCRIPTION_CANCEL_URL')}",
             line_items=[
                 {
                     "price_data": {
