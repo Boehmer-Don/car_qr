@@ -9,11 +9,18 @@
       <!-- prettier-ignore -->
       <div class="w-full lg:max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
         <!-- prettier-ignore -->
-        <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center">Something went wrong!</h3>
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white text-center">Please make sure that your credentials
-          are correct</h2>
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center">Your payment was successful!</h3>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white text-center">Thank you for your order!</h2>
 
         <!-- prettier-ignore -->
+        <p class="text-xl text-gray-900 dark:text-white text-center">
+          This to confirm your subscription has been processed.
+          We will work quickly to get your labels with your personalized QR
+          codes shipped to you as soon as possible.
+          <br>
+          In the mean time, we encourage you to check out your new account!
+        </p>
+
         <a href="{{ url_for('user.account', user_unique_id=current_user.unique_id) }}"
           class="flex align-middle justify-center">
           <button type="button"

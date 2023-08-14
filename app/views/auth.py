@@ -263,11 +263,18 @@ def logo_upload(user_unique_id: str):
     )
 
 
-@auth_blueprint.route("/thankyou", methods=["GET"])
+@auth_blueprint.route("/thankyou-subscription", methods=["GET"])
 @login_required
-def thankyou():
+def thankyou_subscription():
     log(log.INFO, "Payment succeeded. User: [%s]", current_user)
-    return render_template("auth/thankyou.html")
+    return render_template("auth/thankyou_subscription.html")
+
+
+@auth_blueprint.route("/thankyou-labels", methods=["GET"])
+@login_required
+def thankyou_labels():
+    log(log.INFO, "Payment succeeded. User: [%s]", current_user)
+    return render_template("auth/thankyou_labels.html")
 
 
 @auth_blueprint.route("/cancel", methods=["GET"])
