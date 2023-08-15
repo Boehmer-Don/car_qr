@@ -1,3 +1,4 @@
+import json
 import click
 from flask import Flask
 import sqlalchemy as sa
@@ -82,3 +83,18 @@ def init(app: Flask):
         db.session.delete(user)
         db.session.commit()
         print(f"User {user} deleted")
+
+    @app.cli.command()
+    def get_models():
+        with open("tests/db/test_models.json", "r") as f:
+            models_data = json.load(f)
+            for make_name, models_list in models_data.items():
+                print(make_name, models_list)
+                make = m.CarMake(name=make_name).save()
+                for model in models_list:
+                    m.CarModel(
+                        name=model,
+                        make_id=make.id,
+                    ).save()
+
+        print("Makes and models created")
