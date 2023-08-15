@@ -45,7 +45,7 @@ def get_all():
             .where(
                 m.User.first_name.like(f"%{q}%")
                 | m.User.email.like(f"%{q}%")
-                | m.User.first_name.like(f"%{q}%")
+                | m.User.last_name.like(f"%{q}%")
             )
             .order_by(m.User.id)
         )
@@ -55,7 +55,7 @@ def get_all():
             .where(
                 m.User.first_name.like(f"%{q}%")
                 | m.User.email.like(f"%{q}%")
-                | m.User.first_name.like(f"%{q}%")
+                | m.User.last_name.like(f"%{q}%")
             )
             .select_from(m.User)
         )

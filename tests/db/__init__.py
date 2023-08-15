@@ -92,7 +92,7 @@ def add_labels(user_id: int = 9):
     with open("tests/db/test_labels.json", "r") as f:
         labels_data = json.load(f)
     for index, label in enumerate(labels_data):
-        label_status = m.LabelStatus.active if index < 8 else m.LabelStatus.archived
+        label_status = m.LabelStatus.archived if index < 8 else m.LabelStatus.active
         date_received = datetime.now() - timedelta(days=randint(1, 30))
         date_deactivated = None
         if label_status == m.LabelStatus.archived:
