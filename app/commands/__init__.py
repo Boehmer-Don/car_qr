@@ -48,6 +48,7 @@ def init(app: Flask):
             email=app.config["ADMIN_EMAIL"],
             password=app.config["ADMIN_PASSWORD"],
             role=m.UsersRole.admin,
+            activated=True,
         ).save()
         print("admin created")
 
