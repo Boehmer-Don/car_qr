@@ -132,7 +132,6 @@ def subscription():
         flash("Something went wrong. Please try again later.", "danger")
         return redirect(url_for("stripe.subscription"))
 
-    flash("You are successfully changed your plan!", "success")
     return render_template(
         "user/subscription_update.html",
         user=current_user,
