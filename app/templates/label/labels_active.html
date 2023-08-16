@@ -6,6 +6,7 @@
     Welcome Back {{ current_user.first_name }},
   </h1>
   <div class="lg:flex-row text-xs lg:text-sm md:px-5 md:pb-5">
+    {% if current_user.role and current_user.role.value == 'dealer' %}
     <div
       class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700 cursor-pointer">
       <ul class="flex flex-wrap -mb-px">
@@ -32,15 +33,18 @@
         {% endif %}
       </ul>
     </div>
+    {% endif %}
 
     <div class="w-full p-3">
       <h3 class="mt-6 md:mt-0 text-lg font-bold">Active Labels</h3>
 
+      {% if current_user.role and current_user.role.value == 'dealer' %}
       <p class="my-5">
         List of all of your active labels.
         <br />
         When a label is no longer in use don’t forget to remove it.
       </p>
+      {% endif %}
     </div>
 
     <div class="w-full bg-gray-100 dark:bg-gray-800">

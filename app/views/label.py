@@ -35,7 +35,7 @@ def get_active_labels():
         query = (
             m.Label.select()
             .where(m.Label.status == m.LabelStatus.active)
-            .order_by(m.Label.id)
+            .order_by(m.Label.date_activated.desc())
         )
         count_query = (
             sa.select(sa.func.count())
@@ -365,9 +365,9 @@ def generate(user_unique_id: str):
     )
 
 
-@dealer_blueprint.route("/download/<user_unique_id>/<amount>", methods=["GET", "POST"])
+@dealer_blueprint.route("/download/<user_unique_id>", methods=["GET", "POST"])
 @login_required
-def download(user_unique_id: str, amount: int):
+def download(user_unique_id: str):
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
 
@@ -419,7 +419,7 @@ def download(user_unique_id: str, amount: int):
     return render_template(
         "label/download.html",
         user_unique_id=user_unique_id,
+        user=user,
         stickers=stickers,
         url=app.config.get("LANDING_URL"),
-        amount=amount,
     )

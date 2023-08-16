@@ -56,7 +56,7 @@
       {% for user in users %}
       <div class="flex p-1 md:p-3">
         <div class="w-1/12 pl-1 md:pl-3 flex items-center">{{ loop.index + page.skip }}</div>
-        <a href="{{ url_for('labels.generate', user_unique_id=user.unique_id) }}" class="w-8/12 flex items-center">
+        <a href="{{ url_for('labels.download', user_unique_id=user.unique_id) }}" class="w-8/12 flex items-center">
           <div class="w-8/12 flex items-center">{{ user.email }}</div>
         </a>
         <div class="w-3/12">
