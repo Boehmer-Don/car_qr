@@ -88,13 +88,36 @@ def init(app: Flask):
     def get_models():
         with open("tests/db/test_models.json", "r") as f:
             models_data = json.load(f)
+            added_makes_count = 0
+            added_models_count = 0
             for make_name, models_list in models_data.items():
                 print(make_name, models_list)
-                make = m.CarMake(name=make_name).save()
-                for model in models_list:
-                    m.CarModel(
-                        name=model,
-                        make_id=make.id,
-                    ).save()
+                make = db.session.scalar(
+                    m.CarMake.select().where(m.CarMake.name == make_name)
+                )
+                if not make:
+                    print(f"{make_name} is not in DB. Adding it...")
+                    make = m.CarMake(name=make_name)
+                    make.save()
+                    added_makes_count += 1
+                    for model_name in models_list:
+                        model = db.session.scalar(
+                            m.CarModel.select().where(m.CarModel.name == model_name)
+                        )
+                        if not model:
+                            print(
+                                f"{model_name} is not in DB. Adding it to {make_name}"
+                            )
+                            m.CarModel(
+                                name=model_name,
+                                make_id=make.id,
+                            ).save()
+                            added_models_count += 1
 
-        print("Makes and models created")
+        print(f"{added_makes_count} makes added")
+        print(f"{added_models_count} models added")
+
+        makes_count = db.session.query(m.CarMake).count()
+        models_count = db.session.query(m.CarModel).count()
+        print(f"Total makes: {makes_count}")
+        print(f"Total models: {models_count}")

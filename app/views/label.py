@@ -179,6 +179,8 @@ def new_label_set_amount(user_unique_id: str):
 @dealer_blueprint.route("/details/<user_unique_id>/<amount>", methods=["GET", "POST"])
 @login_required
 def new_label_set_details(user_unique_id: str, amount: int):
+    makes = db.session.scalars(m.CarMake.select()).all()
+    models = db.session.scalars(m.CarModel.select()).all()
     if request.method == "POST":
         for i in range(1, int(amount) + 1):
             label = m.Label(
@@ -206,6 +208,8 @@ def new_label_set_details(user_unique_id: str, amount: int):
         "label/new_labels_details.html",
         user_unique_id=user_unique_id,
         amount=amount,
+        makes=makes,
+        models=models,
     )
 
 
@@ -215,6 +219,8 @@ def new_label_payment(user_unique_id: str):
     labels = db.session.scalars(
         m.Label.select().where(m.Label.status == m.LabelStatus.cart)
     ).all()
+    makes = db.session.scalars(m.CarMake.select()).all()
+    models = db.session.scalars(m.CarModel.select()).all()
     if request.method == "POST":
         if request.form.get("edit"):
             for index, label in enumerate(labels):
@@ -247,6 +253,8 @@ def new_label_payment(user_unique_id: str):
         "label/new_labels_payment.html",
         user_unique_id=user_unique_id,
         labels=labels,
+        makes=makes,
+        models=models,
     )
 
 
@@ -260,10 +268,12 @@ def redirect_to_outer_url(label_unique_id: str):
     return redirect(label.url)
 
 
-@dealer_blueprint.route("/stripe/<user_unique_id>", methods=["GET", "POST"])
-def stripe(user_unique_id: str):
-    # All labels that are in cart
-    return render_template(
-        "label/stripe.html",
-        user_unique_id=user_unique_id,
-    )
+@dealer_blueprint.route("/get_models", methods=["POST"])
+def get_models():
+    make_name = request.json.get("makeSelected")
+    make = db.session.scalar(m.CarMake.select().where(m.CarMake.name == make_name))
+    models = db.session.scalars(
+        m.CarModel.select().where(m.CarModel.make == make)
+    ).all()
+    models_names = [model.name for model in models]
+    return {"models": models_names}

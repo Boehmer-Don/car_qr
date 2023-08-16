@@ -66,9 +66,13 @@
                   <label for="make" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Make
                   </label>
-                  <input type="text" name="make-{{ loop.index }}" id="label-{{ loop.index }}-make"
-                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Make" value="{{ label.make }}" />
+                  <select id="make-{{ loop.index }}" name="make-{{ loop.index }}" data-model="{{ loop.index }}" required
+                    class="clean_name_input make w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                    <option value="{{ label.make }}">{{ label.make }}</option>
+                    {% for make in makes %}
+                    <option value="{{ make.name }}">{{ make.name }}</option>
+                    {% endfor %}
+                  </select>
                 </div>
               </div>
 
@@ -77,9 +81,14 @@
                   <label for="model" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Vehicle Model
                   </label>
-                  <input type="text" name="vehicle_model-{{ loop.index }}" id="label-{{ loop.index }}-model"
-                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Vehicle Model" value="{{ label.vehicle_model }}" />
+                  <select id="vehicle_model-{{ loop.index }}" name="vehicle_model-{{ loop.index }}" required
+                    class="clean_name_input model w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                    <option value="{{ label.vehicle_model }}">{{ label.vehicle_model }}</option>{% for
+                    model in
+                    models %}
+                    <option value="{{ model.name }}">{{ model.name }}</option>
+                    {% endfor %}
+                  </select>
                 </div>
 
                 <div class="w-full px-1">

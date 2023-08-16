@@ -208,3 +208,43 @@ if (subTotal && taxes && total) {
   const total_value = Math.round(quantity * 20 * 1.13 * 100) / 100;
   total.innerHTML = '$' + total_value.toFixed(2).toString();
 }
+
+const makeSelectMakeFields = document.querySelectorAll('.make');
+if (makeSelectMakeFields) {
+  makeSelectMakeFields.forEach(makeSelectMakeField =>
+    makeSelectMakeField.addEventListener('change', () => {
+      const makeNumber = makeSelectMakeField.getAttribute('data-model');
+      const makeId = makeSelectMakeField.getAttribute('id');
+      const modelSelect = document.querySelector(
+        `#vehicle_model-${makeNumber}`,
+      ) as HTMLSelectElement;
+
+      // console.log(typeof makeSelectMakeField.value, makeSelectMakeField.value);
+      console.log(makeSelectMakeField);
+      const stringSelected = makeSelectMakeField.value as string;
+      let models: Array<string> = [];
+      fetch('/labels/get_models', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({makeSelected: stringSelected}),
+        // body: stringSelected,
+      })
+        .then(response => response.json())
+        .then(data => {
+          models.push(...data.models);
+          modelSelect.innerHTML = '';
+          models.forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            modelSelect.appendChild(optionElement);
+          });
+        })
+        .catch(error => {
+          console.error('Error sending data to Flask:', error);
+        });
+    }),
+  );
+}
