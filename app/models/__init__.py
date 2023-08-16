@@ -6,3 +6,4 @@ from .stripe import StripeProduct, StripeProductPrice
 from .subscription import Subscription
 from .car_make import CarMake
 from .car_model import CarModel
+from .sticker import Sticker

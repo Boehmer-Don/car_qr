@@ -46,6 +46,8 @@ class BaseConfig(BaseSettings):
     STRIPE_SUBSCRIPTION_CANCEL_URL: str
 
     STRIPE_SECRET_KEY: str
+    ALPHANUMERIC_CODE_LENGTH: int
+    LANDING_URL: str
 
     @staticmethod
     def configure(app: Flask):

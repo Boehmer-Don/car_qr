@@ -1390,6 +1390,14 @@ input:checked + .toggle-bg {
   height: 100vh;
 }
 
+.h-24 {
+  height: 6rem;
+}
+
+.h-20 {
+  height: 5rem;
+}
+
 .max-h-full {
   max-height: 100%;
 }
@@ -1496,6 +1504,10 @@ input:checked + .toggle-bg {
 
 .w-60 {
   width: 15rem;
+}
+
+.w-2\/5 {
+  width: 40%;
 }
 
 .min-w-0 {

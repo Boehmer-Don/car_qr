@@ -56,7 +56,9 @@
       {% for user in users %}
       <div class="flex p-1 md:p-3">
         <div class="w-1/12 pl-1 md:pl-3 flex items-center">{{ loop.index + page.skip }}</div>
-        <div class="w-8/12 flex items-center">{{ user.email }}</div>
+        <a href="{{ url_for('labels.generate', user_unique_id=user.unique_id) }}" class="w-8/12 flex items-center">
+          <div class="w-8/12 flex items-center">{{ user.email }}</div>
+        </a>
         <div class="w-3/12">
           <button type="button" data-target="{{user.json}}"
             class="user-edit-button inline-flex items-center px-1 md:px-3 py-1 md:py-2 text-sm font-medium text-center text-gray-700 rounded-lg hover:bg-gray-100 hover:text-blue-500 focus:ring-4 focus:ring-blue-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800 dark:text-white">

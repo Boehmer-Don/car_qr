@@ -30,18 +30,18 @@ def get_all():
     q = request.args.get("q", type=str, default=None)
     query = (
         m.User.select()
-        .where(m.User.activated, m.User.deleted == False)
+        .where(m.User.activated, m.User.deleted == False, m.User.role == "dealer")
         .order_by(m.User.id)
     )
     count_query = (
         sa.select(sa.func.count())
-        .where(m.User.activated, m.User.deleted == False)
+        .where(m.User.activated, m.User.deleted == False, m.User.role == "dealer")
         .select_from(m.User)
     )
     if q:
         query = (
             m.User.select()
-            .where(m.User.activated, m.User.deleted == False)
+            .where(m.User.activated, m.User.deleted == False, m.User.role == "dealer")
             .where(
                 m.User.first_name.like(f"%{q}%")
                 | m.User.email.like(f"%{q}%")
