@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block links %}
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<div class="dark:bg-gray-900">
+  <section>
+    <div class="w-full h-full md:w-4/5 lg:w-2/3 px-1 md:px-4 py-6 mx-auto">
+      <div>
+        <!-- prettier-ignore -->
+        <div class="w-full lg:max-w-xl p-1 md:p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            Subscription
+          </h1>
+
+          <div id="plan_chosen" {% if current_user.plan %} data-plan="{{ current_user.plan.value }}" {% else %}
+            data-plan="None" {% endif %}>
+          </div>
+
+          <form action="{{ url_for('auth.plan', user_unique_id=user.unique_id) }}" method="post">
+            {{ form.hidden_tag() }}
+            {% if user.subscription %}
+            {{ user.subscriptions[0].is_active }} {{ user.subscriptions[0].current_period_start }}
+            {% endif %}
+            <div class="w-full h-90 flex testing_class justify-around dark:text-white">
+              <div id="basic_plan_card" class="plan_card">
+                <p class="text-sm mb-5">Basic</p>
+                <p class="text-3xl mb-5 font-bold">$99</p>
+                <p class="text-sm mb-5 font-bold">per year</p>
+                <p class="text-sm font-bold mb-5">Good for trying out, or the occassional sale.</p>
+                <ul class="list-disc list-inside mt-3 ms-2">
+                  <li class="text-xs">Unlimited QR codes</li>
+                  <li class="text-xs">Activation Fee per Label</li>
+                  <li class="text-xs">Labels Printed & Shipped for Free</li>
+                </ul>
+              </div>
+
+              <div id="advanced_plan_card" class="plan_card">
+                <p class="text-sm mb-5">Advanced</p>
+                <p class="text-3xl mb-5 font-bold">$299</p>
+                <p class="text-sm mb-5 font-bold">per year</p>
+                <p class="text-sm font-bold mb-5">Great for a medium to large scale dealerships.</p>
+                <ul class="list-disc list-inside mt-3 ms-2">
+                  <li class="text-xs">Unlimited QR Code Labels</li>
+                  <li class="text-xs">Activation Fee per Label</li>
+                  <li class="text-xs">Free Label Printing & Shipping</li>
+                  <li class="text-xs">Custom Branding on Labels</li>
+                  <li class="text-xs">Advanced Reporting</li>
+                  <li class="text-xs">Custom Gift & Promotions for Customers</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="invisible">
+              <input type="radio" id="basic_radio" name="selected_plan" value="basic">
+              <label for="html">$99</label><br>
+              <input type="radio" id="advanced_radio" name="selected_plan" value="advanced">
+              <label for="javascript">$299</label>
+            </div>
+
+            <div class="w-full flex justify-center">
+              <button type="submit"
+                class="w-full md:w-60 mx-auto mb-8 md:mt-3 px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                Change >
+              </button>
+            </div>
+
+          </form>
+
+          <form action="{{ url_for('stripe.portal')}}" method="get">
+            {{ form_hidden_tag() }}
+            <div class="w-full flex justify-center">
+              <button type="submit"
+                class="w-full md:w-60 mx-auto mb-8 md:mt-3 px-5 py-2 text-base font-medium text-red-700 border border-red-700 rounded-lg hover:bg-red-700 hover:text-white focus:ring-4 focus:ring-blue-300 sm:w-auto">
+                Manage Stripe >
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- prettier-ignore -->
+{% endblock %}
+<!-- prettier-ignore -->
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/user.js') }}" type="text/javascript" defer></script>
+<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
+{% endblock %}

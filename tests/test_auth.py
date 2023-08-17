@@ -42,8 +42,6 @@ def test_auth_pages(client: FlaskClient):
 
 
 def test_register(client: FlaskClient):
-    # TEST_EMAIL = "sam@test.com"
-
     with mail.record_messages() as outbox:
         response = client.post(
             "/auth/register",
@@ -103,6 +101,7 @@ def test_register(client: FlaskClient):
             follow_redirects=True,
         )
         assert response.status_code == 200
+
         response = client.post(
             f"/auth/payment/{user.unique_id}",
             data=dict(
@@ -120,9 +119,8 @@ def test_register(client: FlaskClient):
                 phone=TEST_PHONE_UPDATE,
                 plan="basic",
             ),
-            follow_redirects=True,
         )
-        assert response.status_code == 200
+        assert response.status_code == 302
 
 
 def test_forgot(client: FlaskClient):

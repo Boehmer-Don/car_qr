@@ -31,7 +31,9 @@
               {{form.email.label(class='block mb-2 text-sm font-medium
               text-gray-900 dark:text-white')}}
               {{form.email(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="clean_email_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              dark:text-white",
+              placeholder="your@email.com"
               )
               }}
 
@@ -45,7 +47,8 @@
                 {{form.password.label(class='block mb-2 text-sm font-medium
                 text-gray-900 dark:text-white')}}
                 {{form.password(
-                class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit'
+                class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit',
+                placeholder="Password"
                 )
                 }}{% for error in form.errors.password %}
                 <small class="text-danger">{{error}}</small>
@@ -56,7 +59,8 @@
                 {{form.password_confirmation.label(class='block mb-2 text-sm
                 font-medium text-gray-900 dark:text-white')}}
                 {{form.password_confirmation(
-                class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit'
+                class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit',
+                placeholder="Confirm Password"
                 )
                 }}
                 {% for error in form.errors.password_confirmation %}
@@ -70,7 +74,9 @@
                 {{form.first_name.label(class='block text-sm font-medium
                 text-gray-900 dark:text-white')}}
                 {{form.first_name(
-                class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white",
+                placeholder="John"
                 )
                 }}
 
@@ -83,7 +89,9 @@
                 {{form.last_name.label(class='block text-sm font-medium
                 text-gray-900 dark:text-white')}}
                 {{form.last_name(
-                class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white",
+                placeholder="Smith"
                 )
                 }}{% for error in form.errors.last_name %}
                 <small class="text-danger">{{error}}</small>
@@ -95,7 +103,9 @@
               {{form.name_of_dealership.label(class='block mb-2 text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.name_of_dealership(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              dark:text-white",
+              placeholder="John's Auto"
               )
               }}
               {% for error in form.errors.name_of_dealership %}
@@ -107,7 +117,9 @@
               {{form.address_of_dealership.label(class='block mb-2 text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.address_of_dealership(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              dark:text-white",
+              placeholder="123 Main St."
               )
               }}
               {% for error in form.errors.address_of_dealership %}
@@ -120,7 +132,9 @@
                 {{form.country.label(class='block mb-2 text-sm
                 font-medium text-gray-900 dark:text-white')}}
                 {{form.country(
-                class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white",
+                placeholder="Canada"
                 )
                 }}
                 {% for error in form.errors.country %}
@@ -132,7 +146,9 @@
                 {{form.province.label(class='block mb-2 text-sm
                 font-medium text-gray-900 dark:text-white')}}
                 {{form.province(
-                class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white",
+                placeholder="Ontario"
                 )
                 }}
                 {% for error in form.errors.province %}
@@ -146,7 +162,9 @@
                 {{form.city.label(class='block mb-2 text-sm
                 font-medium text-gray-900 dark:text-white')}}
                 {{form.city(
-                class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white",
+                placeholder="Toronto"
                 )
                 }}
                 {% for error in form.errors.city %}
@@ -158,7 +176,9 @@
                 {{form.postal_code.label(class='block mb-2 text-sm
                 font-medium text-gray-900 dark:text-white')}}
                 {{form.postal_code(
-                class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                class="clean_number_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white",
+                placeholder="K0A"
                 )
                 }}
                 {% for error in form.errors.postal_code %}
@@ -172,7 +192,8 @@
                 {{form.phone.label(class='block mb-2 text-sm
                 font-medium text-gray-900 dark:text-white')}}
                 {{form.phone(
-                class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                class="clean_phone_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white"
                 )
                 }}
                 {% for error in form.errors.phone %}
@@ -198,48 +219,7 @@
               Pay now >
             </button>
           </form>
-
-          <div class="w-full mx-auto my-8">
-            <div class="w-full px-1">
-                <label for="name" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                Name on Card
-                </label>
-                <input type="text" name="name-on-card" id="name-on-card"
-                class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="John Smith" />
-            </div>
-
-            <div class="w-full px-1">
-                <label for="name" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                Credit Card Number
-                </label>
-                <input type="text" name="card-number" id="card-number"
-                class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="0000 0000 0000 0000" />
-            </div>
-
-            <div class="w-full flex justify-between">
-                <div class="w-full px-1">
-                    <label for="name" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Expiry
-                    </label>
-                    <input type="text" name="expiry" id="expiry"
-                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="2030-07-30" />
-                </div>
-
-                <div class="w-full px-1">
-                    <label for="make" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                    CVV
-                    </label>
-                    <input type="text" name="cvv" id="cvv"
-                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="777" />
-                </div>
-            </div>
         </div>
-      </div>
-    </div>
   </section>
 </div>
 {% endblock %}

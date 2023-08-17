@@ -22,6 +22,8 @@ def create_app(environment="development"):
         auth_blueprint,
         user_blueprint,
         dealer_blueprint,
+        report_blueprint,
+        stripe_blueprint,
     )
     from app import models as m
 
@@ -46,6 +48,8 @@ def create_app(environment="development"):
     app.register_blueprint(main_blueprint)
     app.register_blueprint(user_blueprint)
     app.register_blueprint(dealer_blueprint)
+    app.register_blueprint(report_blueprint)
+    app.register_blueprint(stripe_blueprint)
 
     # Set up flask login.
     @login_manager.user_loader

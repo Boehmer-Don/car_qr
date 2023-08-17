@@ -6,6 +6,7 @@ import sqlalchemy as sa
 from app import models as m
 from app import forms as f
 from app import mail, db
+from app.controllers import create_stripe_customer, create_subscription_checkout_session
 from app.logger import log
 
 
@@ -56,16 +57,26 @@ def register():
 def login():
     form: f.LoginForm = f.LoginForm(request.form)
     if form.validate_on_submit():
-        user = m.User.authenticate(form.user_id.data, form.password.data)
+        user: m.User = m.User.authenticate(form.user_id.data, form.password.data)
         log(log.INFO, "Form submitted. User: [%s]", user)
-        if user:
-            login_user(user)
-            log(log.INFO, "Login successful.")
-            flash("Login successful.", "success")
-            if current_user.role == m.UsersRole.admin:
-                return redirect(url_for("user.get_all"))
-            else:
-                return redirect(url_for("labels.get_active_labels"))
+        if not user:
+            flash("Wrong user ID or password.", "danger")
+            return redirect(url_for("auth.login"))
+        if not user.activated:
+            flash(
+                "Your account is not activated yet. Please check your email to confirm it.",
+                "danger",
+            )
+            return redirect(url_for("auth.mail_check"))
+
+        login_user(user)
+        log(log.INFO, "Login successful.")
+        flash("Login successful.", "success")
+        if current_user.role == m.UsersRole.admin:
+            return redirect(url_for("user.get_all"))
+        else:
+            return redirect(url_for("labels.get_active_labels"))
+
         flash("Wrong user ID or password.", "danger")
 
     elif form.is_submitted():
@@ -99,7 +110,6 @@ def activate(reset_password_uid: str):
 
     form: f.RegistrationStep2Form = f.RegistrationStep2Form()
     if form.validate_on_submit():
-        user.activated = True
         user.unique_id = m.user.gen_password_reset_id()
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
@@ -194,7 +204,20 @@ def payment(user_unique_id: str):
         user.phone = form.phone.data
         user.save()
         login_user(user)
-        return redirect(url_for("auth.thankyou", user_unique_id=user.unique_id))
+
+        # get users stripe plan
+        product = db.session.scalar(
+            m.StripeProduct.select().where(m.StripeProduct.name == user.plan.value)
+        )
+        if not product:
+            log(log.ERROR, "Stripe product not found: [%s]", user.plan.value)
+
+        # create stripe customer
+        stripe_user = create_stripe_customer(user)
+        user.stripe_customer_id = stripe_user.id
+        user.save()
+        stripe_form_url = create_subscription_checkout_session(user, product)
+        return redirect(stripe_form_url)
     elif form.is_submitted():
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
 
@@ -240,22 +263,24 @@ def logo_upload(user_unique_id: str):
     )
 
 
-@auth_blueprint.route("/thankyou/<user_unique_id>", methods=["GET", "POST"])
-def thankyou(user_unique_id: str):
-    query = m.User.select().where(m.User.unique_id == user_unique_id)
-    user: m.User | None = db.session.scalar(query)
+@auth_blueprint.route("/thankyou-subscription", methods=["GET"])
+@login_required
+def thankyou_subscription():
+    log(log.INFO, "Payment succeeded. User: [%s]", current_user)
+    return render_template("auth/thankyou_subscription.html")
 
-    if not user:
-        log(log.INFO, "User not found")
-        flash("Incorrect reset password link", "danger")
-        return redirect(url_for("main.index"))
 
-    log(log.INFO, "Registration succeded. User: [%s]", user)
-    return render_template(
-        "auth/register_thankyou.html",
-        user=user,
-        user_unique_id=user_unique_id,
-    )
+@auth_blueprint.route("/thankyou-labels", methods=["GET"])
+@login_required
+def thankyou_labels():
+    log(log.INFO, "Payment succeeded. User: [%s]", current_user)
+    return render_template("auth/thankyou_labels.html")
+
+
+@auth_blueprint.route("/cancel", methods=["GET"])
+def cancel():
+    log(log.INFO, "Payment failed. User: [%s]", current_user)
+    return render_template("auth/cancel.html")
 
 
 @auth_blueprint.route("/forgot", methods=["GET", "POST"])
@@ -310,7 +335,6 @@ def password_recovery(reset_password_uid):
 
     if form.validate_on_submit():
         user.password = form.password.data
-        user.activated = True
         user.unique_id = m.gen_password_reset_id()
         user.save()
         login_user(user)

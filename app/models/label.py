@@ -49,6 +49,10 @@ class Label(db.Model, ModelMixin):
         default=datetime.utcnow,
         server_default=sa.func.now(),
     )
+    date_activated: orm.Mapped[datetime] = orm.mapped_column(
+        sa.DateTime,
+        nullable=True,
+    )
     date_deactivated: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
         nullable=True,

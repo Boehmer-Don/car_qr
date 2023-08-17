@@ -1,15 +1,12 @@
-{% extends 'base.html' %}
-
-{% block links %}
+{% extends 'base.html' %} {% block links %}
 <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
   <h1 class="text-2xl md:text-4xl font-bold mt-10 mb-4 md:mt-12 md:mb-10 px-5">
     Welcome Back {{ current_user.first_name }},
   </h1>
   <div class="lg:flex-row text-xs lg:text-sm md:px-5 md:pb-5">
+    {% if current_user.role and current_user.role.value == 'dealer' %}
     <div
       class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700 cursor-pointer">
       <ul class="flex flex-wrap -mb-px">
@@ -26,30 +23,36 @@
             Archived
           </a>
         </li>
-        <li class="mr-2">
-          <a href="#"
+        {% if current_user.plan.value == 'advanced' %}'
+        <li class="mr-2 hidden">
+          <a href="{{ url_for('report.all') }}"
             class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">
             Reports
           </a>
         </li>
+        {% endif %}
       </ul>
     </div>
-
+    {% endif %}
 
     <div class="w-full p-3">
       <h3 class="mt-6 md:mt-0 text-lg font-bold">Active Labels</h3>
 
+      {% if current_user.role and current_user.role.value == 'dealer' %}
       <p class="my-5">
         List of all of your active labels.
-        <br>
+        <br />
         When a label is no longer in use don’t forget to remove it.
       </p>
+      {% endif %}
     </div>
 
     <div class="w-full bg-gray-100 dark:bg-gray-800">
       <div class="w-full flex text-xs text-white font-bold px-1 py-3 md:p-3 bg-indigo-700 rounded-t-lg">
         <p class="w-1/12 flex items-center justify-center">#</p>
-        <p class="w-1/2 md:w-full flex items-center justify-start">Label Name</p>
+        <p class="w-1/2 md:w-full flex items-center justify-start">
+          Label Name
+        </p>
         <p class="w-1/12 flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-4 -2 32 32" stroke-width="2.5"
             stroke="currentColor" class="w-6 h-6 lg:hidden">
@@ -60,8 +63,8 @@
           <span class="hidden lg:block">Views</span>
         </p>
 
-        <p class="w-3/12 hidden md:flex items-center justify-center"><span
-            class="hidden lg:block">Days</span>&nbsp;Active
+        <p class="w-3/12 hidden md:flex items-center justify-center">
+          <span class="hidden lg:block">Days</span>&nbsp;Active
         </p>
         <p class="w-3/12 flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
@@ -76,7 +79,9 @@
 
       {% for label in labels %}
       <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
-        <p class="w-1/12 flex items-center justify-center">{{ loop.index + page.skip }}</p>
+        <p class="w-1/12 flex items-center justify-center">
+          {{ loop.index + page.skip }}
+        </p>
         <p id="label_details_button" data-target="{{label.json}}"
           class="w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer">
           {{ label.name }}
@@ -86,8 +91,11 @@
           {{time_delta(label.date_received)}}
           <span class="hidden xl:block">&nbsp;days active</span>
         </p>
-        <p class="w-3/12 flex items-center justify-center">{{ label.date_received.strftime('%Y-%m-%d') }}</p>
-        <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button" data-target="{{label.json}}">
+        <p class="w-3/12 flex items-center justify-center">
+          {{ label.date_received.strftime('%Y-%m-%d') }}
+        </p>
+        <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button"
+          data-target="{{label.json}}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
             stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -106,7 +114,7 @@
         <li>
           <!-- prettier-ignore -->
           <a href="{{ url_for('labels.get_active_labels') }}?page=1&q={{page.query}}"
-            class="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+            class="block px-3 py-2 rounded-md mx-1 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
             <span class="sr-only">First</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
               <path fill-rule="evenodd"
@@ -118,7 +126,7 @@
         <li>
           <!-- prettier-ignore -->
           <a href="{{ url_for('labels.get_active_labels') }}?page={{page.page-1 if page.page > 1 else 1}}&q={{page.query}}"
-            class="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+            class="block px-3 py-2 ml-0 rounded-md mx-1 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
             <span class="sr-only">Previous</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
               <path fill-rule="evenodd"
@@ -128,26 +136,37 @@
           </a>
         </li>
 
-        <!-- prettier-ignore -->
-        {% for p in page.pages_for_links %}
-        <li>
+        <!-- old pagination page links -->
+        <div class="hidden">
           <!-- prettier-ignore -->
-          {% if p == page.page %}
-          <!-- prettier-ignore -->
-          <a href="{{ url_for('labels.get_active_labels') }}?page={{p}}&q={{page.query}}" aria-current="page"
-            class="z-10 px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-indigo-50 hover:bg-indigo-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">{{p}}</a>
-          {% else %}
-          <!-- prettier-ignore -->
-          <a href="{{ url_for('labels.get_active_labels') }}?page={{p}}&q={{page.query}}"
-            class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{p}}</a>
-          {% endif %}
-        </li>
-        {% endfor %}
+          {% for p in page.pages_for_links %}
+          <li>
+            <!-- prettier-ignore -->
+            {% if p == page.page %}
+            <!-- prettier-ignore -->
+            <a href="{{ url_for('labels.get_active_labels') }}?page={{p}}&q={{page.query}}" aria-current="page"
+              class="z-10 px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-indigo-50 hover:bg-indigo-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">{{p}}</a>
+            {% else %}
+            <!-- prettier-ignore -->
+            <a href="{{ url_for('labels.get_active_labels') }}?page={{p}}&q={{page.query}}"
+              class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{p}}</a>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </div>
+        <!-- old pagination page links -->
+
+        <!-- new pagination page links -->
+        <div
+          class="cursor-pointer z-10 px-5 py-2 rounded-md mx-3 leading-tight text-gray-500 font-medium border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+          {{page.page}} of {{ page.pages }}
+        </div>
+        <!-- new pagination page links -->
 
         <li>
           <!-- prettier-ignore -->
           <a href="{{ url_for('labels.get_active_labels') }}?page={{page.page+1 if page.page < page.pages else page.pages}}&q={{page.query}}"
-            class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+            class="block px-3 py-2 rounded-md mx-1 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
             <!-- prettier-ignore -->
             <span class="sr-only">Next</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
@@ -160,9 +179,9 @@
         <li>
           <!-- prettier-ignore -->
           <a href="{{ url_for('labels.get_active_labels') }}?page={{page.pages}}&q={{page.query}}"
-            class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-            <!-- prettier-ignore -->
+            class="block px-3 py-2 rounded-md leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
             <span class="sr-only">Last</span>
+            <!-- prettier-ignore -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
               <path fill-rule="evenodd"
                 d="M10.21 14.77a.75.75 0 01.02-1.06L14.168 10 10.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
@@ -179,9 +198,8 @@
   {% endif %}
 </div>
 
-
-{% include 'label/edit_label.html' %}
-{% include 'label/deactivate_label.html' %}
+{% include 'label/edit_label.html' %} {% include 'label/deactivate_label.html'
+%}
 <!-- prettier-ignore -->
 {% endblock %}
 <!-- prettier-ignore -->

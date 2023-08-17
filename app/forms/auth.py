@@ -4,7 +4,6 @@ from wtforms import (
     PasswordField,
     SubmitField,
     ValidationError,
-    # RadioField,
     SelectField,
 )
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
@@ -54,11 +53,6 @@ class RegistrationStep2Form(FlaskForm):
 
 
 class SubscriptionPlanForm(FlaskForm):
-    # choices = [
-    #     ("basic", "Basic Plan"),
-    #     ("advanced", "Advanced Plan"),
-    # ]
-    # plan = RadioField("Choose an option", choices=choices)
     selected_plan = StringField("selected_plan")
     submit_button = SubmitField("Submit")
 
@@ -118,12 +112,6 @@ class PaymentForm(FlaskForm):
         ("basic", "Basic Plan"),
         ("advanced", "Advanced Plan"),
     ]
-    # plan = RadioField("Choose an option", choices=choices)
     plan = SelectField("Plan", choices=choices)
 
     submit = SubmitField("Register")
-
-    # def validate_email(form, field):
-    #     query = User.select().where(User.email == field.data)
-    #     if db.session.scalar(query) is not None and field.data != current_user.email:
-    #         raise ValidationError("This email is already registered.")

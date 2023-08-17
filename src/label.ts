@@ -31,19 +31,12 @@ const modalOptions: ModalOptions = {
   backdropClasses:
     'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
   closable: true,
-  onHide: () => {
-    console.log('modal is hidden');
-  },
-  onShow: () => {
-    console.log('label details modal is shown');
-  },
-  onToggle: () => {
-    console.log('modal has been toggled');
-  },
+  onHide: () => {},
+  onShow: () => {},
+  onToggle: () => {},
 };
 
 function getLabelDetails(label: ILabel) {
-  console.log(label);
   const labelName: HTMLInputElement =
     document.querySelector('#label-edit-name');
   labelName.value = label.name;
@@ -97,8 +90,6 @@ function getLabelDetails(label: ILabel) {
     '#label-sticker-number',
   );
   labelStickerIdentifier.value = label.sticker_id;
-  console.log('labelStickerIdentifier', labelStickerIdentifier.value);
-  console.log('label.sticker_id', label.sticker_id);
 
   const nextUrl: HTMLInputElement = document.querySelector(
     '#label-edit-next-url',
@@ -145,8 +136,6 @@ const labelDeactivateButtons = document.querySelectorAll(
 
 labelDeactivateButtons.forEach(e =>
   e.addEventListener('click', () => {
-    console.log('deactivate button clicked');
-
     deactivateLabel(JSON.parse(e.getAttribute('data-target')));
   }),
 );
@@ -210,7 +199,7 @@ const subTotal = document.querySelector('#sub-total');
 const taxes = document.querySelector('#taxes');
 const total = document.querySelector('#total');
 const quantityStr = document.querySelector('#labels-quantity');
-const quantity = parseInt(quantityStr.innerHTML);
+const quantity = quantityStr ? parseInt(quantityStr.innerHTML) : 0;
 
 if (subTotal && taxes && total) {
   subTotal.innerHTML = '$' + (quantity * 20).toString() + '.00';
@@ -218,4 +207,69 @@ if (subTotal && taxes && total) {
   taxes.innerHTML = '$' + taxes_value.toFixed(2).toString();
   const total_value = Math.round(quantity * 20 * 1.13 * 100) / 100;
   total.innerHTML = '$' + total_value.toFixed(2).toString();
+}
+
+const makeSelectMakeFields = document.querySelectorAll('.make');
+if (makeSelectMakeFields) {
+  makeSelectMakeFields.forEach(makeSelectMakeField =>
+    makeSelectMakeField.addEventListener('change', () => {
+      const makeNumber = makeSelectMakeField.getAttribute('data-model');
+      const makeId = makeSelectMakeField.getAttribute('id');
+      const modelSelect = document.querySelector(
+        `#vehicle_model-${makeNumber}`,
+      ) as HTMLSelectElement;
+
+      // console.log(typeof makeSelectMakeField.value, makeSelectMakeField.value);
+      console.log(makeSelectMakeField);
+      const stringSelected = makeSelectMakeField.value as string;
+      let models: Array<string> = [];
+      fetch('/labels/get_models', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({makeSelected: stringSelected}),
+        // body: stringSelected,
+      })
+        .then(response => response.json())
+        .then(data => {
+          models.push(...data.models);
+          modelSelect.innerHTML = '';
+          models.forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            modelSelect.appendChild(optionElement);
+          });
+        })
+        .catch(error => {
+          console.error('Error sending data to Flask:', error);
+        });
+    }),
+  );
+}
+
+const decreaseStickersButton: HTMLButtonElement = document.querySelector(
+  '#decreaseStickersButton',
+);
+const increaseStickersButton: HTMLButtonElement = document.querySelector(
+  '#increaseStickersButton',
+);
+const stickersQuantityInput: HTMLInputElement = document.querySelector(
+  '#stickersQuantityInput',
+);
+
+if (decreaseStickersButton && increaseStickersButton) {
+  decreaseStickersButton.addEventListener('click', () => {
+    let quantity = parseInt(stickersQuantityInput.value);
+    if (quantity > 1) {
+      quantity -= 1;
+      stickersQuantityInput.value = quantity.toString();
+    }
+  });
+  increaseStickersButton.addEventListener('click', () => {
+    let quantity = parseInt(stickersQuantityInput.value);
+    quantity += 1;
+    stickersQuantityInput.value = quantity.toString();
+  });
 }

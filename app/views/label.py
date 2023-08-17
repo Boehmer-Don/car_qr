@@ -1,4 +1,8 @@
 # flake8: noqa F401
+import secrets
+import string
+import csv
+import io
 from datetime import datetime
 from flask import (
     Blueprint,
@@ -7,11 +11,15 @@ from flask import (
     flash,
     redirect,
     url_for,
+    send_file,
 )
 from flask_login import login_required, current_user
 import sqlalchemy as sa
 from flask import current_app as app
-from app.controllers import create_pagination
+from app.controllers import (
+    create_pagination,
+    create_payment_subscription_checkout_session,
+)
 from app import models as m, db
 from app import forms as f
 from app.logger import log
@@ -23,18 +31,30 @@ dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
 @dealer_blueprint.route("/active", methods=["GET"])
 @login_required
 def get_active_labels():
-    query = (
-        m.Label.select()
-        .where(m.Label.user_id == current_user.id)
-        .where(m.Label.status == m.LabelStatus.active)
-        .order_by(m.Label.id)
-    )
-    count_query = (
-        sa.select(sa.func.count())
-        .select_from(m.Label)
-        .where(m.Label.user_id == current_user.id)
-        .where(m.Label.status == m.LabelStatus.active)
-    )
+    if current_user.role and current_user.role.value == "admin":
+        query = (
+            m.Label.select()
+            .where(m.Label.status == m.LabelStatus.active)
+            .order_by(m.Label.date_activated.desc())
+        )
+        count_query = (
+            sa.select(sa.func.count())
+            .select_from(m.Label)
+            .where(m.Label.status == m.LabelStatus.active)
+        )
+    else:
+        query = (
+            m.Label.select()
+            .where(m.Label.user_id == current_user.id)
+            .where(m.Label.status == m.LabelStatus.active)
+            .order_by(m.Label.id)
+        )
+        count_query = (
+            sa.select(sa.func.count())
+            .select_from(m.Label)
+            .where(m.Label.user_id == current_user.id)
+            .where(m.Label.status == m.LabelStatus.active)
+        )
     pagination = create_pagination(total=db.session.scalar(count_query))
     return render_template(
         "label/labels_active.html",
@@ -50,18 +70,30 @@ def get_active_labels():
 @dealer_blueprint.route("/archived", methods=["GET"])
 @login_required
 def get_archived_labels():
-    query = (
-        m.Label.select()
-        .where(m.Label.user_id == current_user.id)
-        .where(m.Label.status == m.LabelStatus.archived)
-        .order_by(m.Label.id)
-    )
-    count_query = (
-        sa.select(sa.func.count())
-        .select_from(m.Label)
-        .where(m.Label.user_id == current_user.id)
-        .where(m.Label.status == m.LabelStatus.archived)
-    )
+    if current_user.role and current_user.role.value == "admin":
+        query = (
+            m.Label.select()
+            .where(m.Label.status == m.LabelStatus.archived)
+            .order_by(m.Label.id)
+        )
+        count_query = (
+            sa.select(sa.func.count())
+            .select_from(m.Label)
+            .where(m.Label.status == m.LabelStatus.archived)
+        )
+    else:
+        query = (
+            m.Label.select()
+            .where(m.Label.user_id == current_user.id)
+            .where(m.Label.status == m.LabelStatus.archived)
+            .order_by(m.Label.id)
+        )
+        count_query = (
+            sa.select(sa.func.count())
+            .select_from(m.Label)
+            .where(m.Label.user_id == current_user.id)
+            .where(m.Label.status == m.LabelStatus.archived)
+        )
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels = db.session.execute(
         query.offset((pagination.page - 1) * pagination.per_page).limit(
@@ -176,6 +208,8 @@ def new_label_set_amount(user_unique_id: str):
 @dealer_blueprint.route("/details/<user_unique_id>/<amount>", methods=["GET", "POST"])
 @login_required
 def new_label_set_details(user_unique_id: str, amount: int):
+    makes = db.session.scalars(m.CarMake.select()).all()
+    models = db.session.scalars(m.CarModel.select()).all()
     if request.method == "POST":
         for i in range(1, int(amount) + 1):
             label = m.Label(
@@ -203,40 +237,53 @@ def new_label_set_details(user_unique_id: str, amount: int):
         "label/new_labels_details.html",
         user_unique_id=user_unique_id,
         amount=amount,
+        makes=makes,
+        models=models,
     )
 
 
-@dealer_blueprint.route("/payment/<user_unique_id>/", methods=["GET", "POST"])
+@dealer_blueprint.route("/payment/<user_unique_id>/", methods=["GET", "POST", "PUT"])
 @login_required
 def new_label_payment(user_unique_id: str):
     labels = db.session.scalars(
         m.Label.select().where(m.Label.status == m.LabelStatus.cart)
     ).all()
+    makes = db.session.scalars(m.CarMake.select()).all()
+    models = db.session.scalars(m.CarModel.select()).all()
     if request.method == "POST":
-        for index, label in enumerate(labels):
-            label.sticker_id = request.form.get(f"sticker-number-{index + 1}")
-            label.name = request.form.get(f"name-{index + 1}")
-            label.make = request.form.get(f"make-{index + 1}")
-            label.vehicle_model = request.form.get(f"vehicle_model-{index + 1}")
-            label.year = request.form.get(f"year-{index + 1}")
-            label.mileage = request.form.get(f"mileage-{index + 1}")
-            label.color = request.form.get(f"color-{index + 1}")
-            label.trim = request.form.get(f"trim-{index + 1}")
-            label.type_of_vehicle = request.form.get(f"type_of_vehicle-{index + 1}")
-            label.price = request.form.get(f"price-{index + 1}")
-            label.url = request.form.get(f"url-{index + 1}")
-            label.save(False)
-        try:
-            db.session.commit()
-            log(log.INFO, "Payment edit labels: [%s]", labels)
-            flash("Your labels has been successfully edited", "success")
-        except Exception as e:
-            log(log.ERROR, "Failed to edit labels: [%s]", labels)
-            flash(f"Failed to edit labels: {e}", "danger")
+        if request.form.get("edit"):
+            for index, label in enumerate(labels):
+                label.sticker_id = request.form.get(f"sticker-number-{index + 1}")
+                label.name = request.form.get(f"name-{index + 1}")
+                label.make = request.form.get(f"make-{index + 1}")
+                label.vehicle_model = request.form.get(f"vehicle_model-{index + 1}")
+                label.year = request.form.get(f"year-{index + 1}")
+                label.mileage = request.form.get(f"mileage-{index + 1}")
+                label.color = request.form.get(f"color-{index + 1}")
+                label.trim = request.form.get(f"trim-{index + 1}")
+                label.type_of_vehicle = request.form.get(f"type_of_vehicle-{index + 1}")
+                label.price = request.form.get(f"price-{index + 1}")
+                label.url = request.form.get(f"url-{index + 1}")
+                label.user_id = current_user.id
+                label.save()
+
+        if request.form.get("payment"):
+            stripe_form_url = create_payment_subscription_checkout_session(
+                current_user,
+                [label.name for label in labels],
+                [label.unique_id for label in labels],
+                len(labels),
+            )
+
+            if stripe_form_url:
+                log(log.INFO, "Payment redirect for labels: [%s]", labels)
+                return redirect(stripe_form_url)
     return render_template(
         "label/new_labels_payment.html",
         user_unique_id=user_unique_id,
         labels=labels,
+        makes=makes,
+        models=models,
     )
 
 
@@ -250,10 +297,138 @@ def redirect_to_outer_url(label_unique_id: str):
     return redirect(label.url)
 
 
-@dealer_blueprint.route("/stripe/<user_unique_id>", methods=["GET", "POST"])
-def stripe(user_unique_id: str):
-    # All labels that are in cart
+@dealer_blueprint.route("/get_models", methods=["POST"])
+def get_models():
+    make_name = request.json.get("makeSelected")
+    make = db.session.scalar(m.CarMake.select().where(m.CarMake.name == make_name))
+    models = db.session.scalars(
+        m.CarModel.select().where(m.CarModel.make == make)
+    ).all()
+    models_names = [model.name for model in models]
+    return {"models": models_names}
+
+
+def generate_alphanumeric_code():
+    letters = "".join(secrets.choice(string.ascii_letters) for _ in range(2))
+    digits = "".join(
+        secrets.choice(string.digits)
+        for _ in range(app.config.get("ALPHANUMERIC_CODE_LENGTH") - 2)
+    )
+    return letters + digits
+
+
+@dealer_blueprint.route("/generate/<user_unique_id>", methods=["GET", "POST"])
+@login_required
+def generate(user_unique_id: str):
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if request.method == "POST":
+        labels_amount = int(request.form.get("amount"))
+        log(
+            log.INFO,
+            "Generating [%s] labels for user [%s]",
+            labels_amount,
+            user_unique_id,
+        )
+        for _ in range(int(labels_amount)):
+            generated_code = generate_alphanumeric_code()
+            while True:
+                if not db.session.scalar(
+                    m.Sticker.select().where(m.Sticker.code == generated_code)
+                ):
+                    break
+                generated_code = generate_alphanumeric_code()
+
+            m.Sticker(
+                code=generated_code,
+                user_id=user.id,
+            ).save()
+
+        return redirect(
+            url_for(
+                "labels.download",
+                user_unique_id=user_unique_id,
+                amount=labels_amount,
+            )
+        )
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
+
     return render_template(
-        "label/stripe.html",
+        "label/generate.html",
+        user=user,
         user_unique_id=user_unique_id,
+    )
+
+
+@dealer_blueprint.route("/download", methods=["GET", "POST"])
+@login_required
+def download():
+    user_unique_id = request.args.get("user_unique_id")
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if user:
+        stickers = db.session.scalars(
+            m.Sticker.select()
+            .where(m.Sticker.pending == True)
+            .where(m.Sticker.user == user)
+        ).all()
+    else:
+        stickers = db.session.scalars(
+            m.Sticker.select().where(m.Sticker.pending == True)
+        ).all()
+
+    if request.method == "POST":
+        with io.StringIO() as proxy:
+            writer = csv.writer(proxy)
+            row = [
+                "Sticker ID",
+                "User's First Name",
+                "User's Last Name",
+                "User Email",
+                "Date Created",
+                "Landing URL",
+                "Alphanumeric Code",
+            ]
+            writer.writerow(row)
+            for sticker in stickers:
+                row = [
+                    sticker.id,
+                    sticker.user.first_name,
+                    sticker.user.last_name,
+                    sticker.user.email,
+                    sticker.created_at,
+                    app.config.get("LANDING_URL"),
+                    sticker.code,
+                ]
+                writer.writerow(row)
+
+            mem = io.BytesIO()
+            mem.write(proxy.getvalue().encode("utf-8"))
+            mem.seek(0)
+
+        now = datetime.now()
+        download_name = f"all_pending_qrs_{now.strftime('%Y-%m-%d-%H-%M-%S')}.csv"
+        if user:
+            download_name = f"pending_qrs_{user.first_name}_{user.last_name}_{now.strftime('%Y-%m-%d-%H-%M-%S')}.csv"
+        return send_file(
+            mem,
+            as_attachment=True,
+            download_name=download_name,
+            mimetype="text/csv",
+            max_age=0,
+            last_modified=now,
+        )
+
+    return render_template(
+        "label/download.html",
+        user_unique_id=user_unique_id,
+        user=user,
+        stickers=stickers,
+        url=app.config.get("LANDING_URL"),
     )

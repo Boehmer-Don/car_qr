@@ -18,8 +18,8 @@ def gen_password_reset_id() -> str:
 
 
 class UsersPlan(enum.Enum):
-    basic = "basic"
-    advanced = "advanced"
+    basic = "Basic Plan"
+    advanced = "Advanced Plan"
 
 
 class UsersRole(enum.Enum):
@@ -41,7 +41,9 @@ class User(db.Model, UserMixin, ModelMixin):
     )
     password_hash: orm.Mapped[str] = orm.mapped_column(sa.String(255), default="")
     activated: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
-    deleted: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False, nullable=True)
+    deleted: orm.Mapped[bool] = orm.mapped_column(
+        sa.Boolean, default=False, nullable=True
+    )
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
         default=datetime.utcnow,
@@ -68,6 +70,9 @@ class User(db.Model, UserMixin, ModelMixin):
     phone: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     plan: orm.Mapped[UsersPlan] = orm.mapped_column(
         sa.Enum(UsersPlan), default=UsersPlan.basic
+    )
+    stripe_customer_id: orm.Mapped[str] = orm.mapped_column(
+        sa.String(128), unique=True, nullable=True
     )
 
     @hybrid_property

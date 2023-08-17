@@ -16,7 +16,7 @@ def test_labels_active(populate: FlaskClient):
     assert b"Welcome Back" in response.data
 
     all_labels = db.session.scalars(m.Label.select()).all()
-    assert len(all_labels) == 10
+    assert len(all_labels) == 30
 
     active_labels = db.session.scalars(m.Label.select().where(m.Label.status)).all()
     for label in active_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
@@ -155,7 +155,6 @@ def test_add_new_labels(client: FlaskClient):
     assert response
     assert response.status_code == 200
     assert b"Order Details" in response.data
-    assert b"Credit Card Number" in response.data
 
 
 def test_add_labels(runner: FlaskCliRunner):
@@ -163,4 +162,4 @@ def test_add_labels(runner: FlaskCliRunner):
     count_before = db.session.query(m.Label).count()
     res: Result = runner.invoke(args=["add-labels", "--user-id", f"{TEST_USER_ID}"])
     assert "DB populated by 10 testing labels for user" in res.stdout
-    assert (db.session.query(m.Label).count() - count_before) == 10
+    assert (db.session.query(m.Label).count() - count_before) == 30

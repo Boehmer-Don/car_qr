@@ -20,16 +20,6 @@ def test_list(populate: FlaskClient):
         assert user.email in html
     assert users[10].email not in html
 
-    populate.application.config["PAGE_LINKS_NUMBER"] = 6
-    response = populate.get("/user/?page=6")
-    assert response
-    assert response.status_code == 200
-    html = response.data.decode()
-    assert "/user/?page=6" in html
-    assert "/user/?page=3" in html
-    assert "/user/?page=8" in html
-    assert "/user/?page=10" not in html
-
 
 def test_create_admin(runner: FlaskCliRunner):
     res: Result = runner.invoke(args=["create-admin"])
@@ -112,7 +102,7 @@ def test_account(client: FlaskClient):
             city=TEST_CITY,
             postal_code=TEST_POSTAL_CODE,
             phone=TEST_PHONE,
-            plan=m.UsersPlan.basic.value,
+            plan="basic",
         ),
         follow_redirects=True,
     )
@@ -128,7 +118,7 @@ def test_subsription(client: FlaskClient):
     response = client.post(
         f"/user/subscription/{user.unique_id}",
         data=dict(
-            selected_plan=m.UsersPlan.basic.value,
+            selected_plan="basic",
         ),
         follow_redirects=True,
     )

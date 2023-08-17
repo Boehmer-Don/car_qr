@@ -126,6 +126,11 @@
     }
 }
 
+.absolute-bottom-32 {
+    position: absolute;
+    bottom: 160px;
+}
+
 .absolute-bottom-22 {
     position: absolute;
     bottom: 108px;

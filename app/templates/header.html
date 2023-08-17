@@ -56,6 +56,7 @@
           </svg>
         </button>
 
+        {% if current_user.role and current_user.role.value == "dealer" %}
         <a href="{{url_for('labels.new_label_payment', user_unique_id=current_user.unique_id)}}" class="relative">
           <button id="cart" type="button"
             class="text-white ml-1 dark:hover:bg-gray-600 focus:outline-none focus:ring-4 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
@@ -65,6 +66,8 @@
           </button>
           <p class="absolute right-1 bottom-1 text-white text-xs">{{ labels_in_cart() }}</p>
         </a>
+        {% endif %}
+
         {% if current_user.is_authenticated %}
         <div class="flex items-center ml-3">
           <!-- <button id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification"
