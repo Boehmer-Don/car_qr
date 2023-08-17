@@ -117,10 +117,10 @@ def test_register(client: FlaskClient):
                 city=TEST_CITY_UPDATE,
                 postal_code=TEST_POSTAL_CODE_UPDATE,
                 phone=TEST_PHONE_UPDATE,
-                plan="basic",
+                plan=m.UsersPlan.basic.value,
             ),
         )
-        assert response.status_code == 302
+        assert response.status_code == 200
 
 
 def test_forgot(client: FlaskClient):

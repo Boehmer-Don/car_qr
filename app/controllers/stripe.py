@@ -1,5 +1,6 @@
 import stripe
 from stripe.error import InvalidRequestError
+import sqlalchemy as sa
 from flask import flash
 from flask import current_app as app
 from app.logger import log
@@ -10,8 +11,8 @@ from app.database import db
 def create_stripe_customer(user: m.User):
     """Create a Stripe customer for the user."""
     customer = None
+    log(log.INFO, "create_stripe_customer for user: %s", user)
     try:
-        log(log.INFO, "create_stripe_customer for user: %s", user)
         customer = stripe.Customer.create(
             description=f"Car QR Code Dealer {user.email}",
             email=user.email,
@@ -84,25 +85,23 @@ def get_stripe_products():
 
 
 def delete_stripe_products_local():
-    products = db.session.scalars(m.StripeProduct.select()).all()
-    for product in products:
-        db.session.delete(product)
-        db.session.commit()
-    prices = db.session.scalars(m.StripeProductPrice.select()).all()
-    for price in prices:
-        db.session.delete(price)
-        db.session.commit()
+    delete_products_sql = sa.delete(m.StripeProduct)
+    delete_prices_sql = sa.delete(m.StripeProductPrice)
+    db.session.execute(delete_products_sql)
+    db.session.commit()
+    db.session.execute(delete_prices_sql)
+    db.session.commit()
 
 
 def create_subscription_checkout_session(
     user: m.User, subscription_product: m.StripeProduct
-):
+) -> str:
     try:
         log(log.INFO, "create_subscription_checkout_session for user: %s", user)
         checkout_session = stripe.checkout.Session.create(
             customer=user.stripe_customer_id,
-            success_url=f"{app.config.get('STRIPE_SUBSCRIPTION_SUCCESS_URL')}",
-            cancel_url=f"{app.config.get('STRIPE_SUBSCRIPTION_CANCEL_URL')}",
+            success_url=app.config.get("STRIPE_SUBSCRIPTION_SUCCESS_URL"),
+            cancel_url=app.config.get("STRIPE_SUBSCRIPTION_CANCEL_URL"),
             line_items=[
                 {
                     "price": subscription_product.price.stripe_price_id,
@@ -138,13 +137,13 @@ def create_payment_subscription_checkout_session(
     label_names: list[str],
     label_ids: list[str],
     labels_quantity: int,
-):
+) -> str:
     log(log.INFO, "create_payment_subscription_checkout_session for user: %s", user)
     try:
         checkout_session = stripe.checkout.Session.create(
             customer=user.stripe_customer_id,
-            success_url=f"{app.config.get('STRIPE_SUBSCRIPTION_SUCCESS_URL')}",
-            cancel_url=f"{app.config.get('STRIPE_SUBSCRIPTION_CANCEL_URL')}",
+            success_url=app.config.get("STRIPE_SUBSCRIPTION_SUCCESS_URL"),
+            cancel_url=app.config.get("STRIPE_SUBSCRIPTION_CANCEL_URL"),
             line_items=[
                 {
                     "price_data": {

@@ -74,46 +74,46 @@ def init(app: Flask):
     def delete_user(email: str):
         """Delete stripe products and"""
 
-        cart_labels = db.session.scalars(
-            m.Label.select().where(m.Label.status == "cart")
-        ).all()
-        for label in cart_labels:
-            db.session.delete(label)
         user: m.User = db.session.scalar(m.User.select().where(m.User.email == email))
+        if not user:
+            print(f"User with email [{email}] not found")
+            return
+
+        delete_labels_sql = sa.delete(m.Label).where(m.Label.user_id == user.id)
+        delete_stickers_sql = sa.delete(m.Sticker).where(m.Sticker.user_id == user.id)
+        db.session.execute(delete_labels_sql)
+        db.session.execute(delete_stickers_sql)
+        db.session.commit()
         db.session.delete(user)
         db.session.commit()
         print(f"User {user} deleted")
 
     @app.cli.command()
-    def get_models():
+    def create_models():
         with open("tests/db/test_models.json", "r") as f:
             models_data = json.load(f)
             added_makes_count = 0
             added_models_count = 0
             for make_name, models_list in models_data.items():
-                print(make_name, models_list)
+                # print(make_name, models_list)
                 make = db.session.scalar(
                     m.CarMake.select().where(m.CarMake.name == make_name)
                 )
                 if not make:
-                    print(f"{make_name} is not in DB. Adding it...")
+                    # print(f"{make_name} is not in DB. Adding it...")
                     make = m.CarMake(name=make_name)
-                    make.save()
+                    db.session.add(make)
                     added_makes_count += 1
-                    for model_name in models_list:
-                        model = db.session.scalar(
-                            m.CarModel.select().where(m.CarModel.name == model_name)
-                        )
-                        if not model:
-                            print(
-                                f"{model_name} is not in DB. Adding it to {make_name}"
-                            )
-                            m.CarModel(
-                                name=model_name,
-                                make_id=make.id,
-                            ).save()
-                            added_models_count += 1
-
+                models_set = {model.name for model in make.models}
+                for model_name in models_list:
+                    if model_name in models_set:
+                        continue
+                    print(f"{model_name} is not in DB. Adding it...")
+                    models_set.add(model_name)
+                    model = m.CarModel(name=model_name)
+                    make.models.append(model)
+                    added_models_count += 1
+            db.session.commit()
         print(f"{added_makes_count} makes added")
         print(f"{added_models_count} models added")
 
@@ -121,3 +121,13 @@ def init(app: Flask):
         models_count = db.session.query(m.CarModel).count()
         print(f"Total makes: {makes_count}")
         print(f"Total models: {models_count}")
+
+    @app.cli.command()
+    def delete_models():
+        delete_models_sql = sa.delete(m.CarModel)
+        db.session.execute(delete_models_sql)
+        db.session.commit()
+        delete_makes_sql = sa.delete(m.CarMake)
+        db.session.execute(delete_makes_sql)
+        db.session.commit()
+        print("Makes and models deleted")

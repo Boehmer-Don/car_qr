@@ -95,7 +95,14 @@ def runner(app, client):
 
 
 @pytest.fixture
-def populate(client: FlaskClient):
+def test_labels_data():
+    with open("tests/db/test_labels.json", "r") as f:
+        labels_data = json.load(f)
+    return labels_data
+
+
+@pytest.fixture
+def populate(client: FlaskClient, test_labels_data: dict):
     NUM_TEST_USERS = 15
     for i in range(NUM_TEST_USERS):
         m.User(
@@ -105,10 +112,7 @@ def populate(client: FlaskClient):
         ).save(False)
     db.session.commit()
 
-    with open("tests/db/test_labels.json", "r") as f:
-        labels_data = json.load(f)
-
-    for index, label in enumerate(labels_data):
+    for index, label in enumerate(test_labels_data):
         label_status = m.LabelStatus.active if index < 8 else m.LabelStatus.archived
         date_deactivated = None
         if label_status == m.LabelStatus.archived:

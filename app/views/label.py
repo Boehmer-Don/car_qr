@@ -228,7 +228,6 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 user_id=current_user.id,
             ).save()
             log(log.INFO, "Created label [%s]", label)
-        # log(log.INFO, "Created [%s] labels: [%s]", amount)
         return redirect(
             url_for("labels.new_label_payment", user_unique_id=user_unique_id)
         )
@@ -265,7 +264,9 @@ def new_label_payment(user_unique_id: str):
                 label.price = request.form.get(f"price-{index + 1}")
                 label.url = request.form.get(f"url-{index + 1}")
                 label.user_id = current_user.id
-                label.save()
+                db.session.add(label)
+            if len(labels):
+                db.session.commit()
 
         if request.form.get("payment"):
             stripe_form_url = create_payment_subscription_checkout_session(
@@ -300,12 +301,12 @@ def redirect_to_outer_url(label_unique_id: str):
 @dealer_blueprint.route("/get_models", methods=["POST"])
 def get_models():
     make_name = request.json.get("makeSelected")
-    make = db.session.scalar(m.CarMake.select().where(m.CarMake.name == make_name))
     models = db.session.scalars(
-        m.CarModel.select().where(m.CarModel.make == make)
+        sa.select(m.CarModel.name).where(
+            m.CarModel.make.has(m.CarMake.name == make_name)
+        )
     ).all()
-    models_names = [model.name for model in models]
-    return {"models": models_names}
+    return {"models": models}
 
 
 def generate_alphanumeric_code():
@@ -331,7 +332,7 @@ def generate(user_unique_id: str):
             labels_amount,
             user_unique_id,
         )
-        for _ in range(int(labels_amount)):
+        for _ in range(labels_amount):
             generated_code = generate_alphanumeric_code()
             while True:
                 if not db.session.scalar(
@@ -340,10 +341,13 @@ def generate(user_unique_id: str):
                     break
                 generated_code = generate_alphanumeric_code()
 
-            m.Sticker(
+            sticker = m.Sticker(
                 code=generated_code,
                 user_id=user.id,
-            ).save()
+            )
+            db.session.add(sticker)
+        if labels_amount:
+            db.session.commit()
 
         return redirect(
             url_for(
