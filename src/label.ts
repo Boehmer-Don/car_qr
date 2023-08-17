@@ -212,44 +212,40 @@ if (subTotal && taxes && total) {
 const makeSelectMakeFields = document.querySelectorAll(
   '.make',
 ) as NodeListOf<HTMLSelectElement>;
-if (makeSelectMakeFields) {
-  makeSelectMakeFields.forEach(makeSelectMakeField =>
-    makeSelectMakeField.addEventListener('change', () => {
-      const makeNumber = makeSelectMakeField.getAttribute('data-model');
-      const makeId = makeSelectMakeField.getAttribute('id');
-      const modelSelect = document.querySelector(
-        `#vehicle_model-${makeNumber}`,
-      ) as HTMLSelectElement;
+makeSelectMakeFields.forEach(makeSelectMakeField =>
+  makeSelectMakeField.addEventListener('change', () => {
+    const makeNumber = makeSelectMakeField.getAttribute('data-model');
+    const makeId = makeSelectMakeField.getAttribute('id');
+    const modelSelect = document.querySelector(
+      `#vehicle_model-${makeNumber}`,
+    ) as HTMLSelectElement;
 
-      // console.log(typeof makeSelectMakeField.value, makeSelectMakeField.value);
-      console.log(makeSelectMakeField);
-      const stringSelected = makeSelectMakeField.value as string;
-      let models: Array<string> = [];
-      fetch('/labels/get_models', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({makeSelected: stringSelected}),
-        // body: stringSelected,
-      })
-        .then(response => response.json())
-        .then(data => {
-          models.push(...data.models);
-          modelSelect.innerHTML = '';
-          models.forEach(option => {
-            const optionElement = document.createElement('option');
-            optionElement.value = option;
-            optionElement.textContent = option;
-            modelSelect.appendChild(optionElement);
-          });
-        })
-        .catch(error => {
-          console.error('Error sending data to Flask:', error);
+    const stringSelected = makeSelectMakeField.value as string;
+    let models: Array<string> = [];
+    fetch('/labels/get_models', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({makeSelected: stringSelected}),
+      // body: stringSelected,
+    })
+      .then(response => response.json())
+      .then(data => {
+        models.push(...data.models);
+        modelSelect.innerHTML = '';
+        models.forEach(option => {
+          const optionElement = document.createElement('option');
+          optionElement.value = option;
+          optionElement.textContent = option;
+          modelSelect.appendChild(optionElement);
         });
-    }),
-  );
-}
+      })
+      .catch(error => {
+        console.error('Error sending data to Flask:', error);
+      });
+  }),
+);
 
 const decreaseStickersButton: HTMLButtonElement = document.querySelector(
   '#decreaseStickersButton',

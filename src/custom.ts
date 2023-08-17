@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const planChosen: HTMLDivElement = document.querySelector('#plan_chosen');
   if (planChosen) {
-    var planChosenData = planChosen.dataset.plan;
+    const planChosenData = planChosen.dataset.plan;
 
     if (planChosenData != 'Advanced Plan') {
       basic_plan.classList.add('indigo');
@@ -77,17 +77,16 @@ if (cleanNameInputs) {
   });
 }
 
-const cleanNumberInputs = document.querySelectorAll('.clean_number_input');
-if (cleanNumberInputs) {
-  cleanNumberInputs.forEach(cleanNumberInput => {
-    cleanNumberInput.addEventListener('input', (e: any) => {
-      if (e.target.value) {
-        const inputText = e.target.value.replace(/[^\d]/gi, '');
-        e.target.value = inputText;
-      }
-    });
+const cleanNumberInputs: NodeListOf<HTMLInputElement> =
+  document.querySelectorAll('.clean_number_input');
+cleanNumberInputs.forEach(cleanNumberInput => {
+  cleanNumberInput.addEventListener('input', (e: any) => {
+    if (e.target.value) {
+      const inputText = e.target.value.replace(/[^\d]/gi, '');
+      e.target.value = inputText;
+    }
   });
-}
+});
 
 const cleanPhone: HTMLInputElement =
   document.querySelector('.clean_phone_input');

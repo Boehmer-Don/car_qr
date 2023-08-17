@@ -36,9 +36,7 @@ def app(monkeypatch):
     def mock_construct_event(payload, sig_header, secret):
         db_populate(2)
         add_labels(2)
-        stripe_customer: m.User = db.session.scalar(
-            m.User.select().where(m.User.id == 2)
-        )
+        stripe_customer: m.User = db.session.get(m.User, 2)
         stripe_customer.stripe_customer_id = "test_stripe_customer_id"
         stripe_customer.save()
 
