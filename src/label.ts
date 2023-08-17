@@ -209,7 +209,9 @@ if (subTotal && taxes && total) {
   total.innerHTML = '$' + total_value.toFixed(2).toString();
 }
 
-const makeSelectMakeFields = document.querySelectorAll('.make');
+const makeSelectMakeFields = document.querySelectorAll(
+  '.make',
+) as NodeListOf<HTMLSelectElement>;
 if (makeSelectMakeFields) {
   makeSelectMakeFields.forEach(makeSelectMakeField =>
     makeSelectMakeField.addEventListener('change', () => {
