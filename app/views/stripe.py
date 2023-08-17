@@ -35,99 +35,109 @@ def webhook():
     except Exception as e:
         raise e
 
-    if event["type"] == "customer.subscription.created":
-        response = event["data"]["object"]
-        user: m.User = db.session.scalar(
-            m.User.select().where(m.User.stripe_customer_id == response.customer)
-        )
-        product: m.StripeProduct = db.session.scalar(
-            m.StripeProduct.select().where(
-                m.StripeProduct.stripe_product_id == response.plan.product
+    match event["type"]:
+        case "customer.subscription.created":
+            response = event["data"]["object"]
+            user: m.User = db.session.scalar(
+                m.User.select().where(m.User.stripe_customer_id == response.customer)
             )
-        )
-        if not user:
-            log(log.ERROR, "User [%s] not found", response.customer)
-            return jsonify(success=False), 404
-        if not product:
-            log(log.ERROR, "Product [%s] not found", response.plan.product)
-            return jsonify(success=False), 404
-        subscription = m.Subscription(
-            stripe_subscription_id=response.id,
-            user_id=user.id,
-            product_id=product.id,
-            current_period_start=response.current_period_start,
-            current_period_end=response.current_period_end,
-            is_active=True,
-        )
-        subscription.save()
-        user.activated = True
-        user.save()
-        log(log.INFO, "Subscription [%s] created ", subscription.stripe_subscription_id)
-    elif event["type"] == "customer.subscription.updated":
-        response = event["data"]["object"]
-        response = event["data"]["object"]
-        subscription: m.Subscription = db.session.scalar(
-            m.Subscription.select().where(
-                m.Subscription.stripe_subscription_id == response.id
+            product: m.StripeProduct = db.session.scalar(
+                m.StripeProduct.select().where(
+                    m.StripeProduct.stripe_product_id == response.plan.product
+                )
             )
-        )
-        subscription.is_active = not response.cancel_at_period_end
-        subscription.current_period_start = response.current_period_start
-        subscription.current_period_end = response.current_period_end
-        subscription.save()
-        log(log.INFO, "Subscription [%s] updated ", subscription.stripe_subscription_id)
-    elif event["type"] == "customer.subscription.deleted":
-        response = event["data"]["object"]
-        user: m.User = db.session.scalar(
-            m.User.select().where(m.User.stripe_customer_id == response.customer)
-        )
-        subscription: m.Subscription = db.session.scalar(
-            m.Subscription.select().where(
-                m.Subscription.stripe_subscription_id == response.id
+            if not user:
+                log(log.ERROR, "User [%s] not found", response.customer)
+                return jsonify(success=False), 404
+            if not product:
+                log(log.ERROR, "Product [%s] not found", response.plan.product)
+                return jsonify(success=False), 404
+            subscription = m.Subscription(
+                stripe_subscription_id=response.id,
+                user_id=user.id,
+                product_id=product.id,
+                current_period_start=response.current_period_start,
+                current_period_end=response.current_period_end,
+                is_active=True,
             )
-        )
-        subscription.is_active = False
-        subscription.save()
-        log(
-            log.INFO,
-            "Subscription [%s] cancelled ",
-            subscription.stripe_subscription_id,
-        )
-        user.activated = False
-        user.save()
-    elif event["type"] == "payment_intent.succeeded":
-        response = event["data"]["object"]
-        user = db.session.scalar(
-            m.User.select().where(m.User.stripe_customer_id == response.customer)
-        )
-        label_unique_ids = response.metadata.get("labels_unique_ids")
-        label_unique_ids_list = label_unique_ids.split(",")
-        for label_id in label_unique_ids_list:
-            label: m.Label = db.session.scalar(
-                m.Label.select().where(m.Label.unique_id == label_id)
+            subscription.save()
+            user.activated = True
+            user.save()
+            log(
+                log.INFO,
+                "Subscription [%s] created ",
+                subscription.stripe_subscription_id,
             )
-            label.date_activated = datetime.now()
-            label.status = m.LabelStatus.active
-            label.save()
-            msg = Message(
-                subject="New password",
-                sender=app.config["MAIL_DEFAULT_SENDER"],
-                recipients=[user.email],
+        case "customer.subscription.updated":
+            response = event["data"]["object"]
+            response = event["data"]["object"]
+            subscription: m.Subscription = db.session.scalar(
+                m.Subscription.select().where(
+                    m.Subscription.stripe_subscription_id == response.id
+                )
             )
-            url = url_for(
-                "labels.get_active_labels",
-                user_unique_id=user.unique_id,
-                _external=True,
+            subscription.is_active = not response.cancel_at_period_end
+            subscription.current_period_start = response.current_period_start
+            subscription.current_period_end = response.current_period_end
+            subscription.save()
+            log(
+                log.INFO,
+                "Subscription [%s] updated ",
+                subscription.stripe_subscription_id,
             )
+        case "customer.subscription.deleted":
+            response = event["data"]["object"]
+            user: m.User = db.session.scalar(
+                m.User.select().where(m.User.stripe_customer_id == response.customer)
+            )
+            subscription: m.Subscription = db.session.scalar(
+                m.Subscription.select().where(
+                    m.Subscription.stripe_subscription_id == response.id
+                )
+            )
+            subscription.is_active = False
+            subscription.save()
+            log(
+                log.INFO,
+                "Subscription [%s] cancelled ",
+                subscription.stripe_subscription_id,
+            )
+            user.activated = False
+            user.save()
+        case "payment_intent.succeeded":
+            response = event["data"]["object"]
+            user = db.session.scalar(
+                m.User.select().where(m.User.stripe_customer_id == response.customer)
+            )
+            label_unique_ids = response.metadata.get("labels_unique_ids")
+            label_unique_ids_list = label_unique_ids.split(",")
+            for label_id in label_unique_ids_list:
+                label: m.Label = db.session.scalar(
+                    m.Label.select().where(m.Label.unique_id == label_id)
+                )
+                label.date_activated = datetime.now()
+                label.status = m.LabelStatus.active
+                label.save()
+                msg = Message(
+                    subject="New password",
+                    sender=app.config["MAIL_DEFAULT_SENDER"],
+                    recipients=[user.email],
+                )
+                url = url_for(
+                    "labels.get_active_labels",
+                    user_unique_id=user.unique_id,
+                    _external=True,
+                )
 
-            msg.html = render_template(
-                "email/admin_notification.htm",
-                user=user,
-                url=url,
-            )
-            mail.send(msg)
-    else:
-        log(log.ERROR, "Unhandled event type %s", event["type"])
+                msg.html = render_template(
+                    "email/admin_notification.htm",
+                    user=user,
+                    url=url,
+                )
+                mail.send(msg)
+        case _:
+            log(log.ERROR, "Unhandled event type %s", event["type"])
+            return jsonify(success=False), 404
 
     log(log.INFO, "payment_intent.succeeded, labels paid: %s", label_unique_ids_list)
     return jsonify(success=True)
@@ -164,8 +174,8 @@ def subscription():
 
 @stripe_blueprint.route("/portal", methods=["GET"])
 def portal():
+    log(log.INFO, "User [%s] is going to stripe portal", current_user)
     try:
-        log(log.INFO, "User [%s] is going to stripe portal", current_user)
         portal_response = stripe.billing_portal.Session.create(
             customer=current_user.stripe_customer_id,
         )

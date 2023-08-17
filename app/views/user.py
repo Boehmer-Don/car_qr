@@ -30,18 +30,18 @@ def get_all():
     q = request.args.get("q", type=str, default=None)
     query = (
         m.User.select()
-        .where(m.User.activated, m.User.deleted == False, m.User.role == "dealer")
+        .where(m.User.activated, m.User.deleted.is_(False), m.User.role == "dealer")
         .order_by(m.User.id)
     )
     count_query = (
         sa.select(sa.func.count())
-        .where(m.User.activated, m.User.deleted == False, m.User.role == "dealer")
+        .where(m.User.activated, m.User.deleted.is_(False), m.User.role == "dealer")
         .select_from(m.User)
     )
     if q:
         query = (
             m.User.select()
-            .where(m.User.activated, m.User.deleted == False, m.User.role == "dealer")
+            .where(m.User.activated, m.User.deleted.is_(False), m.User.role == "dealer")
             .where(
                 m.User.first_name.like(f"%{q}%")
                 | m.User.email.like(f"%{q}%")
@@ -51,7 +51,7 @@ def get_all():
         )
         count_query = (
             sa.select(sa.func.count())
-            .where(m.User.activated, m.User.deleted == False)
+            .where(m.User.activated, m.User.deleted.is_(False))
             .where(
                 m.User.first_name.like(f"%{q}%")
                 | m.User.email.like(f"%{q}%")
@@ -73,8 +73,8 @@ def get_all():
         search_query=q,
         pending_users=db.session.scalars(
             sa.select(m.User)
-            .where(m.User.activated == False, m.User.deleted == False)
-            .where(m.User.activated == False, m.User.role == "dealer")
+            .where(m.User.activated.is_(False), m.User.deleted.is_(False))
+            .where(m.User.activated.is_(False), m.User.role == "dealer")
         ).all(),
     )
 

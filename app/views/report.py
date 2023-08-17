@@ -135,25 +135,25 @@ def dashboard():
     types = db.session.scalars(
         sa.select(m.Label.type_of_vehicle)
         .where(m.Label.user_id == current_user.id)
-        .distinct(m.Label.type_of_vehicle)
+        .group_by(m.Label.type_of_vehicle)
     ).all()
     makes = db.session.scalars(
         sa.select(m.Label.make)
         .where(m.Label.user_id == current_user.id)
-        .distinct(m.Label.make)
+        .group_by(m.Label.make)
     ).all()
     if make_filter and make_filter != "All":
         models = db.session.scalars(
             sa.select(m.Label.vehicle_model)
             .where(m.Label.user_id == current_user.id)
             .where(m.Label.make == make_filter)
-            .distinct(m.Label.vehicle_model)
+            .group_by(m.Label.vehicle_model)
         ).all()
     else:
         models = db.session.scalars(
             sa.select(m.Label.vehicle_model)
             .where(m.Label.user_id == current_user.id)
-            .distinct(m.Label.vehicle_model)
+            .group_by(m.Label.vehicle_model)
         ).all()
 
     if download == "true":
