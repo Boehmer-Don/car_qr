@@ -132,50 +132,29 @@ def dashboard():
         .scalars()
         .all()
     )
-    types = list(
-        set(
-            [
-                label.type_of_vehicle
-                for label in db.session.scalars(
-                    m.Label.select().where(m.Label.user_id == current_user.id)
-                ).all()
-            ]
-        )
-    )
-    makes = list(
-        set(
-            [
-                label.make
-                for label in db.session.scalars(
-                    m.Label.select().where(m.Label.user_id == current_user.id)
-                ).all()
-            ]
-        )
-    )
+    types = db.session.scalars(
+        sa.select(m.Label.type_of_vehicle)
+        .where(m.Label.user_id == current_user.id)
+        .distinct(m.Label.type_of_vehicle)
+    ).all()
+    makes = db.session.scalars(
+        sa.select(m.Label.make)
+        .where(m.Label.user_id == current_user.id)
+        .distinct(m.Label.make)
+    ).all()
     if make_filter and make_filter != "All":
-        models = list(
-            set(
-                [
-                    label.vehicle_model
-                    for label in db.session.scalars(
-                        m.Label.select()
-                        .where(m.Label.user_id == current_user.id)
-                        .where(m.Label.make == make_filter)
-                    ).all()
-                ]
-            )
-        )
+        models = db.session.scalars(
+            sa.select(m.Label.vehicle_model)
+            .where(m.Label.user_id == current_user.id)
+            .where(m.Label.make == make_filter)
+            .distinct(m.Label.vehicle_model)
+        ).all()
     else:
-        models = list(
-            set(
-                [
-                    label.vehicle_model
-                    for label in db.session.scalars(
-                        m.Label.select().where(m.Label.user_id == current_user.id)
-                    ).all()
-                ]
-            )
-        )
+        models = db.session.scalars(
+            sa.select(m.Label.vehicle_model)
+            .where(m.Label.user_id == current_user.id)
+            .distinct(m.Label.vehicle_model)
+        ).all()
 
     if download == "true":
         labels = db.session.scalars(query).all()
@@ -260,12 +239,12 @@ def dashboard():
 def get_models():
     make = request.json.get("makeSelected")
     labels = db.session.scalars(
-        m.Label.select()
+        sa.select(m.Label.vehicle_model)
         .where(m.Label.user_id == current_user.id)
         .where(m.Label.make == make)
+        .distinct(m.Label.vehicle_model)
     ).all()
-    models = list(set([label.vehicle_model for label in labels]))
-    return {"models": models}
+    return {"models": labels}
 
 
 @report_blueprint.route("/all", methods=["GET", "POST"])
