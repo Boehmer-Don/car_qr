@@ -10,8 +10,10 @@ from flask import (
     url_for,
     jsonify,
 )
+from flask import current_app as app
+from flask_mail import Message
 from flask_login import current_user
-from app import models as m, db
+from app import models as m, db, mail
 from app import forms as f
 from app.logger import log
 
@@ -95,6 +97,9 @@ def webhook():
         user.save()
     elif event["type"] == "payment_intent.succeeded":
         response = event["data"]["object"]
+        user = db.session.scalar(
+            m.User.select().where(m.User.stripe_customer_id == response.customer)
+        )
         label_unique_ids = response.metadata.get("labels_unique_ids")
         label_unique_ids_list = label_unique_ids.split(",")
         for label_id in label_unique_ids_list:
@@ -104,6 +109,23 @@ def webhook():
             label.date_activated = datetime.now()
             label.status = m.LabelStatus.active
             label.save()
+            msg = Message(
+                subject="New password",
+                sender=app.config["MAIL_DEFAULT_SENDER"],
+                recipients=[user.email],
+            )
+            url = url_for(
+                "labels.get_active_labels",
+                user_unique_id=user.unique_id,
+                _external=True,
+            )
+
+            msg.html = render_template(
+                "email/admin_notification.htm",
+                user=user,
+                url=url,
+            )
+            mail.send(msg)
     else:
         log(log.ERROR, "Unhandled event type %s", event["type"])
 

@@ -7,6 +7,7 @@ from flask.testing import FlaskClient
 from app import create_app, db
 from app import models as m
 from tests.utils import register
+from tests.db import populate as db_populate, add_labels
 
 
 @pytest.fixture()
@@ -31,6 +32,33 @@ def app(monkeypatch):
         "app.controllers.create_stripe_customer",
         mock_create_stripe_customer,
     )
+
+    def mock_construct_event(payload, sig_header, secret):
+        db_populate(2)
+        add_labels(2)
+        stripe_customer: m.User = db.session.scalar(
+            m.User.select().where(m.User.id == 2)
+        )
+        stripe_customer.stripe_customer_id = "test_stripe_customer_id"
+        stripe_customer.save()
+
+        labels = db.session.scalars(m.Label.select().where(m.Label.id < 4))
+        labels_unique_ids_list = [x.unique_id for x in labels]
+        labels_unique_ids = ",".join(labels_unique_ids_list)
+
+        class StripeObject:
+            customer = "test_stripe_customer_id"
+            metadata = {"labels_unique_ids": labels_unique_ids}
+
+        stripe_object = StripeObject()
+
+        mock_event = {
+            "type": "payment_intent.succeeded",
+            "data": {"object": stripe_object},
+        }
+        return mock_event
+
+    monkeypatch.setattr("stripe.Webhook.construct_event", mock_construct_event)
 
     app = create_app("testing")
     app.config.update(

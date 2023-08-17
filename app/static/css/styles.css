@@ -1510,6 +1510,14 @@ input:checked + .toggle-bg {
   width: 40%;
 }
 
+.w-5\/12 {
+  width: 41.666667%;
+}
+
+.w-6\/12 {
+  width: 50%;
+}
+
 .min-w-0 {
   min-width: 0px;
 }
@@ -3060,6 +3068,10 @@ input:checked + .toggle-bg {
 
   .md\:w-60 {
     width: 15rem;
+  }
+
+  .md\:w-3\/12 {
+    width: 25%;
   }
 
   .md\:translate-x-0 {

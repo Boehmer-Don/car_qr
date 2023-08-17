@@ -365,17 +365,23 @@ def generate(user_unique_id: str):
     )
 
 
-@dealer_blueprint.route("/download/<user_unique_id>", methods=["GET", "POST"])
+@dealer_blueprint.route("/download", methods=["GET", "POST"])
 @login_required
-def download(user_unique_id: str):
+def download():
+    user_unique_id = request.args.get("user_unique_id")
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
 
-    stickers = db.session.scalars(
-        m.Sticker.select()
-        .where(m.Sticker.pending == True)
-        .where(m.Sticker.user == user)
-    ).all()
+    if user:
+        stickers = db.session.scalars(
+            m.Sticker.select()
+            .where(m.Sticker.pending == True)
+            .where(m.Sticker.user == user)
+        ).all()
+    else:
+        stickers = db.session.scalars(
+            m.Sticker.select().where(m.Sticker.pending == True)
+        ).all()
 
     if request.method == "POST":
         with io.StringIO() as proxy:
@@ -407,10 +413,13 @@ def download(user_unique_id: str):
             mem.seek(0)
 
         now = datetime.now()
+        download_name = f"all_pending_qrs_{now.strftime('%Y-%m-%d-%H-%M-%S')}.csv"
+        if user:
+            download_name = f"pending_qrs_{user.first_name}_{user.last_name}_{now.strftime('%Y-%m-%d-%H-%M-%S')}.csv"
         return send_file(
             mem,
             as_attachment=True,
-            download_name=f"pending_qrs_{user.first_name}_{user.last_name}_{now.strftime('%Y-%m-%d-%H-%M-%S')}.csv",
+            download_name=download_name,
             mimetype="text/csv",
             max_age=0,
             last_modified=now,
