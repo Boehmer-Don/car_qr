@@ -1,4 +1,4 @@
-from flask import redirect, url_for, Blueprint
+from flask import render_template, redirect, url_for, Blueprint
 from flask_login import login_required, current_user
 from app import models as m, db
 
@@ -33,3 +33,8 @@ def redirect_to_outer_url(sticker_id: str):
     label.views += 1
     label.save()
     return redirect(label.url)
+
+
+@main_blueprint.route("/landing")
+def landing(sticker_id: str):
+    return render_template("landing.html")
