@@ -245,7 +245,7 @@ def subscription(user_unique_id: str):
         flash("You are successfully changed your plan!", "success")
         return redirect(url_for("auth.payment", user_unique_id=user.unique_id))
     elif form.is_submitted():
-        flash("Something went wrong. Form submittion error", "danger")
+        flash("Something went wrong. Form submission error", "danger")
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
 
     return render_template(

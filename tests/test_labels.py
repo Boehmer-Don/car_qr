@@ -59,7 +59,7 @@ def test_views_counter(populate: FlaskClient):
     assert response.status_code == 302
     assert response.location == url_for(
         "user.gift",
-        user_unique_id=current_user.unique_id,
+        sticker_id=label.sticker_id,
     )
 
 
