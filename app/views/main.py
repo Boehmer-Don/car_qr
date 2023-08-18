@@ -36,5 +36,5 @@ def redirect_to_outer_url(sticker_id: str):
 
 
 @main_blueprint.route("/landing")
-def landing(sticker_id: str):
+def landing():
     return render_template("landing.html")
