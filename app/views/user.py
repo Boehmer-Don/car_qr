@@ -258,7 +258,7 @@ def subscription(user_unique_id: str):
 
 @bp.route("/gift/<user_unique_id>", methods=["GET", "POST"])
 @login_required
-def subscription(user_unique_id: str):
+def gift(user_unique_id: str):
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
 
