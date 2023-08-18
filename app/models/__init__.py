@@ -7,3 +7,4 @@ from .subscription import Subscription
 from .car_make import CarMake
 from .car_model import CarModel
 from .sticker import Sticker
+from .client import Client

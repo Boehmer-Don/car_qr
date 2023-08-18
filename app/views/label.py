@@ -288,16 +288,6 @@ def new_label_payment(user_unique_id: str):
     )
 
 
-@dealer_blueprint.route("/l/<label_unique_id>")
-def redirect_to_outer_url(label_unique_id: str):
-    label: m.Label = db.session.scalar(
-        m.Label.select().where(m.Label.unique_id == label_unique_id)
-    )
-    label.views += 1
-    label.save()
-    return redirect(label.url)
-
-
 @dealer_blueprint.route("/get_models", methods=["POST"])
 def get_models():
     make_name = request.json.get("makeSelected")

@@ -42,7 +42,7 @@ def test_views_counter(populate: FlaskClient):
     all_labels = db.session.scalars(m.Label.select()).all()
     label: m.Label = all_labels[0]
     views_before = label.views
-    response = populate.get(f"labels/l/{label.unique_id}")
+    response = populate.get(f"l/{label.sticker_id}")
     assert response
     assert response.status_code == 302
     assert response.location == label.url
