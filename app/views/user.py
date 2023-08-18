@@ -254,3 +254,35 @@ def subscription(user_unique_id: str):
         user=user,
         user_unique_id=user_unique_id,
     )
+
+
+@bp.route("/gift/<user_unique_id>", methods=["GET", "POST"])
+@login_required
+def subscription(user_unique_id: str):
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
+
+    form: f.Client = f.Client()
+    if form.validate_on_submit():
+        m.Client(
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            email=form.email.data,
+            phone=form.phone.data,
+        ).save()
+        log(log.INFO, "Client created: [%s]", user)
+        return redirect(url_for("user.thx_client", user_unique_id=user.unique_id))
+    elif form.is_submitted():
+        flash("Something went wrong. Form submission error", "danger")
+        log(log.ERROR, "Form submitted error: [%s]", form.errors)
+        redirect(url_for("user.gift", user_unique_id=user.unique_id))
+
+    return render_template(
+        "user/gift.html",
+        user_unique_id=user_unique_id,
+    )

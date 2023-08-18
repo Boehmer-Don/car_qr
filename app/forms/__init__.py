@@ -10,3 +10,4 @@ from .auth import (
 )
 from .user import UserForm, ResendInviteForm
 from .label import LabelForm, DeactivateLabelForm, LabelsAmountForm
+from .client import Client

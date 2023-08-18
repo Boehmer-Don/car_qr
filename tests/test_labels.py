@@ -52,6 +52,12 @@ def test_views_counter(populate: FlaskClient):
     )
     assert label.views > views_before
 
+    current_user.gift_enabled = True
+    response = populate.get(f"l/{label.sticker_id}")
+    assert response
+    assert response.status_code == 302
+    assert response.location
+
 
 def test_label_edit(populate: FlaskClient):
     TEST_LABEL_NAME = "Test Label"
