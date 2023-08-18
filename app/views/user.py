@@ -256,33 +256,53 @@ def subscription(user_unique_id: str):
     )
 
 
-@bp.route("/gift/<user_unique_id>", methods=["GET", "POST"])
-@login_required
-def gift(user_unique_id: str):
-    query = m.User.select().where(m.User.unique_id == user_unique_id)
-    user: m.User | None = db.session.scalar(query)
+@bp.route("/gift/<sticker_id>", methods=["GET", "POST"])
+def gift(sticker_id: str):
+    label: m.Label = db.session.scalar(
+        m.Label.select().where(m.Label.sticker_id == sticker_id)
+    )
 
-    if not user:
-        log(log.INFO, "User not found")
-        flash("Incorrect reset password link", "danger")
-        return redirect(url_for("main.index"))
+    return render_template(
+        "user/gift.html",
+        sticker_id=sticker_id,
+        label_url=label.url,
+    )
 
+
+@bp.route("/client_data/<sticker_id>", methods=["GET", "POST"])
+def client_data(sticker_id: str):
     form: f.Client = f.Client()
     if form.validate_on_submit():
-        m.Client(
+        client = db.session.scalar(
+            m.Client.select().where(m.Client.email == form.email.data)
+        )
+        if client:
+            log(log.INFO, "Client already exists: [%s]", client)
+            return redirect(url_for("user.thx_client", sticker_id=sticker_id))
+        client = m.Client(
             first_name=form.first_name.data,
             last_name=form.last_name.data,
             email=form.email.data,
             phone=form.phone.data,
-        ).save()
-        log(log.INFO, "Client created: [%s]", user)
-        return redirect(url_for("user.thx_client", user_unique_id=user.unique_id))
+        )
+        client.save()
+        log(log.INFO, "Client created: [%s]", client)
+        return redirect(url_for("user.thx_client", sticker_id=sticker_id))
     elif form.is_submitted():
         flash("Something went wrong. Form submission error", "danger")
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
-        redirect(url_for("user.gift", user_unique_id=user.unique_id))
+        redirect(url_for("user.gift", sticker_id=sticker_id))
 
     return render_template(
-        "user/gift.html",
-        user_unique_id=user_unique_id,
+        "user/client_data.html",
+        sticker_id=sticker_id,
+        form=form,
     )
+
+
+@bp.route("/thx_client/<sticker_id>", methods=["GET"])
+def thx_client(sticker_id: str):
+    label: m.Label = db.session.scalar(
+        m.Label.select().where(m.Label.sticker_id == sticker_id)
+    )
+    return render_template("user/thx_client.html", label_url=label.url)

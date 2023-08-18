@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block links %}
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+{% endblock %}
+<!-- prettier-ignore -->
+{% block body %}
+
+<!-- component -->
+<div class="flex justify-center">
+    <div class="w-full h-screen px-3">
+        <img src="{{url_for('static', filename='img/forbes_logo.png')}}" alt="forbes_logo.png" class="mt-24">
+
+        <p>Thank you for choosing Forbes Motors GM! </p>
+        <p>Show your phone number at reception to pick up your free gift anytime!</p>
+
+        <div class="flex flex-row items-center">
+            <a href="{{label_url}}">
+                <button type="button"
+                    class="w-36 px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                    Got It!
+                </button>
+            </a>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!-- prettier-ignore -->
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
+{% endblock %}

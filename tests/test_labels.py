@@ -1,5 +1,5 @@
 # flake8: noqa E712
-from flask import current_app as app
+from flask import current_app as app, url_for
 from flask_login import current_user
 from flask.testing import FlaskClient, FlaskCliRunner
 from click.testing import Result
@@ -53,10 +53,14 @@ def test_views_counter(populate: FlaskClient):
     assert label.views > views_before
 
     current_user.gift_enabled = True
+    current_user.save()
     response = populate.get(f"l/{label.sticker_id}")
     assert response
     assert response.status_code == 302
-    assert response.location
+    assert response.location == url_for(
+        "user.gift",
+        user_unique_id=current_user.unique_id,
+    )
 
 
 def test_label_edit(populate: FlaskClient):

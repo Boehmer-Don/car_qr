@@ -27,7 +27,7 @@ def redirect_to_outer_url(sticker_id: str):
     user: m.User = db.session.scalar(m.User.select().where(m.User.id == label.user_id))
 
     if user and user.gift_enabled:
-        redirect(url_for("user.gift", user_unique_id=user.unique_id))
+        return redirect(url_for("user.gift", sticker_id=sticker_id))
         # Create user's gift page
 
     label.views += 1
