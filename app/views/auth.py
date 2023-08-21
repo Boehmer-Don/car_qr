@@ -233,6 +233,8 @@ def payment(user_unique_id: str):
 
 @auth_blueprint.route("/logo-upload/<user_unique_id>", methods=["GET", "POST"])
 def logo_upload(user_unique_id: str):
+    change_logo = request.args.get("change_logo")
+
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
 
@@ -267,22 +269,31 @@ def logo_upload(user_unique_id: str):
             flash("Error saving image", "danger")
             return redirect(url_for("auth.logo_upload", user_unique_id=user.unique_id))
 
-        db.session.execute(sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id))
-        db.session.add(
-            m.UserLogo(
-                user_id=user.id,
-                filename=file.filename.split("/")[-1],
-                file=img_byte_arr,
-                mimetype=file.content_type,
+        try:
+            db.session.execute(
+                sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id)
             )
-        )
-        db.session.commit()
+            db.session.add(
+                m.UserLogo(
+                    user_id=user.id,
+                    filename=file.filename.split("/")[-1],
+                    file=img_byte_arr,
+                    mimetype=file.content_type,
+                )
+            )
+            db.session.commit()
+            flash("Logo uploaded", "success")
+        except Exception as e:
+            log(log.ERROR, "Error saving logo: [%s]", e)
+            flash("Error saving logo", "danger")
+            return redirect(url_for("auth.logo_upload", user_unique_id=user.unique_id))
 
     log(log.INFO, "Uploaded logo for user: [%s]", user)
     return render_template(
         "auth/register_logo_upload.html",
         user=user,
         user_unique_id=user_unique_id,
+        change_logo=change_logo,
     )
 
 

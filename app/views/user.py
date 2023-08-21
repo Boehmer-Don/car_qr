@@ -324,3 +324,9 @@ def get_logo(user_unique_id: str):
         buff,
         mimetype="image/png",
     )
+
+
+@bp.route("/logo/<user_unique_id>")
+@login_required
+def change_logo(user_unique_id: str):
+    ...
