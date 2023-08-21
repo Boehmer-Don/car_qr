@@ -28,7 +28,12 @@ document.addEventListener('DOMContentLoaded', function () {
           dropZone.innerHTML =
             '<img src="' +
             e.target.result +
-            '" alt="Preview style="width: 100%; height: auto;">';
+            '" alt="Preview" style="max-height: 240px;">';
+          const img = new Image();
+          img.src = e.target.result as string;
+          img.onload = function () {
+            console.log(img.width, img.height);
+          };
         };
         reader.readAsDataURL(file);
       } else {
