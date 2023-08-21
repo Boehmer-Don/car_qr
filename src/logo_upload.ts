@@ -19,27 +19,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const formData = new FormData();
     formData.append('file', file);
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', window.location.href, true);
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          dropZone.innerHTML =
-            '<img src="' +
-            e.target.result +
-            '" alt="Preview" style="max-height: 240px;">';
-          const img = new Image();
-          img.src = e.target.result as string;
-          img.onload = function () {
-            console.log(img.width, img.height);
-          };
-        };
-        reader.readAsDataURL(file);
-      } else {
-        alert(`Error ${xhr.status}! Failed to upload the file.`);
-      }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      dropZone.innerHTML =
+        '<img src="' +
+        e.target.result +
+        '" alt="Preview" style="max-height: 240px;">';
+      fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+      })
+        .then(response => console.log(response))
+        .catch(error => {
+          console.error('Error:', error);
+        });
     };
-    xhr.send(formData);
+    reader.readAsDataURL(file);
   });
 });
