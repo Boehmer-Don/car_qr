@@ -14,9 +14,6 @@ def index():
 
 @main_blueprint.route("/l/<sticker_id>")
 def redirect_to_outer_url(sticker_id: str):
-    # Check if a dealership has a gift option (add this field to user's model)
-    # If yes, redirect to the gift page, then to the client's data form, than to thx page
-    # Create client's db model
     # Registration cancels the sticker's pending (at webhook)
     label: m.Label = db.session.scalar(
         m.Label.select().where(m.Label.sticker_id == sticker_id)

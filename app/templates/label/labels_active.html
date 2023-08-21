@@ -84,7 +84,11 @@
         </p>
         <p id="label_details_button" data-target="{{label.json}}"
           class="w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer">
+          {% if current_user.role and current_user.role.value == "admin" %}
+          {{label.user.first_name}} {{label.user.last_name}} - {{ label.sticker_id }}
+          {% else %}
           {{ label.name }}
+          {% endif %}
         </p>
         <p class="w-1/12 flex items-center justify-center">{{ label.views }}</p>
         <p class="w-3/12 hidden md:flex items-center justify-center">

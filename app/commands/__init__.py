@@ -81,8 +81,10 @@ def init(app: Flask):
 
         delete_labels_sql = sa.delete(m.Label).where(m.Label.user_id == user.id)
         delete_stickers_sql = sa.delete(m.Sticker).where(m.Sticker.user_id == user.id)
+        delete_logos_sql = sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id)
         db.session.execute(delete_labels_sql)
         db.session.execute(delete_stickers_sql)
+        db.session.execute(delete_logos_sql)
         db.session.commit()
         db.session.delete(user)
         db.session.commit()

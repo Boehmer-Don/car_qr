@@ -118,6 +118,16 @@ def webhook():
                 label.date_activated = datetime.now()
                 label.status = m.LabelStatus.active
                 label.save()
+
+                # Cancel pending stickers
+                sticker: m.Sticker = db.session.scalar(
+                    m.Sticker.select().where(m.Sticker.code == label.sticker_id)
+                )
+                if sticker:
+                    sticker.pending = False
+                    sticker.save()
+
+                # Notification to admin
                 msg = Message(
                     subject="New password",
                     sender=app.config["MAIL_DEFAULT_SENDER"],
