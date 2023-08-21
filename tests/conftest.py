@@ -61,6 +61,7 @@ def app(monkeypatch):
     app = create_app("testing")
     app.config.update(
         {
+            "IMAGE_MAX_WIDTH": 2048,
             "TESTING": True,
         }
     )

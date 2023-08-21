@@ -6,19 +6,26 @@
     Welcome Back {{ current_user.first_name }},
   </h1>
   <div class="lg:flex-row text-xs lg:text-sm md:px-5 md:pb-5">
+    {% if user_unique_id %}
+    <div class="flex">
+      {{ user.first_name }} {{ user.last_name }}
+      <br>
+      {{url_for('user.get_logo', user_unique_id=user_unique_id)}}
+      <p class="m-3">
+        <img src="{{url_for('user.get_logo', user_unique_id=user_unique_id)}}">
+      </p>
+    </div>
+    {% endif %}
+
     <div class="flex justify-between">
       <div class="w-2/3 p-3">
         <h3 class="mt-6 md:mt-0 text-lg font-bold">Pending Labels</h3>
-
-        <p class="my-5">
-          {{ user.first_name }} {{ user.last_name }}
-        </p>
       </div>
 
       {% if user_unique_id %}
       <a href="{{url_for('labels.generate', user_unique_id=user_unique_id)}}" class="flex items-center">
         <button type="button"
-          class="w-full my-5 md:mb-0 mr-1 text-indigo-700 border border-indigo-700 hover:bg-indigo-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+          class="w-full my-5 md:my-2 mr-1 text-indigo-700 border border-indigo-700 hover:bg-indigo-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
           Generate >
         </button>
       </a>

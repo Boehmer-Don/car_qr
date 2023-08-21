@@ -1,3 +1,5 @@
+import io
+from PIL import Image
 from flask_mail import Message
 from flask import Blueprint, render_template, url_for, redirect, flash, request, session
 from flask import current_app as app
@@ -240,20 +242,36 @@ def logo_upload(user_unique_id: str):
         return redirect(url_for("main.index"))
 
     if request.method == "POST":
-        # Uplaod logo image file
+        # Upload logo image file
         file = request.files["file"]
         log(log.INFO, "File uploaded: [%s]", file)
 
-        with db.begin() as session:
-            session.execute(sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id))
-            session.add(
-                m.UserLogo(
-                    user_id=user.id,
-                    filename=file.filename.split("/")[-1],
-                    file=file.read(),
-                    mimetype=file.mimetype,
-                )
+        IMAGE_MAX_WIDTH = app.config["IMAGE_MAX_WIDTH"]
+        img = Image.open(file.stream)
+        width, height = img.size
+
+        if width > IMAGE_MAX_WIDTH:
+            log(log.INFO, "Resizing image")
+            ratio = IMAGE_MAX_WIDTH / width
+            new_width = IMAGE_MAX_WIDTH
+            new_height = int(height * ratio)
+            resized_img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            img = resized_img
+
+        img_byte_arr = io.BytesIO()
+        img.save(img_byte_arr, format=img.format)
+        img_byte_arr = img_byte_arr.getvalue()
+
+        db.session.execute(sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id))
+        db.session.add(
+            m.UserLogo(
+                user_id=user.id,
+                filename=file.filename.split("/")[-1],
+                file=img_byte_arr,
+                mimetype=file.content_type,
             )
+        )
+        db.session.commit()
 
     log(log.INFO, "Uploaded logo for user: [%s]", user)
     return render_template(

@@ -49,6 +49,8 @@ class BaseConfig(BaseSettings):
     ALPHANUMERIC_CODE_LENGTH: int
     LANDING_URL: str
 
+    IMAGE_MAX_WIDTH: int = 512
+
     @staticmethod
     def configure(app: Flask):
         # Implement this method to do further configuration on your app.

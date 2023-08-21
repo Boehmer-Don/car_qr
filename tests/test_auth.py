@@ -195,8 +195,13 @@ def test_upload_logo(client: FlaskClient):
         response = client.post(
             f"/auth/logo-upload/{user.unique_id}", data={"file": file}
         )
+
     assert response.status_code == 200
     user: m.User = db.session.scalar(m.User.select().where(m.User.email == TEST_EMAIL))
     assert user.logo
     assert user.logo[0].filename == TEST_FILENAME
     assert user.logo[0].mimetype == "image/png"
+
+    with open(f"tests/{TEST_FILENAME}", "rb") as file:
+        content = file.read()
+        assert user.logo[0].file[:4] == content[:4]

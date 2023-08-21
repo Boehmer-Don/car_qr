@@ -366,12 +366,16 @@ def download():
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
 
+    logo_link = None
     if user:
         stickers = db.session.scalars(
             m.Sticker.select()
             .where(m.Sticker.pending == True)
             .where(m.Sticker.user == user)
         ).all()
+        if user.logo:
+            logo_link = f"user/logo/{user.unique_id}"
+
     else:
         stickers = db.session.scalars(
             m.Sticker.select().where(m.Sticker.pending == True)
@@ -425,4 +429,5 @@ def download():
         user=user,
         stickers=stickers,
         url=app.config.get("LANDING_URL"),
+        logo_link=logo_link,
     )

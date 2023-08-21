@@ -1,4 +1,5 @@
 # flake8: noqa E712
+import io
 from datetime import datetime
 from flask import (
     Blueprint,
@@ -7,6 +8,7 @@ from flask import (
     flash,
     redirect,
     url_for,
+    Response,
 )
 from flask_login import login_required, current_user
 from flask_mail import Message
@@ -306,3 +308,20 @@ def thx_client(sticker_id: str):
         m.Label.select().where(m.Label.sticker_id == sticker_id)
     )
     return render_template("user/thx_client.html", label_url=label.url)
+
+
+@bp.route("/logo/<user_unique_id>")
+@login_required
+def get_logo(user_unique_id: str):
+    user: m.User = db.session.scalar(
+        m.User.select().where(m.User.unique_id == user_unique_id)
+    )
+    logo: m.UserLogo = db.session.scalar(
+        m.UserLogo.select().where(m.UserLogo.user_id == user.id)
+    )
+    buff = io.BytesIO(logo.file)
+    return Response(
+        buff,
+        mimetype=logo.mimetype,
+        # content_type=logo.mimetype,
+    )
