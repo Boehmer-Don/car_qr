@@ -258,9 +258,14 @@ def logo_upload(user_unique_id: str):
             resized_img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
             img = resized_img
 
-        img_byte_arr = io.BytesIO()
-        img.save(img_byte_arr, format=img.format)
-        img_byte_arr = img_byte_arr.getvalue()
+        try:
+            img_byte_arr = io.BytesIO()
+            img.save(img_byte_arr, format="PNG")
+            img_byte_arr = img_byte_arr.getvalue()
+        except Exception as e:
+            log(log.ERROR, "Error saving image: [%s]", e)
+            flash("Error saving image", "danger")
+            return redirect(url_for("auth.logo_upload", user_unique_id=user.unique_id))
 
         db.session.execute(sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id))
         db.session.add(

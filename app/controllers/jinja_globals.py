@@ -1,4 +1,5 @@
 from datetime import datetime
+from flask import url_for
 from flask_wtf import FlaskForm
 from flask_login import current_user
 from app import db
@@ -30,3 +31,9 @@ def labels_in_cart():
         ).all()
         return len(labels)
     return 0
+
+
+def get_user_logo():
+    if isinstance(current_user, m.User) and current_user.logo:
+        return url_for("user.get_logo", user_unique_id=current_user.unique_id)
+    return "#"

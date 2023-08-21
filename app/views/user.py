@@ -322,6 +322,5 @@ def get_logo(user_unique_id: str):
     buff = io.BytesIO(logo.file)
     return Response(
         buff,
-        mimetype=logo.mimetype,
-        # content_type=logo.mimetype,
+        mimetype="image/png",
     )

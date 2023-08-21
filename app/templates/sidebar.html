@@ -46,6 +46,13 @@
         </a>
         {% endif %}
       </li>
+
+      {% if current_user.plan and current_user.plan.value == "Advanced Plan" and current_user.logo %}
+      <div class="flex justify-center">
+        <img src="{{get_user_logo()}}" class="hidden md:flex max-w-full" alt="user_logo">
+      </div>
+      {% endif %}
+
       {% endif %} {% if current_user.role and current_user.role.value == "admin" %}
       <li>
         <a href="{{ url_for('user.get_all') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">

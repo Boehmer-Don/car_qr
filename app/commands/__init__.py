@@ -21,10 +21,11 @@ def init(app: Flask):
         @click.option("--count", default=100, type=int)
         def db_populate(count: int):
             """Fill DB by dummy data."""
-            from tests.db import populate, add_labels
+            from tests.db import populate, add_labels, set_users_logo
 
             populate(count)
             add_labels()
+            set_users_logo()
             print(f"DB populated by {count} instancies")
 
         @app.cli.command()
@@ -133,3 +134,11 @@ def init(app: Flask):
         db.session.execute(delete_makes_sql)
         db.session.commit()
         print("Makes and models deleted")
+
+    @app.cli.command()
+    @click.option("--user-id", default=9, type=int)
+    def set_logo(user_id: int):
+        from tests.db import set_users_logo
+
+        set_users_logo(user_id)
+        print(f"Logo set for user {user_id}")

@@ -1122,10 +1122,6 @@ input:checked + .toggle-bg {
   grid-column: span 6 / span 6;
 }
 
-.m-5 {
-  margin: 1.25rem;
-}
-
 .m-3 {
   margin: 0.75rem;
 }
@@ -1546,6 +1542,10 @@ input:checked + .toggle-bg {
 
 .max-w-2xl {
   max-width: 42rem;
+}
+
+.max-w-full {
+  max-width: 100%;
 }
 
 .max-w-md {
@@ -2622,6 +2622,10 @@ input:checked + .toggle-bg {
   text-decoration-line: underline;
 }
 
+.hover\:opacity-70:hover {
+  opacity: 0.7;
+}
+
 .focus\:border-blue-500:focus {
   --tw-border-opacity: 1;
   border-color: rgb(63 131 248 / var(--tw-border-opacity));
@@ -3000,11 +3004,6 @@ input:checked + .toggle-bg {
   .md\:my-10 {
     margin-top: 2.5rem;
     margin-bottom: 2.5rem;
-  }
-
-  .md\:my-1 {
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
   }
 
   .md\:my-2 {

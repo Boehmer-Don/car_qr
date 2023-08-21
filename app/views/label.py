@@ -12,6 +12,7 @@ from flask import (
     redirect,
     url_for,
     send_file,
+    Response,
 )
 from flask_login import login_required, current_user
 import sqlalchemy as sa
@@ -381,7 +382,17 @@ def download():
             m.Sticker.select().where(m.Sticker.pending == True)
         ).all()
 
-    if request.method == "POST":
+    if request.form.get("logo-download"):
+        return send_file(
+            io.BytesIO(user.logo[0].file),
+            as_attachment=True,
+            download_name=f"logo_{user.first_name}_{user.last_name}_{datetime.now()}.png",
+            mimetype="image/png",
+            max_age=0,
+            last_modified=datetime.now(),
+        )
+
+    if request.form.get("pending-labels-download"):
         with io.StringIO() as proxy:
             writer = csv.writer(proxy)
             row = [
