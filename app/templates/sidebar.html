@@ -3,7 +3,7 @@
   aria-label="Sidebar">
   <div class="h-full px-3 pb-4 overflow-y-auto bg-gray-800 text-white">
     <ul class="space-y-2 font-medium">
-      {% if current_user %}
+      {% if current_user.is_authenticated %}
       <li class="pl-1 pt-3 text-xs flex justify-between">
         {% if current_user.role %}
         <p>
@@ -28,7 +28,7 @@
       <li class="pl-1 flex items-center justify-between">
         <p>{{ current_user.first_name }} {{ current_user.last_name }}</p>
 
-        {% if current_user and current_user.role and current_user.role.value ==
+        {% if current_user.is_authenticated and current_user.role and current_user.role.value ==
         "dealer" %}
         <a href="{{url_for('labels.new_label_payment', user_unique_id=current_user.unique_id)}}"
           class="relative md:hidden">
@@ -47,7 +47,7 @@
         {% endif %}
       </li>
 
-      {% if current_user and current_user.plan.value == "Advanced Plan" and current_user.logo %}
+      {% if current_user.is_authenticated and current_user.plan.value == "Advanced Plan" and current_user.logo %}
       <div class="relative flex justify-center">
         <img src="{{get_user_logo()}}" class="hidden md:flex max-w-full rounded-lg" alt="user_logo">
 

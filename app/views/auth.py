@@ -57,14 +57,17 @@ def register():
 
 @auth_blueprint.route("/login", methods=["GET", "POST"])
 def login():
+    log(log.INFO, "Login page requested. Request method: [%s]", request.method)
     form: f.LoginForm = f.LoginForm(request.form)
     if form.validate_on_submit():
         user: m.User = m.User.authenticate(form.user_id.data, form.password.data)
         log(log.INFO, "Form submitted. User: [%s]", user)
         if not user:
+            log(log.WARNING, "Login failed")
             flash("Wrong user ID or password.", "danger")
             return redirect(url_for("auth.login"))
         if not user.activated:
+            log(log.WARNING, "Account not activated")
             flash(
                 "Your account is not activated yet. Please check your email to confirm it.",
                 "danger",
@@ -75,11 +78,11 @@ def login():
         log(log.INFO, "Login successful.")
         flash("Login successful.", "success")
         if current_user.role == m.UsersRole.admin:
+            log(log.INFO, "Redirecting to users page.")
             return redirect(url_for("user.get_all"))
         else:
+            log(log.INFO, "Redirecting to labels page.")
             return redirect(url_for("labels.get_active_labels"))
-
-        flash("Wrong user ID or password.", "danger")
 
     elif form.is_submitted():
         log(log.WARNING, "Form submitted error: [%s]", form.errors)
