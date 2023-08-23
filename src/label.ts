@@ -25,7 +25,8 @@ const modalDeactivateLabel: HTMLElement = document.querySelector(
   '#labelDeactivateModal',
 );
 const addNewMakeModal: HTMLElement = document.querySelector('#addNewMakeModal');
-console.log(addNewMakeModal);
+const addNewModelModal: HTMLElement =
+  document.querySelector('#addNewModelModal');
 
 const modalOptions: ModalOptions = {
   placement: 'bottom-right',
@@ -123,6 +124,18 @@ function createNewMake() {
   addNewMakeModalWindow.show();
 }
 
+function createNewModel() {
+  const makeSelectedChoiceField: HTMLSelectElement =
+    document.querySelector('.make');
+  const nextUrl: HTMLInputElement = document.querySelector(
+    '#add-model-next-url',
+  );
+  nextUrl.value = window.location.href;
+  const modelMake: HTMLInputElement = document.querySelector('#model_make');
+  modelMake.value = makeSelectedChoiceField.value;
+  addNewModelModalWindow.show();
+}
+
 const labelDetailsModalWindow: ModalInterface = new Modal(
   $modalElement,
   modalOptions,
@@ -133,6 +146,10 @@ const labelDeactivateModalWindow: ModalInterface = new Modal(
 );
 const addNewMakeModalWindow: ModalInterface = new Modal(
   addNewMakeModal,
+  modalOptions,
+);
+const addNewModelModalWindow: ModalInterface = new Modal(
+  addNewModelModal,
   modalOptions,
 );
 
@@ -225,6 +242,7 @@ if (subTotal && taxes && total) {
 const makeSelectMakeFields = document.querySelectorAll(
   '.make',
 ) as NodeListOf<HTMLSelectElement>;
+let makeSelected: string;
 makeSelectMakeFields.forEach(makeSelectMakeField =>
   makeSelectMakeField.addEventListener('change', () => {
     const makeNumber = makeSelectMakeField.getAttribute('data-model');
@@ -233,9 +251,8 @@ makeSelectMakeFields.forEach(makeSelectMakeField =>
       `#vehicle_model-${makeNumber}`,
     ) as HTMLSelectElement;
 
-    const stringSelected = makeSelectMakeField.value as string;
-    if (stringSelected === 'add') {
-      console.log(stringSelected);
+    const makeSelected = makeSelectMakeField.value as string;
+    if (makeSelected === 'add') {
       createNewMake();
     } else {
       let models: Array<string> = [];
@@ -244,8 +261,7 @@ makeSelectMakeFields.forEach(makeSelectMakeField =>
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({makeSelected: stringSelected}),
-        // body: stringSelected,
+        body: JSON.stringify({makeSelected: makeSelected}),
       })
         .then(response => response.json())
         .then(data => {
@@ -265,6 +281,17 @@ makeSelectMakeFields.forEach(makeSelectMakeField =>
         .catch(error => {
           console.error('Error sending data to Flask:', error);
         });
+    }
+  }),
+);
+
+const modelSelectFields: NodeListOf<HTMLSelectElement> =
+  document.querySelectorAll('.model');
+modelSelectFields.forEach(modelSelectField =>
+  modelSelectField.addEventListener('change', () => {
+    console.log('modelSelectField.value', modelSelectField.value);
+    if (modelSelectField.value === 'add') {
+      createNewModel();
     }
   }),
 );

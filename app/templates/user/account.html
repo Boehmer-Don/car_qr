@@ -195,6 +195,18 @@
                 <small class="text-danger">{{error}}</small>
                 {% endfor %}
               </div>
+
+              <div class="hidden">
+                {{form.plan.label(class='block mb-2 text-sm
+                font-medium text-gray-900 dark:text-white')}}
+                {{form.plan(
+                class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                )
+                }}
+                {% for error in form.errors.plan %}
+                <small class="text-danger">{{error}}</small>
+                {% endfor %}
+              </div>
             </div>
 
 

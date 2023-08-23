@@ -124,7 +124,7 @@ def create_subscription_checkout_session(
         )
     except InvalidRequestError as e:
         log(log.ERROR, "Error while creating a checkout session - [%s]", e)
-        flash("Error while creating a checkout session", "danger")
+        flash(f"Payment error: {e}", "danger")
         return e, 400
 
     log(log.INFO, "Created checkout_session: %s", checkout_session)
@@ -170,7 +170,7 @@ def create_payment_subscription_checkout_session(
         )
     except Exception as e:
         log(log.ERROR, "Error while creating a checkout session - [%s]", e)
-        flash("Error while creating a checkout session", "danger")
+        flash(flash(f"Payment error: {e}", "danger"))
         return e, 400
 
     log(log.INFO, "Created checkout_session: %s", checkout_session)

@@ -458,3 +458,29 @@ def new_make():
         log(log.INFO, "Make already exists: [%s]", new_make)
 
     return redirect(next_url)
+
+
+@dealer_blueprint.route("/new_model", methods=["GET", "POST"])
+@login_required
+def new_model():
+    new_model = request.form.get("new_model_name")
+    next_url = request.form.get("next_url")
+    make = request.form.get("model_make")
+
+    make = db.session.scalar(sa.select(m.CarMake).where(m.CarMake.name == make))
+    if not make:
+        log(log.ERROR, "Failed to find make : [%s]", make)
+        flash("Failed to find make", "danger")
+        return redirect(next_url)
+
+    model = db.session.scalar(sa.select(m.CarMake).where(m.CarMake.name == new_model))
+    if not model:
+        m.CarModel(
+            name=new_model,
+            make_id=make.id,
+        ).save()
+        log(log.INFO, "Created new model: [%s]", new_model)
+    else:
+        log(log.INFO, "Model already exists: [%s]", new_model)
+
+    return redirect(next_url)

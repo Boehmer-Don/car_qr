@@ -102,7 +102,6 @@
                                         {% for model in models %}
                                         <option value="{{ model.name }}">{{ model.name }}</option>
                                         {% endfor %}
-                                        <option value="add">Add New Make</option>
                                     </select>
                                 </div>
 
@@ -205,6 +204,7 @@
 </div>
 
 {% include 'label/add_make.html' %}
+{% include 'label/add_model.html' %}
 <!-- prettier-ignore -->
 {% endblock %}
 <!-- prettier-ignore -->
