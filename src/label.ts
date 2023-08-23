@@ -27,6 +27,8 @@ const modalDeactivateLabel: HTMLElement = document.querySelector(
 const addNewMakeModal: HTMLElement = document.querySelector('#addNewMakeModal');
 const addNewModelModal: HTMLElement =
   document.querySelector('#addNewModelModal');
+const addNewTrimModal: HTMLElement = document.querySelector('#addNewTrimModal');
+const addNewTypeModal: HTMLElement = document.querySelector('#addNewTypeModal');
 
 const modalOptions: ModalOptions = {
   placement: 'bottom-right',
@@ -136,6 +138,20 @@ function createNewModel() {
   addNewModelModalWindow.show();
 }
 
+function createNewTrim() {
+  const nextUrl: HTMLInputElement =
+    document.querySelector('#add-trim-next-url');
+  nextUrl.value = window.location.href;
+  addNewTrimModalWindow.show();
+}
+
+function createNewType() {
+  const nextUrl: HTMLInputElement =
+    document.querySelector('#add-type-next-url');
+  nextUrl.value = window.location.href;
+  addNewTypeModalWindow.show();
+}
+
 const labelDetailsModalWindow: ModalInterface = new Modal(
   $modalElement,
   modalOptions,
@@ -150,6 +166,14 @@ const addNewMakeModalWindow: ModalInterface = new Modal(
 );
 const addNewModelModalWindow: ModalInterface = new Modal(
   addNewModelModal,
+  modalOptions,
+);
+const addNewTrimModalWindow: ModalInterface = new Modal(
+  addNewTrimModal,
+  modalOptions,
+);
+const addNewTypeModalWindow: ModalInterface = new Modal(
+  addNewTypeModal,
   modalOptions,
 );
 
@@ -174,6 +198,20 @@ const closeButton = document.querySelector('#modalCloseButton');
 if (closeButton) {
   closeButton.addEventListener('click', () => {
     labelDetailsModalWindow.hide();
+  });
+}
+
+const closeMakeModal = document.querySelector('#modalMakeClose');
+if (closeMakeModal) {
+  closeMakeModal.addEventListener('click', () => {
+    addNewMakeModalWindow.hide();
+  });
+}
+
+const closeModelModal = document.querySelector('#modalModelClose');
+if (closeModelModal) {
+  closeModelModal.addEventListener('click', () => {
+    addNewModelModalWindow.hide();
   });
 }
 
@@ -294,12 +332,32 @@ const modelSelectFields: NodeListOf<HTMLSelectElement> =
   document.querySelectorAll('.model');
 modelSelectFields.forEach(modelSelectField =>
   modelSelectField.addEventListener('change', () => {
-    console.log('modelSelectField.value', modelSelectField.value);
     if (modelSelectField.value === 'add') {
       createNewModel();
     }
   }),
 );
+
+const selectTrim: HTMLSelectElement = document.querySelector('#label-1-trim');
+if (selectTrim) {
+  selectTrim.addEventListener('change', () => {
+    const trimSelected = selectTrim.value;
+    if (trimSelected === 'add') {
+      createNewTrim();
+    }
+  });
+}
+
+const selectType: HTMLSelectElement = document.querySelector('#label-1-type');
+if (selectType) {
+  selectType.addEventListener('change', () => {
+    const typeSelected = selectType.value;
+    if (typeSelected === 'add') {
+      console.log('add new type');
+      createNewType();
+    }
+  });
+}
 
 const decreaseStickersButton: HTMLButtonElement = document.querySelector(
   '#decreaseStickersButton',

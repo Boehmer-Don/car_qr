@@ -1,18 +1,17 @@
-<!-- Add New Model modal -->
+<!-- Add New Trim modal -->
 <!-- prettier-ignore-->
-<div id="addNewModelModal" tabindex="-1" aria-hidden="true"
+<div id="addNewTrimModal" tabindex="-1" aria-hidden="true"
   class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
   <div class="relative w-full max-w-2xl max-h-full">
     <!-- Modal content -->
-    <form action="{{url_for('labels.new_model')}}" method="post"
+    <form action="{{url_for('labels.new_trim')}}" method="post"
       class="relative bg-white rounded-lg shadow dark:bg-gray-700">
       {{ form_hidden_tag() }}
-      <input type="hidden" name="next_url" id="add-model-next-url" value="" />
-      <input type="hidden" name="model_make" id="model_make" value="" />
+      <input type="hidden" name="next_url" id="add-trim-next-url" value="" />
       <!-- Modal header -->
       <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white"> Add New Make </h3>
-        <button id="modalModelClose" type="button"
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white"> Add New Type </h3>
+        <button id="modalTrimClose" type="button"
           class="modal-close-button text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
           <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg">
@@ -28,11 +27,11 @@
           <div class="w-full flex justify-between">
             <div class="w-full px-1">
               <label for="name" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                Model Name
+                Trim Name
               </label>
-              <input type="text" id="new_model_name" name="new_model_name"
+              <input type="text" id="new_trim_name" name="new_trim_name"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="Your Model Name" />
+                placeholder="Your Trim Name" />
             </div>
           </div>
         </div>

@@ -211,6 +211,8 @@ def new_label_set_amount(user_unique_id: str):
 def new_label_set_details(user_unique_id: str, amount: int):
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
+    trims = db.session.scalars(m.CarTrim.select()).all()
+    types = db.session.scalars(m.CarType.select()).all()
     if request.method == "POST":
         for i in range(1, int(amount) + 1):
             label = m.Label(
@@ -239,6 +241,8 @@ def new_label_set_details(user_unique_id: str, amount: int):
         amount=amount,
         makes=makes,
         models=models,
+        trims=trims,
+        types=types,
     )
 
 
@@ -250,6 +254,8 @@ def new_label_payment(user_unique_id: str):
     ).all()
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
+    trims = db.session.scalars(m.CarTrim.select()).all()
+    types = db.session.scalars(m.CarType.select()).all()
     if request.method == "POST":
         if request.form.get("edit"):
             for index, label in enumerate(labels):
@@ -286,6 +292,8 @@ def new_label_payment(user_unique_id: str):
         labels=labels,
         makes=makes,
         models=models,
+        trims=trims,
+        types=types,
     )
 
 
@@ -482,5 +490,37 @@ def new_model():
         log(log.INFO, "Created new model: [%s]", new_model)
     else:
         log(log.INFO, "Model already exists: [%s]", new_model)
+
+    return redirect(next_url)
+
+
+@dealer_blueprint.route("/new_trim", methods=["GET", "POST"])
+@login_required
+def new_trim():
+    new_trim = request.form.get("new_trim_name")
+    next_url = request.form.get("next_url")
+
+    trim = db.session.scalar(sa.select(m.CarTrim).where(m.CarTrim.name == new_trim))
+    if not trim:
+        m.CarTrim(name=new_trim).save()
+        log(log.INFO, "Created new trim: [%s]", new_trim)
+    else:
+        log(log.INFO, "Trim already exists: [%s]", new_trim)
+
+    return redirect(next_url)
+
+
+@dealer_blueprint.route("/new_type", methods=["GET", "POST"])
+@login_required
+def new_type():
+    new_type = request.form.get("new_type_name")
+    next_url = request.form.get("next_url")
+
+    type = db.session.scalar(sa.select(m.CarType).where(m.CarType.name == new_type))
+    if not type:
+        m.CarType(name=new_type).save()
+        log(log.INFO, "Created new type: [%s]", new_type)
+    else:
+        log(log.INFO, "Type already exists: [%s]", new_type)
 
     return redirect(next_url)
