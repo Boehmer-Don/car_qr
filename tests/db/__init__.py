@@ -48,7 +48,7 @@ def gen_test_items(num_objects: int) -> Generator[str, None, None]:
             f"{country}{i}".lower(),
             f"{country}_province_{i}".lower(),
             f"{city}{i}".lower(),
-            f"{postal_code}".lower(),
+            f"{postal_code}",
             f"{phone}",
         )
 

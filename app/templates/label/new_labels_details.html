@@ -71,7 +71,7 @@
                                     </label>
                                     <input type="text" name="name-{{ i+1 }}" id="label-{{ i+1 }}-name"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="i.e. Used Red Chevy Track" required />
+                                        placeholder="Reference Name to Internally Identify" required />
                                 </div>
 
                                 <div class="w-full px-1">
@@ -97,8 +97,8 @@
                                     </label>
                                     <select id="vehicle_model-{{ i+1 }}" name="vehicle_model-{{ i+1 }}" required
                                         class="clean_name_input model w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
-                                        <option value="" disabled selected>Select a model</option>{% for model in
-                                        models %}
+                                        <option value="" disabled selected>Select a model</option>
+                                        {% for model in models %}
                                         <option value="{{ model.name }}">{{ model.name }}</option>
                                         {% endfor %}
                                     </select>
@@ -109,9 +109,16 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Year
                                     </label>
-                                    <input type="text" name="year-{{ i+1 }}" id="label-{{ i+1 }}-year"
+                                    <!-- <input type="text" name="year-{{ i+1 }}" id="label-{{ i+1 }}-year"
                                         class="clean_number_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="Year" />
+                                        placeholder="Year" /> -->
+                                    <select name="year-{{ i+1 }}" id="label-{{ i+1 }}-year" required
+                                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                                        <option value="" disabled selected>Select year</option>
+                                        {% for year in range(1960, 2024) %}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
 
@@ -129,11 +136,11 @@
                                 <div class="w-full px-1">
                                     <label for="color"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Color
+                                        Colour
                                     </label>
                                     <input type="text" name="color-{{ i+1 }}" id="label-{{ i+1 }}-color"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="Color" required />
+                                        placeholder="Colour" />
                                 </div>
                             </div>
 

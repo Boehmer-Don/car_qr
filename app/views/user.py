@@ -194,6 +194,7 @@ def account(user_unique_id: str):
         form.postal_code.data = user.postal_code
         form.plan.data = user.plan.name
         form.phone.data = user.phone
+        form.gift.data = user.gift
 
     if form.validate_on_submit():
         user.email = form.email.data
@@ -209,6 +210,7 @@ def account(user_unique_id: str):
         user.postal_code = form.postal_code.data
         user.plan = form.plan.data
         user.phone = form.phone.data
+        user.gift = form.gift.data
         user.save()
         log(log.INFO, "User data updated. User: [%s]", user)
         flash("Your account has been successfully updated", "success")
