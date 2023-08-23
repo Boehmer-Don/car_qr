@@ -250,7 +250,9 @@ def new_label_set_details(user_unique_id: str, amount: int):
 @login_required
 def new_label_payment(user_unique_id: str):
     labels = db.session.scalars(
-        m.Label.select().where(m.Label.status == m.LabelStatus.cart)
+        m.Label.select()
+        .where(m.Label.user_id == current_user.id)
+        .where(m.Label.status == m.LabelStatus.cart)
     ).all()
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
@@ -524,3 +526,40 @@ def new_type():
         log(log.INFO, "Type already exists: [%s]", new_type)
 
     return redirect(next_url)
+
+
+@dealer_blueprint.route("/delete_from_cart/<label_unique_id>")
+@login_required
+def delete_from_cart(label_unique_id):
+    label = db.session.scalar(
+        sa.select(m.Label).where(m.Label.unique_id == label_unique_id)
+    )
+
+    if not label:
+        log(log.ERROR, "Failed to find label : [%s]", label_unique_id)
+        flash("Failed to find label", "danger")
+        return redirect(
+            url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
+        )
+
+    if label.status != m.LabelStatus.cart:
+        log(log.ERROR, "Label is not in cart : [%s]", label_unique_id)
+        flash("Label is not in cart", "danger")
+        return redirect(
+            url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
+        )
+
+    try:
+        db.session.delete(label)
+        db.session.commit()
+        log(log.INFO, "Deleted label : [%s]", label_unique_id)
+    except Exception as e:
+        log(log.ERROR, "Failed to delete label: [%s]", e)
+        flash("Failed to delete label", "danger")
+        return redirect(
+            url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
+        )
+
+    return redirect(
+        url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
+    )

@@ -353,7 +353,6 @@ if (selectType) {
   selectType.addEventListener('change', () => {
     const typeSelected = selectType.value;
     if (typeSelected === 'add') {
-      console.log('add new type');
       createNewType();
     }
   });
