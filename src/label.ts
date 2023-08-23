@@ -24,6 +24,8 @@ const $modalElement: HTMLElement = document.querySelector('#labelDetailsModal');
 const modalDeactivateLabel: HTMLElement = document.querySelector(
   '#labelDeactivateModal',
 );
+const addNewMakeModal: HTMLElement = document.querySelector('#addNewMakeModal');
+console.log(addNewMakeModal);
 
 const modalOptions: ModalOptions = {
   placement: 'bottom-right',
@@ -114,12 +116,23 @@ function deactivateLabel(label: ILabel) {
   labelDeactivateModalWindow.show();
 }
 
+function createNewMake() {
+  const nextUrl: HTMLInputElement =
+    document.querySelector('#add-make-next-url');
+  nextUrl.value = window.location.href;
+  addNewMakeModalWindow.show();
+}
+
 const labelDetailsModalWindow: ModalInterface = new Modal(
   $modalElement,
   modalOptions,
 );
 const labelDeactivateModalWindow: ModalInterface = new Modal(
   modalDeactivateLabel,
+  modalOptions,
+);
+const addNewMakeModalWindow: ModalInterface = new Modal(
+  addNewMakeModal,
   modalOptions,
 );
 
@@ -221,29 +234,38 @@ makeSelectMakeFields.forEach(makeSelectMakeField =>
     ) as HTMLSelectElement;
 
     const stringSelected = makeSelectMakeField.value as string;
-    let models: Array<string> = [];
-    fetch('/labels/get_models', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({makeSelected: stringSelected}),
-      // body: stringSelected,
-    })
-      .then(response => response.json())
-      .then(data => {
-        models.push(...data.models);
-        modelSelect.innerHTML = '';
-        models.forEach(option => {
-          const optionElement = document.createElement('option');
-          optionElement.value = option;
-          optionElement.textContent = option;
-          modelSelect.appendChild(optionElement);
-        });
+    if (stringSelected === 'add') {
+      console.log(stringSelected);
+      createNewMake();
+    } else {
+      let models: Array<string> = [];
+      fetch('/labels/get_models', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({makeSelected: stringSelected}),
+        // body: stringSelected,
       })
-      .catch(error => {
-        console.error('Error sending data to Flask:', error);
-      });
+        .then(response => response.json())
+        .then(data => {
+          models.push(...data.models);
+          modelSelect.innerHTML = '';
+          models.forEach(option => {
+            let optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            modelSelect.appendChild(optionElement);
+          });
+          const optionElement = document.createElement('option');
+          optionElement.value = 'add';
+          optionElement.textContent = 'Add New Model';
+          modelSelect.appendChild(optionElement);
+        })
+        .catch(error => {
+          console.error('Error sending data to Flask:', error);
+        });
+    }
   }),
 );
 

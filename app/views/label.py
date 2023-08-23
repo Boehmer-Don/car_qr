@@ -442,3 +442,19 @@ def download():
         url=app.config.get("LANDING_URL"),
         logo_link=logo_link,
     )
+
+
+@dealer_blueprint.route("/new_make", methods=["GET", "POST"])
+@login_required
+def new_make():
+    new_make = request.form.get("new_make_name")
+    next_url = request.form.get("next_url")
+
+    make = db.session.scalar(sa.select(m.CarMake).where(m.CarMake.name == new_make))
+    if not make:
+        m.CarMake(name=new_make).save()
+        log(log.INFO, "Created new make: [%s]", new_make)
+    else:
+        log(log.INFO, "Make already exists: [%s]", new_make)
+
+    return redirect(next_url)
