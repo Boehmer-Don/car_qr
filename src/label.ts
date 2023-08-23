@@ -267,13 +267,18 @@ makeSelectMakeFields.forEach(makeSelectMakeField =>
         .then(data => {
           models.push(...data.models);
           modelSelect.innerHTML = '';
+          let optionElement = document.createElement('option');
+          optionElement.value = '';
+          optionElement.textContent = 'Select a model';
+          modelSelect.appendChild(optionElement);
           models.forEach(option => {
             let optionElement = document.createElement('option');
             optionElement.value = option;
             optionElement.textContent = option;
             modelSelect.appendChild(optionElement);
           });
-          const optionElement = document.createElement('option');
+
+          optionElement = document.createElement('option');
           optionElement.value = 'add';
           optionElement.textContent = 'Add New Model';
           modelSelect.appendChild(optionElement);
