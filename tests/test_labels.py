@@ -52,7 +52,7 @@ def test_views_counter(populate: FlaskClient):
     )
     assert label.views > views_before
 
-    current_user.gift_enabled = True
+    current_user.gift = "Some Cool Gift"
     current_user.save()
     response = populate.get(f"l/{label.sticker_id}")
     assert response
