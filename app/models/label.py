@@ -44,6 +44,9 @@ class Label(db.Model, ModelMixin):
     trim: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     type_of_vehicle: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     price: orm.Mapped[int] = orm.mapped_column(sa.Integer, default=0)
+    price_sold: orm.Mapped[int] = orm.mapped_column(
+        sa.Integer, default=0, nullable=True
+    )
     date_received: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
         default=datetime.utcnow,

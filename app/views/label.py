@@ -126,6 +126,7 @@ def deactivate_label():
                 )
             )
         label.status = m.LabelStatus.archived
+        label.price_sold = form.price_sold.data
         label.date_deactivated = datetime.utcnow()
         label.save()
         log(log.INFO, "Deactivated label : [%s]", form.unique_id.data)

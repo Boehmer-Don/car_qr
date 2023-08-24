@@ -116,6 +116,8 @@ def add_labels(user_id: int = 9):
             user_id=user_id,
             views=randint(0, 99),
         )
+        if label.date_deactivated:
+            label.price_sold = label.price - randint(1000, 3000)
         db.session.add(label)
     db.session.commit()
 
