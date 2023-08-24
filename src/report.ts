@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
   const filterMake: HTMLSelectElement = document.querySelector('#filter-make');
-  const filterType: HTMLSelectElement =
-    document.querySelector('#type_of_vehicle');
   const filterModel: HTMLSelectElement =
     document.querySelector('#filter-model');
+  const filterType: HTMLSelectElement =
+    document.querySelector('#type_of_vehicle');
+  const filterTrim: HTMLSelectElement = document.querySelector('#trim_filter');
   const applyFiltersButton: HTMLButtonElement = document.querySelector(
     '#apply-filters-button',
   );
@@ -39,6 +40,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   filterType.addEventListener('change', () => {
+    applyFiltersButton.click();
+  });
+  filterTrim.addEventListener('change', () => {
     applyFiltersButton.click();
   });
 
