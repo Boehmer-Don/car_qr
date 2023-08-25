@@ -104,6 +104,28 @@ def webhook():
             )
             user.activated = False
             user.save()
+
+        case "customer.updated":
+            response = event["data"]["object"]
+            user: m.User = db.session.scalar(
+                m.User.select().where(m.User.stripe_customer_id == response.id)
+            )
+            if not user:
+                log(log.ERROR, "User [%s] not found", response.id)
+
+            user.first_name, user.last_name = response["name"].split(" ", 1)
+            user.email = response["email"]
+            user.country = response["address"]["country"]
+            user.city = response["address"]["city"]
+            user.province = response["address"]["state"]
+            user.address_of_dealership = response["address"]["line1"]
+            user.name_of_dealership = response["name"]
+            user.phone = response["phone"]
+            user.postal_code = response["address"]["postal_code"]
+
+            user.save()
+            log(log.INFO, "User [%s] updated ", user)
+
         case "payment_intent.succeeded":
             response = event["data"]["object"]
             user = db.session.scalar(
@@ -149,7 +171,7 @@ def webhook():
             log(log.ERROR, "Unhandled event type %s", event["type"])
             return jsonify(success=False), 404
 
-    log(log.INFO, "payment_intent.succeeded, labels paid: %s", label_unique_ids_list)
+    # log(log.INFO, "payment_intent.succeeded, labels paid: %s", label_unique_ids_list)
     return jsonify(success=True)
 
 
