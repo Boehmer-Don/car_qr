@@ -5,10 +5,201 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing</title>
+
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+    <!-- prettier-ignore -->
+    <script>
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (
+            localStorage.getItem("color-theme") === "dark" ||
+            (!("color-theme" in localStorage) &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    </script>
 </head>
 
 <body>
-    <h1>Landing</h1>
+    <header class="shadow">
+        <div class="flex items-center justify-between">
+            <div class="pl-2 flex flex-row items-center text-gray-700 text-xl font-semibold">
+                <img src="{{url_for('static',filename='img/forbes_motors.jpg')}}" class="h-8 mr-3"
+                    alt="Simple2b Logo" />
+                Car QR Code Labels
+            </div>
+
+            <div class="flex items-center text-gray-300 text-lg">
+                <p class="m-3">Pricing</p>
+                <p class="m-3">Contact</p>
+                <p class="m-3">Login</p>
+                <button class="m-3 px-5 py-3 bg-indigo-700 rounded-lg text-white">Signup</button>
+            </div>
+        </div>
+        <div class="left-header"></div>
+    </header>
+
+    <section class="w-full h-screen flex items-center">
+        <div class="w-full">
+            <p class="text-center text-4xl font-bold text-gray-600">Unlock Your Dealership Potential</p>
+            <p class="w-3/5 mx-auto my-8 text-center text-xl font-bold text-gray-400">QR code labels generate impactful
+                analytics
+                that help
+                inform decisions so your buying experience stands
+                out
+                from the competitions.</p>
+
+            <div class="flex justify-center">
+                <button type="submit"
+                    class="mt-8 mr-3 px-5 py-3 text-base font-bold text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800"
+                    id="apply-filters-button">
+                    Get Started
+                </button>
+                <button type="submit"
+                    class="mt-8 mr-3 px-5 py-3 text-base font-bold text-center text-black bg-gray-300 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto"
+                    id="apply-filters-button">
+                    Learn More
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="h-screen flex items-center">
+        <div class="w-full flex">
+            <div class="w-1/2 ml-12 flex flex-col items-center justify-center rounded-lg shadow">
+                <img src="{{url_for('static',filename='img/forbes_motors.jpg')}}" class="full" alt="Simple2b Logo" />
+                <div class="flex pt-2 pb-5 font-bold">
+                    XY00001
+                </div>
+            </div>
+
+            <div class="pl-12 pr-5">
+                <p class="text-indigo-500 text-2xl font-medium">What is it?</p>
+                <p class="my-5 text-gray-700 text-5xl font-bold">Dynamic QR Labels</p>
+                <p class="text-gray-300 text-xl font-medium">Dynamic QR codes can be scanned using your mobile device to
+                    send users on to a specific web page,
+                    just
+                    like any other QR code. What makes them "dynamic" is that the URL encoded in them redirects to a
+                    second
+                    URL that can be changed on demand, even after a code is printed.</p>
+                <div class="mt-8 flex">
+                    <div class="mr-5 flex text-lg text-red-500 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
+                        </svg>
+
+                        <p class="ml-3">Heat Resistant</p>
+                    </div>
+
+                    <div class="flex mr-5 text-lg text-indigo-500 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
+                        </svg>
+                        <p class="ml-3">Cold Resistant</p>
+                    </div>
+
+                    <div class="flex text-lg text-green-300 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
+                        </svg>
+                        <p class="ml-3">Easy to Remove</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="h-screen flex items-center">
+        <div class="w-full">
+            <p class="text-center text-5xl text-gray-700 font-bold">How It Works</p>
+
+            <div class="mt-12 flex">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
+                        style="user-select: none; width: 120px; height: 100%; display: inline-block; fill: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); color: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); flex-shrink: 0;">
+                        <g color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
+                            weight="thin">
+                            <path
+                                d="M216,44H40A12,12,0,0,0,28,56V200a12,12,0,0,0,12,12H216a12,12,0,0,0,12-12V56A12,12,0,0,0,216,44Zm4,156a4,4,0,0,1-4,4H40a4,4,0,0,1-4-4V56a4,4,0,0,1,4-4H216a4,4,0,0,1,4,4ZM76,84a8,8,0,1,1-8-8A8,8,0,0,1,76,84Zm40,0a8,8,0,1,1-8-8A8,8,0,0,1,116,84Z">
+                            </path>
+                        </g>
+                    </svg>
+                    <p>Sign Up</p>
+                    <p>Set up your account. It will only take a few minutes of your time.</p>
+                </div>
+
+                <div class="flex flex-col justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
+                        color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
+                        style="user-select: none; width: 120px; height: 100%; display: inline-block; fill: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); color: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); flex-shrink: 0;">
+                        <g color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
+                            weight="thin">
+                            <path
+                                d="M224,52H32A12,12,0,0,0,20,64V192a12,12,0,0,0,12,12H224a12,12,0,0,0,12-12V64A12,12,0,0,0,224,52ZM32,60H224a4,4,0,0,1,4,4V92H28V64A4,4,0,0,1,32,60ZM224,196H32a4,4,0,0,1-4-4V100H228v92A4,4,0,0,1,224,196Zm-20-28a4,4,0,0,1-4,4H168a4,4,0,0,1,0-8h32A4,4,0,0,1,204,168Zm-64,0a4,4,0,0,1-4,4H120a4,4,0,0,1,0-8h16A4,4,0,0,1,140,168Z">
+                            </path>
+                        </g>
+                    </svg>
+
+                    <p>Select a Plan</p>
+                    <p>Choose a plan that best suits your needs depending on the size of your dealership.</p>
+                </div>
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
+                        color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
+                        style="user-select: none; width: 120px; height: 100%; display: inline-block; fill: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); color: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); flex-shrink: 0;">
+                        <g color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
+                            weight="thin">
+                            <path
+                                d="M221.76,69.66l-88-48.18a12,12,0,0,0-11.52,0l-88,48.18A12,12,0,0,0,28,80.18v95.64a12,12,0,0,0,6.24,10.52l88,48.18a11.95,11.95,0,0,0,11.52,0l88-48.18A12,12,0,0,0,228,175.82V80.18A12,12,0,0,0,221.76,69.66ZM126.08,28.5a3.94,3.94,0,0,1,3.84,0L216.67,76,178.5,96.89a4,4,0,0,0-.58-.4l-88-48.18Zm1.92,96L39.33,76,81.56,52.87l88.67,48.54Zm-89.92,54.8a4,4,0,0,1-2.08-3.5V83.29l88,48.16v94.91Zm179.84,0h0l-85.92,47V131.45l40-21.89V152a4,4,0,0,0,8,0V105.18l40-21.89v92.53A4,4,0,0,1,217.92,179.32Z">
+                            </path>
+                        </g>
+                    </svg>
+                    <p>Delivery</p>
+                    <p>Upon confirmation of your account, your QR labels will be shipped right away.</p>
+                </div>
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
+                        color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
+                        style="user-select: none; width: 120px; height: 100%; display: inline-block; fill: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); color: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); flex-shrink: 0;">
+                        <g color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
+                            weight="thin">
+                            <path
+                                d="M104,44H56A12,12,0,0,0,44,56v48a12,12,0,0,0,12,12h48a12,12,0,0,0,12-12V56A12,12,0,0,0,104,44Zm4,60a4,4,0,0,1-4,4H56a4,4,0,0,1-4-4V56a4,4,0,0,1,4-4h48a4,4,0,0,1,4,4Zm-4,36H56a12,12,0,0,0-12,12v48a12,12,0,0,0,12,12h48a12,12,0,0,0,12-12V152A12,12,0,0,0,104,140Zm4,60a4,4,0,0,1-4,4H56a4,4,0,0,1-4-4V152a4,4,0,0,1,4-4h48a4,4,0,0,1,4,4ZM200,44H152a12,12,0,0,0-12,12v48a12,12,0,0,0,12,12h48a12,12,0,0,0,12-12V56A12,12,0,0,0,200,44Zm4,60a4,4,0,0,1-4,4H152a4,4,0,0,1-4-4V56a4,4,0,0,1,4-4h48a4,4,0,0,1,4,4Zm-64,72V144a4,4,0,0,1,8,0v32a4,4,0,0,1-8,0Zm72-16a4,4,0,0,1-4,4H180v44a4,4,0,0,1-4,4H144a4,4,0,0,1,0-8h28V144a4,4,0,0,1,8,0v12h28A4,4,0,0,1,212,160Zm0,32v16a4,4,0,0,1-8,0V192a4,4,0,0,1,8,0Z">
+                            </path>
+                        </g>
+                    </svg>
+                    <p>Activate & Attach</p>
+                    <p>Activate the dynamic QR code and attach the label to the vehicle's interior window. Now your
+                        customers can scan!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Resources</p>
+        <p>Privacy Policy</p>
+        <p>Terms & Conditions</p>
+
+        <hr>
+
+        <p>Copyright</p>
+    </footer>
 </body>
 
 </html>

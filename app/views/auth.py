@@ -125,6 +125,7 @@ def activate(reset_password_uid: str):
         user.city = form.city.data
         user.postal_code = form.postal_code.data
         user.phone = form.phone.data
+        user.gift = form.gift.data
         user.save()
 
         log(log.INFO, "Registration contact info saved. User: [%s]", user)
