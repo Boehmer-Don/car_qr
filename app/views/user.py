@@ -15,7 +15,7 @@ from flask_mail import Message
 import sqlalchemy as sa
 
 from flask import current_app as app
-from app.controllers import create_pagination
+from app.controllers import create_pagination, update_stripe_customer
 from app import models as m, db, mail
 from app import forms as f
 from app.logger import log
@@ -212,6 +212,7 @@ def account(user_unique_id: str):
         user.phone = form.phone.data
         user.gift = form.gift.data
         user.save()
+        update_stripe_customer(user)
         log(log.INFO, "User data updated. User: [%s]", user)
         flash("Your account has been successfully updated", "success")
         return redirect(url_for("user.account", user_unique_id=user_unique_id))

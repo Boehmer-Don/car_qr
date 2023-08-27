@@ -44,6 +44,47 @@ def create_stripe_customer(user: m.User):
     return customer
 
 
+def update_stripe_customer(user: m.User):
+    """Create a Stripe customer for the user."""
+    customer = None
+    log(log.INFO, "update_stripe_customer for user: %s", user)
+    try:
+        customer = stripe.Customer.retrieve(user.stripe_customer_id)
+        customer.update(
+            update_dict={
+                "description": f"Car QR Code Dealer {user.email}",
+                "email": user.email,
+                "name": f"{user.first_name} {user.last_name}",
+                "phone": user.phone,
+                "address": {
+                    "city": user.city,
+                    "country": user.country,
+                    "line1": user.address_of_dealership,
+                    "postal_code": user.postal_code,
+                },
+                "shipping": {
+                    "address": {
+                        "city": user.city,
+                        "country": user.country,
+                        "line1": user.address_of_dealership,
+                        "postal_code": user.postal_code,
+                    },
+                    "name": f"{user.first_name} {user.last_name}",
+                    "phone": user.phone,
+                },
+            }
+        )
+        customer.save()
+
+    except InvalidRequestError as e:
+        log(log.ERROR, "update_stripe_customer: %s", e)
+        flash("Error while updating a stripe customer", "danger")
+
+    log(log.INFO, "Updated stripe customer: %s", customer)
+    flash("Stripe customer updated successfully", "success")
+    return customer
+
+
 def get_stripe_products():
     """Get stripe prices and save to DB."""
     prices = stripe.Price.list()
