@@ -1191,6 +1191,11 @@ input:checked + .toggle-bg {
   margin-bottom: 2rem;
 }
 
+.mx-4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
 .-mb-px {
   margin-bottom: -1px;
 }
@@ -1322,6 +1327,10 @@ input:checked + .toggle-bg {
 
 .mt-8 {
   margin-top: 2rem;
+}
+
+.ml-4 {
+  margin-left: 1rem;
 }
 
 .block {
