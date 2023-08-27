@@ -122,3 +122,12 @@ contactButton.addEventListener('click', event => {
     behavior: 'smooth',
   });
 });
+
+const firstArrowButton: Element = document.querySelector('#first_arrow');
+console.log('firstArrowButton', firstArrowButton);
+firstArrowButton.addEventListener('click', event => {
+  event.preventDefault();
+  document.querySelector('#second_section').scrollIntoView({
+    behavior: 'smooth',
+  });
+});

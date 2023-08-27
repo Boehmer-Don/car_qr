@@ -144,3 +144,25 @@
     position: absolute;
     bottom: 60px;
 }
+
+.outer-div {
+    width: 50px;
+    height: 50px;
+    border: 1px solid rgb(229 237 255);
+    border-radius: 50%;
+    background-color: rgb(240 245 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+.inner-div {
+    width: 35px;
+    height: 35px;
+    border: 1px solid rgb(180 198 252);
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
