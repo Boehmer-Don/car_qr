@@ -145,6 +145,16 @@
     bottom: 60px;
 }
 
+.extra-outer-div {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .outer-div {
     width: 50px;
     height: 50px;
@@ -154,7 +164,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-  }
+}
 
 .inner-div {
     width: 35px;

@@ -106,7 +106,6 @@ if (cleanPhone) {
 }
 
 const pricingButton: Element = document.querySelector('#pricing_button');
-console.log('pricingButton', pricingButton);
 pricingButton.addEventListener('click', event => {
   event.preventDefault();
   document.querySelector('#pricing').scrollIntoView({
@@ -115,7 +114,6 @@ pricingButton.addEventListener('click', event => {
 });
 
 const contactButton: Element = document.querySelector('#contact_button');
-console.log('contactButton', contactButton);
 contactButton.addEventListener('click', event => {
   event.preventDefault();
   document.querySelector('#contacts').scrollIntoView({
@@ -124,10 +122,20 @@ contactButton.addEventListener('click', event => {
 });
 
 const firstArrowButton: Element = document.querySelector('#first_arrow');
-console.log('firstArrowButton', firstArrowButton);
 firstArrowButton.addEventListener('click', event => {
   event.preventDefault();
   document.querySelector('#second_section').scrollIntoView({
     behavior: 'smooth',
+  });
+});
+
+const secondArrowButtons = document.querySelectorAll('.second_arrow');
+
+secondArrowButtons.forEach(secondArrowButton => {
+  secondArrowButton.addEventListener('click', event => {
+    event.preventDefault();
+    document.querySelector('#fourth_section').scrollIntoView({
+      behavior: 'smooth',
+    });
   });
 });

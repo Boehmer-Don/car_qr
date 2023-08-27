@@ -5,3 +5,4 @@ declare const cleanPhone: HTMLInputElement;
 declare const pricingButton: Element;
 declare const contactButton: Element;
 declare const firstArrowButton: Element;
+declare const secondArrowButtons: NodeListOf<Element>;
