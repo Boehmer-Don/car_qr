@@ -104,3 +104,21 @@ if (cleanPhone) {
     }
   });
 }
+
+const pricingButton: Element = document.querySelector('#pricing_button');
+console.log('pricingButton', pricingButton);
+pricingButton.addEventListener('click', event => {
+  event.preventDefault();
+  document.querySelector('#pricing').scrollIntoView({
+    behavior: 'smooth',
+  });
+});
+
+const contactButton: Element = document.querySelector('#contact_button');
+console.log('contactButton', contactButton);
+contactButton.addEventListener('click', event => {
+  event.preventDefault();
+  document.querySelector('#contacts').scrollIntoView({
+    behavior: 'smooth',
+  });
+});
