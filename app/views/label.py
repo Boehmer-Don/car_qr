@@ -497,6 +497,59 @@ def new_model():
     return redirect(next_url)
 
 
+@dealer_blueprint.route("/add_new_model", methods=["GET", "POST"])
+@login_required
+def add_new_model():
+    new_make = request.form.get("new_make_name")
+    new_model = request.form.get("new_model_name")
+    trim_name = request.form.get("new_trim_option")
+    type_name = request.form.get("new_type_name")
+    next_url = request.form.get("add-create-model-next-url")
+
+    make_created = False
+    make = db.session.scalar(sa.select(m.CarMake).where(m.CarMake.name == new_make))
+    if not make:
+        make = m.CarMake(
+            name=new_make,
+        )
+        make.save()
+        make_created = True
+        log(log.INFO, "Created new make: [%s]", new_make)
+    else:
+        log(log.INFO, "Make already exists: [%s]", new_make)
+
+    model = db.session.scalar(sa.select(m.CarModel).where(m.CarModel.name == new_model))
+    if not model:
+        m.CarModel(
+            name=new_model,
+            make_id=make.id,
+        ).save()
+        log(log.INFO, "Created new model: [%s]", new_model)
+    else:
+        log(log.INFO, "Model already exists: [%s]", new_model)
+
+    trim = db.session.scalar(sa.select(m.CarTrim).where(m.CarTrim.name == trim_name))
+    if not trim:
+        m.CarTrim(name=trim_name).save()
+        log(log.INFO, "Created new trim: [%s]", trim_name)
+    else:
+        log(log.INFO, "Trim already exists: [%s]", trim_name)
+
+    type = db.session.scalar(sa.select(m.CarType).where(m.CarType.name == type_name))
+    if not type:
+        m.CarType(name=type_name).save()
+        log(log.INFO, "Created new type: [%s]", type_name)
+    else:
+        log(log.INFO, "Type already exists: [%s]", type_name)
+
+    if all([not make_created, model, trim, type]):
+        flash("Make model already exist", "danger")
+    else:
+        flash("Make model added successfully", "success")
+
+    return redirect(next_url)
+
+
 @dealer_blueprint.route("/new_trim", methods=["GET", "POST"])
 @login_required
 def new_trim():

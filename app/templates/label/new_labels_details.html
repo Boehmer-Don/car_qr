@@ -10,14 +10,18 @@
         Register new labels
     </h1>
     <div class="text-xs lg:text-sm md:px-5 md:pb-5">
-        <div class="w-full p-3 md:pl-0">
+        <div class="w-full p-3 md:pl-0 flex justify-between">
             <!-- <h3 class="mt-6 md:mt-0 text-lg font-bold">New Labels</h3> -->
-
             <p class="my-5">
                 This is a list of all new labels according to the amount you selected.
                 <br>
                 Click on the label name to see more details.
             </p>
+            
+            <button type="button" id="add-make-model"
+                    class="ml-2 max-h-12 align-middle my-4 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-0 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                    Create new model
+            </button>
         </div>
 
         <div class="w-full bg-gray-100 dark:bg-gray-800">
@@ -217,6 +221,7 @@
 {% include 'label/add_model.html' %}
 {% include 'label/add_trim.html' %}
 {% include 'label/add_type.html' %}
+{% include 'label/add_make_model.html' %}
 <!-- prettier-ignore -->
 {% endblock %}
 <!-- prettier-ignore -->

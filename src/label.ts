@@ -30,6 +30,7 @@ const addNewModelModal: HTMLElement =
 const addNewTrimModal: HTMLElement = document.querySelector('#addNewTrimModal');
 const addNewTypeModal: HTMLElement = document.querySelector('#addNewTypeModal');
 
+
 const modalOptions: ModalOptions = {
   placement: 'bottom-right',
   backdrop: 'dynamic',
@@ -380,5 +381,37 @@ if (decreaseStickersButton && increaseStickersButton) {
     let quantity = parseInt(stickersQuantityInput.value);
     quantity += 1;
     stickersQuantityInput.value = quantity.toString();
+  });
+}
+
+const addMakeModelModal: HTMLElement = document.querySelector('#addMakeModelModal');
+
+const addMakeModelModalWindow: ModalInterface = new Modal(
+  addMakeModelModal,
+  modalOptions,
+);
+
+function createAddMakeModel() {
+  const nextUrl: HTMLInputElement = document.querySelector(
+    '#add-create-model-next-url',
+  );
+  nextUrl.value = window.location.href;
+  addMakeModelModalWindow.show();
+}
+
+const addMakeModel: HTMLButtonElement = document.querySelector(
+  '#add-make-model',);
+
+if (addMakeModel) {
+  addMakeModel.addEventListener('click', () => {
+    createAddMakeModel();
+  });
+}
+
+const closeAddMakeModal = document.querySelector('#modalAddModelClose');
+console.log(closeAddMakeModal);
+if (closeAddMakeModal) {
+  closeAddMakeModal.addEventListener('click', () => {
+    addMakeModelModalWindow.hide();
   });
 }
