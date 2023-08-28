@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing</title>
 
+    <link rel="stylesheet" href="https://anijs.github.io/lib/anicollection/anicollection.css">
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
     <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+
 
     <!-- prettier-ignore -->
     <script>
@@ -45,7 +47,8 @@
 
     <section class="relative w-full md:h-screen flex items-center">
         <div class="w-full">
-            <p class="text-center text-4xl font-bold text-gray-600">Unlock Your Dealership Potential</p>
+            <p class="bounceInUp animated text-center text-4xl font-bold text-gray-600">
+                Unlock Your Dealership Potential</p>
             <p class="w-3/5 mx-auto my-8 text-center text-xl font-bold text-gray-400">QR code labels generate impactful
                 analytics
                 that help
@@ -85,7 +88,8 @@
 
     <section id="second_section" class="md:h-screen flex items-center">
         <div class="w-full md:flex">
-            <div class="w-1/2 ml-12 flex flex-col items-center justify-center rounded-lg shadow">
+            <div data-anijs="if: scroll, on: window, do: flipInY animated"
+                class="w-1/2 ml-12 flex flex-col items-center justify-center rounded-lg shadow">
                 <img src="{{url_for('static',filename='img/forbes_motors.jpg')}}" class="full" alt="Simple2b Logo" />
                 <div class="flex pt-2 pb-5 font-bold">
                     XY00001
@@ -593,6 +597,8 @@
     </footer>
 </body>
 
+<script src="https://anijs.github.io/lib/anijs/helpers/dom/anijs-helper-dom-min.js"></script>
+<script src="https://anijs.github.io/lib/anijs/anijs-min.js"></script>
 <script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
 
 </html>
