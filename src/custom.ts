@@ -139,30 +139,3 @@ secondArrowButtons.forEach(secondArrowButton => {
     });
   });
 });
-
-function handleIntersection(
-  entries: IntersectionObserverEntry[],
-  observer: IntersectionObserver,
-) {
-  console.log('handleIntersection');
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('flipInY');
-      entry.target.classList.add('animated');
-      observer.unobserve(entry.target); // Stop observing after visibility is detected
-    }
-  });
-}
-
-// Set up the Intersection Observer
-const options: IntersectionObserverInit = {
-  root: null, // Use the viewport as the root
-  rootMargin: '0px', // No margin
-  threshold: 0.5, // 50% of the element visible triggers the callback
-};
-
-const observer = new IntersectionObserver(handleIntersection, options);
-
-// Start observing the 'my-div' elements
-const divsToObserve = document.querySelector('.qr-code');
-observer.observe(divsToObserve);
