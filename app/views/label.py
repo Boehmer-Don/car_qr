@@ -382,7 +382,7 @@ def download():
     if user:
         stickers = db.session.scalars(
             m.Sticker.select()
-            .where(m.Sticker.pending == True)
+            .where(m.Sticker.pending.is_(True))
             .where(m.Sticker.user == user)
         ).all()
         if user.logo:
@@ -390,7 +390,7 @@ def download():
 
     else:
         stickers = db.session.scalars(
-            m.Sticker.select().where(m.Sticker.pending == True)
+            m.Sticker.select().where(m.Sticker.pending.is_(True))
         ).all()
 
     if request.form.get("logo-download"):

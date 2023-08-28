@@ -49,8 +49,7 @@ def landing():
         msg = Message(
             subject="New Customer",
             sender=app.config["MAIL_DEFAULT_SENDER"],
-            # recipients=[app.config.get("ADMIN_EMAIL")],
-            recipients=["denysburimov@gmail.com"],
+            recipients=[app.config.get("ADMIN_EMAIL")],
         )
 
         msg.html = render_template(
