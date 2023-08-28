@@ -63,6 +63,53 @@ def test_views_counter(populate: FlaskClient):
     )
 
 
+def test_label_add_new(populate: FlaskClient):
+    TEST_LABEL_MAKE = "Test MAKE1"
+    TEST_LABEL_MODEL = "Test Model1"
+    TEST_LABEL_TYPE = "Test Type1"
+    TEST_LABEL_TRIM = "Test Trim1"
+    form = {
+        "new_make_name": TEST_LABEL_MAKE,
+        "new_model_name": TEST_LABEL_MODEL,
+        "new_type_name": TEST_LABEL_TYPE,
+        "new_trim_option": TEST_LABEL_TRIM,
+    }
+    login(populate)
+    response = populate.post(
+        f"labels/add_new_model",
+        data=form,
+    )
+    assert response
+    assert response.status_code == 302
+
+    assert db.session.scalar(
+        m.CarMake.select().where(m.CarMake.name == TEST_LABEL_MAKE)
+    )
+    assert db.session.scalar(
+        m.CarType.select().where(m.CarType.name == TEST_LABEL_TYPE)
+    )
+
+    form = {
+        "new_make_name": TEST_LABEL_MAKE,
+        "new_model_name": TEST_LABEL_MODEL,
+        "new_type_name": TEST_LABEL_TYPE,
+        "new_trim_option": TEST_LABEL_TRIM,
+    }
+    login(populate)
+    response = populate.post(
+        f"labels/add_new_model",
+        data=form,
+    )
+    assert response
+    assert response.status_code == 302
+    # assert there is flash message
+    response = populate.get(
+        f"labels",
+        data=form,
+    )
+    assert "Make model already exist" in response.text
+
+
 def test_label_edit(populate: FlaskClient):
     TEST_LABEL_NAME = "Test Label"
     TEST_LABEL_MODEL = "Test Model"
