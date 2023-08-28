@@ -43,7 +43,7 @@
         <div class="left-header"></div>
     </header>
 
-    <section class="relative w-full h-screen flex items-center">
+    <section class="relative w-full md:h-screen flex items-center">
         <div class="w-full">
             <p class="text-center text-4xl font-bold text-gray-600">Unlock Your Dealership Potential</p>
             <p class="w-3/5 mx-auto my-8 text-center text-xl font-bold text-gray-400">QR code labels generate impactful
@@ -83,8 +83,8 @@
         </div>
     </section>
 
-    <section id="second_section" class="h-screen flex items-center">
-        <div class="w-full flex">
+    <section id="second_section" class="md:h-screen flex items-center">
+        <div class="w-full md:flex">
             <div class="w-1/2 ml-12 flex flex-col items-center justify-center rounded-lg shadow">
                 <img src="{{url_for('static',filename='img/forbes_motors.jpg')}}" class="full" alt="Simple2b Logo" />
                 <div class="flex pt-2 pb-5 font-bold">
@@ -146,30 +146,30 @@
         </div>
     </section>
 
-    <section class="h-screen px-12 flex items-center relative">
-        <div class="second_arrow w-full absolute top-4 flex justify-center cursor-pointer">
-            <div class="extra-outer-div">
-                <div class="outer-div">
-                    <div class="inner-div">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
-                            color="rgba(102, 102, 255, 0.55)"
-                            style="user-select: none; width: 20px; height: 100%; display: inline-block; fill: rgba(102, 102, 255, 0.55); color: rgba(102, 102, 255, 0.55); flex-shrink: 0;">
-                            <g color="rgba(102, 102, 255, 0.55)" weight="light">
-                                <path
-                                    d="M204.24,148.24l-72,72a6,6,0,0,1-8.48,0l-72-72a6,6,0,0,1,8.48-8.48L122,201.51V40a6,6,0,0,1,12,0V201.51l61.76-61.75a6,6,0,0,1,8.48,8.48Z">
-                                </path>
-                            </g>
-                        </svg>
+    <section class="md:h-screen px-12 md:flex items-center">
+        <div class="w-full py-12 bg-indigo-50 rounded-3xl relative">
+            <div class="hidden second_arrow w-full absolute -top-10 md:flex justify-center cursor-pointer">
+                <div class="extra-outer-div">
+                    <div class="outer-div">
+                        <div class="inner-div">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
+                                color="rgba(102, 102, 255, 0.55)"
+                                style="user-select: none; width: 20px; height: 100%; display: inline-block; fill: rgba(102, 102, 255, 0.55); color: rgba(102, 102, 255, 0.55); flex-shrink: 0;">
+                                <g color="rgba(102, 102, 255, 0.55)" weight="light">
+                                    <path
+                                        d="M204.24,148.24l-72,72a6,6,0,0,1-8.48,0l-72-72a6,6,0,0,1,8.48-8.48L122,201.51V40a6,6,0,0,1,12,0V201.51l61.76-61.75a6,6,0,0,1,8.48,8.48Z">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="w-full py-12 bg-indigo-50 rounded-3xl">
             <p class="mt-12 text-center text-5xl text-gray-700 font-bold">How It Works</p>
 
-            <div class="p-8 flex">
-                <div class="p-3 w-1/4 ">
+            <div class="p-8 md:flex">
+                <div class="p-3 md:w-1/4 ">
                     <div class="w-full flex justify-center mb-10">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
                             style="user-select: none; width: 72px; display: inline-block; fill: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); color: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); flex-shrink: 0;">
@@ -190,7 +190,7 @@
                         time.</p>
                 </div>
 
-                <div class="w-1/4 p-3">
+                <div class="md:w-1/4 p-3">
                     <div class="w-full flex justify-center mb-10">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
                             color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
@@ -214,7 +214,7 @@
                         dealership.</p>
                 </div>
 
-                <div class="w-1/4 p-3">
+                <div class="md:w-1/4 p-3">
                     <div class="w-full flex justify-center mb-10">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
                             color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
@@ -236,7 +236,7 @@
                         shipped right away.</p>
                 </div>
 
-                <div class="w-1/4 p-3">
+                <div class="md:w-1/4 p-3">
                     <div class="w-full flex justify-center mb-10">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
                             color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
@@ -259,21 +259,21 @@
                         customers can scan!</p>
                 </div>
             </div>
-        </div>
 
-        <div class="second_arrow w-full absolute bottom-4 flex justify-center cursor-pointer">
-            <div class="extra-outer-div">
-                <div class="outer-div">
-                    <div class="inner-div">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
-                            color="rgba(102, 102, 255, 0.55)"
-                            style="user-select: none; width: 20px; height: 100%; display: inline-block; fill: rgba(102, 102, 255, 0.55); color: rgba(102, 102, 255, 0.55); flex-shrink: 0;">
-                            <g color="rgba(102, 102, 255, 0.55)" weight="light">
-                                <path
-                                    d="M204.24,148.24l-72,72a6,6,0,0,1-8.48,0l-72-72a6,6,0,0,1,8.48-8.48L122,201.51V40a6,6,0,0,1,12,0V201.51l61.76-61.75a6,6,0,0,1,8.48,8.48Z">
-                                </path>
-                            </g>
-                        </svg>
+            <div class="hidden second_arrow w-full absolute -bottom-12 md:flex justify-center cursor-pointer">
+                <div class="extra-outer-div">
+                    <div class="outer-div">
+                        <div class="inner-div">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
+                                color="rgba(102, 102, 255, 0.55)"
+                                style="user-select: none; width: 20px; height: 100%; display: inline-block; fill: rgba(102, 102, 255, 0.55); color: rgba(102, 102, 255, 0.55); flex-shrink: 0;">
+                                <g color="rgba(102, 102, 255, 0.55)" weight="light">
+                                    <path
+                                        d="M204.24,148.24l-72,72a6,6,0,0,1-8.48,0l-72-72a6,6,0,0,1,8.48-8.48L122,201.51V40a6,6,0,0,1,12,0V201.51l61.76-61.75a6,6,0,0,1,8.48,8.48Z">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -544,7 +544,7 @@
             </div>
 
             <div class="flex justify-center">
-                <form action="#" method="post" class="w-1/2">
+                <form action="#" method="post" class="w-10/12 md:w-1/2">
                     <div class="doubled_inputs mt-3">
                         <div class="short_input_container short_input_container_left">
                             <input name="name"
