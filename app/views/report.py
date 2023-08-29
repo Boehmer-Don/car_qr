@@ -1,6 +1,7 @@
 # flake8: noqa F401
 import io
 import csv
+import re
 from datetime import datetime
 from flask import (
     Blueprint,
@@ -78,7 +79,19 @@ def dashboard():
             query = query.where(m.Label.unique_id != label_to_exclude)
             count_query = count_query.where(m.Label.unique_id != label_to_exclude)
 
-    if start_date and end_date:
+    if not start_date and end_date:
+        log(log.INFO, f"Filtering by end_date: {end_date}")
+        end_date = datetime.strptime(end_date, "%m/%d/%Y")
+        query = query.where(sa.func.DATE(m.Label.date_received) <= end_date)
+        count_query = count_query.where(sa.func.DATE(m.Label.date_received) <= end_date)
+    elif start_date and not end_date:
+        log(log.INFO, f"Filtering by start_date: {start_date}")
+        start_date = datetime.strptime(start_date, "%m/%d/%Y")
+        query = query.where(sa.func.DATE(m.Label.date_received) >= start_date)
+        count_query = count_query.where(
+            sa.func.DATE(m.Label.date_received) >= start_date
+        )
+    elif start_date and end_date:
         log(log.INFO, f"Filtering by start_date: {start_date} and end_date: {end_date}")
         start_date = datetime.strptime(start_date, "%m/%d/%Y")
         end_date = datetime.strptime(end_date, "%m/%d/%Y")
@@ -90,8 +103,14 @@ def dashboard():
         count_query = count_query.where(sa.func.DATE(m.Label.date_received) <= end_date)
     elif date_received and date_received != "None":
         log(log.INFO, f"Filtering by date_received: {date_received}")
-        date_received = datetime.strptime(date_received, "%m/%d/%Y").date()
-        query = query.where(sa.func.DATE(m.Label.date_received) == date_received)
+
+        pattern = r"^\d{4}-\d{2}-\d{2}$"
+        if re.match(pattern, date_received):
+            date_received = datetime.strptime(date_received, "%Y-%m-%d").date()
+            query = query.where(sa.func.DATE(m.Label.date_received) == date_received)
+        else:
+            date_received = datetime.strptime(date_received, "%m/%d/%Y").date()
+            query = query.where(sa.func.DATE(m.Label.date_received) == date_received)
 
     if make_filter and make_filter != "All":
         log(log.INFO, f"Filtering by make: {make_filter}")

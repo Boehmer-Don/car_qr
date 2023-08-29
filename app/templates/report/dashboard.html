@@ -22,9 +22,9 @@
         class="w-full mt-2 mb-4 px-3 md:px-0 text-sm flex flex-col md:flex-row justify-around space-y-5 md:space-y-0 font-medium">
         <div class="w-full md:w-1/2 flex justify-between md:justify-around">
           <div class="relative w-28 max-w-sm">
-            <input datepicker type="text" name="start_date"
+            <input datepicker type="text" name="start_date" autocomplete="off"
               class="border-0 text-black placeholder:text-black text-sm rounded-lg focus:ring-blue-500 block w-full p-0 dark:bg-gray-800 dark:placeholder-white dark:text-white dark:focus:ring-blue-500 cursor-pointer"
-              placeholder="{% if start_date %}{{start_date.strftime('%y-%m-%d')}}{% else %}Start Date{% endif %}">
+              placeholder="{% if start_date %}{{start_date.strftime('%y/%m/%d')}}{% else %}Start Date{% endif %}">
             <div class="absolute inset-y-0 right-0 flex items-center pointer-events-none">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
                 stroke="currentColor" class="w-6 h-6">
@@ -35,9 +35,9 @@
           </div>
 
           <div class="relative w-28 max-w-sm">
-            <input datepicker type="text" name="end_date"
+            <input datepicker type="text" name="end_date" autocomplete="off"
               class="border-0 text-black placeholder:text-black text-sm rounded-lg focus:ring-blue-500 block w-full p-0 pl-3 dark:bg-gray-800 dark:placeholder-white dark:text-white dark:focus:ring-blue-500 cursor-pointer"
-              placeholder="{% if end_date %}{{end_date.strftime('%y-%m-%d')}}{% else %}End Date{% endif %}">
+              placeholder="{% if end_date %}{{end_date.strftime('%y/%m/%d')}}{% else %}End Date{% endif %}">
             <div class="absolute inset-y-0 right-0 flex items-center pointer-events-none">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
                 stroke="currentColor" class="w-6 h-6">
@@ -50,9 +50,9 @@
 
         <div class="w-full md:w-1/2 flex justify-between md:justify-around">
           <div class="relative w-36 max-w-sm">
-            <input datepicker type="text" name="date_received" id="date_received"
+            <input datepicker type="text" name="date_received" id="date_received" autocomplete="off"
               class="border-0 text-black placeholder:text-black text-sm rounded-lg focus:ring-blue-500 block w-full p-0 dark:bg-gray-800 dark:placeholder-white dark:text-white dark:focus:ring-blue-500 cursor-pointer"
-              placeholder="{% if date_received %}{{date_received}}{% else %}Date Received{% endif %}">
+              placeholder="{% if date_received %}{{date_received.strftime('%Y/%m/%d')}}{% else %}Date Received{% endif %}">
             <div class="absolute inset-y-0 right-0 flex items-center pointer-events-none">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
                 stroke="currentColor" class="w-6 h-6">
