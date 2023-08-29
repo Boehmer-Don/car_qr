@@ -8,7 +8,7 @@
 <div class="dark:bg-gray-900">
   <section>
     <div class="w-full h-full lg:w-1/2 px-4 mx-auto py-6">
-      <div>
+      <div class="flex justify-center">
         <!-- prettier-ignore -->
         <div class="w-full lg:max-w-xl p-6 md:px-0 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white text-center">
@@ -208,14 +208,15 @@
                 {% endfor %}
               </div>
             </div>
-
-
+            
+            <div class="flex justify-center">
+              <button type="submit"
+                class="w-full mt-4 px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                Save >
+              </button>
+            </div>
         </div>
 
-        <button type="submit"
-          class="w-full mt-4 px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
-          Save >
-        </button>
         </form>
       </div>
     </div>
