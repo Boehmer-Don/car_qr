@@ -38,8 +38,13 @@
             <div class="hidden md:flex items-center text-gray-300 text-lg">
                 <p id="pricing_button" class="m-3 cursor-pointer">Pricing</p>
                 <p id="contact_button" class="m-3 cursor-pointer">Contact</p>
-                <p class="m-3">Login</p>
-                <button class="m-3 px-5 py-3 bg-indigo-700 rounded-lg text-white">Signup</button>
+                <a href="{{ url_for('auth.login') }}">
+                    <p class="m-3">Login</p>
+                </a>
+                <a href="{{ url_for('auth.register') }}" class="flex justify-center">
+                    <button class="m-3 px-5 py-3 bg-indigo-700 rounded-lg text-white">Signup</button>
+                </a>
+
             </div>
 
             <button type="button" id="landing_mobile_menu_button"
