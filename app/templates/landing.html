@@ -35,40 +35,55 @@
                 Car QR Code Labels
             </div>
 
-            <div class="flex items-center text-gray-300 text-lg">
+            <div class="hidden md:flex items-center text-gray-300 text-lg">
                 <p id="pricing_button" class="m-3 cursor-pointer">Pricing</p>
                 <p id="contact_button" class="m-3 cursor-pointer">Contact</p>
                 <p class="m-3">Login</p>
                 <button class="m-3 px-5 py-3 bg-indigo-700 rounded-lg text-white">Signup</button>
             </div>
+
+            <button type="button" id="landing_mobile_menu_button"
+                class="m-5 inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                <span class="sr-only">Open sidebar</span>
+                <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path clip-rule="evenodd" fill-rule="evenodd"
+                        d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
+                    </path>
+                </svg>
+            </button>
         </div>
         <div class="left-header"></div>
     </header>
 
-    <section class="relative w-full md:h-screen flex items-center">
+    <section class="relative w-full md:h-screen my-24 md:my-0 flex items-center">
         <div class="w-full">
             <p class="bounceInUp animated text-center text-4xl font-bold text-gray-600">
                 Unlock Your Dealership Potential</p>
-            <p class="w-3/5 mx-auto my-8 text-center text-xl font-bold text-gray-400">QR code labels generate impactful
-                analytics
-                that help
+            <p class="bounceInUp animated w-11/12 md:w-3/5 mx-auto my-8 text-center text-xl font-bold text-gray-400">
+                QR code labels generate impactful
+                analytics that help
                 inform decisions so your buying experience stands
-                out
-                from the competitions.</p>
+                out from the competitions.
+            </p>
 
-            <div class="flex justify-center">
+            <div class="bounceInUp animated flex justify-center">
+                <a href="{{ url_for('auth.register') }}" class="flex justify-center">
+                    <button type="button"
+                        class="mt-8 mr-3 px-5 py-3 text-base font-bold text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                        Get Started
+                    </button>
+                </a>
+
                 <button type="button"
-                    class="mt-8 mr-3 px-5 py-3 text-base font-bold text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
-                    Get Started
-                </button>
-                <button type="button"
-                    class="mt-8 mr-3 px-5 py-3 text-base font-bold text-center text-black bg-gray-300 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto">
+                    class="second_arrow mt-8 mr-3 px-5 py-3 text-base font-bold text-center text-black bg-gray-300 rounded-lg hover:bg-indigo-800 hover:text-white focus:ring-4 focus:ring-blue-300 sm:w-auto">
                     Learn More
                 </button>
             </div>
 
 
-            <div id="first_arrow" class="w-full absolute bottom-32 flex justify-center cursor-pointer">
+            <div id="first_arrow"
+                class="bounceInUp animated w-full absolute bottom-32 hidden md:flex justify-center cursor-pointer">
                 <div class="outer-div">
                     <div class="inner-div">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
@@ -88,25 +103,29 @@
 
     <section id="second_section" class="md:h-screen flex items-center">
         <div class="w-full md:flex">
-            <div data-anijs="if: scroll, on: window, do: flipInY animated"
-                class="w-1/2 ml-12 flex flex-col items-center justify-center rounded-lg shadow">
-                <img src="{{url_for('static',filename='img/forbes_motors.jpg')}}" class="full" alt="Simple2b Logo" />
-                <div class="flex pt-2 pb-5 font-bold">
-                    XY00001
+            <div class="reveal-element qr-code w-full md:w-1/3 mb-24 flex justify-center">
+                <div>
+                    <img src="{{url_for('static',filename='img/forbes_motors.jpg')}}" class="full"
+                        alt="Simple2b Logo" />
+                    <p class="pt-2 pb-5 text-3xl font-bold text-center">
+                        XY00001
+                    </p>
                 </div>
             </div>
 
-            <div class="pl-12 pr-5">
+            <div class="md:w-2/3 pl-5 md:pl-12 pr-5">
                 <p class="text-indigo-500 text-2xl font-medium">What is it?</p>
-                <p class="my-5 text-gray-700 text-5xl font-bold">Dynamic QR Labels</p>
-                <p class="text-gray-300 text-xl font-medium">Dynamic QR codes can be scanned using your mobile device to
+                <p class="my-5 text-gray-700 text-4xl md:text-5xl font-bold">Dynamic QR Labels</p>
+                <p class="reveal-element xl:w-2/3 text-gray-300 text-xl font-medium">Dynamic QR codes can be scanned
+                    using your
+                    mobile device to
                     send users on to a specific web page,
                     just
                     like any other QR code. What makes them "dynamic" is that the URL encoded in them redirects to a
                     second
                     URL that can be changed on demand, even after a code is printed.</p>
-                <div class="mt-8 flex">
-                    <div class="mr-5 flex text-lg text-red-500 font-medium">
+                <div class="mt-8 md:flex">
+                    <div class="reveal-element mr-5 flex text-lg text-red-500 font-medium">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -118,7 +137,7 @@
                         <p class="ml-3">Heat Resistant</p>
                     </div>
 
-                    <div class="flex mr-5 text-lg text-indigo-500 font-medium">
+                    <div class="reveal-element flex mr-5 text-lg text-indigo-500 font-medium">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
                             color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
                             style="user-select: none; width: 24px; height: 100%; display: inline-block; fill: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); color: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); flex-shrink: 0;">
@@ -132,7 +151,7 @@
                         <p class="ml-3">Cold Resistant</p>
                     </div>
 
-                    <div class="flex text-lg text-green-300 font-medium">
+                    <div class="reveal-element flex text-lg text-green-300 font-medium">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
                             color="var(--token-6d2f8c94-d62d-4489-ad21-df206efcc710, rgb(70, 219, 156)) /* {&quot;name&quot;:&quot;Tertiary&quot;} */"
                             style="user-select: none; width: 24px; height: 100%; display: inline-block; fill: var(--token-6d2f8c94-d62d-4489-ad21-df206efcc710, rgb(70, 219, 156)); color: var(--token-6d2f8c94-d62d-4489-ad21-df206efcc710, rgb(70, 219, 156)); flex-shrink: 0;">
@@ -150,7 +169,7 @@
         </div>
     </section>
 
-    <section class="md:h-screen px-12 md:flex items-center">
+    <section class="md:h-screen mt-32 md:mt-0 px-5 md:px-12 md:flex items-center">
         <div class="w-full py-12 bg-indigo-50 rounded-3xl relative">
             <div class="hidden second_arrow w-full absolute -top-10 md:flex justify-center cursor-pointer">
                 <div class="extra-outer-div">
@@ -170,10 +189,10 @@
                 </div>
             </div>
 
-            <p class="mt-12 text-center text-5xl text-gray-700 font-bold">How It Works</p>
+            <p class="mt-12 text-center text-4xl md:text-5xl text-gray-700 font-bold">How It Works</p>
 
             <div class="p-8 md:flex">
-                <div class="p-3 md:w-1/4 ">
+                <div class="reveal-element p-3 md:w-1/4 ">
                     <div class="w-full flex justify-center mb-10">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
                             style="user-select: none; width: 72px; display: inline-block; fill: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); color: var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)); flex-shrink: 0;">
@@ -194,7 +213,7 @@
                         time.</p>
                 </div>
 
-                <div class="md:w-1/4 p-3">
+                <div class="reveal-element md:w-1/4 p-3">
                     <div class="w-full flex justify-center mb-10">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
                             color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
@@ -218,7 +237,7 @@
                         dealership.</p>
                 </div>
 
-                <div class="md:w-1/4 p-3">
+                <div class="reveal-element md:w-1/4 p-3">
                     <div class="w-full flex justify-center mb-10">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
                             color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
@@ -240,7 +259,7 @@
                         shipped right away.</p>
                 </div>
 
-                <div class="md:w-1/4 p-3">
+                <div class="reveal-element md:w-1/4 p-3">
                     <div class="w-full flex justify-center mb-10">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" focusable="false"
                             color="var(--token-15fd5967-6b65-4916-8129-4aba84637a49, rgb(97, 86, 231)) /* {&quot;name&quot;:&quot;Primary&quot;} */"
@@ -284,28 +303,28 @@
         </div>
     </section>
 
-    <section id="fourth_section" class="px-12 my-48">
+    <section id="fourth_section" class="px-3 md:px-12 my-48">
         <div class="w-full flex justify-between">
-            <div class="w-5/12"></div>
+            <div class="hidden md:block w-5/12"></div>
 
-            <div class="2/12">
+            <div class="">
                 <p class="text-6xl font-bold text-gray-800">01</p>
                 <div class="mt-5 flex justify-center">
                     <div class="w-1 h-24 bg-indigo-500"></div>
                 </div>
-                <div class="flex justify-center">
+                <div class="reveal-element flex justify-center">
                     <div class="w-1 h-24 bg-indigo-500"></div>
                 </div>
-                <div class="flex justify-center">
+                <div class="reveal-element flex justify-center">
                     <div class="w-1 h-24 bg-indigo-500"></div>
                 </div>
-                <div class="flex justify-center">
+                <div class="reveal-element flex justify-center">
                     <div class="w-1 h-24 bg-indigo-500"></div>
                 </div>
             </div>
 
-            <div class="w-5/12">
-                <p class="my-3 text-4xl text-gray-800 font-semibold">Steamless Integration</p>
+            <div class="reveal-element w-3/4 md:w-5/12">
+                <p class="-mt-3 md:my-3 text-4xl text-gray-800 font-semibold">Steamless Integration</p>
                 <p class="my-5 text-2xl text-indigo-500 font-semibold">Sign up. Receive. Activate. Yup, it's that easy.
                 </p>
                 <p class="text-lg text-gray-400 font-light">Our QR code labels seamlessly integrate into your existing
@@ -315,9 +334,9 @@
             </div>
         </div>
 
-        <div class="w-full mt-5 flex justify-between">
-            <div class="w-5/12">
-                <p class="my-3 text-4xl text-gray-800 font-semibold">Scalable Solution</p>
+        <div class="reveal-element w-full mt-5 flex justify-between">
+            <div class="hidden md:block w-5/12">
+                <p class="-mt-3 md:my-3 text-4xl text-gray-800 font-semibold">Scalable Solution</p>
                 <p class="my-5 text-2xl text-indigo-500 font-semibold">We grow with you. For you.
                 </p>
                 <p class="text-lg text-gray-400 font-light">Our software is built to scale with your business. Whether
@@ -325,32 +344,41 @@
                     expand.</p>
             </div>
 
-            <div class="2/12">
+            <div class="">
                 <p class="text-6xl font-bold text-gray-800">02</p>
                 <div class="mt-5 flex justify-center">
                     <div class="w-1 h-24 bg-indigo-500"></div>
                 </div>
-                <div class="flex justify-center">
+                <div class="reveal-element flex justify-center">
                     <div class="w-1 h-24 bg-indigo-500"></div>
                 </div>
-                <div class="flex justify-center">
+                <div class="reveal-element flex justify-center">
                     <div class="w-1 h-24 bg-indigo-500"></div>
                 </div>
-                <div class="flex justify-center">
+                <div class="reveal-element flex justify-center">
                     <div class="w-1 h-24 bg-indigo-500"></div>
                 </div>
             </div>
 
-            <div class="w-5/12"></div>
+            <div class="md:hidden w-3/4 md:w-5/12">
+                <p class="-mt-3 md:my-3 text-4xl text-gray-800 font-semibold">Scalable Solution</p>
+                <p class="my-5 text-2xl text-indigo-500 font-semibold">We grow with you. For you.
+                </p>
+                <p class="text-lg text-gray-400 font-light">Our software is built to scale with your business. Whether
+                    you're a small company or a large scale dealership, our solution can accommodate your needs as you
+                    expand.</p>
+            </div>
+
+            <div class="hidden md:block w-5/12"></div>
         </div>
 
-        <div class="w-full mt-5 flex justify-between">
-            <div class="w-5/12"></div>
-            <div class="2/12">
+        <div class="reveal-element w-full mt-5 flex justify-between">
+            <div class="hidden md:block w-5/12"></div>
+            <div class="">
                 <p class="text-6xl font-bold text-gray-800">03</p>
             </div>
-            <div class="w-5/12">
-                <p class="my-3 text-4xl text-gray-800 font-semibold">Powerful Analytics</p>
+            <div class="w-3/4 md:w-5/12">
+                <p class="-mt-3 md:my-3 text-4xl text-gray-800 font-semibold">Powerful Analytics</p>
                 <p class="my-5 text-2xl text-indigo-500 font-semibold">No more guessing your customers needs.
                 </p>
                 <p class="text-lg text-gray-400 font-light">Gain deep insights into your vehicle sales with our powerful
@@ -366,11 +394,11 @@
                 Pricing & Plans
             </p>
             <div class="my-8 w-full flex justify-center">
-                <p class=" w-1/2 text-lg text-gray-400 font-light text-center">
+                <p class="w-11/12 md:w-1/2 text-lg text-gray-400 font-light text-center">
                     All pricing plans cover the essentials, with room to grow.
                 </p>
             </div>
-            <div class="w-full flex justify-center">
+            <div class="reveal-element w-full flex justify-center">
                 <div class="w-full md:w-1/2">
                     <div class="w-full h-90 flex testing_class justify-around text-gray-600">
                         <div class="plan_card plan_card_landing relative">
@@ -537,11 +565,11 @@
         </div>
     </section>
 
-    <section id="contacts" class="h-screen flex items-center">
+    <section id="contacts" class="mt-12 md:mt-0 md:h-screen flex items-center">
         <div class="w-full">
             <p class="text-5xl text-gray-800 font-bold text-center">Contact Us</p>
             <div class="my-8 w-full flex justify-center">
-                <p class=" w-1/2 text-lg text-gray-400 font-light text-center">
+                <p class="w-full md:w-1/2 text-lg text-gray-400 font-light text-center">
                     Got a question about signing up, using our product,
                     or a general enquiry? Contact us and we’ll reply shortly.
                 </p>
@@ -595,9 +623,20 @@
             <p class="my-8">© Copyright Car QR </p>
         </div>
     </footer>
+
+    <div id="landing_mobile_menu" class="hidden w-full h-screen bg-white text-2xl text-gray-600">
+        <p id="mobile_pricing" class="my-16 text-center">Pricing</p>
+        <p id="mobile_contact" class="my-16 text-center">Contact</p>
+        <a href="{{ url_for('auth.login') }}">
+            <p class="my-16 text-center">Login</p>
+        </a>
+        <a href="{{ url_for('auth.register') }}" class="flex justify-center">
+            <button class="w-11/12 mx-auto my-3 px-3 py-3 bg-indigo-500 rounded-xl text-white">Signup</button>
+        </a>
+    </div>
 </body>
 
-<script src="https://anijs.github.io/lib/anijs/helpers/dom/anijs-helper-dom-min.js"></script>
+<!-- <script src="https://anijs.github.io/lib/anijs/helpers/dom/anijs-helper-dom-min.js"></script> -->
 <script src="https://anijs.github.io/lib/anijs/anijs-min.js"></script>
 <script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
 

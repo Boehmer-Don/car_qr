@@ -132,17 +132,17 @@
 
 .absolute-bottom-32 {
     position: absolute;
-    bottom: 160px;
+    bottom: 115px;
 }
 
 .absolute-bottom-22 {
     position: absolute;
-    bottom: 108px;
+    bottom: 72px;
 }
 
 .absolute-bottom-12 {
     position: absolute;
-    bottom: 60px;
+    bottom: 30px;
 }
 
 .extra-outer-div {
@@ -328,3 +328,18 @@
     -webkit-animation-name: flipInY;
     animation-name: flipInY
   }
+
+
+/* Initial state of the element */
+.reveal-element {
+  opacity: 0;
+  transform: translateY(20px); /* Adjust as needed for the desired reveal effect */
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Apply the reveal effect when the element comes into view */
+.reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
