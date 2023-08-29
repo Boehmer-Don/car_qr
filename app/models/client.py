@@ -25,6 +25,7 @@ class Client(db.Model, ModelMixin):
         sa.String(255),
         unique=True,
         nullable=False,
+        index=True,
     )
     phone: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
 

@@ -10,3 +10,4 @@ from .car_trim import CarTrim
 from .car_type import CarType
 from .sticker import Sticker
 from .client import Client
+from .landing import LandingForm

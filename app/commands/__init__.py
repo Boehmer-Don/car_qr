@@ -98,7 +98,6 @@ def init(app: Flask):
             added_makes_count = 0
             added_models_count = 0
             for make_name, models_list in models_data.items():
-                # print(make_name, models_list)
                 make = db.session.scalar(
                     m.CarMake.select().where(m.CarMake.name == make_name)
                 )

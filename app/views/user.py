@@ -319,9 +319,13 @@ def get_logo(user_unique_id: str):
     user: m.User = db.session.scalar(
         m.User.select().where(m.User.unique_id == user_unique_id)
     )
+    if not user:
+        log(log.INFO, "User not found")
     logo: m.UserLogo = db.session.scalar(
         m.UserLogo.select().where(m.UserLogo.user_id == user.id)
     )
+    if not logo:
+        log(log.INFO, "Logo not found")
     buff = io.BytesIO(logo.file)
     return Response(
         buff,
