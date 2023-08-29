@@ -14,7 +14,7 @@
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white text-center">
             My Account
           </h1>
-          <form class="mt-8 space-y-6 from mx-4" role="form"
+          <form class="mt-8 space-y-6 from mx-2 md:mx-6" role="form"
             action="{{ url_for('user.account', user_unique_id=user_unique_id) }}" method="post">
             {{ form.hidden_tag() }}
 
@@ -213,7 +213,7 @@
         </div>
 
         <button type="submit"
-          class="w-full px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+          class="w-full mt-4 px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
           Save >
         </button>
         </form>
