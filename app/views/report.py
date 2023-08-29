@@ -24,6 +24,15 @@ from app.controllers.jinja_globals import days_active
 report_blueprint = Blueprint("report", __name__, url_prefix="/report")
 
 
+def date_convert(date_input):
+    pattern = r"^\d{4}-\d{2}-\d{2}$"
+    if re.match(pattern, date_input):
+        date_input = datetime.strptime(date_input, "%Y-%m-%d").date()
+    else:
+        date_input = datetime.strptime(date_input, "%m/%d/%Y").date()
+    return date_input
+
+
 @report_blueprint.route("/create", methods=["GET", "POST"])
 @login_required
 def dashboard():
@@ -93,8 +102,8 @@ def dashboard():
         )
     elif start_date and end_date:
         log(log.INFO, f"Filtering by start_date: {start_date} and end_date: {end_date}")
-        start_date = datetime.strptime(start_date, "%m/%d/%Y")
-        end_date = datetime.strptime(end_date, "%m/%d/%Y")
+        start_date = date_convert(start_date)
+        end_date = date_convert(end_date)
         query = query.where(sa.func.DATE(m.Label.date_received) >= start_date)
         count_query = count_query.where(
             sa.func.DATE(m.Label.date_received) >= start_date
@@ -104,13 +113,12 @@ def dashboard():
     elif date_received and date_received != "None":
         log(log.INFO, f"Filtering by date_received: {date_received}")
 
-        pattern = r"^\d{4}-\d{2}-\d{2}$"
-        if re.match(pattern, date_received):
-            date_received = datetime.strptime(date_received, "%Y-%m-%d").date()
-            query = query.where(sa.func.DATE(m.Label.date_received) == date_received)
-        else:
-            date_received = datetime.strptime(date_received, "%m/%d/%Y").date()
-            query = query.where(sa.func.DATE(m.Label.date_received) == date_received)
+        date_received = date_convert(date_received)
+
+        query = query.where(sa.func.DATE(m.Label.date_received) == date_received)
+        count_query = count_query.where(
+            sa.func.DATE(m.Label.date_received) == date_received
+        )
 
     if make_filter and make_filter != "All":
         log(log.INFO, f"Filtering by make: {make_filter}")
