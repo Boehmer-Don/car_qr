@@ -124,7 +124,7 @@
 
               <select id="type_of_vehicle" name="type_filter"
                 class="absolute w-full h-3 bg-transparent opacity-0 cursor-pointer">
-                <option value="All">All</option>
+                <!-- <option value="All">All</option> -->
                 {% for type in types %} {% if type == type_filter %}
                 <option value="{{ type_filter }}" selected>
                   {{ type_filter }}
