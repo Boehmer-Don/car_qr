@@ -116,9 +116,6 @@
                   <label for="trim" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Trim
                   </label>
-                  <!-- <input type="text" name="trim-{{ loop.index }}" id="label-{{ loop.index }}-trim"
-                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Trim" value="{{ label.trim }}" /> -->
                   <select id="label-{{ loop.index }}-trim" name="trim-{{ loop.index }}"
                     class="clean_name_input model w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
                     {% for trim in trims %}
@@ -129,13 +126,6 @@
                     {% endif %}
                     {% endfor %}
                   </select>
-                  <!-- <select id="label-{{ loop.index }}-trim" name="trim-{{ loop.index }}"
-                    class="clean_name_input make w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
-                    <option value="{{label.trim}}" selected>{{label.trim}}</option>
-                    {% for trim in trims %}
-                    <option value="{{ trim.name }}">{{ trim.name }}</option>
-                    {% endfor %}
-                    <option value="add">Add a new trim</option> -->
                 </div>
               </div>
 

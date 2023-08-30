@@ -2,6 +2,7 @@ import sqlalchemy as sa
 from sqlalchemy import orm
 from app.database import db
 from .utils import ModelMixin
+from app.models.car_model import CarModel
 
 
 class CarTrim(db.Model, ModelMixin):
@@ -11,6 +12,13 @@ class CarTrim(db.Model, ModelMixin):
     name: orm.Mapped[str] = orm.mapped_column(
         sa.String(64), nullable=True, index=True, unique=True
     )
+    model_id: orm.Mapped[int] = orm.mapped_column(
+        sa.Integer,
+        sa.ForeignKey("models.id"),
+        nullable=True,
+    )
+
+    model: orm.Mapped[CarModel] = orm.relationship("CarModel", backref="trims")
 
     def __repr__(self):
         return f"<{self.id}: {self.name}>"

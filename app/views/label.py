@@ -322,6 +322,26 @@ def generate_alphanumeric_code():
     return letters + digits
 
 
+@dealer_blueprint.route("/get_trims", methods=["POST"])
+def get_trims():
+    model_name = request.json.get("modelSelected")
+    trims = db.session.scalars(
+        sa.select(m.CarTrim.name).where(
+            m.CarTrim.model.has(m.CarModel.name == model_name)
+        )
+    ).all()
+    return {"trims": trims}
+
+
+def generate_alphanumeric_code():
+    letters = "".join(secrets.choice(string.ascii_letters) for _ in range(2))
+    digits = "".join(
+        secrets.choice(string.digits)
+        for _ in range(app.config.get("ALPHANUMERIC_CODE_LENGTH") - 2)
+    )
+    return letters + digits
+
+
 @dealer_blueprint.route("/generate/<user_unique_id>", methods=["GET", "POST"])
 @login_required
 def generate(user_unique_id: str):
@@ -522,17 +542,21 @@ def add_new_model():
 
     model = db.session.scalar(sa.select(m.CarModel).where(m.CarModel.name == new_model))
     if not model:
-        m.CarModel(
+        model = m.CarModel(
             name=new_model,
             make_id=make.id,
-        ).save()
+        )
+        model.save()
         log(log.INFO, "Created new model: [%s]", new_model)
     else:
         log(log.INFO, "Model already exists: [%s]", new_model)
 
     trim = db.session.scalar(sa.select(m.CarTrim).where(m.CarTrim.name == trim_name))
     if not trim:
-        m.CarTrim(name=trim_name).save()
+        m.CarTrim(
+            name=trim_name,
+            model_id=model.id,
+        ).save()
         log(log.INFO, "Created new trim: [%s]", trim_name)
     else:
         log(log.INFO, "Trim already exists: [%s]", trim_name)
