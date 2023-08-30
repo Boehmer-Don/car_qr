@@ -23,7 +23,6 @@ def index():
 
 @main_blueprint.route("/l/<sticker_id>")
 def redirect_to_outer_url(sticker_id: str):
-    # Registration cancels the sticker's pending (at webhook)
     label: m.Label = db.session.scalar(
         m.Label.select().where(m.Label.sticker_id == sticker_id)
     )
@@ -32,7 +31,6 @@ def redirect_to_outer_url(sticker_id: str):
 
     if label.gift:
         return redirect(url_for("labels.gift", sticker_id=sticker_id))
-        # Create user's gift page
 
     label.views += 1
     label.save()

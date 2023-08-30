@@ -1,4 +1,5 @@
 import json
+import random
 from datetime import datetime, timedelta
 from random import randint
 from typing import Generator
@@ -89,6 +90,30 @@ def populate(count: int = NUM_TEST_USERS):
         users_counter += 1
 
 
+GIFTS = [
+    "Free Oil Changes",
+    "Free Maintenance Package",
+    "Extended Warranty",
+    "Discounted Accessories",
+    "Free Car Detailing",
+    "Free Fuel",
+    "Cash Rebates",
+    "Trade-In Bonus",
+    "Roadside Assistance",
+    "Complimentary Car Rental",
+    "Technology Upgrades",
+    "VIP Maintenance Services",
+    "Discounted Insurance",
+    "Free Tires",
+    "Gift Cards",
+    "Exclusive Events",
+    "Personalized Accessories",
+    "Service Discounts",
+    "Charitable Donations",
+    "Special Financing Rates",
+]
+
+
 def add_labels(user_id: int = 9):
     with open("tests/db/test_labels.json", "r") as f:
         labels_data = json.load(f)
@@ -98,6 +123,7 @@ def add_labels(user_id: int = 9):
         date_deactivated = None
         if label_status == m.LabelStatus.archived:
             date_deactivated = date_received + timedelta(days=randint(1, 30))
+        gift = random.choice(GIFTS) if index > 10 else None
         label = m.Label(
             sticker_id=f"QR0000{index + user_id}",
             name=f'{label["name"]} {label["make"]}',
@@ -115,6 +141,7 @@ def add_labels(user_id: int = 9):
             date_deactivated=date_deactivated,
             user_id=user_id,
             views=randint(0, 99),
+            gift=gift,
         )
         if label.date_deactivated:
             label.price_sold = label.price - randint(1000, 3000)

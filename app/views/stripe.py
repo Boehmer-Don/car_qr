@@ -171,7 +171,6 @@ def webhook():
             log(log.ERROR, "Unhandled event type %s", event["type"])
             return jsonify(success=False), 404
 
-    # log(log.INFO, "payment_intent.succeeded, labels paid: %s", label_unique_ids_list)
     return jsonify(success=True)
 
 

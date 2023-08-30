@@ -98,8 +98,6 @@ function getLabelDetails(label: ILabel) {
   labelStickerIdentifier.value = label.sticker_id;
   const labelGift: HTMLInputElement =
     document.querySelector('#label-edit-gift');
-  console.log('label', label);
-  console.log('label.gift', label.gift);
   labelGift.value = label.gift;
 
   const nextUrl: HTMLInputElement = document.querySelector(
@@ -336,7 +334,6 @@ const modelSelectFields: NodeListOf<HTMLSelectElement> =
   document.querySelectorAll('.model');
 modelSelectFields.forEach(modelSelectField =>
   modelSelectField.addEventListener('change', () => {
-    console.log('modelSelectField', modelSelectField);
     if (modelSelectField.value === 'add') {
       createNewModel();
     } else {
@@ -349,11 +346,9 @@ modelSelectFields.forEach(modelSelectField =>
       })
         .then(response => response.json())
         .then(data => {
-          console.log('data-trim', modelSelectField.getAttribute('data-trim'));
           const trimSelect = document.querySelector(
             `#label-${modelSelectField.getAttribute('data-trim')}-trim`,
           ) as HTMLSelectElement;
-          console.log('trimSelect', trimSelect);
           trimSelect.innerHTML = '';
           let optionElement = document.createElement('option');
           optionElement.value = '';

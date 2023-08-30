@@ -655,4 +655,5 @@ def gift(sticker_id: str):
         "label/gift.html",
         sticker_id=sticker_id,
         label_url=label.url,
+        gift=label.gift,
     )
