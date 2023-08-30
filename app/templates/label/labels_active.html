@@ -87,7 +87,7 @@
           {% if current_user.role and current_user.role.value == "admin" %}
           {{label.user.first_name}} {{label.user.last_name}} - {{ label.sticker_id }}
           {% else %}
-          {{ label.name }} - {{ label.gift }}
+          {{ label.name }}
           {% endif %}
         </p>
         <p class="w-1/12 flex items-center justify-center">{{ label.views }}</p>
@@ -96,7 +96,13 @@
           <span class="hidden xl:block">&nbsp;days active</span>
         </p>
         <p class="w-3/12 flex items-center justify-center">
+          {% if current_user.is_authenticated and current_user.role.value == 'admin' %}
+          {% if label.date_activated %}
+          {{ label.date_activated.strftime('%Y-%m-%d') }}
+          {% endif %}
+          {% else %}
           {{ label.date_received.strftime('%Y-%m-%d') }}
+          {% endif %}
         </p>
         <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button"
           data-target="{{label.json}}">

@@ -48,7 +48,7 @@ def get_active_labels():
             m.Label.select()
             .where(m.Label.user_id == current_user.id)
             .where(m.Label.status == m.LabelStatus.active)
-            .order_by(m.Label.id)
+            .order_by(m.Label.date_received.desc())
         )
         count_query = (
             sa.select(sa.func.count())
