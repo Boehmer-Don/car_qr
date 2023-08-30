@@ -102,7 +102,8 @@
                   <label for="model" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Vehicle Model
                   </label>
-                  <select id="vehicle_model-{{ loop.index }}" name="vehicle_model-{{ loop.index }}" required
+                  <select id="vehicle_model-{{ loop.index }}" name="vehicle_model-{{ loop.index }}"
+                    data-trim="{{ loop.index }}" required
                     class="clean_name_input model w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
                     <option value="{{ label.vehicle_model }}">{{ label.vehicle_model }}</option>{% for
                     model in

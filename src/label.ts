@@ -283,19 +283,17 @@ if (subTotal && taxes && total) {
   total.innerHTML = '$' + total_value.toFixed(2).toString();
 }
 
-const makeSelectMakeFields = document.querySelectorAll(
+const makeSelectFields = document.querySelectorAll(
   '.make',
 ) as NodeListOf<HTMLSelectElement>;
-let makeSelected: string;
-makeSelectMakeFields.forEach(makeSelectMakeField =>
-  makeSelectMakeField.addEventListener('change', () => {
-    const makeNumber = makeSelectMakeField.getAttribute('data-model');
-    const makeId = makeSelectMakeField.getAttribute('id');
+makeSelectFields.forEach(makeSelectField =>
+  makeSelectField.addEventListener('change', () => {
+    const makeNumber = makeSelectField.getAttribute('data-model');
     const modelSelect = document.querySelector(
       `#vehicle_model-${makeNumber}`,
     ) as HTMLSelectElement;
 
-    const makeSelected = makeSelectMakeField.value as string;
+    const makeSelected = makeSelectField.value as string;
     if (makeSelected === 'add') {
       createNewMake();
     } else {
@@ -338,8 +336,44 @@ const modelSelectFields: NodeListOf<HTMLSelectElement> =
   document.querySelectorAll('.model');
 modelSelectFields.forEach(modelSelectField =>
   modelSelectField.addEventListener('change', () => {
+    console.log('modelSelectField', modelSelectField);
     if (modelSelectField.value === 'add') {
       createNewModel();
+    } else {
+      fetch('/labels/get_trims', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({modelSelected: modelSelectField.value}),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('data-trim', modelSelectField.getAttribute('data-trim'));
+          const trimSelect = document.querySelector(
+            `#label-${modelSelectField.getAttribute('data-trim')}-trim`,
+          ) as HTMLSelectElement;
+          console.log('trimSelect', trimSelect);
+          trimSelect.innerHTML = '';
+          let optionElement = document.createElement('option');
+          optionElement.value = '';
+          optionElement.textContent = 'Select a trim';
+          trimSelect.appendChild(optionElement);
+          data.trims.forEach((option: string) => {
+            let optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            trimSelect.appendChild(optionElement);
+          });
+
+          optionElement = document.createElement('option');
+          optionElement.value = 'add';
+          optionElement.textContent = 'Add New Trim';
+          trimSelect.appendChild(optionElement);
+        })
+        .catch(error => {
+          console.error('Error sending data to Flask:', error);
+        });
     }
   }),
 );

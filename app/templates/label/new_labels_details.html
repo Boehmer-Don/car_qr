@@ -110,7 +110,8 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Vehicle Model
                                     </label>
-                                    <select id="vehicle_model-{{ i+1 }}" name="vehicle_model-{{ i+1 }}" required
+                                    <select id="vehicle_model-{{ i+1 }}" name="vehicle_model-{{ i+1 }}"
+                                        data-trim="{{ i+1 }}" required
                                         class="clean_name_input model w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
                                         <option value="" disabled selected>Select a model</option>
                                         {% for model in models %}
