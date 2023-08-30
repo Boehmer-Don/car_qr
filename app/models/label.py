@@ -71,6 +71,7 @@ class Label(db.Model, ModelMixin):
     views: orm.Mapped[int] = orm.mapped_column(
         sa.Integer, server_default="0", default=0
     )
+    gift: orm.Mapped[str] = orm.mapped_column(sa.String(128), default="", nullable=True)
 
     user: orm.Mapped[User] = orm.relationship("User", backref="labels")
 

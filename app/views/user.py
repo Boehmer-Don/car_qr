@@ -194,7 +194,6 @@ def account(user_unique_id: str):
         form.postal_code.data = user.postal_code
         form.plan.data = user.plan.name
         form.phone.data = user.phone
-        form.gift.data = user.gift
 
     if form.validate_on_submit():
         user.email = form.email.data
@@ -210,7 +209,6 @@ def account(user_unique_id: str):
         user.postal_code = form.postal_code.data
         user.plan = form.plan.data
         user.phone = form.phone.data
-        user.gift = form.gift.data
         user.save()
         update_stripe_customer(user)
         log(log.INFO, "User data updated. User: [%s]", user)
@@ -261,19 +259,6 @@ def subscription(user_unique_id: str):
     )
 
 
-@bp.route("/gift/<sticker_id>", methods=["GET", "POST"])
-def gift(sticker_id: str):
-    label: m.Label = db.session.scalar(
-        m.Label.select().where(m.Label.sticker_id == sticker_id)
-    )
-
-    return render_template(
-        "user/gift.html",
-        sticker_id=sticker_id,
-        label_url=label.url,
-    )
-
-
 @bp.route("/client_data/<sticker_id>", methods=["GET", "POST"])
 def client_data(sticker_id: str):
     form: f.Client = f.Client()
@@ -296,7 +281,7 @@ def client_data(sticker_id: str):
     elif form.is_submitted():
         flash("Something went wrong. Form submission error", "danger")
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
-        redirect(url_for("user.gift", sticker_id=sticker_id))
+        redirect(url_for("labels.gift", sticker_id=sticker_id))
 
     return render_template(
         "user/client_data.html",

@@ -617,3 +617,16 @@ def delete_from_cart(label_unique_id):
     return redirect(
         url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
     )
+
+
+@dealer_blueprint.route("/gift/<sticker_id>", methods=["GET", "POST"])
+def gift(sticker_id: str):
+    label: m.Label = db.session.scalar(
+        m.Label.select().where(m.Label.sticker_id == sticker_id)
+    )
+
+    return render_template(
+        "label/gift.html",
+        sticker_id=sticker_id,
+        label_url=label.url,
+    )

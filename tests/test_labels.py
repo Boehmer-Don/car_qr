@@ -52,13 +52,14 @@ def test_views_counter(populate: FlaskClient):
     )
     assert label.views > views_before
 
-    current_user.gift = "Some Cool Gift"
-    current_user.save()
+    label.gift = "Some Cool Gift"
+    label.save()
+
     response = populate.get(f"l/{label.sticker_id}")
     assert response
     assert response.status_code == 302
     assert response.location == url_for(
-        "user.gift",
+        "labels.gift",
         sticker_id=label.sticker_id,
     )
 
