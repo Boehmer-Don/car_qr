@@ -210,6 +210,10 @@ def new_label_set_amount(user_unique_id: str):
 @dealer_blueprint.route("/details/<user_unique_id>/<amount>", methods=["GET", "POST"])
 @login_required
 def new_label_set_details(user_unique_id: str, amount: int):
+    make_selected = request.args.get("make_selected")
+    model_selected = request.args.get("model_selected")
+    trim_selected = request.args.get("trim_selected")
+
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
     trims = db.session.scalars(m.CarTrim.select()).all()
@@ -245,6 +249,9 @@ def new_label_set_details(user_unique_id: str, amount: int):
         models=models,
         trims=trims,
         types=types,
+        make_selected=make_selected,
+        model_selected=model_selected,
+        trim_selected=trim_selected,
     )
 
 
@@ -553,10 +560,11 @@ def add_new_model():
 
     trim = db.session.scalar(sa.select(m.CarTrim).where(m.CarTrim.name == trim_name))
     if not trim:
-        m.CarTrim(
+        trim = m.CarTrim(
             name=trim_name,
             model_id=model.id,
-        ).save()
+        )
+        trim.save()
         log(log.INFO, "Created new trim: [%s]", trim_name)
     else:
         log(log.INFO, "Trim already exists: [%s]", trim_name)
@@ -572,6 +580,12 @@ def add_new_model():
         flash("Make model already exist", "danger")
     else:
         flash("Make model added successfully", "success")
+
+    make_name = make.name.replace(" ", "%20")
+    model_name = model.name.replace(" ", "%20")
+    trim_name = trim.name.replace(" ", "%20")
+
+    next_url = f"{next_url}?make_selected={make_name}&model_selected={model_name}&trim_selected={trim_name}"
 
     return redirect(next_url)
 

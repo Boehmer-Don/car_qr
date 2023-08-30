@@ -95,7 +95,11 @@
                                     </label>
                                     <select id="make-{{ i+1 }}" name="make-{{ i+1 }}" data-model="{{ i+1 }}" required
                                         class="clean_name_input make w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                                        {% if make_selected %}
+                                        <option value="{{ make_selected }}">{{ make_selected }}</option>
+                                        {% else %}
                                         <option value="" disabled selected>Select a make</option>
+                                        {% endif %}
                                         {% for make in makes %}
                                         <option value="{{ make.name }}">{{ make.name }}</option>
                                         {% endfor %}
@@ -113,7 +117,11 @@
                                     <select id="vehicle_model-{{ i+1 }}" name="vehicle_model-{{ i+1 }}"
                                         data-trim="{{ i+1 }}" required
                                         class="clean_name_input model w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                                        {% if model_selected %}
+                                        <option value="{{ model_selected }}">{{ model_selected }}</option>
+                                        {% else %}
                                         <option value="" disabled selected>Select a model</option>
+                                        {% endif %}
                                         {% for model in models %}
                                         <option value="{{ model.name }}">{{ model.name }}</option>
                                         {% endfor %}
@@ -127,7 +135,12 @@
                                     </label>
                                     <select id="label-{{ i+1 }}-trim" name="trim-{{ i+1 }}" required
                                         class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                                        {% if trim_selected %}
+                                        <option value="{{ trim_selected }}">{{ trim_selected }}</option>
+                                        {% else %}
                                         <option value="" selected>Select a trim</option>
+                                        {% endif %}
+
                                         {% for trim in trims %}
                                         <option value="{{ trim.name }}">{{ trim.name }}</option>
                                         {% endfor %}
