@@ -18,6 +18,7 @@ class LabelForm(FlaskForm):
     url = StringField("URL")
     user_id = IntegerField("User ID")
     views = IntegerField("Views")
+    gift = StringField("Gift")
     next_url = StringField("Next URL")
 
 

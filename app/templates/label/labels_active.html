@@ -87,7 +87,7 @@
           {% if current_user.role and current_user.role.value == "admin" %}
           {{label.user.first_name}} {{label.user.last_name}} - {{ label.sticker_id }}
           {% else %}
-          {{ label.name }}
+          {{ label.name }} - {{ label.gift }}
           {% endif %}
         </p>
         <p class="w-1/12 flex items-center justify-center">{{ label.views }}</p>

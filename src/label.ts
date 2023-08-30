@@ -18,6 +18,7 @@ interface ILabel {
   url: string;
   user_id: number;
   views: number;
+  gift: string;
 }
 
 const $modalElement: HTMLElement = document.querySelector('#labelDetailsModal');
@@ -29,7 +30,6 @@ const addNewModelModal: HTMLElement =
   document.querySelector('#addNewModelModal');
 const addNewTrimModal: HTMLElement = document.querySelector('#addNewTrimModal');
 const addNewTypeModal: HTMLElement = document.querySelector('#addNewTypeModal');
-
 
 const modalOptions: ModalOptions = {
   placement: 'bottom-right',
@@ -96,6 +96,11 @@ function getLabelDetails(label: ILabel) {
     '#label-sticker-number',
   );
   labelStickerIdentifier.value = label.sticker_id;
+  const labelGift: HTMLInputElement =
+    document.querySelector('#label-edit-gift');
+  console.log('label', label);
+  console.log('label.gift', label.gift);
+  labelGift.value = label.gift;
 
   const nextUrl: HTMLInputElement = document.querySelector(
     '#label-edit-next-url',
@@ -384,7 +389,8 @@ if (decreaseStickersButton && increaseStickersButton) {
   });
 }
 
-const addMakeModelModal: HTMLElement = document.querySelector('#addMakeModelModal');
+const addMakeModelModal: HTMLElement =
+  document.querySelector('#addMakeModelModal');
 
 const addMakeModelModalWindow: ModalInterface = new Modal(
   addMakeModelModal,
@@ -399,8 +405,8 @@ function createAddMakeModel() {
   addMakeModelModalWindow.show();
 }
 
-const addMakeModel: HTMLButtonElement = document.querySelector(
-  '#add-make-model',);
+const addMakeModel: HTMLButtonElement =
+  document.querySelector('#add-make-model');
 
 if (addMakeModel) {
   addMakeModel.addEventListener('click', () => {
@@ -409,7 +415,6 @@ if (addMakeModel) {
 }
 
 const closeAddMakeModal = document.querySelector('#modalAddModelClose');
-console.log(closeAddMakeModal);
 if (closeAddMakeModal) {
   closeAddMakeModal.addEventListener('click', () => {
     addMakeModelModalWindow.hide();

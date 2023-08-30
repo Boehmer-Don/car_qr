@@ -230,6 +230,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 url=request.form.get(f"url-{i}"),
                 status=m.LabelStatus.cart,
                 user_id=current_user.id,
+                gift=request.form.get(f"gift-{i}"),
             ).save()
             log(log.INFO, "Created label [%s]", label)
         return redirect(
@@ -274,6 +275,7 @@ def new_label_payment(user_unique_id: str):
                 label.price = request.form.get(f"price-{index + 1}")
                 label.url = request.form.get(f"url-{index + 1}")
                 label.user_id = current_user.id
+                label.gift = request.form.get(f"gift-{index + 1}")
                 db.session.add(label)
             if len(labels):
                 db.session.commit()

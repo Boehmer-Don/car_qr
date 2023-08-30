@@ -20,6 +20,7 @@ class Label(BaseModel):
     url: str
     user_id: int
     views: int
+    gift: str | None
 
     class Config:
         orm_mode = True
