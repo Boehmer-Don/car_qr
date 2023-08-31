@@ -222,3 +222,17 @@ if (mobile_contacts) {
     });
   });
 }
+
+const mobileThemeButton: HTMLButtonElement = document.querySelector(
+  '#theme-toggle-wrapper',
+);
+const mobileMenuButton: HTMLButtonElement = document.querySelector(
+  '#mobile-menu-button',
+);
+console.log(mobileThemeButton);
+if (mobileThemeButton) {
+  mobileThemeButton.addEventListener('click', () => {
+    console.log('mobileMenuButton clicked');
+    mobileMenuButton.click();
+  });
+}

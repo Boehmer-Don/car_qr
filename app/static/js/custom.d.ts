@@ -14,3 +14,5 @@ declare const footer: HTMLElement;
 declare const sections: NodeListOf<HTMLElement>;
 declare const mobile_pricing: HTMLDivElement;
 declare const mobile_contacts: HTMLDivElement;
+declare const mobileThemeButton: HTMLButtonElement;
+declare const mobileMenuButton: HTMLButtonElement;
