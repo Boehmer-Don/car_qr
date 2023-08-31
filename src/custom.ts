@@ -210,7 +210,6 @@ if (mobile_pricing) {
 }
 
 if (mobile_contacts) {
-  console.log(mobile_contacts);
   mobile_contacts.addEventListener('click', () => {
     landing_mobile_menu.classList.toggle('hidden');
     footer.classList.toggle('hidden');
@@ -229,10 +228,8 @@ const mobileThemeButton: HTMLButtonElement = document.querySelector(
 const mobileMenuButton: HTMLButtonElement = document.querySelector(
   '#mobile-menu-button',
 );
-console.log(mobileThemeButton);
 if (mobileThemeButton) {
   mobileThemeButton.addEventListener('click', () => {
-    console.log('mobileMenuButton clicked');
     mobileMenuButton.click();
   });
 }

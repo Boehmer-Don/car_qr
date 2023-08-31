@@ -449,20 +449,3 @@ if (closeAddMakeModal) {
     addMakeModelModalWindow.hide();
   });
 }
-
-// const downloadPendingLabels = document.querySelector(
-//   '#download-pending-labels',
-// );
-const downloadPendingLabelsStartDate = document.querySelector(
-  '#pending_labels_start_date',
-);
-console.log(downloadPendingLabelsStartDate);
-downloadPendingLabelsStartDate.addEventListener('change', () => {
-  console.log(downloadPendingLabelsStartDate);
-});
-// downloadPendingLabelsStartDate.addEventListener('change', () => {
-//   window.location.href = `/labels/download/?start_date=${downloadPendingLabelsStartDate.value}&end_date=${downloadPendingLabelsEndDate.value}`;
-// });
-const downloadPendingLabelsEndDate = document.querySelector(
-  '#pending_labels_end_date',
-);
