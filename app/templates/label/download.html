@@ -7,7 +7,7 @@
     Welcome Back {{ current_user.first_name }},
   </h1>
   <div class="lg:flex-row text-xs lg:text-sm md:px-5 md:pb-5">
-    {% if user_unique_id %}
+    {% if user_unique_id and user.logo %}
     <form action="{{url_for('labels.download', user_unique_id=user.unique_id)}}" method="post">
       <div class="w-full flex justify-between items-center">
         <input type="hidden" name="logo-download" value="true">

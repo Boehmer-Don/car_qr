@@ -15,33 +15,31 @@ def init(app: Flask):
         """Objects exposed here will be automatically available from the shell."""
         return dict(app=app, db=db, m=m, f=forms, s=s, sa=sa, orm=orm)
 
-    if app.config["ENV"] != "production":
+    @app.cli.command()
+    @click.option("--count", default=100, type=int)
+    def db_populate(count: int):
+        """Fill DB by dummy data."""
+        from tests.db import (
+            populate,
+            add_labels,
+            set_users_logo,
+            add_pending_labels,
+        )
 
-        @app.cli.command()
-        @click.option("--count", default=100, type=int)
-        def db_populate(count: int):
-            """Fill DB by dummy data."""
-            from tests.db import (
-                populate,
-                add_labels,
-                set_users_logo,
-                add_pending_labels,
-            )
+        populate(count)
+        add_labels()
+        set_users_logo()
+        add_pending_labels()
+        print(f"DB populated by {count} instancies")
 
-            populate(count)
-            add_labels()
-            set_users_logo()
-            add_pending_labels()
-            print(f"DB populated by {count} instancies")
+    @app.cli.command()
+    @click.option("--user-id", default=9, type=int)
+    def add_labels(user_id: int):
+        """Fill DB by labels for a user."""
+        from tests.db import add_labels
 
-        @app.cli.command()
-        @click.option("--user-id", default=9, type=int)
-        def add_labels(user_id: int):
-            """Fill DB by labels for a user."""
-            from tests.db import add_labels
-
-            add_labels(user_id)
-            print(f"DB populated by 10 testing labels for user [{user_id}]")
+        add_labels(user_id)
+        print(f"DB populated by 10 testing labels for user [{user_id}]")
 
     @app.cli.command("create-admin")
     def create_admin():

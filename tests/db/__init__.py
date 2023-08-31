@@ -120,6 +120,9 @@ def add_labels(user_id: int = 9):
     for index, label in enumerate(labels_data):
         label_status = m.LabelStatus.archived if index < 8 else m.LabelStatus.active
         date_received = datetime.now() - timedelta(days=randint(1, 30))
+        date_activated = None
+        if label_status == m.LabelStatus.active:
+            date_activated = date_received + timedelta(days=1)
         date_deactivated = None
         if label_status == m.LabelStatus.archived:
             date_deactivated = date_received + timedelta(days=randint(1, 30))
@@ -138,6 +141,7 @@ def add_labels(user_id: int = 9):
             url=label["url"],
             status=label_status,
             date_received=date_received,
+            date_activated=date_activated,
             date_deactivated=date_deactivated,
             user_id=user_id,
             views=randint(0, 99),

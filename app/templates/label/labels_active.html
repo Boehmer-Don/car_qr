@@ -96,12 +96,8 @@
           <span class="hidden xl:block">&nbsp;days active</span>
         </p>
         <p class="w-3/12 flex items-center justify-center">
-          {% if current_user.is_authenticated and current_user.role.value == 'admin' %}
           {% if label.date_activated %}
           {{ label.date_activated.strftime('%Y-%m-%d') }}
-          {% endif %}
-          {% else %}
-          {{ label.date_received.strftime('%Y-%m-%d') }}
           {% endif %}
         </p>
         <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button"
@@ -118,7 +114,7 @@
   </div>
 
   {% if page.pages > 1 %}
-  <div class="container content-center mt-3 flex bg-white dark:bg-gray-800">
+  <div class="container content-center mt-3 mb-8 flex bg-white dark:bg-gray-800">
     <nav aria-label="Page navigation example" class="mx-auto">
       <ul class="inline-flex items-center -space-x-px">
         <li>

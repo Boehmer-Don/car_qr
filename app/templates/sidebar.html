@@ -49,9 +49,15 @@
         {% endif %}
       </li>
 
-      {% if current_user.is_authenticated and current_user.plan.value == "Advanced Plan" and current_user.logo %}
+      {% if current_user.is_authenticated and current_user.plan.value == "Advanced Plan" %}
       <div class="relative flex justify-center my-2">
+        {% if current_user.logo %}
         <img src="{{get_user_logo()}}" class="hidden md:flex max-w-full rounded-lg" alt="user_logo">
+        {% else %}
+        <div class="w-full h-16 flex items-center justify-center bg-gray-600 rounded-lg">
+          <p class="text-xs opacity-50">Your Logo</p>
+        </div>
+        {% endif %}
 
         <a href="{{url_for('auth.logo_upload', user_unique_id=current_user.unique_id, change_logo='true')}}">
           <button type="button"
