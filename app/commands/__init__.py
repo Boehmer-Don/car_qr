@@ -21,11 +21,17 @@ def init(app: Flask):
         @click.option("--count", default=100, type=int)
         def db_populate(count: int):
             """Fill DB by dummy data."""
-            from tests.db import populate, add_labels, set_users_logo
+            from tests.db import (
+                populate,
+                add_labels,
+                set_users_logo,
+                add_pending_labels,
+            )
 
             populate(count)
             add_labels()
             set_users_logo()
+            add_pending_labels()
             print(f"DB populated by {count} instancies")
 
         @app.cli.command()
@@ -141,3 +147,11 @@ def init(app: Flask):
 
         set_users_logo(user_id)
         print(f"Logo set for user {user_id}")
+
+    @app.cli.command()
+    @click.option("--user-id", default=9, type=int)
+    def add_pending_labels(user_id: int):
+        from tests.db import add_pending_labels
+
+        add_pending_labels(user_id)
+        print(f"Pending labels added for user {user_id}")

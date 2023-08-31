@@ -3,7 +3,7 @@ import secrets
 import string
 import csv
 import io
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import (
     Blueprint,
     render_template,
@@ -24,6 +24,7 @@ from app.controllers import (
 from app import models as m, db
 from app import forms as f
 from app.logger import log
+from app.controllers.date_convert import date_convert
 
 
 dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
@@ -408,19 +409,29 @@ def download():
     user: m.User | None = db.session.scalar(query)
 
     logo_link = None
+    stickers_query = (
+        m.Sticker.select()
+        .where(m.Sticker.pending.is_(True))
+        .order_by(m.Sticker.created_at.desc())
+    )
     if user:
-        stickers = db.session.scalars(
-            m.Sticker.select()
-            .where(m.Sticker.pending.is_(True))
-            .where(m.Sticker.user == user)
-        ).all()
+        stickers_query = stickers_query.where(m.Sticker.user == user)
         if user.logo:
             logo_link = f"user/logo/{user.unique_id}"
 
-    else:
-        stickers = db.session.scalars(
-            m.Sticker.select().where(m.Sticker.pending.is_(True))
-        ).all()
+    start_date = request.args.get("start_date")
+
+    if start_date:
+        start_date = date_convert(start_date)
+        stickers_query = stickers_query.where(m.Sticker.created_at >= start_date)
+    end_date = request.args.get("end_date")
+    if end_date:
+        end_date = date_convert(end_date)
+        stickers_query = stickers_query.where(
+            m.Sticker.created_at <= (end_date + timedelta(days=1))
+        )
+
+    stickers = db.session.scalars(stickers_query).all()
 
     if request.form.get("logo-download"):
         return send_file(
@@ -456,6 +467,9 @@ def download():
                     sticker.code,
                 ]
                 writer.writerow(row)
+                sticker.downloaded = True
+                db.session.add(sticker)
+            db.session.commit()
 
             mem = io.BytesIO()
             mem.write(proxy.getvalue().encode("utf-8"))
@@ -474,6 +488,7 @@ def download():
             last_modified=now,
         )
 
+    user_unique_id = user_unique_id if user else ""
     return render_template(
         "label/download.html",
         user_unique_id=user_unique_id,
@@ -481,6 +496,8 @@ def download():
         stickers=stickers,
         url=app.config.get("LANDING_URL"),
         logo_link=logo_link,
+        start_date=start_date,
+        end_date=end_date,
     )
 
 

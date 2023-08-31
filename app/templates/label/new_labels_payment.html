@@ -146,9 +146,16 @@
                   <label for="vtype" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Type Of Vehicle
                   </label>
-                  <input type="text" name="type_of_vehicle-{{ loop.index }}" id="label-{{ loop.index }}-type"
-                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Type Of Vehicle" value="{{ label.type_of_vehicle }}" />
+                  <select id="label-{{ loop.index }}-trim" name="trim-{{ loop.index }}"
+                    class="clean_name_input model w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                    {% for type in types %}
+                    {% if type.name == label.type_of_vehicle %}
+                    <option value="{{ type.name }}" selected>{{ type.name }}</option>
+                    {% else %}
+                    <option value="{{ type.name }}">{{ type.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
                 </div>
               </div>
 

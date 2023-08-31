@@ -1,7 +1,6 @@
 # flake8: noqa F401
 import io
 import csv
-import re
 from datetime import datetime
 from flask import (
     Blueprint,
@@ -20,17 +19,9 @@ from app import models as m, db
 from app import forms as f
 from app.logger import log
 from app.controllers.jinja_globals import days_active
+from app.controllers.date_convert import date_convert
 
 report_blueprint = Blueprint("report", __name__, url_prefix="/report")
-
-
-def date_convert(date_input):
-    pattern = r"^\d{4}-\d{2}-\d{2}$"
-    if re.match(pattern, date_input):
-        date_input = datetime.strptime(date_input, "%Y-%m-%d").date()
-    else:
-        date_input = datetime.strptime(date_input, "%m/%d/%Y").date()
-    return date_input
 
 
 @report_blueprint.route("/create", methods=["GET", "POST"])

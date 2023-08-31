@@ -162,3 +162,19 @@ def set_users_logo(user_id: int = 9):
         db.session.add(logo)
         db.session.commit()
     print(f"Logo set for user {user_id}")
+
+
+TEST_STICKERS_QUANTITY = 10
+
+
+def add_pending_labels(user_id: int = 9):
+    for i in range(1, TEST_STICKERS_QUANTITY):
+        sticker = m.Sticker(
+            code=f"QR0000{i + user_id}",
+            user_id=user_id,
+            pending=True,
+            created_at=datetime.now() - timedelta(days=randint(1, 30)),
+        )
+        db.session.add(sticker)
+    db.session.commit()
+    print(f"Sticker set for user {user_id}")
