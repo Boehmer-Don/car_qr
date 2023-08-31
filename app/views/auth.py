@@ -1,3 +1,5 @@
+import io
+from PIL import Image
 from flask_mail import Message
 from flask import Blueprint, render_template, url_for, redirect, flash, request, session
 from flask import current_app as app
@@ -55,14 +57,17 @@ def register():
 
 @auth_blueprint.route("/login", methods=["GET", "POST"])
 def login():
+    log(log.INFO, "Login page requested. Request method: [%s]", request.method)
     form: f.LoginForm = f.LoginForm(request.form)
     if form.validate_on_submit():
         user: m.User = m.User.authenticate(form.user_id.data, form.password.data)
         log(log.INFO, "Form submitted. User: [%s]", user)
         if not user:
+            log(log.WARNING, "Login failed")
             flash("Wrong user ID or password.", "danger")
             return redirect(url_for("auth.login"))
         if not user.activated:
+            log(log.WARNING, "Account not activated")
             flash(
                 "Your account is not activated yet. Please check your email to confirm it.",
                 "danger",
@@ -73,11 +78,11 @@ def login():
         log(log.INFO, "Login successful.")
         flash("Login successful.", "success")
         if current_user.role == m.UsersRole.admin:
+            log(log.INFO, "Redirecting to users page.")
             return redirect(url_for("user.get_all"))
         else:
+            log(log.INFO, "Redirecting to labels page.")
             return redirect(url_for("labels.get_active_labels"))
-
-        flash("Wrong user ID or password.", "danger")
 
     elif form.is_submitted():
         log(log.WARNING, "Form submitted error: [%s]", form.errors)
@@ -120,6 +125,7 @@ def activate(reset_password_uid: str):
         user.city = form.city.data
         user.postal_code = form.postal_code.data
         user.phone = form.phone.data
+        user.gift = form.gift.data
         user.save()
 
         log(log.INFO, "Registration contact info saved. User: [%s]", user)
@@ -187,6 +193,7 @@ def payment(user_unique_id: str):
         form.postal_code.data = user.postal_code
         form.plan.data = user.plan.name
         form.phone.data = user.phone
+        form.gift.data = user.gift
 
     if form.validate_on_submit():
         user.email = form.email.data
@@ -202,6 +209,7 @@ def payment(user_unique_id: str):
         user.postal_code = form.postal_code.data
         user.plan = form.plan.data
         user.phone = form.phone.data
+        user.gift = form.gift.data
         user.save()
         login_user(user)
 
@@ -231,6 +239,8 @@ def payment(user_unique_id: str):
 
 @auth_blueprint.route("/logo-upload/<user_unique_id>", methods=["GET", "POST"])
 def logo_upload(user_unique_id: str):
+    change_logo = request.args.get("change_logo")
+
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
 
@@ -240,26 +250,56 @@ def logo_upload(user_unique_id: str):
         return redirect(url_for("main.index"))
 
     if request.method == "POST":
-        # Uplaod logo image file
+        # Upload logo image file
         file = request.files["file"]
         log(log.INFO, "File uploaded: [%s]", file)
 
-        with db.begin() as session:
-            session.execute(sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id))
-            session.add(
+        IMAGE_MAX_WIDTH = app.config["IMAGE_MAX_WIDTH"]
+        img = Image.open(file.stream)
+        width, height = img.size
+
+        if width > IMAGE_MAX_WIDTH:
+            log(log.INFO, "Resizing image")
+            ratio = IMAGE_MAX_WIDTH / width
+            new_width = IMAGE_MAX_WIDTH
+            new_height = int(height * ratio)
+            resized_img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            img = resized_img
+
+        try:
+            img_byte_arr = io.BytesIO()
+            img.save(img_byte_arr, format="PNG")
+            img_byte_arr = img_byte_arr.getvalue()
+        except Exception as e:
+            log(log.ERROR, "Error saving image: [%s]", e)
+            flash("Error saving image", "danger")
+            return redirect(url_for("auth.logo_upload", user_unique_id=user.unique_id))
+
+        try:
+            db.session.execute(
+                sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id)
+            )
+            db.session.add(
                 m.UserLogo(
                     user_id=user.id,
                     filename=file.filename.split("/")[-1],
-                    file=file.read(),
-                    mimetype=file.mimetype,
+                    file=img_byte_arr,
+                    mimetype=file.content_type,
                 )
             )
+            db.session.commit()
+            flash("Logo uploaded", "success")
+        except Exception as e:
+            log(log.ERROR, "Error saving logo: [%s]", e)
+            flash("Error saving logo", "danger")
+            return redirect(url_for("auth.logo_upload", user_unique_id=user.unique_id))
 
     log(log.INFO, "Uploaded logo for user: [%s]", user)
     return render_template(
         "auth/register_logo_upload.html",
         user=user,
         user_unique_id=user_unique_id,
+        change_logo=change_logo,
     )
 
 

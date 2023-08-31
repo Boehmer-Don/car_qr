@@ -15,7 +15,7 @@
       <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white"> Edit label </h3>
         <button id="modalCloseButton" type="button"
-          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+          class="modal-close-button text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
           <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd"
@@ -29,12 +29,12 @@
         <div class="w-full px-1">
           <div class="w-full flex justify-between">
             <div class="w-full px-1">
-                <label for="name" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label for="name" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                 Unique Label Identifier
-                </label>
-                <input type="text" name="sticker_id" id="label-sticker-number"
+              </label>
+              <input type="text" name="sticker_id" id="label-sticker-number"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="i.e. QR23456" readonly/>
+                placeholder="i.e. QR23456" readonly />
             </div>
           </div>
           <div class="w-full flex justify-between">
@@ -45,7 +45,7 @@
               </label>
               <input type="text" name="name" id="label-edit-name"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="Label Name" readonly/>
+                placeholder="Label Name" readonly />
             </div>
 
             <div class="w-full px-1">
@@ -54,7 +54,7 @@
               </label>
               <input type="text" name="make" id="label-edit-make"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="Make" readonly/>
+                placeholder="Make" readonly />
             </div>
           </div>
 
@@ -65,7 +65,7 @@
               </label>
               <input type="text" name="vehicle_model" id="label-edit-model"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="Vehicle Model" readonly/>
+                placeholder="Vehicle Model" readonly />
             </div>
 
             <div class="w-full px-1">
@@ -74,7 +74,7 @@
               </label>
               <input type="text" name="year" id="label-edit-year"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="Year" readonly/>
+                placeholder="Year" readonly />
             </div>
           </div>
 
@@ -85,7 +85,7 @@
               </label>
               <input type="text" name="mileage" id="label-edit-mileage"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="Mileage" readonly/>
+                placeholder="Mileage" readonly />
             </div>
 
             <div class="w-full px-1">
@@ -94,7 +94,7 @@
               </label>
               <input type="text" name="color" id="label-edit-color"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="Color" readonly/>
+                placeholder="Color" readonly />
             </div>
           </div>
 
@@ -105,7 +105,7 @@
               </label>
               <input type="text" name="trim" id="label-edit-trim"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="Trim" readonly/>
+                placeholder="Trim" readonly />
             </div>
 
             <div class="w-full px-1">
@@ -114,7 +114,7 @@
               </label>
               <input type="text" name="type_of_vehicle" id="label-edit-type"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="Type Of Vechicle" readonly/>
+                placeholder="Type Of Vechicle" readonly />
             </div>
           </div>
 
@@ -125,7 +125,7 @@
               </label>
               <input type="text" name="price" id="label-edit-price"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="Price" readonly/>
+                placeholder="Price" readonly />
             </div>
 
             <div class="w-full px-1">
@@ -134,7 +134,7 @@
               </label>
               <input type="text" name="date_received" id="label-edit-date-received"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white opacity-50"
-                placeholder="Date Received" readonly/>
+                placeholder="Date Received" readonly />
             </div>
           </div>
 
@@ -145,7 +145,7 @@
               </label>
               <input type="text" name="url" id="label-edit-url"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                placeholder="URL" readonly/>
+                placeholder="URL" readonly />
             </div>
 
             <div class="w-full px-1">
@@ -154,7 +154,7 @@
               </label>
               <input type="text" name="views" id="label-edit-views"
                 class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white opacity-50"
-                placeholder="Views" readonly/>
+                placeholder="Views" readonly />
             </div>
           </div>
         </div>

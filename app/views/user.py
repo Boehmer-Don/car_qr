@@ -1,4 +1,5 @@
 # flake8: noqa E712
+import io
 from datetime import datetime
 from flask import (
     Blueprint,
@@ -7,6 +8,7 @@ from flask import (
     flash,
     redirect,
     url_for,
+    Response,
 )
 from flask_login import login_required, current_user
 from flask_mail import Message
@@ -30,32 +32,32 @@ def get_all():
     q = request.args.get("q", type=str, default=None)
     query = (
         m.User.select()
-        .where(m.User.activated, m.User.deleted == False, m.User.role == "dealer")
+        .where(m.User.activated, m.User.deleted.is_(False), m.User.role == "dealer")
         .order_by(m.User.id)
     )
     count_query = (
         sa.select(sa.func.count())
-        .where(m.User.activated, m.User.deleted == False, m.User.role == "dealer")
+        .where(m.User.activated, m.User.deleted.is_(False), m.User.role == "dealer")
         .select_from(m.User)
     )
     if q:
         query = (
             m.User.select()
-            .where(m.User.activated, m.User.deleted == False, m.User.role == "dealer")
+            .where(m.User.activated, m.User.deleted.is_(False), m.User.role == "dealer")
             .where(
-                m.User.first_name.like(f"%{q}%")
-                | m.User.email.like(f"%{q}%")
-                | m.User.last_name.like(f"%{q}%")
+                m.User.first_name.ilike(f"%{q}%")
+                | m.User.email.ilike(f"%{q}%")
+                | m.User.last_name.ilike(f"%{q}%")
             )
             .order_by(m.User.id)
         )
         count_query = (
             sa.select(sa.func.count())
-            .where(m.User.activated, m.User.deleted == False)
+            .where(m.User.activated, m.User.deleted.is_(False))
             .where(
-                m.User.first_name.like(f"%{q}%")
-                | m.User.email.like(f"%{q}%")
-                | m.User.last_name.like(f"%{q}%")
+                m.User.first_name.ilike(f"%{q}%")
+                | m.User.email.ilike(f"%{q}%")
+                | m.User.last_name.ilike(f"%{q}%")
             )
             .select_from(m.User)
         )
@@ -73,8 +75,8 @@ def get_all():
         search_query=q,
         pending_users=db.session.scalars(
             sa.select(m.User)
-            .where(m.User.activated == False, m.User.deleted == False)
-            .where(m.User.activated == False, m.User.role == "dealer")
+            .where(m.User.activated.is_(False), m.User.deleted.is_(False))
+            .where(m.User.activated.is_(False), m.User.role == "dealer")
         ).all(),
     )
 
@@ -192,6 +194,7 @@ def account(user_unique_id: str):
         form.postal_code.data = user.postal_code
         form.plan.data = user.plan.name
         form.phone.data = user.phone
+        form.gift.data = user.gift
 
     if form.validate_on_submit():
         user.email = form.email.data
@@ -207,6 +210,7 @@ def account(user_unique_id: str):
         user.postal_code = form.postal_code.data
         user.plan = form.plan.data
         user.phone = form.phone.data
+        user.gift = form.gift.data
         user.save()
         log(log.INFO, "User data updated. User: [%s]", user)
         flash("Your account has been successfully updated", "success")
@@ -245,7 +249,7 @@ def subscription(user_unique_id: str):
         flash("You are successfully changed your plan!", "success")
         return redirect(url_for("auth.payment", user_unique_id=user.unique_id))
     elif form.is_submitted():
-        flash("Something went wrong. Form submittion error", "danger")
+        flash("Something went wrong. Form submission error", "danger")
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
 
     return render_template(
@@ -254,3 +258,81 @@ def subscription(user_unique_id: str):
         user=user,
         user_unique_id=user_unique_id,
     )
+
+
+@bp.route("/gift/<sticker_id>", methods=["GET", "POST"])
+def gift(sticker_id: str):
+    label: m.Label = db.session.scalar(
+        m.Label.select().where(m.Label.sticker_id == sticker_id)
+    )
+
+    return render_template(
+        "user/gift.html",
+        sticker_id=sticker_id,
+        label_url=label.url,
+    )
+
+
+@bp.route("/client_data/<sticker_id>", methods=["GET", "POST"])
+def client_data(sticker_id: str):
+    form: f.Client = f.Client()
+    if form.validate_on_submit():
+        client = db.session.scalar(
+            m.Client.select().where(m.Client.email == form.email.data)
+        )
+        if client:
+            log(log.INFO, "Client already exists: [%s]", client)
+            return redirect(url_for("user.thx_client", sticker_id=sticker_id))
+        client = m.Client(
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            email=form.email.data,
+            phone=form.phone.data,
+        )
+        client.save()
+        log(log.INFO, "Client created: [%s]", client)
+        return redirect(url_for("user.thx_client", sticker_id=sticker_id))
+    elif form.is_submitted():
+        flash("Something went wrong. Form submission error", "danger")
+        log(log.ERROR, "Form submitted error: [%s]", form.errors)
+        redirect(url_for("user.gift", sticker_id=sticker_id))
+
+    return render_template(
+        "user/client_data.html",
+        sticker_id=sticker_id,
+        form=form,
+    )
+
+
+@bp.route("/thx_client/<sticker_id>", methods=["GET"])
+def thx_client(sticker_id: str):
+    label: m.Label = db.session.scalar(
+        m.Label.select().where(m.Label.sticker_id == sticker_id)
+    )
+    return render_template("user/thx_client.html", label_url=label.url)
+
+
+@bp.route("/logo/<user_unique_id>")
+@login_required
+def get_logo(user_unique_id: str):
+    user: m.User = db.session.scalar(
+        m.User.select().where(m.User.unique_id == user_unique_id)
+    )
+    if not user:
+        log(log.INFO, "User not found")
+    logo: m.UserLogo = db.session.scalar(
+        m.UserLogo.select().where(m.UserLogo.user_id == user.id)
+    )
+    if not logo:
+        log(log.INFO, "Logo not found")
+    buff = io.BytesIO(logo.file)
+    return Response(
+        buff,
+        mimetype="image/png",
+    )
+
+
+@bp.route("/logo/<user_unique_id>")
+@login_required
+def change_logo(user_unique_id: str):
+    ...

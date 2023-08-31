@@ -28,7 +28,6 @@ services:
       - "traefik.http.routers.app.rule=Host(`autoqrcode.com`)"
       - "traefik.http.routers.app.tls=true"
       - "traefik.http.routers.app.tls.certresolver=myresolver"
-      # - "traefik.http.services.app.loadbalancer.server.port=8000"
 
 networks:
   default:

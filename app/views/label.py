@@ -12,6 +12,7 @@ from flask import (
     redirect,
     url_for,
     send_file,
+    Response,
 )
 from flask_login import login_required, current_user
 import sqlalchemy as sa
@@ -125,6 +126,7 @@ def deactivate_label():
                 )
             )
         label.status = m.LabelStatus.archived
+        label.price_sold = form.price_sold.data
         label.date_deactivated = datetime.utcnow()
         label.save()
         log(log.INFO, "Deactivated label : [%s]", form.unique_id.data)
@@ -210,6 +212,8 @@ def new_label_set_amount(user_unique_id: str):
 def new_label_set_details(user_unique_id: str, amount: int):
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
+    trims = db.session.scalars(m.CarTrim.select()).all()
+    types = db.session.scalars(m.CarType.select()).all()
     if request.method == "POST":
         for i in range(1, int(amount) + 1):
             label = m.Label(
@@ -228,7 +232,6 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 user_id=current_user.id,
             ).save()
             log(log.INFO, "Created label [%s]", label)
-        # log(log.INFO, "Created [%s] labels: [%s]", amount)
         return redirect(
             url_for("labels.new_label_payment", user_unique_id=user_unique_id)
         )
@@ -239,6 +242,8 @@ def new_label_set_details(user_unique_id: str, amount: int):
         amount=amount,
         makes=makes,
         models=models,
+        trims=trims,
+        types=types,
     )
 
 
@@ -246,10 +251,14 @@ def new_label_set_details(user_unique_id: str, amount: int):
 @login_required
 def new_label_payment(user_unique_id: str):
     labels = db.session.scalars(
-        m.Label.select().where(m.Label.status == m.LabelStatus.cart)
+        m.Label.select()
+        .where(m.Label.user_id == current_user.id)
+        .where(m.Label.status == m.LabelStatus.cart)
     ).all()
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
+    trims = db.session.scalars(m.CarTrim.select()).all()
+    types = db.session.scalars(m.CarType.select()).all()
     if request.method == "POST":
         if request.form.get("edit"):
             for index, label in enumerate(labels):
@@ -265,7 +274,9 @@ def new_label_payment(user_unique_id: str):
                 label.price = request.form.get(f"price-{index + 1}")
                 label.url = request.form.get(f"url-{index + 1}")
                 label.user_id = current_user.id
-                label.save()
+                db.session.add(label)
+            if len(labels):
+                db.session.commit()
 
         if request.form.get("payment"):
             stripe_form_url = create_payment_subscription_checkout_session(
@@ -284,28 +295,20 @@ def new_label_payment(user_unique_id: str):
         labels=labels,
         makes=makes,
         models=models,
+        trims=trims,
+        types=types,
     )
-
-
-@dealer_blueprint.route("/l/<label_unique_id>")
-def redirect_to_outer_url(label_unique_id: str):
-    label: m.Label = db.session.scalar(
-        m.Label.select().where(m.Label.unique_id == label_unique_id)
-    )
-    label.views += 1
-    label.save()
-    return redirect(label.url)
 
 
 @dealer_blueprint.route("/get_models", methods=["POST"])
 def get_models():
     make_name = request.json.get("makeSelected")
-    make = db.session.scalar(m.CarMake.select().where(m.CarMake.name == make_name))
     models = db.session.scalars(
-        m.CarModel.select().where(m.CarModel.make == make)
+        sa.select(m.CarModel.name).where(
+            m.CarModel.make.has(m.CarMake.name == make_name)
+        )
     ).all()
-    models_names = [model.name for model in models]
-    return {"models": models_names}
+    return {"models": models}
 
 
 def generate_alphanumeric_code():
@@ -331,7 +334,7 @@ def generate(user_unique_id: str):
             labels_amount,
             user_unique_id,
         )
-        for _ in range(int(labels_amount)):
+        for _ in range(labels_amount):
             generated_code = generate_alphanumeric_code()
             while True:
                 if not db.session.scalar(
@@ -340,10 +343,13 @@ def generate(user_unique_id: str):
                     break
                 generated_code = generate_alphanumeric_code()
 
-            m.Sticker(
+            sticker = m.Sticker(
                 code=generated_code,
                 user_id=user.id,
-            ).save()
+            )
+            db.session.add(sticker)
+        if labels_amount:
+            db.session.commit()
 
         return redirect(
             url_for(
@@ -372,18 +378,32 @@ def download():
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
 
+    logo_link = None
     if user:
         stickers = db.session.scalars(
             m.Sticker.select()
-            .where(m.Sticker.pending == True)
+            .where(m.Sticker.pending.is_(True))
             .where(m.Sticker.user == user)
         ).all()
+        if user.logo:
+            logo_link = f"user/logo/{user.unique_id}"
+
     else:
         stickers = db.session.scalars(
-            m.Sticker.select().where(m.Sticker.pending == True)
+            m.Sticker.select().where(m.Sticker.pending.is_(True))
         ).all()
 
-    if request.method == "POST":
+    if request.form.get("logo-download"):
+        return send_file(
+            io.BytesIO(user.logo[0].file),
+            as_attachment=True,
+            download_name=f"logo_{user.first_name}_{user.last_name}_{datetime.now()}.png",
+            mimetype="image/png",
+            max_age=0,
+            last_modified=datetime.now(),
+        )
+
+    if request.form.get("pending-labels-download"):
         with io.StringIO() as proxy:
             writer = csv.writer(proxy)
             row = [
@@ -431,4 +451,116 @@ def download():
         user=user,
         stickers=stickers,
         url=app.config.get("LANDING_URL"),
+        logo_link=logo_link,
+    )
+
+
+@dealer_blueprint.route("/new_make", methods=["GET", "POST"])
+@login_required
+def new_make():
+    new_make = request.form.get("new_make_name")
+    next_url = request.form.get("next_url")
+
+    make = db.session.scalar(sa.select(m.CarMake).where(m.CarMake.name == new_make))
+    if not make:
+        m.CarMake(name=new_make).save()
+        log(log.INFO, "Created new make: [%s]", new_make)
+    else:
+        log(log.INFO, "Make already exists: [%s]", new_make)
+
+    return redirect(next_url)
+
+
+@dealer_blueprint.route("/new_model", methods=["GET", "POST"])
+@login_required
+def new_model():
+    new_model = request.form.get("new_model_name")
+    next_url = request.form.get("next_url")
+    make = request.form.get("model_make")
+
+    make = db.session.scalar(sa.select(m.CarMake).where(m.CarMake.name == make))
+    if not make:
+        log(log.ERROR, "Failed to find make : [%s]", make)
+        flash("Failed to find make", "danger")
+        return redirect(next_url)
+
+    model = db.session.scalar(sa.select(m.CarMake).where(m.CarMake.name == new_model))
+    if not model:
+        m.CarModel(
+            name=new_model,
+            make_id=make.id,
+        ).save()
+        log(log.INFO, "Created new model: [%s]", new_model)
+    else:
+        log(log.INFO, "Model already exists: [%s]", new_model)
+
+    return redirect(next_url)
+
+
+@dealer_blueprint.route("/new_trim", methods=["GET", "POST"])
+@login_required
+def new_trim():
+    new_trim = request.form.get("new_trim_name")
+    next_url = request.form.get("next_url")
+
+    trim = db.session.scalar(sa.select(m.CarTrim).where(m.CarTrim.name == new_trim))
+    if not trim:
+        m.CarTrim(name=new_trim).save()
+        log(log.INFO, "Created new trim: [%s]", new_trim)
+    else:
+        log(log.INFO, "Trim already exists: [%s]", new_trim)
+
+    return redirect(next_url)
+
+
+@dealer_blueprint.route("/new_type", methods=["GET", "POST"])
+@login_required
+def new_type():
+    new_type = request.form.get("new_type_name")
+    next_url = request.form.get("next_url")
+
+    type = db.session.scalar(sa.select(m.CarType).where(m.CarType.name == new_type))
+    if not type:
+        m.CarType(name=new_type).save()
+        log(log.INFO, "Created new type: [%s]", new_type)
+    else:
+        log(log.INFO, "Type already exists: [%s]", new_type)
+
+    return redirect(next_url)
+
+
+@dealer_blueprint.route("/delete_from_cart/<label_unique_id>")
+@login_required
+def delete_from_cart(label_unique_id):
+    label = db.session.scalar(
+        sa.select(m.Label).where(m.Label.unique_id == label_unique_id)
+    )
+
+    if not label:
+        log(log.ERROR, "Failed to find label : [%s]", label_unique_id)
+        flash("Failed to find label", "danger")
+        return redirect(
+            url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
+        )
+
+    if label.status != m.LabelStatus.cart:
+        log(log.ERROR, "Label is not in cart : [%s]", label_unique_id)
+        flash("Label is not in cart", "danger")
+        return redirect(
+            url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
+        )
+
+    try:
+        db.session.delete(label)
+        db.session.commit()
+        log(log.INFO, "Deleted label : [%s]", label_unique_id)
+    except Exception as e:
+        log(log.ERROR, "Failed to delete label: [%s]", e)
+        flash("Failed to delete label", "danger")
+        return redirect(
+            url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
+        )
+
+    return redirect(
+        url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
     )

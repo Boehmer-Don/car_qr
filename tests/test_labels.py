@@ -1,5 +1,5 @@
 # flake8: noqa E712
-from flask import current_app as app
+from flask import current_app as app, url_for
 from flask_login import current_user
 from flask.testing import FlaskClient, FlaskCliRunner
 from click.testing import Result
@@ -7,7 +7,7 @@ from app import models as m, db
 from tests.utils import login
 
 
-def test_labels_active(populate: FlaskClient):
+def test_labels_active(populate: FlaskClient, test_labels_data: dict):
     login(populate)
     response = populate.get("/labels/active")
     assert response
@@ -16,7 +16,7 @@ def test_labels_active(populate: FlaskClient):
     assert b"Welcome Back" in response.data
 
     all_labels = db.session.scalars(m.Label.select()).all()
-    assert len(all_labels) == 30
+    assert len(all_labels) == len(test_labels_data)
 
     active_labels = db.session.scalars(m.Label.select().where(m.Label.status)).all()
     for label in active_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
@@ -42,7 +42,7 @@ def test_views_counter(populate: FlaskClient):
     all_labels = db.session.scalars(m.Label.select()).all()
     label: m.Label = all_labels[0]
     views_before = label.views
-    response = populate.get(f"labels/l/{label.unique_id}")
+    response = populate.get(f"l/{label.sticker_id}")
     assert response
     assert response.status_code == 302
     assert response.location == label.url
@@ -51,6 +51,16 @@ def test_views_counter(populate: FlaskClient):
         m.Label.select().where(m.Label.unique_id == label.unique_id)
     )
     assert label.views > views_before
+
+    current_user.gift = "Some Cool Gift"
+    current_user.save()
+    response = populate.get(f"l/{label.sticker_id}")
+    assert response
+    assert response.status_code == 302
+    assert response.location == url_for(
+        "user.gift",
+        sticker_id=label.sticker_id,
+    )
 
 
 def test_label_edit(populate: FlaskClient):
@@ -157,9 +167,9 @@ def test_add_new_labels(client: FlaskClient):
     assert b"Order Details" in response.data
 
 
-def test_add_labels(runner: FlaskCliRunner):
+def test_add_labels(runner: FlaskCliRunner, test_labels_data: dict):
     TEST_USER_ID = 1
     count_before = db.session.query(m.Label).count()
     res: Result = runner.invoke(args=["add-labels", "--user-id", f"{TEST_USER_ID}"])
     assert "DB populated by 10 testing labels for user" in res.stdout
-    assert (db.session.query(m.Label).count() - count_before) == 30
+    assert (db.session.query(m.Label).count() - count_before) == len(test_labels_data)

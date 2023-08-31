@@ -35,6 +35,8 @@ def dashboard():
     make_filter = make_filter if make_filter and make_filter != "None" else ""
     model_filter = request.args.get("model_filter")
     model_filter = model_filter if model_filter and model_filter != "None" else ""
+    trim_filter = request.args.get("trim_filter")
+    trim_filter = trim_filter if trim_filter and trim_filter != "None" else ""
     price_lower = request.args.get("price_lower")
     price_lower = price_lower if price_lower and price_lower != "None" else ""
     price_upper = request.args.get("price_upper")
@@ -70,12 +72,14 @@ def dashboard():
     )
 
     if exclude:
+        log(log.INFO, f"Excluding labels: {exclude}")
         exclude_list = exclude.split(",")
         for label_to_exclude in exclude_list:
             query = query.where(m.Label.unique_id != label_to_exclude)
             count_query = count_query.where(m.Label.unique_id != label_to_exclude)
 
     if start_date and end_date:
+        log(log.INFO, f"Filtering by start_date: {start_date} and end_date: {end_date}")
         start_date = datetime.strptime(start_date, "%m/%d/%Y")
         end_date = datetime.strptime(end_date, "%m/%d/%Y")
         query = query.where(sa.func.DATE(m.Label.date_received) >= start_date)
@@ -85,38 +89,54 @@ def dashboard():
         query = query.where(sa.func.DATE(m.Label.date_received) <= end_date)
         count_query = count_query.where(sa.func.DATE(m.Label.date_received) <= end_date)
     elif date_received and date_received != "None":
+        log(log.INFO, f"Filtering by date_received: {date_received}")
         date_received = datetime.strptime(date_received, "%m/%d/%Y").date()
         query = query.where(sa.func.DATE(m.Label.date_received) == date_received)
 
     if make_filter and make_filter != "All":
+        log(log.INFO, f"Filtering by make: {make_filter}")
         query = query.where(m.Label.make == make_filter)
         count_query = count_query.where(m.Label.make == make_filter)
     if model_filter and model_filter != "All":
+        log(log.INFO, f"Filtering by model: {model_filter}")
         query = query.where(m.Label.vehicle_model == model_filter)
         count_query = count_query.where(m.Label.vehicle_model == model_filter)
     if type_filter and type_filter != "All":
+        log(log.INFO, f"Filtering by type: {type_filter}")
         query = query.where(m.Label.type_of_vehicle == type_filter)
         count_query = count_query.where(m.Label.type_of_vehicle == type_filter)
+    if trim_filter and trim_filter != "All":
+        log(log.INFO, f"Filtering by trim: {trim_filter}")
+        query = query.where(m.Label.trim == trim_filter)
+        count_query = count_query.where(m.Label.trim == trim_filter)
     if views_filter == "Asc":
+        log(log.INFO, f"Filtering by views: {views_filter}")
         query = query.order_by(m.Label.views.asc())
     elif views_filter == "Desc":
+        log(log.INFO, f"Filtering by views: {views_filter}")
         query = query.order_by(m.Label.views.desc())
     if price_lower:
+        log(log.INFO, f"Filtering by price_lower: {price_lower}")
         query = query.where(m.Label.price >= price_lower)
         count_query = count_query.where(m.Label.price >= price_lower)
     if price_upper:
+        log(log.INFO, f"Filtering by price_upper: {price_upper}")
         query = query.where(m.Label.price <= price_upper)
         count_query = count_query.where(m.Label.price <= price_upper)
     if views_options_filter == "0-10":
+        log(log.INFO, f"Filtering by views_options_filter: {views_options_filter}")
         query = query.where(m.Label.views <= 10)
         count_query = count_query.where(m.Label.views <= 10)
     elif views_options_filter == "10-50":
+        log(log.INFO, f"Filtering by views_options_filter: {views_options_filter}")
         query = query.where(m.Label.views >= 10).where(m.Label.views <= 50)
         count_query = count_query.where(m.Label.views >= 10).where(m.Label.views <= 50)
     elif views_options_filter == "50-100":
+        log(log.INFO, f"Filtering by views_options_filter: {views_options_filter}")
         query = query.where(m.Label.views >= 50).where(m.Label.views <= 100)
         count_query = count_query.where(m.Label.views >= 50).where(m.Label.views <= 100)
     elif views_options_filter == "100-1000":
+        log(log.INFO, f"Filtering by views_options_filter: {views_options_filter}")
         query = query.where(m.Label.views >= 100).where(m.Label.views <= 1000)
         count_query = count_query.where(m.Label.views >= 100).where(
             m.Label.views <= 1000
@@ -132,52 +152,39 @@ def dashboard():
         .scalars()
         .all()
     )
-    types = list(
-        set(
-            [
-                label.type_of_vehicle
-                for label in db.session.scalars(
-                    m.Label.select().where(m.Label.user_id == current_user.id)
-                ).all()
-            ]
-        )
-    )
-    makes = list(
-        set(
-            [
-                label.make
-                for label in db.session.scalars(
-                    m.Label.select().where(m.Label.user_id == current_user.id)
-                ).all()
-            ]
-        )
-    )
+    types = db.session.scalars(
+        sa.select(m.Label.type_of_vehicle)
+        .where(m.Label.user_id == current_user.id)
+        .group_by(m.Label.type_of_vehicle)
+    ).all()
+    makes = db.session.scalars(
+        sa.select(m.Label.make)
+        .where(m.Label.user_id == current_user.id)
+        .group_by(m.Label.make)
+    ).all()
+    trims = db.session.scalars(
+        sa.select(m.Label.trim)
+        .where(m.Label.user_id == current_user.id)
+        .group_by(m.Label.trim)
+    ).all()
     if make_filter and make_filter != "All":
-        models = list(
-            set(
-                [
-                    label.vehicle_model
-                    for label in db.session.scalars(
-                        m.Label.select()
-                        .where(m.Label.user_id == current_user.id)
-                        .where(m.Label.make == make_filter)
-                    ).all()
-                ]
-            )
-        )
+        log(log.INFO, f"Getting models for make: {make_filter}")
+        models = db.session.scalars(
+            sa.select(m.Label.vehicle_model)
+            .where(m.Label.user_id == current_user.id)
+            .where(m.Label.make == make_filter)
+            .group_by(m.Label.vehicle_model)
+        ).all()
     else:
-        models = list(
-            set(
-                [
-                    label.vehicle_model
-                    for label in db.session.scalars(
-                        m.Label.select().where(m.Label.user_id == current_user.id)
-                    ).all()
-                ]
-            )
-        )
+        log(log.INFO, f"Getting models for all makes")
+        models = db.session.scalars(
+            sa.select(m.Label.vehicle_model)
+            .where(m.Label.user_id == current_user.id)
+            .group_by(m.Label.vehicle_model)
+        ).all()
 
     if download == "true":
+        log(log.INFO, f"Downloading report")
         labels = db.session.scalars(query).all()
         with io.StringIO() as proxy:
             writer = csv.writer(proxy)
@@ -242,6 +249,7 @@ def dashboard():
         models=models,
         model_filter=model_filter,
         types=types,
+        trims=trims,
         type_filter=type_filter,
         views_filter=views_filter,
         price_lower=price_lower,
@@ -260,12 +268,12 @@ def dashboard():
 def get_models():
     make = request.json.get("makeSelected")
     labels = db.session.scalars(
-        m.Label.select()
+        sa.select(m.Label.vehicle_model)
         .where(m.Label.user_id == current_user.id)
         .where(m.Label.make == make)
+        .distinct(m.Label.vehicle_model)
     ).all()
-    models = list(set([label.vehicle_model for label in labels]))
-    return {"models": models}
+    return {"models": labels}
 
 
 @report_blueprint.route("/all", methods=["GET", "POST"])

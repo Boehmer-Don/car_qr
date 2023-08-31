@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
   const filterMake: HTMLSelectElement = document.querySelector('#filter-make');
-  const filterType: HTMLSelectElement =
-    document.querySelector('#type_of_vehicle');
   const filterModel: HTMLSelectElement =
     document.querySelector('#filter-model');
+  const filterType: HTMLSelectElement =
+    document.querySelector('#type_of_vehicle');
+  const filterTrim: HTMLSelectElement = document.querySelector('#trim_filter');
   const applyFiltersButton: HTMLButtonElement = document.querySelector(
     '#apply-filters-button',
   );
@@ -41,6 +42,9 @@ document.addEventListener('DOMContentLoaded', function () {
   filterType.addEventListener('change', () => {
     applyFiltersButton.click();
   });
+  filterTrim.addEventListener('change', () => {
+    applyFiltersButton.click();
+  });
 
   const viewsOptions: Element = document.querySelector('#views_options');
   viewsOptions.addEventListener('change', () => {
@@ -55,8 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // prettier-ignore
   const viewsColumnSelectDesc: Element = document.querySelector('#views-desc');
   viewsColumnButton.addEventListener('click', () => {
-    console.log('has attribute selected`');
-
     if (viewsColumnSelectAsc.hasAttribute('selected')) {
       viewsColumnSelectAsc.removeAttribute('selected');
       viewsColumnSelectDesc.setAttribute('selected', 'selected');
@@ -88,13 +90,11 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   const excludeList: HTMLInputElement = document.querySelector('#exclude');
-  console.log(excludeList.value, typeof excludeList.value);
   const deleteFromReportButtons = document.querySelectorAll(
     '.delete-from-report',
   );
   deleteFromReportButtons.forEach((deleteFromReport: Element) => {
     deleteFromReport.addEventListener('click', () => {
-      console.log(deleteFromReport.getAttribute('data-target'));
       if (excludeList.value === 'None') {
         excludeList.value = `${deleteFromReport.getAttribute('data-target')},`;
         applyFiltersButton.click();

@@ -25,6 +25,7 @@ class DeactivateLabelForm(FlaskForm):
     unique_id = StringField("Unique ID")
     active = BooleanField("Active")
     next_url = StringField("Next URL")
+    price_sold = IntegerField("Price Sold")
 
 
 class LabelsAmountForm(FlaskForm):

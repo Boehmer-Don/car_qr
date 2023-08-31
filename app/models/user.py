@@ -74,6 +74,10 @@ class User(db.Model, UserMixin, ModelMixin):
     stripe_customer_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(128), unique=True, nullable=True
     )
+    gift_enabled: orm.Mapped[bool] = orm.mapped_column(
+        sa.Boolean, default=False, nullable=True
+    )
+    gift: orm.Mapped[str] = orm.mapped_column(sa.String(128), default="", nullable=True)
 
     @hybrid_property
     def password(self):
@@ -92,6 +96,7 @@ class User(db.Model, UserMixin, ModelMixin):
 
         if user is not None and check_password_hash(user.password, password):
             return user
+        log(log.WARNING, "user:[%s] password is incorrect", user_id)
 
     def reset_password(self):
         self.password_hash = ""

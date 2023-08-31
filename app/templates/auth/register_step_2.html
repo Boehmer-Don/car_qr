@@ -131,7 +131,7 @@
               {{form.postal_code.label(class='block text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.postal_code(
-              class="clean_number_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
               dark:text-white",
               placeholder="K0A"
               )
@@ -142,18 +142,34 @@
             </div>
           </div>
 
-          <div>
-            {{form.phone.label(class='block text-sm
-            font-medium text-gray-900 dark:text-white')}}
-            {{form.phone(
-            class="clean_phone_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
-            dark:text-white",
-            placeholder="000-000-0000"
-            )
-            }}
-            {% for error in form.errors.phone %}
-            <small class="text-danger">{{error}}</small>
-            {% endfor %}
+          <div class="doubled_inputs">
+            <div class="short_input_container short_input_container_left">
+              {{form.phone.label(class='block text-sm
+              font-medium text-gray-900 dark:text-white')}}
+              {{form.phone(
+              class="clean_phone_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              dark:text-white",
+              placeholder="000-000-0000"
+              )
+              }}
+              {% for error in form.errors.phone %}
+              <small class="text-danger">{{error}}</small>
+              {% endfor %}
+            </div>
+
+            <div class="short_input_container short_input_container_right">
+              {{form.gift.label(class='block text-sm
+              font-medium text-gray-900 dark:text-white')}}
+              {{form.gift(
+              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              dark:text-white",
+              placeholder="Free Oil Change"
+              )
+              }}
+              {% for error in form.errors.postal_code %}
+              <small class="text-danger">{{error}}</small>
+              {% endfor %}
+            </div>
           </div>
 
           <button type="submit"

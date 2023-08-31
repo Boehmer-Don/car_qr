@@ -5,6 +5,7 @@ from wtforms import (
     SubmitField,
     ValidationError,
     SelectField,
+    BooleanField,
 )
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
 
@@ -48,6 +49,8 @@ class RegistrationStep2Form(FlaskForm):
     city = StringField("City", validators=[DataRequired()])
     postal_code = StringField("Postal Code", validators=[DataRequired()])
     phone = StringField("Phone", validators=[DataRequired()])
+    gift_enabled = BooleanField("Enable Gift")
+    gift = StringField("Gift", validators=[Optional(), Length(0, 255)])
 
     submit = SubmitField("Register")
 
@@ -106,6 +109,8 @@ class PaymentForm(FlaskForm):
     city = StringField("City", validators=[Optional()])
     postal_code = StringField("Postal Code", validators=[Optional()])
     phone = StringField("Phone", validators=[Optional()])
+    gift_enabled = BooleanField("Enable Gift")
+    gift = StringField("Gift", validators=[Optional(), Length(0, 255)])
 
     # Payment Plan
     choices = [

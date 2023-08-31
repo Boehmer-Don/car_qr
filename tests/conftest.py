@@ -36,9 +36,7 @@ def app(monkeypatch):
     def mock_construct_event(payload, sig_header, secret):
         db_populate(2)
         add_labels(2)
-        stripe_customer: m.User = db.session.scalar(
-            m.User.select().where(m.User.id == 2)
-        )
+        stripe_customer: m.User = db.session.get(m.User, 2)
         stripe_customer.stripe_customer_id = "test_stripe_customer_id"
         stripe_customer.save()
 
@@ -63,6 +61,7 @@ def app(monkeypatch):
     app = create_app("testing")
     app.config.update(
         {
+            "IMAGE_MAX_WIDTH": 2048,
             "TESTING": True,
         }
     )
@@ -95,7 +94,14 @@ def runner(app, client):
 
 
 @pytest.fixture
-def populate(client: FlaskClient):
+def test_labels_data():
+    with open("tests/db/test_labels.json", "r") as f:
+        labels_data = json.load(f)
+    return labels_data
+
+
+@pytest.fixture
+def populate(client: FlaskClient, test_labels_data: dict):
     NUM_TEST_USERS = 15
     for i in range(NUM_TEST_USERS):
         m.User(
@@ -105,10 +111,7 @@ def populate(client: FlaskClient):
         ).save(False)
     db.session.commit()
 
-    with open("tests/db/test_labels.json", "r") as f:
-        labels_data = json.load(f)
-
-    for index, label in enumerate(labels_data):
+    for index, label in enumerate(test_labels_data):
         label_status = m.LabelStatus.active if index < 8 else m.LabelStatus.archived
         date_deactivated = None
         if label_status == m.LabelStatus.archived:

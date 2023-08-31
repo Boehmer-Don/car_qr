@@ -24,7 +24,8 @@
               {{form.email.label(class='block mb-2 text-sm font-medium
               text-gray-900 dark:text-white')}}
               {{form.email(
-              class="clean_email_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="clean_email_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              dark:text-white"
               )
               }}
 
@@ -72,4 +73,5 @@
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
 {% endblock %}

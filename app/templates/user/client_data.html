@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block links %}
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+{% endblock %}
+<!-- prettier-ignore -->
+{% block body %}
+
+<div class="dark:bg-gray-900 pt-20">
+    <section>
+        <div class="w-full h-full lg:w-1/2 px-1 md:px-4 py-3 mx-auto">
+            <!-- prettier-ignore -->
+            <div class="w-full lg:max-w-xl mx-auto p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+                    Thank you for choosing Forbes Motors GM!
+                </h2>
+                <p class="text-lg md:text-xl text-gray-900 dark:text-white">
+                    Please enter your contact information to earn your free gift!
+                </p>
+                <form class="mt-8 space-y-3 from" role="form"
+                    action="{{ url_for('user.client_data', sticker_id=sticker_id) }}" method="post">
+                    {{ form.hidden_tag() }}
+
+                    <div class="doubled_inputs">
+                        <div class="short_input_container short_input_container_left">
+                            {{form.first_name.label(class='block text-sm font-medium
+                            text-gray-900 dark:text-white')}}
+                            {{form.first_name(
+                            class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none
+                            bg-inherit
+                            dark:text-white",
+                            placeholder="John"
+                            )
+                            }}
+
+                            {% for error in form.errors.first_name %}
+                            <small class="text-danger">{{error}}</small>
+                            {% endfor %}
+                        </div>
+
+                        <div class="short_input_container short_input_container_right">
+                            {{form.last_name.label(class='block text-sm font-medium
+                            text-gray-900 dark:text-white')}}
+                            {{form.last_name(
+                            class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none
+                            bg-inherit
+                            dark:text-white",
+                            placeholder="Smith"
+                            )
+                            }}{% for error in form.errors.last_name %}
+                            <small class="text-danger">{{error}}</small>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="doubled_inputs">
+                        <div class="short_input_container short_input_container_left">
+                            {{form.email.label(class='block mb-2 text-sm font-medium
+                            text-gray-900 dark:text-white')}}
+                            {{form.email(
+                            class="clean_email_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none
+                            bg-inherit dark:text-white",
+                            placeholder="email@address.com"
+                            )
+                            }}
+
+                            {% for error in form.errors.email %}
+                            <small class="text-danger">{{error}}</small>
+                            {% endfor %}
+                        </div>
+
+                        <div class="short_input_container short_input_container_right">
+                            {{form.phone.label(class='block text-sm
+                            font-medium text-gray-900 dark:text-white')}}
+                            {{form.phone(
+                            class="clean_phone_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none
+                            bg-inherit
+                            dark:text-white",
+                            placeholder="000-000-0000"
+                            )
+                            }}
+                            {% for error in form.errors.phone %}
+                            <small class="text-danger">{{error}}</small>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="h-3"></div>
+
+                    <button type="submit"
+                        class="w-full px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                        Submit >
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+<!-- prettier-ignore -->
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
+{% endblock %}

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from random import randint
 from typing import Generator
 from faker import Faker
+import sqlalchemy as sa
 from sqlalchemy import func
 from app import db
 from app import models as m
@@ -10,7 +11,7 @@ from app import models as m
 
 fake = Faker()
 
-NUM_TEST_USERS = 100
+NUM_TEST_USERS = 50
 
 
 def gen_test_items(num_objects: int) -> Generator[str, None, None]:
@@ -47,7 +48,7 @@ def gen_test_items(num_objects: int) -> Generator[str, None, None]:
             f"{country}{i}".lower(),
             f"{country}_province_{i}".lower(),
             f"{city}{i}".lower(),
-            f"{postal_code}".lower(),
+            f"{postal_code}",
             f"{phone}",
         )
 
@@ -115,4 +116,22 @@ def add_labels(user_id: int = 9):
             user_id=user_id,
             views=randint(0, 99),
         )
-        label.save()
+        if label.date_deactivated:
+            label.price_sold = label.price - randint(1000, 3000)
+        db.session.add(label)
+    db.session.commit()
+
+
+def set_users_logo(user_id: int = 9):
+    with open("tests/s2b_logo.png", "rb") as file:
+        logo_bytes = file.read()
+        db.session.execute(sa.delete(m.UserLogo).where(m.UserLogo.user_id == user_id))
+        logo = m.UserLogo(
+            user_id=user_id,
+            filename=f"{datetime.now()}.png",
+            file=logo_bytes,
+            mimetype="image/png",
+        )
+        db.session.add(logo)
+        db.session.commit()
+    print(f"Logo set for user {user_id}")
