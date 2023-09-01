@@ -404,6 +404,7 @@ def generate(user_unique_id: str):
 @dealer_blueprint.route("/download", methods=["GET", "POST"])
 @login_required
 def download():
+    landing_url = app.config.get("LANDING_URL")
     user_unique_id = request.args.get("user_unique_id")
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
@@ -463,7 +464,7 @@ def download():
                     sticker.user.last_name,
                     sticker.user.email,
                     sticker.created_at,
-                    app.config.get("LANDING_URL"),
+                    f"{landing_url}/{sticker.code}",
                     sticker.code,
                 ]
                 writer.writerow(row)
