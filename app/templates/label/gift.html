@@ -6,10 +6,10 @@
 {% block body %}
 
 <!-- component -->
-<div class="flex justify-center">
-    <div class="w-full md:w-1/3 h-screen px-3">
+<div class="flex justify-center mb-24">
+    <div class="w-full md:w-1/3 px-3">
         <div class="w-full flex justify-center mb-12">
-            <img src="{{url_for('static', filename='img/forbes_logo.png')}}" alt="forbes_logo.png" class="mt-24">
+            <img src="{{get_user_logo()}}" alt="forbes_logo.png" class="mt-24">
         </div>
 
         <p class="text-xl font-bold text-center">Thank you for choosing Forbes Motors GM! </p>
@@ -38,6 +38,8 @@
         </div>
     </div>
 </div>
+
+{% include 'footer_no_sidebar.html' %}
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
