@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+  console.log('custom.ts');
   const basic_plan: Element = document.querySelector('#basic_plan_card');
   const advanced_plan: Element = document.querySelector('#advanced_plan_card');
   const basicPlanButton: HTMLInputElement =

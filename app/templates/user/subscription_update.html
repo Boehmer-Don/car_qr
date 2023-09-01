@@ -55,9 +55,9 @@
 
             <div class="invisible">
               <input type="radio" id="basic_radio" name="selected_plan" value="basic">
-              <label for="html">$99</label><br>
+              <label for="basic_radio">$99</label><br>
               <input type="radio" id="advanced_radio" name="selected_plan" value="advanced">
-              <label for="javascript">$299</label>
+              <label for="advanced_radio">$299</label>
             </div>
 
             <div class="w-full flex justify-center">
@@ -88,5 +88,5 @@
 <!-- prettier-ignore -->
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/user.js') }}" type="text/javascript" defer></script>
-<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
+<!-- <script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script> -->
 {% endblock %}
