@@ -1388,6 +1388,10 @@ input:checked + .toggle-bg {
   margin-top: 2rem;
 }
 
+.ml-5 {
+  margin-left: 1.25rem;
+}
+
 .block {
   display: block;
 }
@@ -2354,6 +2358,18 @@ input:checked + .toggle-bg {
   padding-top: 1.5rem;
 }
 
+.pl-8 {
+  padding-left: 2rem;
+}
+
+.pl-12 {
+  padding-left: 3rem;
+}
+
+.pl-10 {
+  padding-left: 2.5rem;
+}
+
 .text-center {
   text-align: center;
 }
@@ -3300,6 +3316,18 @@ input:checked + .toggle-bg {
 
   .md\:w-full {
     width: 100%;
+  }
+
+  .md\:w-11\/12 {
+    width: 91.666667%;
+  }
+
+  .md\:w-10\/12 {
+    width: 83.333333%;
+  }
+
+  .md\:w-8\/12 {
+    width: 66.666667%;
   }
 
   .md\:translate-x-0 {
