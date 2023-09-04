@@ -16,6 +16,7 @@ from flask_login import current_user
 from app import models as m, db, mail
 from app import forms as f
 from app.logger import log
+from app.controllers import create_subscription_checkout_session
 
 stripe_blueprint = Blueprint("stripe", __name__, url_prefix="/stripe")
 
@@ -62,6 +63,7 @@ def webhook():
             )
             subscription.save()
             user.activated = True
+
             user.save()
             log(
                 log.INFO,
@@ -70,21 +72,35 @@ def webhook():
             )
         case "customer.subscription.updated":
             response = event["data"]["object"]
-            response = event["data"]["object"]
             subscription: m.Subscription = db.session.scalar(
                 m.Subscription.select().where(
                     m.Subscription.stripe_subscription_id == response.id
                 )
             )
+
             subscription.is_active = not response.cancel_at_period_end
             subscription.current_period_start = response.current_period_start
             subscription.current_period_end = response.current_period_end
             subscription.save()
+            product: m.StripeProduct = db.session.scalar(
+                m.StripeProduct.select().where(
+                    m.StripeProduct.stripe_product_id == response.plan.product
+                )
+            )
             log(
                 log.INFO,
                 "Subscription [%s] updated ",
                 subscription.stripe_subscription_id,
             )
+            user: m.User = db.session.scalar(
+                m.User.select().where(m.User.stripe_customer_id == response.customer)
+            )
+            if product.name == "Advanced Plan":
+                user.plan = m.UsersPlan.advanced
+            elif product.name == "Basic Plan":
+                user.plan = m.UsersPlan.basic
+            user.save()
+            log(log.INFO, "User [%s] updated. User's plan: [%s]", user, user.plan)
         case "customer.subscription.deleted":
             response = event["data"]["object"]
             user: m.User = db.session.scalar(
@@ -178,18 +194,19 @@ def webhook():
 def subscription():
     form: f.SubscriptionPlanForm = f.SubscriptionPlanForm()
     if form.validate_on_submit():
-        current_user.plan = form.selected_plan.data
-        current_user.save()
-        log(log.INFO, "Pay plan is chosen. User: [%s]", current_user)
-        if current_user.plan == m.UsersPlan.advanced:
-            log(
-                log.INFO, "User [%s] is advanced. Redirect to logo upload", current_user
+        # get users stripe plan
+        product = db.session.scalar(
+            m.StripeProduct.select().where(
+                m.StripeProduct.name == form.selected_plan.data
             )
-            return redirect(
-                url_for("auth.logo_upload", user_unique_id=current_user.unique_id)
-            )
-        log(log.INFO, "User [%s] is basic. Redirect to auth.payment", current_user)
-        return redirect(url_for("auth.payment", user_unique_id=current_user.unique_id))
+        )
+        if not product:
+            log(log.ERROR, "Stripe product not found: [%s]", form.selected_plan.data)
+            # TODO return
+
+        log(log.INFO, "Pay plan is chosen to change. User: [%s]", current_user)
+        stripe_form_url = create_subscription_checkout_session(current_user, product)
+        return redirect(stripe_form_url)
     elif form.is_submitted():
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
         flash("Something went wrong. Please try again later.", "danger")

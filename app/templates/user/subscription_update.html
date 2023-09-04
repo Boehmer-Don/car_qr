@@ -19,7 +19,7 @@
             data-plan="None" {% endif %}>
           </div>
 
-          <form action="{{ url_for('auth.plan', user_unique_id=user.unique_id) }}" method="post">
+          <form action="{{ url_for('stripe.subscription', user_unique_id=user.unique_id) }}" method="post">
             {{ form.hidden_tag() }}
             {% if user.subscription %}
             {{ user.subscriptions[0].is_active }} {{ user.subscriptions[0].current_period_start }}
@@ -54,9 +54,9 @@
             </div>
 
             <div class="invisible">
-              <input type="radio" id="basic_radio" name="selected_plan" value="basic">
+              <input type="radio" id="basic_radio" name="selected_plan" value="Basic Plan">
               <label for="basic_radio">$99</label><br>
-              <input type="radio" id="advanced_radio" name="selected_plan" value="advanced">
+              <input type="radio" id="advanced_radio" name="selected_plan" value="Advanced Plan">
               <label for="advanced_radio">$299</label>
             </div>
 
