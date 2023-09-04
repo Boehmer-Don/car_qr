@@ -12,7 +12,7 @@ from flask import (
 )
 from flask import current_app as app
 from flask_mail import Message
-from flask_login import current_user
+from flask_login import current_user, login_user
 from app import models as m, db, mail
 from app import forms as f
 from app.logger import log
@@ -65,6 +65,7 @@ def webhook():
             user.activated = True
 
             user.save()
+            login_user(user)
             log(
                 log.INFO,
                 "Subscription [%s] created ",

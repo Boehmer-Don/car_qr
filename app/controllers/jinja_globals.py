@@ -37,3 +37,10 @@ def get_user_logo():
     if isinstance(current_user, m.User) and current_user.logo:
         return url_for("user.get_logo", user_unique_id=current_user.unique_id)
     return "#"
+
+
+def years():
+    years = []
+    for y in range(1960, datetime.now().year + 2):
+        years.append(y)
+    return years[::-1]

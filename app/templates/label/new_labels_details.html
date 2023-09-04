@@ -125,6 +125,7 @@
                                         {% for model in models %}
                                         <option value="{{ model.name }}">{{ model.name }}</option>
                                         {% endfor %}
+                                        <option value="add">Add New Model</option>
                                     </select>
                                 </div>
 
@@ -158,7 +159,7 @@
                                     <select name="year-{{ i+1 }}" id="label-{{ i+1 }}-year" required
                                         class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
                                         <option value="" disabled selected>Select year</option>
-                                        {% for year in range(1960, 2024) %}
+                                        {% for year in years() %}
                                         <option value="{{ year }}">{{ year }}</option>
                                         {% endfor %}
                                     </select>
@@ -171,7 +172,11 @@
                                     </label>
                                     <select id="label-{{ i+1 }}-type" name="type-{{ i+1 }}" required
                                         class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                                        {% if type_selected %}
+                                        <option value="{{ type_selected }}">{{ type_selected }}</option>
+                                        {% else %}
                                         <option value="" selected>Select a type</option>
+                                        {% endif %}
                                         {% for type in types %}
                                         <option value="{{ type.name }}">{{ type.name }}</option>
                                         {% endfor %}

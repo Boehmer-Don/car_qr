@@ -7,15 +7,17 @@
     Welcome Back {{ current_user.first_name }},
   </h1>
   <div class="lg:flex-row text-xs lg:text-sm md:px-5 md:pb-5">
-    {% if user_unique_id and user.logo %}
+    {% if user_unique_id %}
     <form action="{{url_for('labels.download', user_unique_id=user.unique_id)}}" method="post">
       <div class="w-full flex justify-between items-center">
         <input type="hidden" name="logo-download" value="true">
 
-        <div class="flex p-3">
-          <p>{{ user.first_name }} {{ user.last_name }}</p>
+        <div class="flex flex-col p-3">
+          <p><span class="font-bold">User:</span> {{ user.first_name }} {{ user.last_name }}</p>
+          <p><span class="font-bold">Company:</span> {{ user.name_of_dealership }}</p>
         </div>
 
+        {% if user.logo %}
         <div class="relative w-40 min-h-12">
           <p class="m-3 cursor-pointer">
             <img src="{{url_for('user.get_logo', user_unique_id=user_unique_id)}}">
@@ -26,6 +28,7 @@
             Download Logo
           </button>
         </div>
+        {% endif %}
 
       </div>
     </form>

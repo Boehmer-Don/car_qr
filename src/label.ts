@@ -293,7 +293,7 @@ makeSelectFields.forEach(makeSelectField =>
 
     const makeSelected = makeSelectField.value as string;
     if (makeSelected === 'add') {
-      createNewMake();
+      createMakeModel();
     } else {
       let models: Array<string> = [];
       fetch('/labels/get_models', {
@@ -334,9 +334,11 @@ const modelSelectFields: NodeListOf<HTMLSelectElement> =
   document.querySelectorAll('.model');
 modelSelectFields.forEach(modelSelectField =>
   modelSelectField.addEventListener('change', () => {
+    console.log('model selected', modelSelectField.value);
     if (modelSelectField.value === 'add') {
-      createNewModel();
+      createMakeModel();
     } else {
+      console.log('starting fetch');
       fetch('/labels/get_trims', {
         method: 'POST',
         headers: {
@@ -346,6 +348,7 @@ modelSelectFields.forEach(modelSelectField =>
       })
         .then(response => response.json())
         .then(data => {
+          console.log('data', data);
           const trimSelect = document.querySelector(
             `#label-${modelSelectField.getAttribute('data-trim')}-trim`,
           ) as HTMLSelectElement;
@@ -378,7 +381,7 @@ if (selectTrim) {
   selectTrim.addEventListener('change', () => {
     const trimSelected = selectTrim.value;
     if (trimSelected === 'add') {
-      createNewTrim();
+      createMakeModel();
     }
   });
 }
@@ -388,7 +391,7 @@ if (selectType) {
   selectType.addEventListener('change', () => {
     const typeSelected = selectType.value;
     if (typeSelected === 'add') {
-      createNewType();
+      createMakeModel();
     }
   });
 }
@@ -426,7 +429,7 @@ const addMakeModelModalWindow: ModalInterface = new Modal(
   modalOptions,
 );
 
-function createAddMakeModel() {
+function createMakeModel() {
   const nextUrl: HTMLInputElement = document.querySelector(
     '#add-create-model-next-url',
   );
@@ -439,7 +442,7 @@ const addMakeModel: HTMLButtonElement =
 
 if (addMakeModel) {
   addMakeModel.addEventListener('click', () => {
-    createAddMakeModel();
+    createMakeModel();
   });
 }
 
