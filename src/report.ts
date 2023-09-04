@@ -75,10 +75,10 @@ document.addEventListener('DOMContentLoaded', function () {
     priceInputs.classList.toggle('hidden');
   });
 
-  const dateReceivedButton: HTMLInputElement =
-    document.querySelector('#date_received');
-  dateReceivedButton.addEventListener('input', () => {
-    applyFiltersButton.click();
+  const priceSoldButton: Element = document.querySelector('#price-sold-button');
+  const priceSoldInputs: Element = document.querySelector('#price-sold-inputs');
+  priceSoldButton.addEventListener('click', () => {
+    priceSoldInputs.classList.toggle('hidden');
   });
 
   const downloadButton: HTMLButtonElement =

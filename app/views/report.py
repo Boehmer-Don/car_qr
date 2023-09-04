@@ -40,8 +40,16 @@ def dashboard():
     trim_filter = trim_filter if trim_filter and trim_filter != "None" else ""
     price_lower = request.args.get("price_lower")
     price_lower = price_lower if price_lower and price_lower != "None" else ""
+    price_sold_lower = request.args.get("price_sold_lower")
+    price_sold_lower = (
+        price_sold_lower if price_sold_lower and price_sold_lower != "None" else ""
+    )
     price_upper = request.args.get("price_upper")
     price_upper = price_upper if price_upper and price_upper != "None" else ""
+    price_sold_upper = request.args.get("price_sold_upper")
+    price_sold_upper = (
+        price_sold_upper if price_sold_upper and price_sold_upper != "None" else ""
+    )
     start_date = request.args.get("start_date")
     start_date = start_date if start_date and start_date != "None" else ""
     end_date = request.args.get("end_date")
@@ -137,10 +145,18 @@ def dashboard():
         log(log.INFO, f"Filtering by price_lower: {price_lower}")
         query = query.where(m.Label.price >= price_lower)
         count_query = count_query.where(m.Label.price >= price_lower)
+    if price_sold_lower:
+        log(log.INFO, f"Filtering by price_sold_lower: {price_sold_lower}")
+        query = query.where(m.Label.price_sold >= price_sold_lower)
+        count_query = count_query.where(m.Label.price_sold >= price_sold_lower)
     if price_upper:
         log(log.INFO, f"Filtering by price_upper: {price_upper}")
         query = query.where(m.Label.price <= price_upper)
         count_query = count_query.where(m.Label.price <= price_upper)
+    if price_sold_upper:
+        log(log.INFO, f"Filtering by price_sold_upper: {price_sold_upper}")
+        query = query.where(m.Label.price_sold <= price_sold_upper)
+        count_query = count_query.where(m.Label.price_sold <= price_sold_upper)
     if views_options_filter == "0-10":
         log(log.INFO, f"Filtering by views_options_filter: {views_options_filter}")
         query = query.where(m.Label.views <= 10)
