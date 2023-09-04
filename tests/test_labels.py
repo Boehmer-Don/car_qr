@@ -31,7 +31,9 @@ def test_labels_archived(populate: FlaskClient):
     assert b"Archived Labels" in response.data
     assert b"Date Sold" in response.data
     archived_labels = db.session.scalars(
-        m.Label.select().where(m.Label.status == m.LabelStatus.archived)
+        m.Label.select()
+        .where(m.Label.status == m.LabelStatus.archived)
+        .order_by(m.Label.date_deactivated.desc())
     ).all()
     for label in archived_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
         assert label.name.encode() in response.data
