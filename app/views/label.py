@@ -76,7 +76,7 @@ def get_archived_labels():
         query = (
             m.Label.select()
             .where(m.Label.status == m.LabelStatus.archived)
-            .order_by(m.Label.id)
+            .order_by(m.Label.date_deactivated.desc())
         )
         count_query = (
             sa.select(sa.func.count())
@@ -88,7 +88,7 @@ def get_archived_labels():
             m.Label.select()
             .where(m.Label.user_id == current_user.id)
             .where(m.Label.status == m.LabelStatus.archived)
-            .order_by(m.Label.id)
+            .order_by(m.Label.date_deactivated.desc())
         )
         count_query = (
             sa.select(sa.func.count())
@@ -214,6 +214,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
     make_selected = request.args.get("make_selected")
     model_selected = request.args.get("model_selected")
     trim_selected = request.args.get("trim_selected")
+    type_selected = request.args.get("type_selected")
 
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
@@ -253,6 +254,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
         make_selected=make_selected,
         model_selected=model_selected,
         trim_selected=trim_selected,
+        type_selected=type_selected,
     )
 
 
