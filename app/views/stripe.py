@@ -16,7 +16,7 @@ from flask_login import current_user, login_user
 from app import models as m, db, mail
 from app import forms as f
 from app.logger import log
-from app.controllers import create_subscription_checkout_session
+from app.controllers import create_stripe_customer, create_subscription_checkout_session
 
 stripe_blueprint = Blueprint("stripe", __name__, url_prefix="/stripe")
 
@@ -206,6 +206,12 @@ def subscription():
             # TODO return
 
         log(log.INFO, "Pay plan is chosen to change. User: [%s]", current_user)
+
+        if not current_user.stripe_customer_id:
+            log(log.INFO, "Creating stripe customer for user: [%s]", current_user)
+            stripe_user = create_stripe_customer(current_user)
+            current_user.stripe_customer_id = stripe_user.id
+            current_user.save()
         stripe_form_url = create_subscription_checkout_session(current_user, product)
         return redirect(stripe_form_url)
     elif form.is_submitted():

@@ -208,7 +208,6 @@ def payment(user_unique_id: str):
         user.plan = form.plan.data
         user.phone = form.phone.data
         user.save()
-        # login_user(user)
 
         # get users stripe plan
         product = db.session.scalar(
