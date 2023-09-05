@@ -7,6 +7,14 @@
     <form action="{{url_for('labels.add_new_model')}}" method="post"
       class="relative bg-white rounded-lg shadow dark:bg-gray-700">
       {{ form_hidden_tag() }}
+      <input type="hidden" name="add-create-model-code" id="add-create-model-code" value="" />
+      <input type="hidden" name="add-create-model-gift" id="add-create-model-gift" value="" />
+      <input type="hidden" name="add-create-model-name" id="add-create-model-name" value="" />
+      <input type="hidden" name="add-create-model-year" id="add-create-model-year" value="" />
+      <input type="hidden" name="add-create-model-mileage" id="add-create-model-mileage" value="" />
+      <input type="hidden" name="add-create-model-color" id="add-create-model-color" value="" />
+      <input type="hidden" name="add-create-model-price" id="add-create-model-price" value="" />
+      <input type="hidden" name="add-create-model-url" id="add-create-model-url" value="" />
       <input type="hidden" name="add-create-model-next-url" id="add-create-model-next-url" value="" />
       <!-- Modal header -->
       <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">

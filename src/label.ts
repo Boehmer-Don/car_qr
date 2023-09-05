@@ -433,6 +433,56 @@ function createMakeModel() {
   const nextUrl: HTMLInputElement = document.querySelector(
     '#add-create-model-next-url',
   );
+  const labelCode: HTMLInputElement = document.querySelector(
+    '#label-1-sticker-number',
+  );
+  const gift: HTMLInputElement = document.querySelector('#label-1-gift');
+  const labelName: HTMLInputElement = document.querySelector('#label-1-name');
+  const year: HTMLInputElement = document.querySelector('#label-1-year');
+  const mileage: HTMLInputElement = document.querySelector('#label-1-mileage');
+  const colour: HTMLInputElement = document.querySelector('#label-1-color');
+  const price: HTMLInputElement = document.querySelector('#label-1-price');
+  const url: HTMLInputElement = document.querySelector('#label-1-url');
+  console.log('labelCode', labelCode.value);
+  console.log('gift', gift.value);
+  console.log('labelName', labelName.value);
+  console.log('year', year.value);
+  console.log('mileage', mileage.value);
+  console.log('colour', colour.value);
+  console.log('price', price.value);
+  console.log('url', url.value);
+  const labelCodeFormInput: HTMLInputElement = document.querySelector(
+    '#add-create-model-code',
+  );
+  labelCodeFormInput.value = labelCode.value;
+  const giftFormInput: HTMLInputElement = document.querySelector(
+    '#add-create-model-gift',
+  );
+  giftFormInput.value = gift.value;
+  const labelNameFormInput: HTMLInputElement = document.querySelector(
+    '#add-create-model-name',
+  );
+  labelNameFormInput.value = labelName.value;
+  const yearFormInput: HTMLInputElement = document.querySelector(
+    '#add-create-model-year',
+  );
+  yearFormInput.value = year.value;
+  const mileageFormInput: HTMLInputElement = document.querySelector(
+    '#add-create-model-mileage',
+  );
+  mileageFormInput.value = mileage.value;
+  const colourFormInput: HTMLInputElement = document.querySelector(
+    '#add-create-model-color',
+  );
+  colourFormInput.value = colour.value;
+  const priceFormInput: HTMLInputElement = document.querySelector(
+    '#add-create-model-price',
+  );
+  priceFormInput.value = price.value;
+  const urlFormInput: HTMLInputElement = document.querySelector(
+    '#add-create-model-url',
+  );
+  urlFormInput.value = url.value;
   nextUrl.value = window.location.href;
   addMakeModelModalWindow.show();
 }

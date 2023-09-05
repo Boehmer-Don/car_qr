@@ -60,10 +60,17 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Unique Label Identifier
                                     </label>
+                                    {% if code_selected %}
+                                    <input type="text" name="sticker-number-{{ i+1 }}"
+                                        id="label-{{ i+1 }}-sticker-number"
+                                        class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                                        placeholder="i.e. QR23456" required value="{{code_selected}}" />
+                                    {% else %}
                                     <input type="text" name="sticker-number-{{ i+1 }}"
                                         id="label-{{ i+1 }}-sticker-number"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="i.e. QR23456" required />
+                                    {% endif %}
                                 </div>
 
                                 <div class="w-full px-1">
@@ -71,9 +78,15 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Gift
                                     </label>
+                                    {% if gift_selected %}
+                                    <input type="text" name="gift-{{ i+1 }}" id="label-{{ i+1 }}-gift"
+                                        class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                                        placeholder="i.e. Free Oil Change" value="{{gift_selected}}" />
+                                    {% else %}
                                     <input type="text" name="gift-{{ i+1 }}" id="label-{{ i+1 }}-gift"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="i.e. Free Oil Change" />
+                                    {% endif %}
                                 </div>
                             </div>
 
@@ -83,9 +96,16 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Label Name
                                     </label>
+                                    {% if name_selected %}
+                                    <input type="text" name="name-{{ i+1 }}" id="label-{{ i+1 }}-name"
+                                        class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                                        placeholder="Reference Name to Internally Identify" required
+                                        value="{{name_selected}}" />
+                                    {% else %}
                                     <input type="text" name="name-{{ i+1 }}" id="label-{{ i+1 }}-name"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="Reference Name to Internally Identify" required />
+                                    {% endif %}
                                 </div>
 
                                 <div class="w-full px-1">
@@ -158,7 +178,11 @@
                                     </label>
                                     <select name="year-{{ i+1 }}" id="label-{{ i+1 }}-year" required
                                         class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                                        {% if year_selected %}
+                                        <option value="{{year_selected}}" selected>{{year_selected}}</option>
+                                        {% else %}
                                         <option value="" disabled selected>Select year</option>
+                                        {% endif %}
                                         {% for year in years() %}
                                         <option value="{{ year }}">{{ year }}</option>
                                         {% endfor %}
@@ -191,19 +215,31 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Mileage
                                     </label>
+                                    {% if mileage_selected %}
+                                    <input type="text" name="mileage-{{ i+1 }}" id="label-{{ i+1 }}-mileage"
+                                        class="clean_number_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                                        placeholder="Mileage" required value="{{mileage_selected}} " />
+                                    {% else %}
                                     <input type="text" name="mileage-{{ i+1 }}" id="label-{{ i+1 }}-mileage"
                                         class="clean_number_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="Mileage" required />
+                                    {% endif %}
                                 </div>
 
-                                <div class="w-full px-1">
+                                <div class=" w-full px-1">
                                     <label for="color"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Colour
                                     </label>
+                                    {% if color_selected %}
+                                    <input type="text" name="color-{{ i+1 }}" id="label-{{ i+1 }}-color"
+                                        class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                                        placeholder="Colour" value="{{color_selected}}" />
+                                    {% else %}
                                     <input type="text" name="color-{{ i+1 }}" id="label-{{ i+1 }}-color"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="Colour" />
+                                    {% endif %}
                                 </div>
                             </div>
 
@@ -213,9 +249,15 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Price
                                     </label>
+                                    {% if price_selected %}
+                                    <input type="text" name="price-{{ i+1 }}" id="label-{{ i+1 }}-price"
+                                        class="clean_number_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                                        placeholder="Price" required value="{{price_selected}}" />
+                                    {% else %}
                                     <input type="text" name="price-{{ i+1 }}" id="label-{{ i+1 }}-price"
                                         class="clean_number_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="Price" required />
+                                    {% endif %}
                                 </div>
 
                                 <div class="w-full px-1">
@@ -223,9 +265,15 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         URL
                                     </label>
+                                    {% if url_selected %}
+                                    <input type="text" name="url-{{ i+1 }}" id="label-{{ i+1 }}-url"
+                                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                                        placeholder="URL" required value="{{url_selected}}" />
+                                    {% else %}
                                     <input type="text" name="url-{{ i+1 }}" id="label-{{ i+1 }}-url"
                                         class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="URL" required />
+                                    {% endif %}
                                 </div>
                             </div>
 

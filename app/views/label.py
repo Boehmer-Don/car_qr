@@ -216,6 +216,15 @@ def new_label_set_details(user_unique_id: str, amount: int):
     trim_selected = request.args.get("trim_selected")
     type_selected = request.args.get("type_selected")
 
+    code_selected = request.args.get("code_selected")
+    gift_selected = request.args.get("gift_selected")
+    name_selected = request.args.get("name_selected")
+    year_selected = request.args.get("year_selected")
+    mileage_selected = request.args.get("mileage_selected")
+    color_selected = request.args.get("color_selected")
+    price_selected = request.args.get("price_selected")
+    url_selected = request.args.get("url_selected")
+
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
     trims = db.session.scalars(m.CarTrim.select()).all()
@@ -255,6 +264,14 @@ def new_label_set_details(user_unique_id: str, amount: int):
         model_selected=model_selected,
         trim_selected=trim_selected,
         type_selected=type_selected,
+        code_selected=code_selected,
+        gift_selected=gift_selected,
+        name_selected=name_selected,
+        year_selected=year_selected,
+        mileage_selected=mileage_selected,
+        color_selected=color_selected,
+        price_selected=price_selected,
+        url_selected=url_selected,
     )
 
 
@@ -555,6 +572,15 @@ def add_new_model():
     type_input = request.form.get("new_type_name")
     next_url = request.form.get("add-create-model-next-url")
 
+    code_selected = request.form.get("add-create-model-code")
+    gift_selected = request.form.get("add-create-model-gift")
+    name_selected = request.form.get("add-create-model-name")
+    year_selected = request.form.get("add-create-model-year")
+    mileage_selected = request.form.get("add-create-model-mileage")
+    color_selected = request.form.get("add-create-model-color")
+    price_selected = request.form.get("add-create-model-price")
+    url_selected = request.form.get("add-create-model-url")
+
     make = db.session.scalar(sa.select(m.CarMake).where(m.CarMake.name == make_input))
     if make_input and not make:
         make = m.CarMake(
@@ -604,7 +630,7 @@ def add_new_model():
     trim_name = trim.name.replace(" ", "%20")
     type_name = type_of_vehicle.name.replace(" ", "%20")
 
-    next_url = f"{next_url}?make_selected={make_name}&model_selected={model_name}&trim_selected={trim_name}&type_selected={type_name}"
+    next_url = f"{next_url}?make_selected={make_name}&model_selected={model_name}&trim_selected={trim_name}&type_selected={type_name}&code_selected={code_selected}&gift_selected={gift_selected}&name_selected={name_selected}&year_selected={year_selected}&mileage_selected={mileage_selected}&color_selected={color_selected}&price_selected={price_selected}&url_selected={url_selected}"
 
     return redirect(next_url)
 
