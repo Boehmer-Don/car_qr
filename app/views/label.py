@@ -603,6 +603,7 @@ def add_new_model():
     trim_input = request.form.get("new_trim_option")
     type_input = request.form.get("new_type_name")
     next_url = request.form.get("add-create-model-next-url")
+    next_url = next_url.split("?")[0]
 
     code_selected = request.form.get("add-create-model-code")
     gift_selected = request.form.get("add-create-model-gift")
