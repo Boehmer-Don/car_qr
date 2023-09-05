@@ -15,6 +15,7 @@ from flask import (
     Response,
 )
 from flask_login import login_required, current_user
+from flask_mail import Message, Mail
 import sqlalchemy as sa
 from flask import current_app as app
 from app.controllers import (
@@ -418,6 +419,37 @@ def generate(user_unique_id: str):
         user=user,
         user_unique_id=user_unique_id,
     )
+
+
+@dealer_blueprint.route("/order/<user_unique_id>")
+@login_required
+def order(user_unique_id: str):
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
+
+    mail = Mail()
+    msg = Message(
+        subject="Customer Labels Order",
+        sender=app.config["MAIL_DEFAULT_SENDER"],
+        recipients=[app.config.get("ADMIN_EMAIL")],
+    )
+
+    msg.html = render_template(
+        "email/stickers_order.htm",
+        name=f"{user.first_name} {user.last_name}",
+        email=f"{user.email}",
+        dealership=f"{user.name_of_dealership}",
+    )
+    mail.send(msg)
+
+    flash("Your order is sent to admin", "success")
+
+    return redirect(url_for("labels.get_active_labels"))
 
 
 @dealer_blueprint.route("/download", methods=["GET", "POST"])
