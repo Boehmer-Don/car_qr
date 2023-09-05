@@ -1,5 +1,7 @@
 import os
-
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.base import SchedulerAlreadyRunningError
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from flask import Flask, render_template
 from flask_login import LoginManager
 from werkzeug.exceptions import HTTPException
@@ -8,11 +10,13 @@ from flask_mail import Mail
 
 from app.logger import log
 from .database import db
+from app.controllers import subscription_periodic_check
 
 # instantiate extensions
 login_manager = LoginManager()
 migration = Migrate()
 mail = Mail()
+scheduler = BackgroundScheduler()
 
 
 def create_app(environment="development"):
@@ -42,6 +46,24 @@ def create_app(environment="development"):
     migration.init_app(app, db)
     login_manager.init_app(app)
     mail.init_app(app)
+    if not app.config["TESTING"]:
+        try:
+            JOB_STORES = {
+                "default": SQLAlchemyJobStore(url=configuration.ALCHEMICAL_DATABASE_URL)
+            }
+            scheduler.configure(jobstores=JOB_STORES)
+            scheduler.add_job(
+                subscription_periodic_check,
+                "interval",
+                seconds=30,
+                # minutes=10,
+                args=[configuration.MAIL_DEFAULT_SENDER],
+            )
+            scheduler.start()
+        except SchedulerAlreadyRunningError:
+            log(log.INFO, "Scheduler is already running")
+
+        log(log.INFO, "Scheduler initialized")
 
     # Register blueprints.
     app.register_blueprint(auth_blueprint)

@@ -56,6 +56,7 @@ def landing():
         )
         mail.send(msg)
 
+        log(log.INFO, "New customer: [%s]", form.email.data)
         flash("Your credentials are sent to admin", "success")
         return redirect(url_for("main.landing"))
     elif form.is_submitted():
