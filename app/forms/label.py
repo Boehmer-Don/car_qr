@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, BooleanField
+from wtforms import StringField, IntegerField, BooleanField, FloatField
 
 
 class LabelForm(FlaskForm):
@@ -9,11 +9,11 @@ class LabelForm(FlaskForm):
     make = StringField("Make")
     vehicle_model = StringField("Model")
     year = IntegerField("Year")
-    mileage = IntegerField("Mileage")
+    mileage = FloatField("Mileage")
     color = StringField("Color")
     trim = StringField("Trim")
     type_of_vehicle = StringField("Type of Vehicle")
-    price = IntegerField("Price")
+    price = FloatField("Price")
     date_received = StringField("Date Received")
     url = StringField("URL")
     user_id = IntegerField("User ID")
