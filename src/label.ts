@@ -123,61 +123,12 @@ function deactivateLabel(label: ILabel) {
   labelDeactivateModalWindow.show();
 }
 
-function createNewMake() {
-  const nextUrl: HTMLInputElement =
-    document.querySelector('#add-make-next-url');
-  nextUrl.value = window.location.href;
-  addNewMakeModalWindow.show();
-}
-
-function createNewModel() {
-  const makeSelectedChoiceField: HTMLSelectElement =
-    document.querySelector('.make');
-  const nextUrl: HTMLInputElement = document.querySelector(
-    '#add-model-next-url',
-  );
-  nextUrl.value = window.location.href;
-  const modelMake: HTMLInputElement = document.querySelector('#model_make');
-  modelMake.value = makeSelectedChoiceField.value;
-  addNewModelModalWindow.show();
-}
-
-function createNewTrim() {
-  const nextUrl: HTMLInputElement =
-    document.querySelector('#add-trim-next-url');
-  nextUrl.value = window.location.href;
-  addNewTrimModalWindow.show();
-}
-
-function createNewType() {
-  const nextUrl: HTMLInputElement =
-    document.querySelector('#add-type-next-url');
-  nextUrl.value = window.location.href;
-  addNewTypeModalWindow.show();
-}
-
 const labelDetailsModalWindow: ModalInterface = new Modal(
   $modalElement,
   modalOptions,
 );
 const labelDeactivateModalWindow: ModalInterface = new Modal(
   modalDeactivateLabel,
-  modalOptions,
-);
-const addNewMakeModalWindow: ModalInterface = new Modal(
-  addNewMakeModal,
-  modalOptions,
-);
-const addNewModelModalWindow: ModalInterface = new Modal(
-  addNewModelModal,
-  modalOptions,
-);
-const addNewTrimModalWindow: ModalInterface = new Modal(
-  addNewTrimModal,
-  modalOptions,
-);
-const addNewTypeModalWindow: ModalInterface = new Modal(
-  addNewTypeModal,
   modalOptions,
 );
 
@@ -202,20 +153,6 @@ const closeButton = document.querySelector('#modalCloseButton');
 if (closeButton) {
   closeButton.addEventListener('click', () => {
     labelDetailsModalWindow.hide();
-  });
-}
-
-const closeMakeModal = document.querySelector('#modalMakeClose');
-if (closeMakeModal) {
-  closeMakeModal.addEventListener('click', () => {
-    addNewMakeModalWindow.hide();
-  });
-}
-
-const closeModelModal = document.querySelector('#modalModelClose');
-if (closeModelModal) {
-  closeModelModal.addEventListener('click', () => {
-    addNewModelModalWindow.hide();
   });
 }
 
@@ -293,7 +230,7 @@ makeSelectFields.forEach(makeSelectField =>
 
     const makeSelected = makeSelectField.value as string;
     if (makeSelected === 'add') {
-      createMakeModel();
+      // createMakeModel();
     } else {
       let models: Array<string> = [];
       fetch('/labels/get_models', {
@@ -336,7 +273,7 @@ modelSelectFields.forEach(modelSelectField =>
   modelSelectField.addEventListener('change', () => {
     console.log('model selected', modelSelectField.value);
     if (modelSelectField.value === 'add') {
-      createMakeModel();
+      // createMakeModel();
     } else {
       console.log('starting fetch');
       fetch('/labels/get_trims', {
@@ -376,26 +313,6 @@ modelSelectFields.forEach(modelSelectField =>
   }),
 );
 
-const selectTrim: HTMLSelectElement = document.querySelector('#label-1-trim');
-if (selectTrim) {
-  selectTrim.addEventListener('change', () => {
-    const trimSelected = selectTrim.value;
-    if (trimSelected === 'add') {
-      createMakeModel();
-    }
-  });
-}
-
-const selectType: HTMLSelectElement = document.querySelector('#label-1-type');
-if (selectType) {
-  selectType.addEventListener('change', () => {
-    const typeSelected = selectType.value;
-    if (typeSelected === 'add') {
-      createMakeModel();
-    }
-  });
-}
-
 const decreaseStickersButton: HTMLButtonElement = document.querySelector(
   '#decreaseStickersButton',
 );
@@ -418,87 +335,5 @@ if (decreaseStickersButton && increaseStickersButton) {
     let quantity = parseInt(stickersQuantityInput.value);
     quantity += 1;
     stickersQuantityInput.value = quantity.toString();
-  });
-}
-
-const addMakeModelModal: HTMLElement =
-  document.querySelector('#addMakeModelModal');
-
-const addMakeModelModalWindow: ModalInterface = new Modal(
-  addMakeModelModal,
-  modalOptions,
-);
-
-function createMakeModel() {
-  const nextUrl: HTMLInputElement = document.querySelector(
-    '#add-create-model-next-url',
-  );
-  const labelCode: HTMLInputElement = document.querySelector(
-    '#label-1-sticker-number',
-  );
-  const gift: HTMLInputElement = document.querySelector('#label-1-gift');
-  const labelName: HTMLInputElement = document.querySelector('#label-1-name');
-  const year: HTMLInputElement = document.querySelector('#label-1-year');
-  const mileage: HTMLInputElement = document.querySelector('#label-1-mileage');
-  const colour: HTMLInputElement = document.querySelector('#label-1-color');
-  const price: HTMLInputElement = document.querySelector('#label-1-price');
-  const url: HTMLInputElement = document.querySelector('#label-1-url');
-  console.log('labelCode', labelCode.value);
-  console.log('gift', gift.value);
-  console.log('labelName', labelName.value);
-  console.log('year', year.value);
-  console.log('mileage', mileage.value);
-  console.log('colour', colour.value);
-  console.log('price', price.value);
-  console.log('url', url.value);
-  const labelCodeFormInput: HTMLInputElement = document.querySelector(
-    '#add-create-model-code',
-  );
-  labelCodeFormInput.value = labelCode.value;
-  const giftFormInput: HTMLInputElement = document.querySelector(
-    '#add-create-model-gift',
-  );
-  giftFormInput.value = gift.value;
-  const labelNameFormInput: HTMLInputElement = document.querySelector(
-    '#add-create-model-name',
-  );
-  labelNameFormInput.value = labelName.value;
-  const yearFormInput: HTMLInputElement = document.querySelector(
-    '#add-create-model-year',
-  );
-  yearFormInput.value = year.value;
-  const mileageFormInput: HTMLInputElement = document.querySelector(
-    '#add-create-model-mileage',
-  );
-  mileageFormInput.value = mileage.value;
-  const colourFormInput: HTMLInputElement = document.querySelector(
-    '#add-create-model-color',
-  );
-  colourFormInput.value = colour.value;
-  const priceFormInput: HTMLInputElement = document.querySelector(
-    '#add-create-model-price',
-  );
-  priceFormInput.value = price.value;
-  const urlFormInput: HTMLInputElement = document.querySelector(
-    '#add-create-model-url',
-  );
-  urlFormInput.value = url.value;
-  nextUrl.value = window.location.href;
-  addMakeModelModalWindow.show();
-}
-
-const addMakeModel: HTMLButtonElement =
-  document.querySelector('#add-make-model');
-
-if (addMakeModel) {
-  addMakeModel.addEventListener('click', () => {
-    createMakeModel();
-  });
-}
-
-const closeAddMakeModal = document.querySelector('#modalAddModelClose');
-if (closeAddMakeModal) {
-  closeAddMakeModal.addEventListener('click', () => {
-    addMakeModelModalWindow.hide();
   });
 }
