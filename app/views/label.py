@@ -212,20 +212,6 @@ def new_label_set_amount(user_unique_id: str):
 @dealer_blueprint.route("/details/<user_unique_id>/<amount>", methods=["GET", "POST"])
 @login_required
 def new_label_set_details(user_unique_id: str, amount: int):
-    make_selected = request.args.get("make_selected")
-    model_selected = request.args.get("model_selected")
-    trim_selected = request.args.get("trim_selected")
-    type_selected = request.args.get("type_selected")
-
-    code_selected = request.args.get("code_selected")
-    gift_selected = request.args.get("gift_selected")
-    name_selected = request.args.get("name_selected")
-    year_selected = request.args.get("year_selected")
-    mileage_selected = request.args.get("mileage_selected")
-    color_selected = request.args.get("color_selected")
-    price_selected = request.args.get("price_selected")
-    url_selected = request.args.get("url_selected")
-
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
     trims = db.session.scalars(m.CarTrim.select()).all()
@@ -261,18 +247,6 @@ def new_label_set_details(user_unique_id: str, amount: int):
         models=models,
         trims=trims,
         types=types,
-        make_selected=make_selected,
-        model_selected=model_selected,
-        trim_selected=trim_selected,
-        type_selected=type_selected,
-        code_selected=code_selected,
-        gift_selected=gift_selected,
-        name_selected=name_selected,
-        year_selected=year_selected,
-        mileage_selected=mileage_selected,
-        color_selected=color_selected,
-        price_selected=price_selected,
-        url_selected=url_selected,
     )
 
 
@@ -328,6 +302,15 @@ def new_label_payment(user_unique_id: str):
         trims=trims,
         types=types,
     )
+
+
+@dealer_blueprint.route("/get_makes", methods=["POST"])
+def get_makes():
+    make_name = request.json.get("makeTyped")
+    makes = db.session.scalars(
+        sa.select(m.CarMake.name).where(m.CarMake.name.ilike(f"%{make_name}%"))
+    ).all()
+    return {"makes": makes}
 
 
 @dealer_blueprint.route("/get_models", methods=["POST"])
