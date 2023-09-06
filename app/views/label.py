@@ -218,16 +218,52 @@ def new_label_set_details(user_unique_id: str, amount: int):
     types = db.session.scalars(m.CarType.select()).all()
     if request.method == "POST":
         for i in range(1, int(amount) + 1):
+            make_input = request.form.get(f"make-{i}")
+            make = db.session.scalar(
+                m.CarMake.select().where(m.CarMake.name == make_input)
+            )
+            if not make:
+                make = m.CarMake(name=make_input)
+                make.save()
+                log(log.INFO, "Created new make: [%s]", make_input)
+            model_input = request.form.get(f"vehicle_model-{i}")
+            model = db.session.scalar(
+                m.CarModel.select().where(m.CarModel.name == model_input)
+            )
+            if not model:
+                m.CarModel(
+                    name=model_input,
+                    make_id=make.id,
+                ).save()
+                log(log.INFO, "Created new model: [%s]", model_input)
+            trim_input = request.form.get(f"trim-{i}")
+            trim = db.session.scalar(
+                m.CarTrim.select().where(m.CarTrim.name == trim_input)
+            )
+            if not trim:
+                m.CarTrim(
+                    name=trim_input,
+                    model_id=model.id,
+                ).save()
+                log(log.INFO, "Created new trim: [%s]", trim_input)
+            type_input = request.form.get(f"type_of_vehicle-{i}")
+            vehicle_type = db.session.scalar(
+                m.CarType.select().where(m.CarType.name == type_input)
+            )
+            if not vehicle_type:
+                m.CarType(name=type_input).save()
+                log(log.INFO, "Created new type: [%s]", type_input)
+
             label = m.Label(
                 sticker_id=request.form.get(f"sticker-number-{i}"),
                 name=request.form.get(f"name-{i}"),
-                make=request.form.get(f"make-{i}"),
-                vehicle_model=request.form.get(f"vehicle_model-{i}"),
+                make=make_input,
+                vehicle_model=model_input,
                 year=request.form.get(f"year-{i}"),
                 mileage=request.form.get(f"mileage-{i}"),
                 color=request.form.get(f"color-{i}"),
-                trim=request.form.get(f"trim-{i}"),
-                type_of_vehicle=request.form.get(f"type_of_vehicle-{i}"),
+                trim=trim_input,
+                type_of_vehicle=type_input,
                 price=request.form.get(f"price-{i}"),
                 url=request.form.get(f"url-{i}"),
                 status=m.LabelStatus.cart,
@@ -346,11 +382,17 @@ def generate_alphanumeric_code():
 @dealer_blueprint.route("/get_trims", methods=["POST"])
 def get_trims():
     model_name = request.json.get("modelSelected")
-    trims = db.session.scalars(
-        sa.select(m.CarTrim.name).where(
+
+    trims_query = sa.select(m.CarTrim.name)
+    if model_name:
+        log(log.INFO, "Model name provided. Fetching all trims for [%s]", model_name)
+        trims_query = trims_query.where(
             m.CarTrim.model.has(m.CarModel.name == model_name)
         )
-    ).all()
+    else:
+        log(log.INFO, "No model name provided. Fetching all trims.")
+
+    trims = db.session.scalars(trims_query).all()
     return {"trims": trims}
 
 

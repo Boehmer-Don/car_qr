@@ -92,7 +92,7 @@
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="i.e. Ford" required />
                                     <div
-                                        class="suggestion-container make-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700">
+                                        class="suggestion-container make-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 z-10">
                                         <p
                                             class="make-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
                                         </p>
@@ -121,14 +121,21 @@
                                     </div>
                                 </div>
 
-                                <div class="w-full px-1">
+                                <div class="relative w-full px-1">
                                     <label for="label-{{ i+1 }}-trim"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Trim
                                     </label>
                                     <input type="text" id="label-{{ i+1 }}-trim" name="trim-{{ i+1 }}"
+                                        autocomplete="off"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="i.e. Titanium" required />
+                                    <div
+                                        class="suggestion-container trim-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700">
+                                        <p
+                                            class="trim-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 

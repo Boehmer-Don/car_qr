@@ -15,14 +15,19 @@ document.addEventListener('keydown', e => {
 const makeContainer: HTMLDivElement = document.querySelector('.make-container');
 const modelContainer: HTMLDivElement =
   document.querySelector('.model-container');
+const trimContainer: HTMLDivElement = document.querySelector('.trim-container');
+console.log('trimContainer', trimContainer);
 const makeInput: HTMLInputElement = document.querySelector('#make-1');
 const modelInput = document.querySelector(
   '#vehicle_model-1',
 ) as HTMLInputElement;
+const trimInput: HTMLInputElement = document.querySelector('#label-1-trim');
 const makeSuggestionP: HTMLParagraphElement =
   document.querySelector('.make-suggestion');
 const modelSuggestionP: HTMLParagraphElement =
   document.querySelector('.model-suggestion');
+const trimSuggestionP: HTMLParagraphElement =
+  document.querySelector('.trim-suggestion');
 
 function selectModel() {
   console.log('selectModel()');
@@ -40,32 +45,36 @@ function selectModel() {
       );
       modelContainer.classList.add('hidden');
       console.log('modelInput.value', modelInput.value);
-      // let models: Array<string> = [];
-      // fetch('/labels/get_models', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({makeSelected: makeInput.value}),
-      // })
-      //   .then(response => response.json())
-      //   .then(data => {
-      //     models.push(...data.models);
-      //     modelContainer.innerHTML = '';
-      //     models.forEach(model => {
-      //       let clonedModelSuggestionParagraph: HTMLParagraphElement =
-      //         modelSuggestionP.cloneNode(true) as HTMLParagraphElement;
-      //       clonedModelSuggestionParagraph.innerHTML = model;
-      //       modelContainer.appendChild(clonedModelSuggestionParagraph);
-      //     });
-      //   })
-      //   .catch(error => {
-      //     console.error('Error fetching models by make:', error);
-      //   });
 
-      // modelInput.addEventListener('click', e => {
-      //   modelContainer.classList.remove('hidden');
-      // });
+      // pull all trims for pulled models from db
+      let trims: Array<string> = [];
+      fetch('/labels/get_trims', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({modelSelected: modelInput.value}),
+      })
+        .then(response => response.json())
+        .then(data => {
+          trims.push(...data.trims);
+          trimContainer.innerHTML = '';
+          trims.forEach(trim => {
+            let clonedTrimSuggestionParagraph: HTMLParagraphElement =
+              trimSuggestionP.cloneNode(true) as HTMLParagraphElement;
+            clonedTrimSuggestionParagraph.innerHTML = trim;
+            trimContainer.appendChild(clonedTrimSuggestionParagraph);
+          });
+
+          // selectTrim();
+        })
+        .catch(error => {
+          console.error('Error fetching trims by model:', error);
+        });
+
+      modelInput.addEventListener('click', e => {
+        modelContainer.classList.remove('hidden');
+      });
 
       // pull all trims for pulled models from db
     });
@@ -132,8 +141,6 @@ if (makeInput) {
               modelContainer.classList.remove('hidden');
               selectModel();
             });
-
-            // pull all trims for pulled models from db
           });
         });
       })
@@ -149,6 +156,11 @@ makeInput.addEventListener('click', e => {
 
 modelInput.addEventListener('click', e => {
   modelContainer.classList.toggle('hidden');
+});
+
+trimInput.addEventListener('click', e => {
+  console.log('trimInput clicked');
+  trimContainer.classList.toggle('hidden');
 });
 
 if (modelInput) {
