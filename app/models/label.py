@@ -39,14 +39,12 @@ class Label(db.Model, ModelMixin):
     make: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     vehicle_model: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     year: orm.Mapped[int] = orm.mapped_column(sa.Integer, default=2000)
-    mileage: orm.Mapped[int] = orm.mapped_column(sa.Integer, default=10000)
+    mileage: orm.Mapped[int] = orm.mapped_column(sa.Float, default=10000)
     color: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     trim: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     type_of_vehicle: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
-    price: orm.Mapped[int] = orm.mapped_column(sa.Integer, default=0)
-    price_sold: orm.Mapped[int] = orm.mapped_column(
-        sa.Integer, default=0, nullable=True
-    )
+    price: orm.Mapped[int] = orm.mapped_column(sa.Float, default=0)
+    price_sold: orm.Mapped[int] = orm.mapped_column(sa.Float, default=0, nullable=True)
     date_received: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
         default=datetime.utcnow,

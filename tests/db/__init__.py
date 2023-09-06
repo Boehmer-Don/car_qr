@@ -150,6 +150,26 @@ def add_labels(user_id: int = 9):
         if label.date_deactivated:
             label.price_sold = label.price - randint(1000, 3000)
         db.session.add(label)
+        make = db.session.scalar(m.CarMake.select().where(m.CarMake.name == label.make))
+        if not make:
+            make = m.CarMake(name=label.make)
+            make.save()
+        model = db.session.scalar(
+            m.CarModel.select().where(m.CarModel.name == label.vehicle_model)
+        )
+        if not model:
+            model = m.CarModel(name=label.vehicle_model, make_id=make.id)
+            model.save()
+        trim = db.session.scalar(m.CarTrim.select().where(m.CarTrim.name == label.trim))
+        if not trim:
+            trim = m.CarTrim(name=label.trim, model_id=model.id)
+            trim.save()
+        vehicle_type = db.session.scalar(
+            m.CarType.select().where(m.CarType.name == label.type_of_vehicle)
+        )
+        if not vehicle_type:
+            vehicle_type = m.CarType(name=label.type_of_vehicle, model_id=model.id)
+            vehicle_type.save()
     db.session.commit()
 
 

@@ -106,7 +106,6 @@ def init(app: Flask):
                     m.CarMake.select().where(m.CarMake.name == make_name)
                 )
                 if not make:
-                    # print(f"{make_name} is not in DB. Adding it...")
                     make = m.CarMake(name=make_name)
                     db.session.add(make)
                     added_makes_count += 1
@@ -153,3 +152,11 @@ def init(app: Flask):
 
         add_pending_labels(user_id)
         print(f"Pending labels added for user {user_id}")
+
+    @app.cli.command()
+    def get_models():
+        models = db.session.scalars(m.CarModel.select()).all()
+        with open("model_names.txt", "w") as f:
+            for model in models:
+                f.write(f"{model.make.name} {model.name}\n")
+                print(f"{model.make.name} {model.name}")
