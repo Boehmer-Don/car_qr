@@ -231,10 +231,11 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 m.CarModel.select().where(m.CarModel.name == model_input)
             )
             if not model:
-                m.CarModel(
+                model = m.CarModel(
                     name=model_input,
                     make_id=make.id,
-                ).save()
+                )
+                model.save()
                 log(log.INFO, "Created new model: [%s]", model_input)
             trim_input = request.form.get(f"trim-{i}")
             trim = db.session.scalar(
