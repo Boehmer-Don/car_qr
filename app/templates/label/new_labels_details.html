@@ -83,7 +83,7 @@
                                         placeholder="Reference Name to Internally Identify" required />
                                 </div>
 
-                                <div class="w-full px-1">
+                                <div class="relative w-full px-1">
                                     <label for="make-{{ i+1 }}"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Make
@@ -91,6 +91,12 @@
                                     <input type="text" id="make-{{ i+1 }}" name="make-{{ i+1 }}"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="i.e. Ford" required />
+                                    <div
+                                        class="make-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700">
+                                        <p
+                                            class="make-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -214,5 +220,6 @@
 <!-- prettier-ignore -->
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/label.js') }}" type="text/javascript" defer></script>
+<script src="{{ url_for('static', filename='js/new_label.js') }}" type="text/javascript" defer></script>
 <script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
 {% endblock %}
