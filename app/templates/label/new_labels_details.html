@@ -114,7 +114,7 @@
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="i.e. Fiesta" required />
                                     <div
-                                        class="suggestion-container model-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll">
+                                        class="suggestion-container model-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll z-10">
                                         {% for model in models %}
                                         <p
                                             class="model-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
@@ -134,7 +134,7 @@
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="i.e. Titanium" required />
                                     <div
-                                        class="suggestion-container trim-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll">
+                                        class="suggestion-container trim-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll z-10">
                                         {% for trim in trims %}
                                         <p
                                             class="trim-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
@@ -153,18 +153,14 @@
                                     </label>
                                     <select id="label-{{ i+1 }}-year" name="year-{{ i+1 }}" required
                                         class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
-                                        {% if year_selected %}
-                                        <option value="{{year_selected}}" selected>{{year_selected}}</option>
-                                        {% else %}
                                         <option value="" disabled selected>Select year</option>
-                                        {% endif %}
                                         {% for year in years() %}
                                         <option value="{{ year }}">{{ year }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
 
-                                <div class="w-full px-1">
+                                <div class="relative w-full px-1">
                                     <label for="label-{{ i+1 }}-type"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Type Of Vehicle
@@ -173,6 +169,15 @@
                                         autocomplete="off"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="i.e. Hatchback" required />
+                                    <div
+                                        class="suggestion-container type-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll">
+                                        {% for v_type in types %}
+                                        <p
+                                            class="type-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+                                            {{ v_type.name }}
+                                        </p>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
 

@@ -16,21 +16,25 @@ const makeContainer: HTMLDivElement = document.querySelector('.make-container');
 const modelContainer: HTMLDivElement =
   document.querySelector('.model-container');
 const trimContainer: HTMLDivElement = document.querySelector('.trim-container');
-console.log('trimContainer', trimContainer);
+const typeContainer: HTMLDivElement = document.querySelector('.type-container');
+
 const makeInput: HTMLInputElement = document.querySelector('#make-1');
 const modelInput = document.querySelector(
   '#vehicle_model-1',
 ) as HTMLInputElement;
 const trimInput: HTMLInputElement = document.querySelector('#label-1-trim');
+const typeInput: HTMLInputElement = document.querySelector('#label-1-type');
+
 const makeSuggestionP: HTMLParagraphElement =
   document.querySelector('.make-suggestion');
 const modelSuggestionP: HTMLParagraphElement =
   document.querySelector('.model-suggestion');
 const trimSuggestionP: HTMLParagraphElement =
   document.querySelector('.trim-suggestion');
+const typeSuggestionP: HTMLParagraphElement =
+  document.querySelector('.type-suggestion');
 
 function selectModel() {
-  console.log('selectModel()');
   const suggestionsGot: NodeListOf<HTMLParagraphElement> =
     document.querySelectorAll('.model-suggestion');
   suggestionsGot.forEach(suggestion => {
@@ -75,14 +79,11 @@ function selectModel() {
       modelInput.addEventListener('click', e => {
         modelContainer.classList.remove('hidden');
       });
-
-      // pull all trims for pulled models from db
     });
   });
 }
 
 function selectTrim() {
-  console.log('selectTrim()');
   const suggestionsGot: NodeListOf<HTMLParagraphElement> =
     document.querySelectorAll('.trim-suggestion');
   suggestionsGot.forEach(suggestion => {
@@ -94,6 +95,22 @@ function selectTrim() {
       trimInput.value = (e.target as HTMLParagraphElement).innerHTML;
       trimContainer.classList.add('hidden');
       console.log('trimInput.value', trimInput.value);
+    });
+  });
+}
+
+function selectType() {
+  const suggestionsGot: NodeListOf<HTMLParagraphElement> =
+    document.querySelectorAll('.type-suggestion');
+  suggestionsGot.forEach(suggestion => {
+    suggestion.addEventListener('click', e => {
+      console.log(
+        'Type suggestion clicked',
+        (e.target as HTMLParagraphElement).innerHTML,
+      );
+      typeInput.value = (e.target as HTMLParagraphElement).innerHTML;
+      typeContainer.classList.add('hidden');
+      console.log('typeInput.value', typeInput.value);
     });
   });
 }
@@ -178,6 +195,12 @@ modelInput.addEventListener('click', e => {
 trimInput.addEventListener('click', e => {
   console.log('trimInput clicked');
   trimContainer.classList.toggle('hidden');
+});
+
+typeInput.addEventListener('click', e => {
+  console.log('typeInput clicked');
+  console.log(typeContainer);
+  typeContainer.classList.toggle('hidden');
 });
 
 if (modelInput) {
