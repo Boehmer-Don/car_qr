@@ -66,7 +66,7 @@ function selectModel() {
             trimContainer.appendChild(clonedTrimSuggestionParagraph);
           });
 
-          // selectTrim();
+          selectTrim();
         })
         .catch(error => {
           console.error('Error fetching trims by model:', error);
@@ -77,6 +77,23 @@ function selectModel() {
       });
 
       // pull all trims for pulled models from db
+    });
+  });
+}
+
+function selectTrim() {
+  console.log('selectTrim()');
+  const suggestionsGot: NodeListOf<HTMLParagraphElement> =
+    document.querySelectorAll('.trim-suggestion');
+  suggestionsGot.forEach(suggestion => {
+    suggestion.addEventListener('click', e => {
+      console.log(
+        'Trim suggestion clicked',
+        (e.target as HTMLParagraphElement).innerHTML,
+      );
+      trimInput.value = (e.target as HTMLParagraphElement).innerHTML;
+      trimContainer.classList.add('hidden');
+      console.log('trimInput.value', trimInput.value);
     });
   });
 }
@@ -194,3 +211,4 @@ if (modelInput) {
 }
 
 selectModel();
+selectTrim();

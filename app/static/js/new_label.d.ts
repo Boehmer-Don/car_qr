@@ -9,3 +9,4 @@ declare const makeSuggestionP: HTMLParagraphElement;
 declare const modelSuggestionP: HTMLParagraphElement;
 declare const trimSuggestionP: HTMLParagraphElement;
 declare function selectModel(): void;
+declare function selectTrim(): void;
