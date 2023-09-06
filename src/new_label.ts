@@ -24,6 +24,54 @@ const makeSuggestionP: HTMLParagraphElement =
 const modelSuggestionP: HTMLParagraphElement =
   document.querySelector('.model-suggestion');
 
+function selectModel() {
+  console.log('selectModel()');
+  const suggestionsGot: NodeListOf<HTMLParagraphElement> =
+    document.querySelectorAll('.model-suggestion');
+  suggestionsGot.forEach(suggestion => {
+    suggestion.addEventListener('click', e => {
+      console.log(
+        'Model suggestion clicked',
+        (e.target as HTMLParagraphElement).innerHTML,
+      );
+      modelInput.value = (e.target as HTMLParagraphElement).innerHTML.replace(
+        /\s+/g,
+        '',
+      );
+      modelContainer.classList.add('hidden');
+      console.log('modelInput.value', modelInput.value);
+      // let models: Array<string> = [];
+      // fetch('/labels/get_models', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({makeSelected: makeInput.value}),
+      // })
+      //   .then(response => response.json())
+      //   .then(data => {
+      //     models.push(...data.models);
+      //     modelContainer.innerHTML = '';
+      //     models.forEach(model => {
+      //       let clonedModelSuggestionParagraph: HTMLParagraphElement =
+      //         modelSuggestionP.cloneNode(true) as HTMLParagraphElement;
+      //       clonedModelSuggestionParagraph.innerHTML = model;
+      //       modelContainer.appendChild(clonedModelSuggestionParagraph);
+      //     });
+      //   })
+      //   .catch(error => {
+      //     console.error('Error fetching models by make:', error);
+      //   });
+
+      // modelInput.addEventListener('click', e => {
+      //   modelContainer.classList.remove('hidden');
+      // });
+
+      // pull all trims for pulled models from db
+    });
+  });
+}
+
 if (makeInput) {
   makeInput.addEventListener('input', e => {
     let makes: Array<string> = [];
@@ -46,14 +94,12 @@ if (makeInput) {
           makeContainer.appendChild(clonedMakeSuggestionParagraph);
         });
 
-        // if make is in db: pull all models for make from db
-        // pull all trims for pulled models from db
         const suggestionsGot: NodeListOf<HTMLParagraphElement> =
           document.querySelectorAll('.make-suggestion');
         suggestionsGot.forEach(suggestion => {
           suggestion.addEventListener('click', e => {
             console.log(
-              'Suggestion clicked',
+              'Make suggestion clicked',
               (e.target as HTMLParagraphElement).innerHTML,
             );
             makeInput.value = (e.target as HTMLParagraphElement).innerHTML;
@@ -82,10 +128,12 @@ if (makeInput) {
                 console.error('Error fetching models by make:', error);
               });
 
-            // on click reveal model suggestions
             modelInput.addEventListener('click', e => {
               modelContainer.classList.remove('hidden');
+              selectModel();
             });
+
+            // pull all trims for pulled models from db
           });
         });
       })
@@ -102,3 +150,35 @@ makeInput.addEventListener('click', e => {
 modelInput.addEventListener('click', e => {
   modelContainer.classList.toggle('hidden');
 });
+
+if (modelInput) {
+  modelInput.addEventListener('input', e => {
+    let models: Array<string> = [];
+    fetch('/labels/get_models', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({modelTyped: modelInput.value}),
+    })
+      .then(response => response.json())
+      .then(data => {
+        models.push(...data.models);
+        modelContainer.innerHTML = '';
+        models.forEach(model => {
+          let clonedModelSuggestionParagraph: HTMLParagraphElement =
+            modelSuggestionP.cloneNode(true) as HTMLParagraphElement;
+          clonedModelSuggestionParagraph.innerHTML = model;
+          modelContainer.appendChild(clonedModelSuggestionParagraph);
+        });
+
+        console.log('before SelectModel()');
+        selectModel();
+      })
+      .catch(error => {
+        console.error('Error fetching all models:', error);
+      });
+  });
+}
+
+selectModel();

@@ -5,3 +5,4 @@ declare const makeInput: HTMLInputElement;
 declare const modelInput: HTMLInputElement;
 declare const makeSuggestionP: HTMLParagraphElement;
 declare const modelSuggestionP: HTMLParagraphElement;
+declare function selectModel(): void;

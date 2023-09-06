@@ -316,11 +316,21 @@ def get_makes():
 @dealer_blueprint.route("/get_models", methods=["POST"])
 def get_models():
     make_name = request.json.get("makeSelected")
-    models = db.session.scalars(
-        sa.select(m.CarModel.name).where(
+    model_typed = request.json.get("modelTyped")
+
+    models_query = sa.select(m.CarModel.name)
+    if make_name:
+        log(log.INFO, "Make name provided. Fetching all models for [%s]", make_name)
+        models_query = models_query.where(
             m.CarModel.make.has(m.CarMake.name == make_name)
         )
-    ).all()
+    if model_typed:
+        log(log.INFO, "Model name provided. Fetching all models for [%s]", model_typed)
+        models_query = models_query.where(m.CarModel.name.ilike(f"%{model_typed}%"))
+    if not model_typed and not make_name:
+        log(log.INFO, "No make or model name provided. Fetching all models.")
+
+    models = db.session.scalars(models_query).all()
     return {"models": models}
 
 
