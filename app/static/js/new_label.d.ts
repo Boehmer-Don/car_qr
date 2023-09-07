@@ -11,6 +11,7 @@ declare const makeSuggestionP: HTMLParagraphElement;
 declare const modelSuggestionP: HTMLParagraphElement;
 declare const trimSuggestionP: HTMLParagraphElement;
 declare const typeSuggestionP: HTMLParagraphElement;
+declare function selectMake(): void;
 declare function selectModel(): void;
 declare function selectTrim(): void;
 declare function selectType(): void;

@@ -386,7 +386,18 @@ def get_trims():
 
     trims_query = sa.select(m.CarTrim.name)
     if model_name:
-        log(log.INFO, "Model name provided. Fetching all trims for [%s]", model_name)
+        log(
+            log.INFO,
+            "Model name provided. Fetching make, type and all trims for [%s]",
+            model_name,
+        )
+        make = db.session.scalar(
+            sa.select(m.CarModel.make).where(m.CarModel.name == model_name)
+        )
+        model = db.session.scalar(
+            sa.select(m.CarModel).where(m.CarModel.name == model_name)
+        )
+        vehicle_type = model.vehicle_type.name
         trims_query = trims_query.where(
             m.CarTrim.model.has(m.CarModel.name == model_name)
         )
@@ -394,7 +405,7 @@ def get_trims():
         log(log.INFO, "No model name provided. Fetching all trims.")
 
     trims = db.session.scalars(trims_query).all()
-    return {"trims": trims}
+    return {"trims": trims, "make": make, "type": vehicle_type}
 
 
 def generate_alphanumeric_code():

@@ -34,6 +34,52 @@ const trimSuggestionP: HTMLParagraphElement =
 const typeSuggestionP: HTMLParagraphElement =
   document.querySelector('.type-suggestion');
 
+function selectMake() {
+  const suggestionsGot: NodeListOf<HTMLParagraphElement> =
+    document.querySelectorAll('.make-suggestion');
+  suggestionsGot.forEach(suggestion => {
+    suggestion.addEventListener('click', e => {
+      console.log(
+        'Make suggestion clicked',
+        (e.target as HTMLParagraphElement).innerHTML,
+      );
+      makeInput.value = (e.target as HTMLParagraphElement).innerHTML.replace(
+        /\s+/g,
+        '',
+      );
+      makeContainer.classList.add('hidden');
+      console.log('makeInput.value', makeInput.value);
+      let models: Array<string> = [];
+      fetch('/labels/get_models', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({makeSelected: makeInput.value}),
+      })
+        .then(response => response.json())
+        .then(data => {
+          models.push(...data.models);
+          modelContainer.innerHTML = '';
+          models.forEach(model => {
+            let clonedModelSuggestionParagraph: HTMLParagraphElement =
+              modelSuggestionP.cloneNode(true) as HTMLParagraphElement;
+            clonedModelSuggestionParagraph.innerHTML = model;
+            modelContainer.appendChild(clonedModelSuggestionParagraph);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching models by make:', error);
+        });
+
+      modelInput.addEventListener('click', e => {
+        modelContainer.classList.remove('hidden');
+        selectModel();
+      });
+    });
+  });
+}
+
 function selectModel() {
   const suggestionsGot: NodeListOf<HTMLParagraphElement> =
     document.querySelectorAll('.model-suggestion');
@@ -50,7 +96,6 @@ function selectModel() {
       modelContainer.classList.add('hidden');
       console.log('modelInput.value', modelInput.value);
 
-      // pull all trims for pulled models from db
       let trims: Array<string> = [];
       fetch('/labels/get_trims', {
         method: 'POST',
@@ -137,46 +182,48 @@ if (makeInput) {
           makeContainer.appendChild(clonedMakeSuggestionParagraph);
         });
 
-        const suggestionsGot: NodeListOf<HTMLParagraphElement> =
-          document.querySelectorAll('.make-suggestion');
-        suggestionsGot.forEach(suggestion => {
-          suggestion.addEventListener('click', e => {
-            console.log(
-              'Make suggestion clicked',
-              (e.target as HTMLParagraphElement).innerHTML,
-            );
-            makeInput.value = (e.target as HTMLParagraphElement).innerHTML;
-            makeContainer.classList.add('hidden');
-            console.log('makeInput.value', makeInput.value);
-            let models: Array<string> = [];
-            fetch('/labels/get_models', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({makeSelected: makeInput.value}),
-            })
-              .then(response => response.json())
-              .then(data => {
-                models.push(...data.models);
-                modelContainer.innerHTML = '';
-                models.forEach(model => {
-                  let clonedModelSuggestionParagraph: HTMLParagraphElement =
-                    modelSuggestionP.cloneNode(true) as HTMLParagraphElement;
-                  clonedModelSuggestionParagraph.innerHTML = model;
-                  modelContainer.appendChild(clonedModelSuggestionParagraph);
-                });
-              })
-              .catch(error => {
-                console.error('Error fetching models by make:', error);
-              });
+        selectMake();
 
-            modelInput.addEventListener('click', e => {
-              modelContainer.classList.remove('hidden');
-              selectModel();
-            });
-          });
-        });
+        // const suggestionsGot: NodeListOf<HTMLParagraphElement> =
+        //   document.querySelectorAll('.make-suggestion');
+        // suggestionsGot.forEach(suggestion => {
+        //   suggestion.addEventListener('click', e => {
+        //     console.log(
+        //       'Make suggestion clicked',
+        //       (e.target as HTMLParagraphElement).innerHTML,
+        //     );
+        //     makeInput.value = (e.target as HTMLParagraphElement).innerHTML;
+        //     makeContainer.classList.add('hidden');
+        //     console.log('makeInput.value', makeInput.value);
+        //     let models: Array<string> = [];
+        //     fetch('/labels/get_models', {
+        //       method: 'POST',
+        //       headers: {
+        //         'Content-Type': 'application/json',
+        //       },
+        //       body: JSON.stringify({makeSelected: makeInput.value}),
+        //     })
+        //       .then(response => response.json())
+        //       .then(data => {
+        //         models.push(...data.models);
+        //         modelContainer.innerHTML = '';
+        //         models.forEach(model => {
+        //           let clonedModelSuggestionParagraph: HTMLParagraphElement =
+        //             modelSuggestionP.cloneNode(true) as HTMLParagraphElement;
+        //           clonedModelSuggestionParagraph.innerHTML = model;
+        //           modelContainer.appendChild(clonedModelSuggestionParagraph);
+        //         });
+        //       })
+        //       .catch(error => {
+        //         console.error('Error fetching models by make:', error);
+        //       });
+
+        //     modelInput.addEventListener('click', e => {
+        //       modelContainer.classList.remove('hidden');
+        //       selectModel();
+        //     });
+        //   });
+        // });
       })
       .catch(error => {
         console.error('Error sending makes data to Flask:', error);
@@ -233,5 +280,6 @@ if (modelInput) {
   });
 }
 
+selectMake();
 selectModel();
 selectTrim();
