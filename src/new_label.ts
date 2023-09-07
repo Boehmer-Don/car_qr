@@ -134,7 +134,7 @@ function selectTrim() {
         'Trim suggestion clicked',
         (e.target as HTMLParagraphElement).innerHTML,
       );
-      trimInput.value = (e.target as HTMLParagraphElement).innerHTML;
+      trimInput.value = (e.target as HTMLParagraphElement).innerHTML.trim();
       trimContainer.classList.add('hidden');
       console.log('trimInput.value', trimInput.value);
     });
