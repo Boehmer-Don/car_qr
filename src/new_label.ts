@@ -5,7 +5,6 @@ const suggestionContainers: NodeListOf<HTMLDivElement> =
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
-    console.log('Escape pressed');
     suggestionContainers.forEach(container => {
       container.classList.add('hidden');
     });
@@ -39,13 +38,8 @@ function selectMake() {
     document.querySelectorAll('.make-suggestion');
   suggestionsGot.forEach(suggestion => {
     suggestion.addEventListener('click', e => {
-      console.log(
-        'Make suggestion clicked',
-        (e.target as HTMLParagraphElement).innerHTML,
-      );
       makeInput.value = (e.target as HTMLParagraphElement).innerHTML.trim();
       makeContainer.classList.add('hidden');
-      console.log('makeInput.value', makeInput.value);
       let models: Array<string> = [];
       fetch('/labels/get_models', {
         method: 'POST',
@@ -82,13 +76,8 @@ function selectModel() {
     document.querySelectorAll('.model-suggestion');
   suggestionsGot.forEach(suggestion => {
     suggestion.addEventListener('click', e => {
-      console.log(
-        'Model suggestion clicked',
-        (e.target as HTMLParagraphElement).innerHTML,
-      );
       modelInput.value = (e.target as HTMLParagraphElement).innerHTML.trim();
       modelContainer.classList.add('hidden');
-      console.log('modelInput.value', modelInput.value);
 
       let trims: Array<string> = [];
       fetch('/labels/get_trims', {
@@ -130,13 +119,8 @@ function selectTrim() {
     document.querySelectorAll('.trim-suggestion');
   suggestionsGot.forEach(suggestion => {
     suggestion.addEventListener('click', e => {
-      console.log(
-        'Trim suggestion clicked',
-        (e.target as HTMLParagraphElement).innerHTML,
-      );
       trimInput.value = (e.target as HTMLParagraphElement).innerHTML.trim();
       trimContainer.classList.add('hidden');
-      console.log('trimInput.value', trimInput.value);
     });
   });
 }
@@ -146,13 +130,8 @@ function selectType() {
     document.querySelectorAll('.type-suggestion');
   suggestionsGot.forEach(suggestion => {
     suggestion.addEventListener('click', e => {
-      console.log(
-        'Type suggestion clicked',
-        (e.target as HTMLParagraphElement).innerHTML,
-      );
       typeInput.value = (e.target as HTMLParagraphElement).innerHTML;
       typeContainer.classList.add('hidden');
-      console.log('typeInput.value', typeInput.value);
     });
   });
 }
@@ -196,13 +175,10 @@ modelInput.addEventListener('click', e => {
 });
 
 trimInput.addEventListener('click', e => {
-  console.log('trimInput clicked');
   trimContainer.classList.toggle('hidden');
 });
 
 typeInput.addEventListener('click', e => {
-  console.log('typeInput clicked');
-  console.log(typeContainer);
   typeContainer.classList.toggle('hidden');
 });
 
@@ -227,7 +203,6 @@ if (modelInput) {
           modelContainer.appendChild(clonedModelSuggestionParagraph);
         });
 
-        console.log('before SelectModel()');
         selectModel();
       })
       .catch(error => {
@@ -250,7 +225,6 @@ const codeError: HTMLParagraphElement = document.querySelector(
 let isError: boolean = false;
 if (codeInput) {
   codeInput.addEventListener('input', e => {
-    console.log('codeInput.value', codeInput.value);
     fetch('/labels/check_label_code', {
       method: 'POST',
       headers: {
@@ -260,7 +234,6 @@ if (codeInput) {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('data', data);
         if (data.exists === true) {
           codeError.classList.remove('hidden');
           codeInput.classList.add('text-red-700');
@@ -283,10 +256,7 @@ if (codeInput) {
   });
 }
 
-console.log('labelForm', labelForm);
-console.log('isError', isError);
 labelForm.addEventListener('submit', e => {
-  console.log('isError', isError);
   if (isError) {
     e.preventDefault();
   }
