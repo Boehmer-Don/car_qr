@@ -34,8 +34,17 @@
             </svg>
           </p>
           <p class="w-1/12 flex items-center justify-center"></p>
-          <p class="w-3/12 hidden md:flex items-center justify-center"></p>
-          <p class="w-3/12 flex items-center justify-center"></p>
+          <p class="w-4/12 hidden md:flex items-center justify-center"></p>
+          <p class="w-2/12 flex items-center justify-center">
+            <a href="{{url_for('labels.edit_cart_label', label_unique_id=label.unique_id)}}">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                <path fill-rule="evenodd"
+                  d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </a>
+          </p>
           <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-delete-button"
             data-target="{{label.json}}">
             <a href="{{url_for('labels.delete_from_cart', label_unique_id=label.unique_id)}}"
@@ -60,7 +69,7 @@
                   </label>
                   <input type="text" name="sticker-number-{{ loop.index }}" id="label-{{ loop.index }}-sticker-number"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="i.e. QR23456" value="{{ label.sticker_id }}" />
+                    placeholder="i.e. QR23456" disabled value="{{ label.sticker_id }}" />
                 </div>
 
                 <div class="w-full px-1">
@@ -69,7 +78,7 @@
                   </label>
                   <input type="text" name="gift-{{ loop.index }}" id="label-{{ loop.index }}-gift"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    value="{{ label.gift }}" />
+                    disabled value="{{ label.gift }}" />
                 </div>
               </div>
 
@@ -80,7 +89,7 @@
                   </label>
                   <input type="text" name="name-{{ loop.index }}" id="label-{{ loop.index }}-name"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Label Name" value="{{ label.name }}" />
+                    placeholder="Label Name" disabled value="{{ label.name }}" />
                 </div>
 
                 <div class="w-full px-1">
@@ -89,7 +98,7 @@
                   </label>
                   <input type="text" id="make-{{ loop.index }}" name="make-{{ loop.index }}" autocomplete="off"
                     class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="i.e. Ford" required value="{{ label.make }}" />
+                    placeholder="i.e. Ford" disabled value="{{ label.make }}" />
                   <div
                     class="suggestion-container make-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-52 overflow-y-scroll z-10">
                     {% for make in makes %}
@@ -109,7 +118,7 @@
                   <input type="text" id="vehicle_model-{{ loop.index }}" name="vehicle_model-{{ loop.index }}"
                     autocomplete="off"
                     class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="i.e. Fiesta" required value="{{ label.vehicle_model }}" />
+                    placeholder="i.e. Fiesta" disabled value="{{ label.vehicle_model }}" />
                   <div
                     class="suggestion-container model-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll z-10">
                     {% for model in models %}
@@ -126,7 +135,7 @@
                   </label>
                   <input type="text" id="label-{{ loop.index }}-trim" name="trim-{{ loop.index }}" autocomplete="off"
                     class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="i.e. Titanium" required value="{{label.trim}}" />
+                    placeholder="i.e. Titanium" disabled value="{{label.trim}}" />
                   <div
                     class="suggestion-container trim-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll z-10">
                     {% for trim in trims %}
@@ -145,7 +154,7 @@
                   <label for="year" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Year
                   </label>
-                  <select id="label-{{ loop.index }}-year" name="year-{{ loop.index }}" required
+                  <select id="label-{{ loop.index }}-year" name="year-{{ loop.index }}" disabled
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
                     {% for year in years() %}
                     {% if year == label.year %}
@@ -163,7 +172,7 @@
                   </label>
                   <input type="text" id="label-{{ loop.index }}-trim" name="trim-{{ loop.index }}" autocomplete="off"
                     class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="i.e. Hatchback" required value="{{label.type_of_vehicle}}" />
+                    placeholder="i.e. Hatchback" disabled value="{{label.type_of_vehicle}}" />
                   <div
                     class="suggestion-container type-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll">
                     {% for v_type in types %}
@@ -182,7 +191,7 @@
                   </label>
                   <input type="text" name="mileage-{{ loop.index }}" id="label-{{ loop.index }}-mileage"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Mileage" value="{{ label.mileage }}" />
+                    placeholder="Mileage" disabled value="{{ label.mileage }}" />
                 </div>
 
                 <div class="w-full px-1">
@@ -191,7 +200,7 @@
                   </label>
                   <input type="text" name="color-{{ loop.index }}" id="label-{{ loop.index }}-color"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Color" value="{{ label.color }}" />
+                    placeholder="Color" disabled value="{{ label.color }}" />
                 </div>
               </div>
 
@@ -202,7 +211,7 @@
                   </label>
                   <input type="text" name="price-{{ loop.index }}" id="label-{{ loop.index }}-price"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Price" value="{{ label.price }}" />
+                    placeholder="Price" disabled value="{{ label.price }}" />
                 </div>
 
                 <div class="w-full px-1">
@@ -211,7 +220,7 @@
                   </label>
                   <input type="text" name="url-{{ loop.index }}" id="label-{{ loop.index }}-url"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="URL" value="{{ label.url }}" />
+                    placeholder="URL" disabled value="{{ label.url }}" />
                 </div>
               </div>
             </div>
@@ -220,7 +229,7 @@
         {% endfor %}
 
         <button name="submit" type="submit"
-          class="ml-2 my-2 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+          class="hidden ml-2 my-2 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
           Edit labels' data >
         </button>
       </form>

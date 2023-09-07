@@ -13,9 +13,9 @@
         <div class="w-full p-3 md:pl-0 flex justify-between">
             <!-- <h3 class="mt-6 md:mt-0 text-lg font-bold">New Labels</h3> -->
             <p class="my-5">
-                Please fill all form fields to add a new label.
+                This form contains all information that you mentioned while creating the label.
                 <br>
-                Please make sure that all inputs are correct before submitting.
+                Please look through the details and make sure everything is correct before proceeding to billing.
             </p>
         </div>
 
@@ -28,11 +28,9 @@
                 <p class="w-1/12 flex items-center justify-center"></p>
             </div>
 
-            <form action="{{url_for('labels.new_label_set_details', user_unique_id=user_unique_id, amount=amount)}}"
-                method="post" class="relative bg-white rounded-lg shadow dark:bg-gray-800" id="label-form">
+            <form action="{{url_for('labels.edit_cart_label', label_unique_id=label.unique_id)}}" method="post"
+                class="relative bg-white rounded-lg shadow dark:bg-gray-800" id="label-form">
                 {{ form_hidden_tag() }}
-                {% set amount_int = amount | int %}
-                {% for i in range(amount_int) %}
                 <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
                     <p
                         class="new_label_details w-1/2 md:w-full pl-3 flex items-center justify-start hover:text-indigo-500 cursor-pointer">
@@ -46,55 +44,56 @@
                     </p>
                 </div>
                 <div class="w-full bg-gray-100 dark:bg-gray-700">
-                    <input type="hidden" name="user_id" id="new-label-{{ i+1 }}-user-id" value="{{current_user.id}}" />
+                    <input type="hidden" name="user_id" id="new-label-1-user-id" value="{{current_user.id}}" />
                     <div class="p-6 space-y-6">
                         <div class="w-full px-1">
                             <div class="w-full flex justify-between">
                                 <div class="w-full px-1">
-                                    <label for="label-{{ i+1 }}-sticker-number"
+                                    <label for="label-1-sticker-number"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Unique Label Identifier
                                     </label>
                                     <div class="relative">
-                                        <input type="text" name="sticker-number-{{ i+1 }}" autocomplete="off"
-                                            id="label-{{ i+1 }}-sticker-number"
+                                        <input type="text" name="sticker_id" autocomplete="off"
+                                            id="label-1-sticker-number"
                                             class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                            placeholder="i.e. QR23456" required />
+                                            placeholder="i.e. QR23456" required value="{{label.sticker_id}}" />
                                         <p class="sticker-code-error hidden absolute bottom-2.5 right-1 text-red-700">
                                             this code already exists</p>
                                     </div>
                                 </div>
 
                                 <div class="w-full px-1">
-                                    <label for="label-{{ i+1 }}-gift"
+                                    <label for="label-1-gift"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Gift
                                     </label>
-                                    <input type="text" id="label-{{ i+1 }}-gift" name="gift-{{ i+1 }}"
+                                    <input type="text" id="label-1-gift" name="gift"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="i.e. Free Oil Change" />
+                                        placeholder="i.e. Free Oil Change" value="{{label.gift}}" />
                                 </div>
                             </div>
 
                             <div class="w-full flex justify-between">
                                 <div class="w-full px-1">
-                                    <label for="name-{{ i+1 }}"
+                                    <label for="name-1"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Label Name
                                     </label>
-                                    <input type="text" name="name-{{ i+1 }}" id="label-{{ i+1 }}-name"
+                                    <input type="text" name="name" id="label-1-name"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="Reference Name to Internally Identify" required />
+                                        placeholder="Reference Name to Internally Identify" required
+                                        value="{{label.name}}" />
                                 </div>
 
                                 <div class="relative w-full px-1">
-                                    <label for="make-{{ i+1 }}"
+                                    <label for="make-1"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Make
                                     </label>
-                                    <input type="text" id="make-{{ i+1 }}" name="make-{{ i+1 }}" autocomplete="off"
+                                    <input type="text" id="make-1" name="make" autocomplete="off"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="i.e. Ford" required />
+                                        placeholder="i.e. Ford" required value="{{label.make}}" />
                                     <div
                                         class="suggestion-container make-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-52 overflow-y-scroll z-10">
                                         {% for make in makes %}
@@ -109,14 +108,13 @@
 
                             <div class="w-full flex justify-between">
                                 <div class="relative w-full px-1">
-                                    <label for="vehicle_model-{{ i+1 }}"
+                                    <label for="vehicle_model-1"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Vehicle Model
                                     </label>
-                                    <input type="text" id="vehicle_model-{{ i+1 }}" name="vehicle_model-{{ i+1 }}"
-                                        autocomplete="off"
+                                    <input type="text" id="vehicle_model-1" name="vehicle_model" autocomplete="off"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="i.e. Fiesta" required />
+                                        placeholder="i.e. Fiesta" required value="{{label.vehicle_model}}" />
                                     <div
                                         class="suggestion-container model-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll z-10">
                                         {% for model in models %}
@@ -129,14 +127,13 @@
                                 </div>
 
                                 <div class="relative w-full px-1">
-                                    <label for="label-{{ i+1 }}-trim"
+                                    <label for="label-1-trim"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Trim
                                     </label>
-                                    <input type="text" id="label-{{ i+1 }}-trim" name="trim-{{ i+1 }}"
-                                        autocomplete="off"
+                                    <input type="text" id="label-1-trim" name="trim" autocomplete="off"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="i.e. Titanium" required />
+                                        placeholder="i.e. Titanium" required value="{{label.trim}}" />
                                     <div
                                         class="suggestion-container trim-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll z-10">
                                         {% for trim in trims %}
@@ -151,28 +148,31 @@
 
                             <div class="w-full flex justify-between">
                                 <div class="w-full px-1">
-                                    <label for="label-{{ i+1 }}-year"
+                                    <label for="label-1-year"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Year
                                     </label>
-                                    <select id="label-{{ i+1 }}-year" name="year-{{ i+1 }}" required
+                                    <select id="label-1-year" name="year" required
                                         class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
                                         <option value="" disabled selected>Select year</option>
                                         {% for year in years() %}
+                                        {% if year == label.year %}
+                                        <option value="{{ year }}" selected>{{ year }}</option>
+                                        {% else %}
                                         <option value="{{ year }}">{{ year }}</option>
+                                        {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
 
                                 <div class="relative w-full px-1">
-                                    <label for="label-{{ i+1 }}-type"
+                                    <label for="label-1-type"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Type Of Vehicle
                                     </label>
-                                    <input type="text" id="label-{{ i+1 }}-type" name="type-{{ i+1 }}"
-                                        autocomplete="off"
+                                    <input type="text" id="label-1-type" name="type_of_vehicle" autocomplete="off"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="i.e. Hatchback" required />
+                                        placeholder="i.e. Hatchback" required value="{{label.type_of_vehicle}}" />
                                     <div
                                         class="suggestion-container type-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll">
                                         {% for v_type in types %}
@@ -191,9 +191,9 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Mileage
                                     </label>
-                                    <input type="text" name="mileage-{{ i+1 }}" id="label-{{ i+1 }}-mileage"
+                                    <input type="text" name="mileage" id="label-1-mileage"
                                         class="clean_number_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="Mileage" required />
+                                        placeholder="Mileage" required value="{{label.mileage}}" />
                                 </div>
 
                                 <div class=" w-full px-1">
@@ -201,9 +201,9 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Colour
                                     </label>
-                                    <input type="text" name="color-{{ i+1 }}" id="label-{{ i+1 }}-color"
+                                    <input type="text" name="color" id="label-1-color"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="Colour" />
+                                        placeholder="Colour" required value="{{label.color}}" />
                                 </div>
                             </div>
 
@@ -213,9 +213,9 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Price
                                     </label>
-                                    <input type="text" name="price-{{ i+1 }}" id="label-{{ i+1 }}-price"
+                                    <input type="text" name="price" id="label-1-price"
                                         class="clean_number_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="Price" required />
+                                        placeholder="Price" required value="{{label.price}}" />
                                 </div>
 
                                 <div class="w-full px-1">
@@ -223,16 +223,15 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         URL
                                     </label>
-                                    <input type="text" name="url-{{ i+1 }}" id="label-{{ i+1 }}-url"
+                                    <input type="text" name="url" id="label-1-url"
                                         class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="URL" required />
+                                        placeholder="URL" required value="{{label.url}}" />
                                 </div>
                             </div>
 
                         </div>
                     </div>
                 </div>
-                {% endfor %}
 
                 <button name="submit" type="submit"
                     class="ml-2 my-2 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">

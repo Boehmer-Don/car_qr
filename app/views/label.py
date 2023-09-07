@@ -177,6 +177,63 @@ def label_details():
         return redirect(url_for("user.get_all"))
 
 
+@dealer_blueprint.route("/edit_cart_label/<label_unique_id>", methods=["GET", "POST"])
+@login_required
+def edit_cart_label(label_unique_id: str):
+    label = db.session.scalar(
+        sa.select(m.Label).where(m.Label.unique_id == label_unique_id)
+    )
+    if not label:
+        log(log.ERROR, "Failed to find label : [%s]", form.unique_id.data)
+        flash("Failed to find label", "danger")
+        return redirect(
+            url_for(
+                "labels.get_active_labels",
+                user_unique_id=current_user.unique_id,
+            )
+        )
+
+    makes = db.session.scalars(m.CarMake.select()).all()
+    models = db.session.scalars(m.CarModel.select()).all()
+    trims = db.session.scalars(m.CarTrim.select()).all()
+    types = db.session.scalars(m.CarType.select()).all()
+
+    form: f.LabelForm = f.LabelForm()
+    if form.validate_on_submit():
+        label.sticker_id = form.sticker_id.data
+        label.gift = form.gift.data
+        label.name = form.name.data
+        label.make = form.make.data
+        label.vehicle_model = form.vehicle_model.data
+        label.year = form.year.data
+        label.mileage = form.mileage.data
+        label.color = form.color.data
+        label.trim = form.trim.data
+        label.type_of_vehicle = form.type_of_vehicle.data
+        label.price = form.price.data
+        label.url = form.url.data
+        label.save()
+        return redirect(
+            url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
+        )
+
+    elif form.is_submitted():
+        log(log.ERROR, "User save errors: [%s]", form.errors)
+        flash(f"{form.errors}", "danger")
+        return redirect(url_for("user.get_all"))
+
+    return render_template(
+        "label/edit_cart_label.html",
+        form=form,
+        label=label,
+        user_unique_id=current_user.unique_id,
+        makes=makes,
+        models=models,
+        trims=trims,
+        types=types,
+    )
+
+
 @dealer_blueprint.route("/reporting", methods=["GET", "POST"])
 @login_required
 def reporting():
