@@ -160,3 +160,12 @@ def init(app: Flask):
             for model in models:
                 f.write(f"{model.make.name} {model.name}\n")
                 print(f"{model.make.name} {model.name}")
+
+    @app.cli.command()
+    @click.option("--user-id", default=9, type=int)
+    def get_pending_labels(user_id: int):
+        pending_labels = db.session.scalars(
+            m.Sticker.select().where(m.Sticker.user_id == user_id)
+        ).all()
+        for label in pending_labels:
+            print(label.code)

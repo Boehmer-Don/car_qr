@@ -76,6 +76,15 @@ if (cleanNameInputs) {
     });
   });
 }
+const cleanGiftInput = document.querySelector('.clean_gift_input');
+if (cleanGiftInput) {
+  cleanGiftInput.addEventListener('input', (e: any) => {
+    if (e.target.value) {
+      const inputText = e.target.value.replace(/[^\w$\d\s.-]/gi, '');
+      e.target.value = inputText;
+    }
+  });
+}
 
 const cleanNumberInputs: NodeListOf<HTMLInputElement> =
   document.querySelectorAll('.clean_number_input');

@@ -139,7 +139,7 @@ function selectType() {
     document.querySelectorAll('.type-suggestion');
   suggestionsGot.forEach(suggestion => {
     suggestion.addEventListener('click', e => {
-      typeInput.value = (e.target as HTMLParagraphElement).innerHTML;
+      typeInput.value = (e.target as HTMLParagraphElement).innerHTML.trim();
       typeContainer.classList.add('hidden');
     });
   });
@@ -196,9 +196,6 @@ typeInput.addEventListener('click', e => {
   typeContainer.classList.toggle('hidden');
 });
 
-console.log('makeWarning:', makeWarning);
-console.log('modelWarning:', modelWarning);
-
 if (modelInput) {
   modelInput.addEventListener('input', e => {
     let models: Array<string> = [];
@@ -238,13 +235,17 @@ if (modelInput) {
 selectMake();
 selectModel();
 selectTrim();
+selectType();
 
 const labelForm: HTMLFormElement = document.querySelector('#label-form');
 const codeInput: HTMLInputElement = document.querySelector(
   '#label-1-sticker-number',
 );
-const codeError: HTMLParagraphElement = document.querySelector(
-  '.sticker-code-error',
+const codeExistsError: HTMLParagraphElement = document.querySelector(
+  '.sticker-code-exists-error',
+);
+const codeNotPendingError: HTMLParagraphElement = document.querySelector(
+  '.sticker-code-not-pending-error',
 );
 let isError: boolean = false;
 if (codeInput) {
@@ -258,15 +259,32 @@ if (codeInput) {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.exists === true) {
-          codeError.classList.remove('hidden');
+        if (data.pending === false) {
+          codeNotPendingError.classList.remove('hidden');
           codeInput.classList.add('text-red-700');
           codeInput.classList.add('border-2');
           codeInput.classList.add('bg-red-100');
           codeInput.classList.add('focus:border-red-700');
           isError = true;
         } else {
-          codeError.classList.add('hidden');
+          codeNotPendingError.classList.add('hidden');
+          codeInput.classList.remove('text-red-700');
+          codeInput.classList.remove('border-2');
+          codeInput.classList.remove('bg-red-100');
+          codeInput.classList.remove('focus:border-red-700');
+          isError = false;
+        }
+
+        if (data.exists === true) {
+          codeNotPendingError.classList.add('hidden');
+          codeExistsError.classList.remove('hidden');
+          codeInput.classList.add('text-red-700');
+          codeInput.classList.add('border-2');
+          codeInput.classList.add('bg-red-100');
+          codeInput.classList.add('focus:border-red-700');
+          isError = true;
+        } else {
+          codeExistsError.classList.add('hidden');
           codeInput.classList.remove('text-red-700');
           codeInput.classList.remove('border-2');
           codeInput.classList.remove('bg-red-100');

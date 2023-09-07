@@ -1,5 +1,6 @@
 declare const cleanEmail: HTMLInputElement;
 declare const cleanNameInputs: NodeListOf<Element>;
+declare const cleanGiftInput: Element;
 declare const cleanNumberInputs: NodeListOf<HTMLInputElement>;
 declare const cleanPhone: HTMLInputElement;
 declare const pricingButton: Element;

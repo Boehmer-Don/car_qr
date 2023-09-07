@@ -19,5 +19,6 @@ declare function selectTrim(): void;
 declare function selectType(): void;
 declare const labelForm: HTMLFormElement;
 declare const codeInput: HTMLInputElement;
-declare const codeError: HTMLParagraphElement;
+declare const codeExistsError: HTMLParagraphElement;
+declare const codeNotPendingError: HTMLParagraphElement;
 declare let isError: boolean;

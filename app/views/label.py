@@ -312,6 +312,10 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 m.CarType(name=type_input).save()
                 log(log.INFO, "Created new type: [%s]", type_input)
 
+            url_input = request.form.get(f"url-{i}")
+            if url_input and not url_input.startswith("http"):
+                url_input = f"https://{url_input}"
+
             label = m.Label(
                 sticker_id=request.form.get(f"sticker-number-{i}"),
                 name=request.form.get(f"name-{i}"),
@@ -323,7 +327,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 trim=trim_input,
                 type_of_vehicle=type_input,
                 price=request.form.get(f"price-{i}"),
-                url=request.form.get(f"url-{i}"),
+                url=url_input,
                 status=m.LabelStatus.cart,
                 user_id=current_user.id,
                 gift=request.form.get(f"gift-{i}"),
@@ -489,9 +493,13 @@ def generate(user_unique_id: str):
         for _ in range(labels_amount):
             generated_code = generate_alphanumeric_code()
             while True:
-                if not db.session.scalar(
+                pending_labels = db.session.scalar(
                     m.Sticker.select().where(m.Sticker.code == generated_code)
-                ):
+                )
+                active_labels = db.session.scalar(
+                    m.Label.select().where(m.Label.sticker_id == generated_code)
+                )
+                if not pending_labels and not active_labels:
                     break
                 generated_code = generate_alphanumeric_code()
 
@@ -811,12 +819,27 @@ def check_label_code():
     existing_labels = db.session.scalars(
         sa.select(m.Label).where(m.Label.sticker_id == code)
     ).all()
+    label_exists = False
     if existing_labels:
         log(log.INFO, "Label with code [%s] already exists", code)
-        return {"code": code, "exists": True}
+        label_exists = True
+    else:
+        log(log.INFO, "Label with code [%s] does not exist", code)
 
-    log(log.INFO, "Label with code [%s] does not exist", code)
-    return {"code": code, "exists": False}
+    pending_labels = db.session.scalars(
+        sa.select(m.Sticker)
+        .where(m.Sticker.code == code)
+        .where(m.Sticker.user_id == current_user.id)
+    ).all()
+
+    label_is_pending = False
+    if pending_labels:
+        log(log.INFO, "Label with code [%s] is printed and pending", code)
+        label_is_pending = True
+    else:
+        log(log.INFO, "Label with code [%s] is not printed", code)
+
+    return {"code": code, "exists": label_exists, "pending": label_is_pending}
 
 
 @dealer_blueprint.route("/delete_from_cart/<label_unique_id>")
@@ -867,4 +890,5 @@ def gift(sticker_id: str):
         sticker_id=sticker_id,
         label_url=label.url,
         gift=label.gift,
+        dealership=label.user.name_of_dealership,
     )

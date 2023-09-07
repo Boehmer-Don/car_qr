@@ -60,6 +60,9 @@
                                             placeholder="i.e. QR23456" required value="{{label.sticker_id}}" />
                                         <p class="sticker-code-error hidden absolute bottom-2.5 right-1 text-red-700">
                                             this code already exists</p>
+                                        <p
+                                            class="sticker-code-not-pending-error hidden absolute bottom-2.5 right-1 text-red-700">
+                                            no pending label with this code</p>
                                     </div>
                                 </div>
 
@@ -69,7 +72,7 @@
                                         Gift
                                     </label>
                                     <input type="text" id="label-1-gift" name="gift"
-                                        class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                                        class="clean_gift_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="i.e. Free Oil Change" value="{{label.gift}}" />
                                 </div>
                             </div>
