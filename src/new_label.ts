@@ -43,10 +43,7 @@ function selectMake() {
         'Make suggestion clicked',
         (e.target as HTMLParagraphElement).innerHTML,
       );
-      makeInput.value = (e.target as HTMLParagraphElement).innerHTML.replace(
-        /\s+/g,
-        '',
-      );
+      makeInput.value = (e.target as HTMLParagraphElement).innerHTML.trim();
       makeContainer.classList.add('hidden');
       console.log('makeInput.value', makeInput.value);
       let models: Array<string> = [];
@@ -89,10 +86,7 @@ function selectModel() {
         'Model suggestion clicked',
         (e.target as HTMLParagraphElement).innerHTML,
       );
-      modelInput.value = (e.target as HTMLParagraphElement).innerHTML.replace(
-        /\s+/g,
-        '',
-      );
+      modelInput.value = (e.target as HTMLParagraphElement).innerHTML.trim();
       modelContainer.classList.add('hidden');
       console.log('modelInput.value', modelInput.value);
 
@@ -114,6 +108,9 @@ function selectModel() {
             clonedTrimSuggestionParagraph.innerHTML = trim;
             trimContainer.appendChild(clonedTrimSuggestionParagraph);
           });
+
+          makeInput.value = data.make;
+          typeInput.value = data.type;
 
           selectTrim();
         })

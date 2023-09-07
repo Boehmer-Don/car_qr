@@ -247,7 +247,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
                     model_id=model.id,
                 ).save()
                 log(log.INFO, "Created new trim: [%s]", trim_input)
-            type_input = request.form.get(f"type_of_vehicle-{i}")
+            type_input = request.form.get(f"type-{i}")
             vehicle_type = db.session.scalar(
                 m.CarType.select().where(m.CarType.name == type_input)
             )
@@ -391,12 +391,10 @@ def get_trims():
             "Model name provided. Fetching make, type and all trims for [%s]",
             model_name,
         )
-        make = db.session.scalar(
-            sa.select(m.CarModel.make).where(m.CarModel.name == model_name)
-        )
         model = db.session.scalar(
             sa.select(m.CarModel).where(m.CarModel.name == model_name)
         )
+        make = model.make.name
         vehicle_type = model.vehicle_type.name
         trims_query = trims_query.where(
             m.CarTrim.model.has(m.CarModel.name == model_name)

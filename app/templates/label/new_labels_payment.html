@@ -87,13 +87,17 @@
                   <label for="make" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Make
                   </label>
-                  <select id="make-{{ loop.index }}" name="make-{{ loop.index }}" data-model="{{ loop.index }}" required
-                    class="clean_name_input make w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
-                    <option value="{{ label.make }}">{{ label.make }}</option>
+                  <input type="text" id="make-{{ loop.index }}" name="make-{{ loop.index }}" autocomplete="off"
+                    class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="i.e. Ford" required value="{{ label.make }}" />
+                  <div
+                    class="suggestion-container make-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-52 overflow-y-scroll z-10">
                     {% for make in makes %}
-                    <option value="{{ make.name }}">{{ make.name }}</option>
+                    <p class="make-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+                      {{ make.name }}
+                    </p>
                     {% endfor %}
-                  </select>
+                  </div>
                 </div>
               </div>
 
@@ -102,31 +106,35 @@
                   <label for="model" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Vehicle Model
                   </label>
-                  <select id="vehicle_model-{{ loop.index }}" name="vehicle_model-{{ loop.index }}"
-                    data-trim="{{ loop.index }}" required
-                    class="clean_name_input model w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
-                    <option value="{{ label.vehicle_model }}">{{ label.vehicle_model }}</option>{% for
-                    model in
-                    models %}
-                    <option value="{{ model.name }}">{{ model.name }}</option>
+                  <input type="text" id="vehicle_model-{{ loop.index }}" name="vehicle_model-{{ loop.index }}"
+                    autocomplete="off"
+                    class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="i.e. Fiesta" required value="{{ label.vehicle_model }}" />
+                  <div
+                    class="suggestion-container model-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll z-10">
+                    {% for model in models %}
+                    <p class="model-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+                      {{ model.name }}
+                    </p>
                     {% endfor %}
-                  </select>
+                  </div>
                 </div>
 
                 <div class="w-full px-1">
                   <label for="trim" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Trim
                   </label>
-                  <select id="label-{{ loop.index }}-trim" name="trim-{{ loop.index }}"
-                    class="clean_name_input model w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                  <input type="text" id="label-{{ loop.index }}-trim" name="trim-{{ loop.index }}" autocomplete="off"
+                    class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="i.e. Titanium" required value="{{label.trim}}" />
+                  <div
+                    class="suggestion-container trim-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll z-10">
                     {% for trim in trims %}
-                    {% if trim.name == label.trim %}
-                    <option value="{{ trim.name }}" selected>{{ trim.name }}</option>
-                    {% else %}
-                    <option value="{{ trim.name }}">{{ trim.name }}</option>
-                    {% endif %}
+                    <p class="trim-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+                      {{ trim.name }}
+                    </p>
                     {% endfor %}
-                  </select>
+                  </div>
                 </div>
               </div>
 
@@ -137,25 +145,33 @@
                   <label for="year" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Year
                   </label>
-                  <input type="text" name="year-{{ loop.index }}" id="label-{{ loop.index }}-year"
-                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Year" value="{{ label.year }}" />
+                  <select id="label-{{ loop.index }}-year" name="year-{{ loop.index }}" required
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                    {% for year in years() %}
+                    {% if year == label.year %}
+                    <option value="{{ label.year }}" selected>{{ label.year }}</option>
+                    {% else %}
+                    <option value="{{ year }}">{{ year }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
                 </div>
 
                 <div class="w-full px-1">
                   <label for="vtype" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                     Type Of Vehicle
                   </label>
-                  <select id="label-{{ loop.index }}-trim" name="trim-{{ loop.index }}"
-                    class="clean_name_input model w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
-                    {% for type in types %}
-                    {% if type.name == label.type_of_vehicle %}
-                    <option value="{{ type.name }}" selected>{{ type.name }}</option>
-                    {% else %}
-                    <option value="{{ type.name }}">{{ type.name }}</option>
-                    {% endif %}
+                  <input type="text" id="label-{{ loop.index }}-trim" name="trim-{{ loop.index }}" autocomplete="off"
+                    class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="i.e. Hatchback" required value="{{label.type_of_vehicle}}" />
+                  <div
+                    class="suggestion-container type-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll">
+                    {% for v_type in types %}
+                    <p class="type-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+                      {{ v_type.name }}
+                    </p>
                     {% endfor %}
-                  </select>
+                  </div>
                 </div>
               </div>
 
