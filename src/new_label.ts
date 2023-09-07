@@ -180,47 +180,6 @@ if (makeInput) {
         });
 
         selectMake();
-
-        // const suggestionsGot: NodeListOf<HTMLParagraphElement> =
-        //   document.querySelectorAll('.make-suggestion');
-        // suggestionsGot.forEach(suggestion => {
-        //   suggestion.addEventListener('click', e => {
-        //     console.log(
-        //       'Make suggestion clicked',
-        //       (e.target as HTMLParagraphElement).innerHTML,
-        //     );
-        //     makeInput.value = (e.target as HTMLParagraphElement).innerHTML;
-        //     makeContainer.classList.add('hidden');
-        //     console.log('makeInput.value', makeInput.value);
-        //     let models: Array<string> = [];
-        //     fetch('/labels/get_models', {
-        //       method: 'POST',
-        //       headers: {
-        //         'Content-Type': 'application/json',
-        //       },
-        //       body: JSON.stringify({makeSelected: makeInput.value}),
-        //     })
-        //       .then(response => response.json())
-        //       .then(data => {
-        //         models.push(...data.models);
-        //         modelContainer.innerHTML = '';
-        //         models.forEach(model => {
-        //           let clonedModelSuggestionParagraph: HTMLParagraphElement =
-        //             modelSuggestionP.cloneNode(true) as HTMLParagraphElement;
-        //           clonedModelSuggestionParagraph.innerHTML = model;
-        //           modelContainer.appendChild(clonedModelSuggestionParagraph);
-        //         });
-        //       })
-        //       .catch(error => {
-        //         console.error('Error fetching models by make:', error);
-        //       });
-
-        //     modelInput.addEventListener('click', e => {
-        //       modelContainer.classList.remove('hidden');
-        //       selectModel();
-        //     });
-        //   });
-        // });
       })
       .catch(error => {
         console.error('Error sending makes data to Flask:', error);
