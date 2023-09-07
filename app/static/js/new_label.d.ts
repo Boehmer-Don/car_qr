@@ -7,6 +7,8 @@ declare const makeInput: HTMLInputElement;
 declare const modelInput: HTMLInputElement;
 declare const trimInput: HTMLInputElement;
 declare const typeInput: HTMLInputElement;
+declare const makeWarning: HTMLParagraphElement;
+declare const modelWarning: HTMLParagraphElement;
 declare const makeSuggestionP: HTMLParagraphElement;
 declare const modelSuggestionP: HTMLParagraphElement;
 declare const trimSuggestionP: HTMLParagraphElement;

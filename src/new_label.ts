@@ -24,6 +24,11 @@ const modelInput = document.querySelector(
 const trimInput: HTMLInputElement = document.querySelector('#label-1-trim');
 const typeInput: HTMLInputElement = document.querySelector('#label-1-type');
 
+const makeWarning: HTMLParagraphElement =
+  document.querySelector('.make-warning');
+const modelWarning: HTMLParagraphElement =
+  document.querySelector('.model-warning');
+
 const makeSuggestionP: HTMLParagraphElement =
   document.querySelector('.make-suggestion');
 const modelSuggestionP: HTMLParagraphElement =
@@ -63,6 +68,9 @@ function selectMake() {
           console.error('Error fetching models by make:', error);
         });
 
+      modelWarning.classList.add('hidden');
+      modelInput.value = '';
+
       modelInput.addEventListener('click', e => {
         modelContainer.classList.remove('hidden');
         selectModel();
@@ -99,6 +107,7 @@ function selectModel() {
           });
 
           makeInput.value = data.make;
+          makeWarning.classList.add('hidden');
           typeInput.value = data.type;
 
           selectTrim();
@@ -148,17 +157,22 @@ if (makeInput) {
     })
       .then(res => res.json())
       .then(data => {
-        makes.push(...data.makes);
-        makeContainer.classList.remove('hidden');
-        makeContainer.innerHTML = '';
-        makes.forEach(make => {
-          let clonedMakeSuggestionParagraph: HTMLParagraphElement =
-            makeSuggestionP.cloneNode(true) as HTMLParagraphElement;
-          clonedMakeSuggestionParagraph.innerHTML = make;
-          makeContainer.appendChild(clonedMakeSuggestionParagraph);
-        });
+        if (data.makes.length === 0) {
+          makeInput.classList.add('text-indigo-500');
+          makeWarning.classList.remove('hidden');
+        } else {
+          makes.push(...data.makes);
+          makeContainer.classList.remove('hidden');
+          makeContainer.innerHTML = '';
+          makes.forEach(make => {
+            let clonedMakeSuggestionParagraph: HTMLParagraphElement =
+              makeSuggestionP.cloneNode(true) as HTMLParagraphElement;
+            clonedMakeSuggestionParagraph.innerHTML = make;
+            makeContainer.appendChild(clonedMakeSuggestionParagraph);
+          });
 
-        selectMake();
+          selectMake();
+        }
       })
       .catch(error => {
         console.error('Error sending makes data to Flask:', error);
@@ -182,6 +196,9 @@ typeInput.addEventListener('click', e => {
   typeContainer.classList.toggle('hidden');
 });
 
+console.log('makeWarning:', makeWarning);
+console.log('modelWarning:', modelWarning);
+
 if (modelInput) {
   modelInput.addEventListener('input', e => {
     let models: Array<string> = [];
@@ -194,16 +211,23 @@ if (modelInput) {
     })
       .then(response => response.json())
       .then(data => {
-        models.push(...data.models);
-        modelContainer.innerHTML = '';
-        models.forEach(model => {
-          let clonedModelSuggestionParagraph: HTMLParagraphElement =
-            modelSuggestionP.cloneNode(true) as HTMLParagraphElement;
-          clonedModelSuggestionParagraph.innerHTML = model;
-          modelContainer.appendChild(clonedModelSuggestionParagraph);
-        });
+        if (data.models.length === 0) {
+          modelInput.classList.add('text-indigo-500');
+          modelWarning.classList.remove('hidden');
+        } else {
+          modelInput.classList.remove('text-indigo-500');
+          modelWarning.classList.add('hidden');
+          models.push(...data.models);
+          modelContainer.innerHTML = '';
+          models.forEach(model => {
+            let clonedModelSuggestionParagraph: HTMLParagraphElement =
+              modelSuggestionP.cloneNode(true) as HTMLParagraphElement;
+            clonedModelSuggestionParagraph.innerHTML = model;
+            modelContainer.appendChild(clonedModelSuggestionParagraph);
+          });
 
-        selectModel();
+          selectModel();
+        }
       })
       .catch(error => {
         console.error('Error fetching all models:', error);
