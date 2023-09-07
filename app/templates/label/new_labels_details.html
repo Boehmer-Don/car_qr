@@ -29,7 +29,7 @@
             </div>
 
             <form action="{{url_for('labels.new_label_set_details', user_unique_id=user_unique_id, amount=amount)}}"
-                method="post" class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+                method="post" class="relative bg-white rounded-lg shadow dark:bg-gray-800" id="label-form">
                 {{ form_hidden_tag() }}
                 {% set amount_int = amount | int %}
                 {% for i in range(amount_int) %}
@@ -55,10 +55,14 @@
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Unique Label Identifier
                                     </label>
-                                    <input type="text" name="sticker-number-{{ i+1 }}"
-                                        id="label-{{ i+1 }}-sticker-number"
-                                        class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                                        placeholder="i.e. QR23456" required />
+                                    <div class="relative">
+                                        <input type="text" name="sticker-number-{{ i+1 }}" autocomplete="off"
+                                            id="label-{{ i+1 }}-sticker-number"
+                                            class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                                            placeholder="i.e. QR23456" required />
+                                        <p class="sticker-code-error hidden absolute bottom-2.5 right-1 text-red-700">
+                                            this code already exists</p>
+                                    </div>
                                 </div>
 
                                 <div class="w-full px-1">

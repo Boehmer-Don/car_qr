@@ -239,3 +239,55 @@ if (modelInput) {
 selectMake();
 selectModel();
 selectTrim();
+
+const labelForm: HTMLFormElement = document.querySelector('#label-form');
+const codeInput: HTMLInputElement = document.querySelector(
+  '#label-1-sticker-number',
+);
+const codeError: HTMLParagraphElement = document.querySelector(
+  '.sticker-code-error',
+);
+let isError: boolean = false;
+if (codeInput) {
+  codeInput.addEventListener('input', e => {
+    console.log('codeInput.value', codeInput.value);
+    fetch('/labels/check_label_code', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({codeTyped: codeInput.value}),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('data', data);
+        if (data.exists === true) {
+          codeError.classList.remove('hidden');
+          codeInput.classList.add('text-red-700');
+          codeInput.classList.add('border-2');
+          codeInput.classList.add('bg-red-100');
+          codeInput.classList.add('focus:border-red-700');
+          isError = true;
+        } else {
+          codeError.classList.add('hidden');
+          codeInput.classList.remove('text-red-700');
+          codeInput.classList.remove('border-2');
+          codeInput.classList.remove('bg-red-100');
+          codeInput.classList.remove('focus:border-red-700');
+          isError = false;
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching sticker number:', error);
+      });
+  });
+}
+
+console.log('labelForm', labelForm);
+console.log('isError', isError);
+labelForm.addEventListener('submit', e => {
+  console.log('isError', isError);
+  if (isError) {
+    e.preventDefault();
+  }
+});

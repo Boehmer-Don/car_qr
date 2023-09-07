@@ -15,3 +15,7 @@ declare function selectMake(): void;
 declare function selectModel(): void;
 declare function selectTrim(): void;
 declare function selectType(): void;
+declare const labelForm: HTMLFormElement;
+declare const codeInput: HTMLInputElement;
+declare const codeError: HTMLParagraphElement;
+declare let isError: boolean;

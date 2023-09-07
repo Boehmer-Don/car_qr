@@ -746,6 +746,22 @@ def new_type():
     return redirect(next_url)
 
 
+@dealer_blueprint.route("/check_label_code", methods=["POST"])
+@login_required
+def check_label_code():
+    code = request.json.get("codeTyped")
+
+    existing_labels = db.session.scalars(
+        sa.select(m.Label).where(m.Label.sticker_id == code)
+    ).all()
+    if existing_labels:
+        log(log.INFO, "Label with code [%s] already exists", code)
+        return {"code": code, "exists": True}
+
+    log(log.INFO, "Label with code [%s] does not exist", code)
+    return {"code": code, "exists": False}
+
+
 @dealer_blueprint.route("/delete_from_cart/<label_unique_id>")
 @login_required
 def delete_from_cart(label_unique_id):
