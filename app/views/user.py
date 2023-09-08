@@ -301,7 +301,6 @@ def thx_client(sticker_id: str):
 
 
 @bp.route("/logo/<user_unique_id>")
-@login_required
 def get_logo(user_unique_id: str):
     user: m.User = db.session.scalar(
         m.User.select().where(m.User.unique_id == user_unique_id)
