@@ -38,18 +38,21 @@ class RegistrationForm(FlaskForm):
 
 
 class RegistrationStep2Form(FlaskForm):
-    first_name = StringField("First Name", validators=[DataRequired()])
-    last_name = StringField("Last Name", validators=[DataRequired()])
-    name_of_dealership = StringField("Name of Dealership", validators=[DataRequired()])
-    address_of_dealership = StringField(
-        "Address of Dealership", validators=[DataRequired()]
+    first_name = StringField("First Name", validators=[DataRequired(), Length(0, 255)])
+    last_name = StringField("Last Name", validators=[DataRequired(), Length(0, 255)])
+    name_of_dealership = StringField(
+        "Name of Dealership", validators=[DataRequired(), Length(0, 255)]
     )
-    country = StringField("Country", validators=[DataRequired()])
-    province = StringField("Province", validators=[DataRequired()])
-    city = StringField("City", validators=[DataRequired()])
-    postal_code = StringField("Postal Code", validators=[DataRequired()])
-    phone = StringField("Phone", validators=[DataRequired()])
-    gift_enabled = BooleanField("Enable Gift")
+    address_of_dealership = StringField(
+        "Address of Dealership", validators=[DataRequired(), Length(0, 255)]
+    )
+    country = StringField("Country", validators=[DataRequired(), Length(0, 255)])
+    province = StringField("Province", validators=[DataRequired(), Length(0, 255)])
+    city = StringField("City", validators=[DataRequired(), Length(0, 255)])
+    postal_code = StringField(
+        "Postal Code", validators=[DataRequired(), Length(0, 255)]
+    )
+    phone = StringField("Phone", validators=[DataRequired(), Length(0, 255)])
     gift = StringField("Gift", validators=[Optional(), Length(0, 255)])
 
     submit = SubmitField("Register")

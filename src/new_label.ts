@@ -158,11 +158,15 @@ if (makeInput) {
       .then(res => res.json())
       .then(data => {
         if (data.makes.length === 0) {
+          console.log('data.makes.length === 0', data.makes);
           makeInput.classList.add('text-indigo-500');
           makeWarning.classList.remove('hidden');
         } else {
+          console.log('data.makes.length != 0', data.makes);
+          makeInput.classList.remove('text-indigo-500');
+          makeWarning.classList.add('hidden');
           makes.push(...data.makes);
-          makeContainer.classList.remove('hidden');
+          makeContainer.classList.add('hidden');
           makeContainer.innerHTML = '';
           makes.forEach(make => {
             let clonedMakeSuggestionParagraph: HTMLParagraphElement =

@@ -380,7 +380,7 @@ def new_label_payment(user_unique_id: str):
             if len(labels):
                 db.session.commit()
 
-        if request.form.get("payment"):
+        if request.form.get("payment") and labels:
             stripe_form_url = create_payment_subscription_checkout_session(
                 current_user,
                 [label.name for label in labels],

@@ -1,24 +1,26 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, BooleanField, FloatField
+from wtforms.validators import DataRequired, Length
 
 
 class LabelForm(FlaskForm):
-    sticker_id = StringField("Unique ID")
-    unique_id = StringField("Unique ID")
-    name = StringField("Name")
-    make = StringField("Make")
-    vehicle_model = StringField("Model")
-    year = IntegerField("Year")
-    mileage = FloatField("Mileage")
-    color = StringField("Color")
-    trim = StringField("Trim")
-    type_of_vehicle = StringField("Type of Vehicle")
-    price = FloatField("Price")
-    date_received = StringField("Date Received")
-    url = StringField("URL")
-    user_id = IntegerField("User ID")
-    views = IntegerField("Views")
-    gift = StringField("Gift")
+    sticker_id = StringField("Unique ID", validators=[DataRequired(), Length(0, 255)])
+    unique_id = StringField("Unique ID", validators=[DataRequired(), Length(0, 255)])
+    name = StringField("Name", validators=[DataRequired(), Length(0, 255)])
+    make = StringField("Make", validators=[DataRequired(), Length(0, 255)])
+    vehicle_model = StringField("Model", validators=[DataRequired(), Length(0, 255)])
+    year = IntegerField("Year", validators=[DataRequired()])
+    mileage = FloatField("Mileage", validators=[DataRequired()])
+    color = StringField("Color", validators=[DataRequired(), Length(0, 255)])
+    trim = StringField("Trim", validators=[DataRequired(), Length(0, 255)])
+    type_of_vehicle = StringField(
+        "Type of Vehicle", validators=[DataRequired(), Length(0, 255)]
+    )
+    price = FloatField("Price", validators=[DataRequired()])
+    url = StringField("URL", validators=[DataRequired(), Length(0, 255)])
+    user_id = IntegerField("User ID", validators=[DataRequired()])
+    views = IntegerField("Views", validators=[DataRequired()])
+    gift = StringField("Gift", validators=[DataRequired(), Length(0, 255)])
     next_url = StringField("Next URL")
 
 

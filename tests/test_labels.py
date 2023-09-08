@@ -105,6 +105,8 @@ def test_label_edit(populate: FlaskClient):
     TEST_LABEL_NAME = "Test Label"
     TEST_LABEL_MODEL = "Test Model"
     TEST_LABEL_TYPE = "Test Type"
+    TEST_LABEL_GIFT = "Test Gift"
+    TEST_LABEL_VIEWS = 10
     label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
     assert label
     login(populate)
@@ -114,6 +116,7 @@ def test_label_edit(populate: FlaskClient):
             id=label.id,
             unique_id=label.unique_id,
             name=TEST_LABEL_NAME,
+            sticker_id=label.sticker_id,
             make=label.make,
             vehicle_model=TEST_LABEL_MODEL,
             year=label.year,
@@ -125,7 +128,8 @@ def test_label_edit(populate: FlaskClient):
             date_received=label.date_received,
             url=label.url,
             user_id=label.user_id,
-            views=label.views,
+            views=TEST_LABEL_VIEWS,
+            gift=TEST_LABEL_GIFT,
         ),
     )
     assert response

@@ -128,7 +128,7 @@ def add_labels(user_id: int = 9):
             date_deactivated = date_received + timedelta(days=randint(1, 30))
         gift = random.choice(GIFTS) if index > 10 else None
         label = m.Label(
-            sticker_id=f"QR0000{index + user_id}",
+            sticker_id=f"QR00000{index + user_id}",
             name=f'{label["name"]} {label["make"]}',
             make=label["make"],
             vehicle_model=label["vehicle_model"],
