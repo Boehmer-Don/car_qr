@@ -33,7 +33,13 @@ def labels_in_cart():
     return 0
 
 
-def get_user_logo(url: str):
+def get_user_logo():
+    if isinstance(current_user, m.User) and current_user.logo:
+        return url_for("user.get_logo", user_unique_id=current_user.unique_id)
+    return "#"
+
+
+def gift_logo(url: str = None):
     sticker_id = url.split("/gift/")[-1]
     label = db.session.scalar(m.Label.select().where(m.Label.sticker_id == sticker_id))
     if label:

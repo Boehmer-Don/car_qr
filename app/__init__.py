@@ -73,6 +73,7 @@ def create_app(environment="development"):
         days_active,
         labels_in_cart,
         get_user_logo,
+        gift_logo,
         years,
     )
 
@@ -81,6 +82,7 @@ def create_app(environment="development"):
     app.jinja_env.globals["days_active"] = days_active
     app.jinja_env.globals["labels_in_cart"] = labels_in_cart
     app.jinja_env.globals["get_user_logo"] = get_user_logo
+    app.jinja_env.globals["gift_logo"] = gift_logo
     app.jinja_env.globals["years"] = years
 
     return app
