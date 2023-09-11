@@ -83,6 +83,60 @@ def get_all():
     )
 
 
+@bp.route("/admins", methods=["GET"])
+@login_required
+def get_admins():
+    if current_user.role != m.UsersRole.admin:
+        return redirect(url_for("main.index"))
+    q = request.args.get("q", type=str, default=None)
+    query = (
+        m.User.select()
+        .where(m.User.deleted.is_(False), m.User.role == "admin")
+        .order_by(m.User.id)
+    )
+    count_query = (
+        sa.select(sa.func.count())
+        .where(m.User.deleted.is_(False), m.User.role == "admin")
+        .select_from(m.User)
+    )
+    if q:
+        query = (
+            m.User.select()
+            .where(m.User.deleted.is_(False), m.User.role == "admin")
+            .where(
+                m.User.first_name.ilike(f"%{q}%")
+                | m.User.email.ilike(f"%{q}%")
+                | m.User.last_name.ilike(f"%{q}%")
+                | m.User.name_of_dealership.ilike(f"%{q}%")
+            )
+            .order_by(m.User.id)
+        )
+        count_query = (
+            sa.select(sa.func.count())
+            .where(m.User.activated, m.User.deleted.is_(False))
+            .where(
+                m.User.first_name.ilike(f"%{q}%")
+                | m.User.email.ilike(f"%{q}%")
+                | m.User.last_name.ilike(f"%{q}%")
+                | m.User.name_of_dealership.ilike(f"%{q}%")
+            )
+            .select_from(m.User)
+        )
+
+    pagination = create_pagination(total=db.session.scalar(count_query))
+
+    return render_template(
+        "user/admins.html",
+        users=db.session.execute(
+            query.offset((pagination.page - 1) * pagination.per_page).limit(
+                pagination.per_page
+            )
+        ).scalars(),
+        page=pagination,
+        search_query=q,
+    )
+
+
 @bp.route("/save", methods=["POST"])
 @login_required
 def save():
@@ -319,7 +373,26 @@ def get_logo(user_unique_id: str):
     )
 
 
-@bp.route("/logo/<user_unique_id>")
+@bp.route("/new_admin", methods=["GET", "POST"])
 @login_required
-def change_logo(user_unique_id: str):
-    ...
+def new_admin():
+    if not current_user.role == m.UsersRole.admin:
+        log(log.INFO, "Access denied. User is not admin")
+        return redirect(url_for("main.index"))
+
+    form: f.AdminForm = f.AdminForm()
+    if form.validate_on_submit():
+        user = m.User(
+            role=m.UsersRole.admin,
+            email=form.email.data,
+            phone=form.phone.data,
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            password=form.password.data,
+        )
+        log(log.INFO, "Form submitted. New admin: [%s]", user)
+        flash("New admin created!", "success")
+        user.save()
+        return redirect(url_for("user.get_admins"))
+
+    return render_template("user/new_admin.html", form=form)
