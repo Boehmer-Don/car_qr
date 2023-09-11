@@ -52,3 +52,8 @@ def years():
     for y in range(1960, datetime.now().year + 2):
         years.append(y)
     return years[::-1]
+
+
+def price_format(price: float):
+    value = "{:,.0f}".format(int(price))
+    return value

@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Length
 
 class LabelForm(FlaskForm):
     sticker_id = StringField("Unique ID", validators=[DataRequired(), Length(0, 255)])
-    unique_id = StringField("Unique ID", validators=[DataRequired(), Length(0, 255)])
+    unique_id = StringField("Unique ID", validators=[Length(0, 255)])
     name = StringField("Name", validators=[DataRequired(), Length(0, 255)])
     make = StringField("Make", validators=[DataRequired(), Length(0, 255)])
     vehicle_model = StringField("Model", validators=[DataRequired(), Length(0, 255)])
@@ -19,7 +19,7 @@ class LabelForm(FlaskForm):
     price = FloatField("Price", validators=[DataRequired()])
     url = StringField("URL", validators=[DataRequired(), Length(0, 255)])
     user_id = IntegerField("User ID", validators=[DataRequired()])
-    views = IntegerField("Views", validators=[DataRequired()])
+    views = IntegerField("Views")
     gift = StringField("Gift", validators=[DataRequired(), Length(0, 255)])
     next_url = StringField("Next URL")
 

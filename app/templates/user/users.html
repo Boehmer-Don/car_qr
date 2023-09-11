@@ -20,13 +20,20 @@
         class="resend-invite-button w-full my-3 md:my-10 px-5 pt-1 pb-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
         Invite user >
       </button>
+
+      <a href="#">
+        <button type="button"
+          class="w-full my-3 md:my-10 px-5 pt-1 pb-2 text-base font-medium text-center text-red-700 border border-red-700 rounded-lg hover:bg-red-700 hover:text-white focus:ring-4 focus:ring-blue-300 sm:w-auto  dark:hover:bg-red-700 dark:focus:ring-blue-800">
+          Add new admin >
+        </button>
+      </a>
     </div>
 
     <div class="w-full bg-gray-100 dark:bg-gray-800">
       <div class="flex p-1 md:p-3 font-bold text-gray-400 dark:text-white">
         <div class="w-1/12 pl-3">#</div>
-        <div class="w-4/12">Name</div>
-        <div class="w-4/12">Email</div>
+        <div class="hidden md:block w-4/12">Name</div>
+        <div class="w-8/12 md:w-4/12">Email</div>
         <div class="w-3/12">Actions</div>
       </div>
 
@@ -57,10 +64,12 @@
       {% for user in users %}
       <div class="flex p-1 md:p-3">
         <div class="w-1/12 pl-1 md:pl-3 flex items-center">{{ loop.index + page.skip }}</div>
-        <a href="{{ url_for('labels.download', user_unique_id=user.unique_id) }}" class="w-4/12 flex items-center">
+        <a href="{{ url_for('labels.download', user_unique_id=user.unique_id) }}"
+          class="w-4/12 hidden md:flex items-center">
           <div class="w-8/12 flex items-center">{{ user.first_name }} {{ user.last_name }}</div>
         </a>
-        <a href="{{ url_for('labels.download', user_unique_id=user.unique_id) }}" class="w-4/12 flex items-center">
+        <a href="{{ url_for('labels.download', user_unique_id=user.unique_id) }}"
+          class="w-8/12 md:w-4/12 flex items-center">
           <div class="w-8/12 flex items-center">{{ user.email }}</div>
         </a>
         <div class="w-3/12">

@@ -166,7 +166,6 @@ if (makeInput) {
           makeInput.classList.remove('text-indigo-500');
           makeWarning.classList.add('hidden');
           makes.push(...data.makes);
-          makeContainer.classList.add('hidden');
           makeContainer.innerHTML = '';
           makes.forEach(make => {
             let clonedMakeSuggestionParagraph: HTMLParagraphElement =

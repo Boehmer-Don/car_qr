@@ -191,7 +191,7 @@
                   </label>
                   <input type="text" name="mileage-{{ loop.index }}" id="label-{{ loop.index }}-mileage"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Mileage" disabled value="{{ label.mileage }}" />
+                    placeholder="Mileage" disabled value="{{ price_format(label.mileage)}}" />
                 </div>
 
                 <div class="w-full px-1">
@@ -211,7 +211,7 @@
                   </label>
                   <input type="text" name="price-{{ loop.index }}" id="label-{{ loop.index }}-price"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="Price" disabled value="{{ label.price }}" />
+                    placeholder="Price" disabled value="{{ price_format(label.price) }}" />
                 </div>
 
                 <div class="w-full px-1">
