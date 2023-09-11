@@ -389,6 +389,7 @@ def new_admin():
             first_name=form.first_name.data,
             last_name=form.last_name.data,
             password=form.password.data,
+            activated=True,
         )
         log(log.INFO, "Form submitted. New admin: [%s]", user)
         flash("New admin created!", "success")
