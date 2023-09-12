@@ -110,7 +110,7 @@
           {{ label.date_activated.strftime('%Y-%m-%d') }}
           {% endif %}
         </p>
-        <a href="{{ get_gift_url(label.sticker_id) }}"
+        <a href="{{ get_gift_url(label.sticker_id) }}" target="_blank"
           class="w-2/12 hidden md:flex items-center justify-center hover:text-indigo-500 cursor-pointer"
           data-target="{{label.json}}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-4 -2 32 32" stroke-width="2.5"
