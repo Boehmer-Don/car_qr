@@ -100,6 +100,12 @@ function getLabelDetails(label: ILabel) {
     document.querySelector('#label-edit-gift');
   labelGift.value = label.gift;
 
+  const giftPreviewPageUrl: HTMLButtonElement = document.querySelector(
+    '#gift-page-preview-button',
+  );
+  giftPreviewPageUrl.addEventListener('click', () => {
+    window.open(`/l/${label.sticker_id}`, '_blank');
+  });
   const nextUrl: HTMLInputElement = document.querySelector(
     '#label-edit-next-url',
   );

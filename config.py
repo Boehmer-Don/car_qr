@@ -50,6 +50,7 @@ class BaseConfig(BaseSettings):
     LANDING_URL: str
 
     IMAGE_MAX_WIDTH: int = 512
+    BASE_URL: str
 
     @staticmethod
     def configure(app: Flask):

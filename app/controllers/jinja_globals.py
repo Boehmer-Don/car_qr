@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import url_for
+from flask import url_for, current_app as app
 from flask_wtf import FlaskForm
 from flask_login import current_user
 from app import db
@@ -57,3 +57,9 @@ def years():
 def price_format(price: float):
     value = "{:,.0f}".format(int(price))
     return value
+
+
+def get_gift_url(sticker_id: str):
+    BASE_URL = app.config["BASE_URL"]
+    url = f"{BASE_URL}/l/{sticker_id}"
+    return url

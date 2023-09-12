@@ -76,6 +76,7 @@ def create_app(environment="development"):
         get_user_logo,
         gift_logo,
         years,
+        get_gift_url,
     )
 
     app.jinja_env.globals["form_hidden_tag"] = form_hidden_tag
@@ -86,5 +87,6 @@ def create_app(environment="development"):
     app.jinja_env.globals["get_user_logo"] = get_user_logo
     app.jinja_env.globals["gift_logo"] = gift_logo
     app.jinja_env.globals["years"] = years
+    app.jinja_env.globals["get_gift_url"] = get_gift_url
 
     return app
