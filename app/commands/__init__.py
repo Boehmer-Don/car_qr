@@ -16,7 +16,7 @@ def init(app: Flask):
         return dict(app=app, db=db, m=m, f=forms, s=s, sa=sa, orm=orm)
 
     @app.cli.command()
-    @click.option("--count", default=100, type=int)
+    @click.option("--count", default=50, type=int)
     def db_populate(count: int):
         """Fill DB by dummy data."""
         from tests.db import (
@@ -169,3 +169,9 @@ def init(app: Flask):
         ).all()
         for label in pending_labels:
             print(label.code)
+
+    @app.cli.command()
+    def subscriptions_check():
+        from app.controllers import check_subscriptions
+
+        check_subscriptions()

@@ -9,3 +9,5 @@ from .stripe import (
     create_payment_subscription_checkout_session,
     update_stripe_customer,
 )
+
+from .subscriptions_expiration_check import check_subscriptions
