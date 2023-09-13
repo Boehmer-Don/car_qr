@@ -6,7 +6,6 @@ from flask import (
     Blueprint,
     flash,
 )
-from flask_login import login_required
 from flask_mail import Message, Mail
 from app import models as m, db
 from app.logger import log
