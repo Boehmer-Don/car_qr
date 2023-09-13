@@ -15,27 +15,31 @@ def init(app: Flask):
         """Objects exposed here will be automatically available from the shell."""
         return dict(app=app, db=db, m=m, f=forms, s=s, sa=sa, orm=orm)
 
-    if app.config["ENV"] != "production":
+    @app.cli.command()
+    @click.option("--count", default=100, type=int)
+    def db_populate(count: int):
+        """Fill DB by dummy data."""
+        from tests.db import (
+            populate,
+            add_labels,
+            set_users_logo,
+            add_pending_labels,
+        )
 
-        @app.cli.command()
-        @click.option("--count", default=100, type=int)
-        def db_populate(count: int):
-            """Fill DB by dummy data."""
-            from tests.db import populate, add_labels, set_users_logo
+        populate(count)
+        add_labels()
+        set_users_logo()
+        add_pending_labels()
+        print(f"DB populated by {count} instancies")
 
-            populate(count)
-            add_labels()
-            set_users_logo()
-            print(f"DB populated by {count} instancies")
+    @app.cli.command()
+    @click.option("--user-id", default=9, type=int)
+    def add_labels(user_id: int):
+        """Fill DB by labels for a user."""
+        from tests.db import add_labels
 
-        @app.cli.command()
-        @click.option("--user-id", default=9, type=int)
-        def add_labels(user_id: int):
-            """Fill DB by labels for a user."""
-            from tests.db import add_labels
-
-            add_labels(user_id)
-            print(f"DB populated by 10 testing labels for user [{user_id}]")
+        add_labels(user_id)
+        print(f"DB populated by 10 testing labels for user [{user_id}]")
 
     @app.cli.command("create-admin")
     def create_admin():
@@ -102,7 +106,6 @@ def init(app: Flask):
                     m.CarMake.select().where(m.CarMake.name == make_name)
                 )
                 if not make:
-                    # print(f"{make_name} is not in DB. Adding it...")
                     make = m.CarMake(name=make_name)
                     db.session.add(make)
                     added_makes_count += 1
@@ -141,3 +144,28 @@ def init(app: Flask):
 
         set_users_logo(user_id)
         print(f"Logo set for user {user_id}")
+
+    @app.cli.command()
+    @click.option("--user-id", default=9, type=int)
+    def add_pending_labels(user_id: int):
+        from tests.db import add_pending_labels
+
+        add_pending_labels(user_id)
+        print(f"Pending labels added for user {user_id}")
+
+    @app.cli.command()
+    def get_models():
+        models = db.session.scalars(m.CarModel.select()).all()
+        with open("model_names.txt", "w") as f:
+            for model in models:
+                f.write(f"{model.make.name} {model.name}\n")
+                print(f"{model.make.name} {model.name}")
+
+    @app.cli.command()
+    @click.option("--user-id", default=9, type=int)
+    def get_pending_labels(user_id: int):
+        pending_labels = db.session.scalars(
+            m.Sticker.select().where(m.Sticker.user_id == user_id)
+        ).all()
+        for label in pending_labels:
+            print(label.code)

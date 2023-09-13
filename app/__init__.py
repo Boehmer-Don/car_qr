@@ -72,13 +72,21 @@ def create_app(environment="development"):
         time_delta,
         days_active,
         labels_in_cart,
+        price_format,
         get_user_logo,
+        gift_logo,
+        years,
+        get_gift_url,
     )
 
     app.jinja_env.globals["form_hidden_tag"] = form_hidden_tag
     app.jinja_env.globals["time_delta"] = time_delta
     app.jinja_env.globals["days_active"] = days_active
     app.jinja_env.globals["labels_in_cart"] = labels_in_cart
+    app.jinja_env.globals["price_format"] = price_format
     app.jinja_env.globals["get_user_logo"] = get_user_logo
+    app.jinja_env.globals["gift_logo"] = gift_logo
+    app.jinja_env.globals["years"] = years
+    app.jinja_env.globals["get_gift_url"] = get_gift_url
 
     return app

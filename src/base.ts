@@ -59,3 +59,10 @@ themeToggleButtons.forEach(function (themeToggleBtn) {
     }
   });
 });
+
+const flashMessages = document.querySelectorAll('.flash-message');
+flashMessages.forEach(function (flashMessage) {
+  setTimeout(() => {
+    flashMessage.classList.add('hidden');
+  }, 2000);
+});

@@ -7,4 +7,5 @@ from .stripe import (
     delete_stripe_products_local,
     create_subscription_checkout_session,
     create_payment_subscription_checkout_session,
+    update_stripe_customer,
 )

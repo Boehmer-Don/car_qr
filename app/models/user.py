@@ -74,10 +74,6 @@ class User(db.Model, UserMixin, ModelMixin):
     stripe_customer_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(128), unique=True, nullable=True
     )
-    gift_enabled: orm.Mapped[bool] = orm.mapped_column(
-        sa.Boolean, default=False, nullable=True
-    )
-    gift: orm.Mapped[str] = orm.mapped_column(sa.String(128), default="", nullable=True)
 
     @hybrid_property
     def password(self):

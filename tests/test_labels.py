@@ -31,7 +31,9 @@ def test_labels_archived(populate: FlaskClient):
     assert b"Archived Labels" in response.data
     assert b"Date Sold" in response.data
     archived_labels = db.session.scalars(
-        m.Label.select().where(m.Label.status == m.LabelStatus.archived)
+        m.Label.select()
+        .where(m.Label.status == m.LabelStatus.archived)
+        .order_by(m.Label.date_deactivated.desc())
     ).all()
     for label in archived_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
         assert label.name.encode() in response.data
@@ -52,21 +54,59 @@ def test_views_counter(populate: FlaskClient):
     )
     assert label.views > views_before
 
-    current_user.gift = "Some Cool Gift"
-    current_user.save()
+    label.gift = "Some Cool Gift"
+    label.save()
+
     response = populate.get(f"l/{label.sticker_id}")
     assert response
     assert response.status_code == 302
     assert response.location == url_for(
-        "user.gift",
+        "labels.gift",
         sticker_id=label.sticker_id,
     )
+
+
+def test_label_add_new(populate: FlaskClient):
+    TEST_LABEL_MAKE = "Test MAKE1"
+    TEST_LABEL_MODEL = "Test Model1"
+    TEST_LABEL_TYPE = "Test Type1"
+    TEST_LABEL_TRIM = "Test Trim1"
+    TEST_DATA = dict(
+        new_make_name=TEST_LABEL_MAKE,
+        new_model_name=TEST_LABEL_MODEL,
+        new_trim_option=TEST_LABEL_TRIM,
+        new_type_name=TEST_LABEL_TYPE,
+    )
+    login(populate)
+    response = populate.post(
+        f"labels/add_new_model",
+        data=TEST_DATA,
+    )
+    assert response
+    assert response.status_code == 302
+
+    assert db.session.scalar(
+        m.CarMake.select().where(m.CarMake.name == TEST_LABEL_MAKE)
+    )
+    assert db.session.scalar(
+        m.CarType.select().where(m.CarType.name == TEST_LABEL_TYPE)
+    )
+
+    login(populate)
+    response = populate.post(
+        f"labels/add_new_model",
+        data=TEST_DATA,
+    )
+    assert response
+    assert response.status_code == 302
 
 
 def test_label_edit(populate: FlaskClient):
     TEST_LABEL_NAME = "Test Label"
     TEST_LABEL_MODEL = "Test Model"
     TEST_LABEL_TYPE = "Test Type"
+    TEST_LABEL_GIFT = "Test Gift"
+    TEST_LABEL_VIEWS = 10
     label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
     assert label
     login(populate)
@@ -76,6 +116,7 @@ def test_label_edit(populate: FlaskClient):
             id=label.id,
             unique_id=label.unique_id,
             name=TEST_LABEL_NAME,
+            sticker_id=label.sticker_id,
             make=label.make,
             vehicle_model=TEST_LABEL_MODEL,
             year=label.year,
@@ -87,7 +128,8 @@ def test_label_edit(populate: FlaskClient):
             date_received=label.date_received,
             url=label.url,
             user_id=label.user_id,
-            views=label.views,
+            views=TEST_LABEL_VIEWS,
+            gift=TEST_LABEL_GIFT,
         ),
     )
     assert response

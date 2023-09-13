@@ -45,7 +45,7 @@
   <!-- Flash message markup -->
   <!-- prettier-ignore -->
   <div id="toast-{{category}}"
-    class="absolute top-20 right-0 z-50 flex items-center w-full max-w-sm p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+    class="flash-message absolute top-20 right-0 z-50 flex items-center w-full max-w-sm p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
     role="alert">
     <!-- prettier-ignore -->
     {% if category == 'success' %}
@@ -103,8 +103,10 @@
     <!-- Main Content -->
     {% block content %}{% endblock %}
   </div>
+  {% include 'footer.html' %}
   {% endblock %}
   <!-- scripts -->
+
 
   <!-- prettier-ignore -->
   <script src="{{ url_for('static', filename='js/base.js') }}" type="text/javascript" defer></script>

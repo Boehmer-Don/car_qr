@@ -76,6 +76,15 @@ if (cleanNameInputs) {
     });
   });
 }
+const cleanGiftInput = document.querySelector('.clean_gift_input');
+if (cleanGiftInput) {
+  cleanGiftInput.addEventListener('input', (e: any) => {
+    if (e.target.value) {
+      const inputText = e.target.value.replace(/[^\w$\d\s.-]/gi, '');
+      e.target.value = inputText;
+    }
+  });
+}
 
 const cleanNumberInputs: NodeListOf<HTMLInputElement> =
   document.querySelectorAll('.clean_number_input');
@@ -106,28 +115,34 @@ if (cleanPhone) {
 }
 
 const pricingButton: Element = document.querySelector('#pricing_button');
-pricingButton.addEventListener('click', event => {
-  event.preventDefault();
-  document.querySelector('#pricing').scrollIntoView({
-    behavior: 'smooth',
+if (pricingButton) {
+  pricingButton.addEventListener('click', event => {
+    event.preventDefault();
+    document.querySelector('#pricing').scrollIntoView({
+      behavior: 'smooth',
+    });
   });
-});
+}
 
 const contactButton: Element = document.querySelector('#contact_button');
-contactButton.addEventListener('click', event => {
-  event.preventDefault();
-  document.querySelector('#contacts').scrollIntoView({
-    behavior: 'smooth',
+if (contactButton) {
+  contactButton.addEventListener('click', event => {
+    event.preventDefault();
+    document.querySelector('#contacts').scrollIntoView({
+      behavior: 'smooth',
+    });
   });
-});
+}
 
 const firstArrowButton: Element = document.querySelector('#first_arrow');
-firstArrowButton.addEventListener('click', event => {
-  event.preventDefault();
-  document.querySelector('#second_section').scrollIntoView({
-    behavior: 'smooth',
+if (firstArrowButton) {
+  firstArrowButton.addEventListener('click', event => {
+    event.preventDefault();
+    document.querySelector('#second_section').scrollIntoView({
+      behavior: 'smooth',
+    });
   });
-});
+}
 
 const secondArrowButtons = document.querySelectorAll('.second_arrow');
 
@@ -189,7 +204,6 @@ const mobile_pricing: HTMLDivElement =
   document.querySelector('#mobile_pricing');
 const mobile_contacts: HTMLDivElement =
   document.querySelector('#mobile_contact');
-console.log(mobile_contacts);
 
 if (mobile_pricing) {
   mobile_pricing.addEventListener('click', () => {
@@ -205,7 +219,6 @@ if (mobile_pricing) {
 }
 
 if (mobile_contacts) {
-  console.log(mobile_contacts);
   mobile_contacts.addEventListener('click', () => {
     landing_mobile_menu.classList.toggle('hidden');
     footer.classList.toggle('hidden');
@@ -215,5 +228,17 @@ if (mobile_contacts) {
     document.querySelector('#contacts').scrollIntoView({
       behavior: 'smooth',
     });
+  });
+}
+
+const mobileThemeButton: HTMLButtonElement = document.querySelector(
+  '#theme-toggle-wrapper',
+);
+const mobileMenuButton: HTMLButtonElement = document.querySelector(
+  '#mobile-menu-button',
+);
+if (mobileThemeButton) {
+  mobileThemeButton.addEventListener('click', () => {
+    mobileMenuButton.click();
   });
 }

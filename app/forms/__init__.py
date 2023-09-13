@@ -8,6 +8,6 @@ from .auth import (
     SubscriptionPlanForm,
     PaymentForm,
 )
-from .user import UserForm, ResendInviteForm
+from .user import UserForm, AdminForm, ResendInviteForm
 from .label import LabelForm, DeactivateLabelForm, LabelsAmountForm
 from .client import Client

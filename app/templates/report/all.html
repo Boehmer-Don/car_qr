@@ -1,10 +1,7 @@
 {% extends 'base.html' %} {% block links %}
-<link
-  href="{{ url_for('static', filename='css/custom.css') }}"
-  rel="stylesheet" />
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
 {% endblock %} {% block content %}
-<div
-  class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
+<div class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
   <h1 class="text-2xl md:text-4xl font-bold mt-10 mb-4 md:mt-12 md:mb-10 px-5">
     Welcome Back {{ current_user.first_name }},
   </h1>
@@ -13,15 +10,13 @@
       class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700 cursor-pointer">
       <ul class="flex flex-wrap -mb-px">
         <li class="mr-2">
-          <a
-            href="{{ url_for('labels.get_active_labels', user_unique_id=current_user.unique_id) }}"
+          <a href="{{ url_for('labels.get_active_labels', user_unique_id=current_user.unique_id) }}"
             class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">
             Active
           </a>
         </li>
         <li class="mr-2">
-          <a
-            href="{{ url_for('labels.get_archived_labels') }}"
+          <a href="{{ url_for('labels.get_archived_labels') }}"
             class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">
             Archived
           </a>
@@ -45,44 +40,52 @@
     </div>
 
     <div class="w-full bg-gray-100 dark:bg-gray-800">
-      <div
-        class="w-full flex text-xs text-white font-bold px-1 py-3 md:p-3 bg-indigo-700 rounded-t-lg">
+      <div class="w-full flex text-xs text-white font-bold px-1 py-3 md:p-3 bg-indigo-700 rounded-t-lg">
         <p class="w-1/12 flex items-center justify-center">#</p>
         <p class="w-1/2 md:w-full flex items-center justify-start">Reports</p>
         <p class="w-1/12 flex items-center justify-center"></p>
 
         <p class="w-3/12 hidden md:flex items-center justify-center">
           <!-- prettier-ignore -->
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 lg:hidden"> <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" /> </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
+            stroke="currentColor" class="w-6 h-6 lg:hidden">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+          </svg>
           <span class="hidden lg:block">Date Created</span>
         </p>
         <p class="w-3/12 flex items-center justify-center"></p>
         <p class="w-1/12 flex items-center justify-center"></p>
       </div>
 
-      <div
-        class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
+      <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
         <p class="w-1/12 flex items-center justify-center"></p>
-        <p
-          id="label_details_button"
+        <p id="label_details_button"
           class="w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer"></p>
         <p class="w-1/12 flex items-center justify-center"></p>
         <p class="w-3/12 hidden md:flex items-center justify-center"></p>
-        <p
-          class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button">
+        <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button">
           <!-- prettier-ignore -->
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5" stroke="currentColor" class="w-6 h-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /> </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
+            stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
         </p>
         <p class="w-3/12 flex items-center justify-center">
           <!-- prettier-ignore -->
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path> </svg>
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+              clip-rule="evenodd"></path>
+          </svg>
         </p>
       </div>
     </div>
   </div>
 
   {% if page.pages > 1 %}
-  <div class="container content-center mt-3 flex bg-white dark:bg-gray-800">
+  <div class="container content-center mt-3 mb-8 flex bg-white dark:bg-gray-800">
     <nav aria-label="Page navigation example" class="mx-auto">
       <ul class="inline-flex items-center -space-x-px">
         <li>
@@ -166,8 +169,5 @@
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
-<script
-  src="{{ url_for('static', filename='js/label.js') }}"
-  type="text/javascript"
-  defer></script>
+<script src="{{ url_for('static', filename='js/label.js') }}" type="text/javascript" defer></script>
 {% endblock %}

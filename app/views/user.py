@@ -15,7 +15,7 @@ from flask_mail import Message
 import sqlalchemy as sa
 
 from flask import current_app as app
-from app.controllers import create_pagination
+from app.controllers import create_pagination, update_stripe_customer
 from app import models as m, db, mail
 from app import forms as f
 from app.logger import log
@@ -48,6 +48,7 @@ def get_all():
                 m.User.first_name.ilike(f"%{q}%")
                 | m.User.email.ilike(f"%{q}%")
                 | m.User.last_name.ilike(f"%{q}%")
+                | m.User.name_of_dealership.ilike(f"%{q}%")
             )
             .order_by(m.User.id)
         )
@@ -58,6 +59,7 @@ def get_all():
                 m.User.first_name.ilike(f"%{q}%")
                 | m.User.email.ilike(f"%{q}%")
                 | m.User.last_name.ilike(f"%{q}%")
+                | m.User.name_of_dealership.ilike(f"%{q}%")
             )
             .select_from(m.User)
         )
@@ -78,6 +80,60 @@ def get_all():
             .where(m.User.activated.is_(False), m.User.deleted.is_(False))
             .where(m.User.activated.is_(False), m.User.role == "dealer")
         ).all(),
+    )
+
+
+@bp.route("/admins", methods=["GET"])
+@login_required
+def get_admins():
+    if current_user.role != m.UsersRole.admin:
+        return redirect(url_for("main.index"))
+    q = request.args.get("q", type=str, default=None)
+    query = (
+        m.User.select()
+        .where(m.User.deleted.is_(False), m.User.role == "admin")
+        .order_by(m.User.id)
+    )
+    count_query = (
+        sa.select(sa.func.count())
+        .where(m.User.deleted.is_(False), m.User.role == "admin")
+        .select_from(m.User)
+    )
+    if q:
+        query = (
+            m.User.select()
+            .where(m.User.deleted.is_(False), m.User.role == "admin")
+            .where(
+                m.User.first_name.ilike(f"%{q}%")
+                | m.User.email.ilike(f"%{q}%")
+                | m.User.last_name.ilike(f"%{q}%")
+                | m.User.name_of_dealership.ilike(f"%{q}%")
+            )
+            .order_by(m.User.id)
+        )
+        count_query = (
+            sa.select(sa.func.count())
+            .where(m.User.activated, m.User.deleted.is_(False))
+            .where(
+                m.User.first_name.ilike(f"%{q}%")
+                | m.User.email.ilike(f"%{q}%")
+                | m.User.last_name.ilike(f"%{q}%")
+                | m.User.name_of_dealership.ilike(f"%{q}%")
+            )
+            .select_from(m.User)
+        )
+
+    pagination = create_pagination(total=db.session.scalar(count_query))
+
+    return render_template(
+        "user/admins.html",
+        users=db.session.execute(
+            query.offset((pagination.page - 1) * pagination.per_page).limit(
+                pagination.per_page
+            )
+        ).scalars(),
+        page=pagination,
+        search_query=q,
     )
 
 
@@ -194,7 +250,6 @@ def account(user_unique_id: str):
         form.postal_code.data = user.postal_code
         form.plan.data = user.plan.name
         form.phone.data = user.phone
-        form.gift.data = user.gift
 
     if form.validate_on_submit():
         user.email = form.email.data
@@ -210,8 +265,8 @@ def account(user_unique_id: str):
         user.postal_code = form.postal_code.data
         user.plan = form.plan.data
         user.phone = form.phone.data
-        user.gift = form.gift.data
         user.save()
+        update_stripe_customer(user)
         log(log.INFO, "User data updated. User: [%s]", user)
         flash("Your account has been successfully updated", "success")
         return redirect(url_for("user.account", user_unique_id=user_unique_id))
@@ -260,19 +315,6 @@ def subscription(user_unique_id: str):
     )
 
 
-@bp.route("/gift/<sticker_id>", methods=["GET", "POST"])
-def gift(sticker_id: str):
-    label: m.Label = db.session.scalar(
-        m.Label.select().where(m.Label.sticker_id == sticker_id)
-    )
-
-    return render_template(
-        "user/gift.html",
-        sticker_id=sticker_id,
-        label_url=label.url,
-    )
-
-
 @bp.route("/client_data/<sticker_id>", methods=["GET", "POST"])
 def client_data(sticker_id: str):
     form: f.Client = f.Client()
@@ -295,7 +337,7 @@ def client_data(sticker_id: str):
     elif form.is_submitted():
         flash("Something went wrong. Form submission error", "danger")
         log(log.ERROR, "Form submitted error: [%s]", form.errors)
-        redirect(url_for("user.gift", sticker_id=sticker_id))
+        redirect(url_for("labels.gift", sticker_id=sticker_id))
 
     return render_template(
         "user/client_data.html",
@@ -313,7 +355,6 @@ def thx_client(sticker_id: str):
 
 
 @bp.route("/logo/<user_unique_id>")
-@login_required
 def get_logo(user_unique_id: str):
     user: m.User = db.session.scalar(
         m.User.select().where(m.User.unique_id == user_unique_id)
@@ -332,7 +373,27 @@ def get_logo(user_unique_id: str):
     )
 
 
-@bp.route("/logo/<user_unique_id>")
+@bp.route("/new_admin", methods=["GET", "POST"])
 @login_required
-def change_logo(user_unique_id: str):
-    ...
+def new_admin():
+    if not current_user.role == m.UsersRole.admin:
+        log(log.INFO, "Access denied. User is not admin")
+        return redirect(url_for("main.index"))
+
+    form: f.AdminForm = f.AdminForm()
+    if form.validate_on_submit():
+        user = m.User(
+            role=m.UsersRole.admin,
+            email=form.email.data,
+            phone=form.phone.data,
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            password=form.password.data,
+            activated=True,
+        )
+        log(log.INFO, "Form submitted. New admin: [%s]", user)
+        flash("New admin created!", "success")
+        user.save()
+        return redirect(url_for("user.get_admins"))
+
+    return render_template("user/new_admin.html", form=form)

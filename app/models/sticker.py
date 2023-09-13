@@ -16,6 +16,9 @@ class Sticker(db.Model, ModelMixin):
         default=datetime.utcnow,
     )
     pending: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=True)
+    downloaded: orm.Mapped[bool] = orm.mapped_column(
+        sa.Boolean, default=False, nullable=False
+    )
     user_id: orm.Mapped[int] = orm.mapped_column(sa.Integer, sa.ForeignKey("users.id"))
 
     user: orm.Mapped[User] = orm.relationship("User", backref="stickers")

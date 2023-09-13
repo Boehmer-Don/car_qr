@@ -169,7 +169,7 @@ def test_forgot(client: FlaskClient):
         ),
         follow_redirects=True,
     )
-    assert b"Login successful." in response.data
+    assert b"Unlock Your Dealership Potential" in response.data
 
 
 def test_login_and_logout(client: FlaskClient):

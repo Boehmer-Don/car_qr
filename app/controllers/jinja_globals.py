@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import url_for
+from flask import url_for, current_app as app
 from flask_wtf import FlaskForm
 from flask_login import current_user
 from app import db
@@ -37,3 +37,29 @@ def get_user_logo():
     if isinstance(current_user, m.User) and current_user.logo:
         return url_for("user.get_logo", user_unique_id=current_user.unique_id)
     return "#"
+
+
+def gift_logo(url: str = None):
+    sticker_id = url.split("/gift/")[-1]
+    label = db.session.scalar(m.Label.select().where(m.Label.sticker_id == sticker_id))
+    if label:
+        return url_for("user.get_logo", user_unique_id=label.user.unique_id)
+    return
+
+
+def years():
+    years = []
+    for y in range(1960, datetime.now().year + 2):
+        years.append(y)
+    return years[::-1]
+
+
+def price_format(price: float):
+    value = "{:,.0f}".format(int(price))
+    return value
+
+
+def get_gift_url(sticker_id: str):
+    BASE_URL = app.config["BASE_URL"]
+    url = f"{BASE_URL}/l/{sticker_id}"
+    return url

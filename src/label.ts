@@ -18,6 +18,7 @@ interface ILabel {
   url: string;
   user_id: number;
   views: number;
+  gift: string;
 }
 
 const $modalElement: HTMLElement = document.querySelector('#labelDetailsModal');
@@ -95,7 +96,16 @@ function getLabelDetails(label: ILabel) {
     '#label-sticker-number',
   );
   labelStickerIdentifier.value = label.sticker_id;
+  const labelGift: HTMLInputElement =
+    document.querySelector('#label-edit-gift');
+  labelGift.value = label.gift;
 
+  const giftPreviewPageUrl: HTMLButtonElement = document.querySelector(
+    '#gift-page-preview-button',
+  );
+  giftPreviewPageUrl.addEventListener('click', () => {
+    window.open(`/l/${label.sticker_id}`, '_blank');
+  });
   const nextUrl: HTMLInputElement = document.querySelector(
     '#label-edit-next-url',
   );
@@ -119,61 +129,12 @@ function deactivateLabel(label: ILabel) {
   labelDeactivateModalWindow.show();
 }
 
-function createNewMake() {
-  const nextUrl: HTMLInputElement =
-    document.querySelector('#add-make-next-url');
-  nextUrl.value = window.location.href;
-  addNewMakeModalWindow.show();
-}
-
-function createNewModel() {
-  const makeSelectedChoiceField: HTMLSelectElement =
-    document.querySelector('.make');
-  const nextUrl: HTMLInputElement = document.querySelector(
-    '#add-model-next-url',
-  );
-  nextUrl.value = window.location.href;
-  const modelMake: HTMLInputElement = document.querySelector('#model_make');
-  modelMake.value = makeSelectedChoiceField.value;
-  addNewModelModalWindow.show();
-}
-
-function createNewTrim() {
-  const nextUrl: HTMLInputElement =
-    document.querySelector('#add-trim-next-url');
-  nextUrl.value = window.location.href;
-  addNewTrimModalWindow.show();
-}
-
-function createNewType() {
-  const nextUrl: HTMLInputElement =
-    document.querySelector('#add-type-next-url');
-  nextUrl.value = window.location.href;
-  addNewTypeModalWindow.show();
-}
-
 const labelDetailsModalWindow: ModalInterface = new Modal(
   $modalElement,
   modalOptions,
 );
 const labelDeactivateModalWindow: ModalInterface = new Modal(
   modalDeactivateLabel,
-  modalOptions,
-);
-const addNewMakeModalWindow: ModalInterface = new Modal(
-  addNewMakeModal,
-  modalOptions,
-);
-const addNewModelModalWindow: ModalInterface = new Modal(
-  addNewModelModal,
-  modalOptions,
-);
-const addNewTrimModalWindow: ModalInterface = new Modal(
-  addNewTrimModal,
-  modalOptions,
-);
-const addNewTypeModalWindow: ModalInterface = new Modal(
-  addNewTypeModal,
   modalOptions,
 );
 
@@ -198,20 +159,6 @@ const closeButton = document.querySelector('#modalCloseButton');
 if (closeButton) {
   closeButton.addEventListener('click', () => {
     labelDetailsModalWindow.hide();
-  });
-}
-
-const closeMakeModal = document.querySelector('#modalMakeClose');
-if (closeMakeModal) {
-  closeMakeModal.addEventListener('click', () => {
-    addNewMakeModalWindow.hide();
-  });
-}
-
-const closeModelModal = document.querySelector('#modalModelClose');
-if (closeModelModal) {
-  closeModelModal.addEventListener('click', () => {
-    addNewModelModalWindow.hide();
   });
 }
 
@@ -277,21 +224,19 @@ if (subTotal && taxes && total) {
   total.innerHTML = '$' + total_value.toFixed(2).toString();
 }
 
-const makeSelectMakeFields = document.querySelectorAll(
+const makeSelectFields = document.querySelectorAll(
   '.make',
 ) as NodeListOf<HTMLSelectElement>;
-let makeSelected: string;
-makeSelectMakeFields.forEach(makeSelectMakeField =>
-  makeSelectMakeField.addEventListener('change', () => {
-    const makeNumber = makeSelectMakeField.getAttribute('data-model');
-    const makeId = makeSelectMakeField.getAttribute('id');
+makeSelectFields.forEach(makeSelectField =>
+  makeSelectField.addEventListener('change', () => {
+    const makeNumber = makeSelectField.getAttribute('data-model');
     const modelSelect = document.querySelector(
       `#vehicle_model-${makeNumber}`,
     ) as HTMLSelectElement;
 
-    const makeSelected = makeSelectMakeField.value as string;
+    const makeSelected = makeSelectField.value as string;
     if (makeSelected === 'add') {
-      createNewMake();
+      // createMakeModel();
     } else {
       let models: Array<string> = [];
       fetch('/labels/get_models', {
@@ -332,31 +277,47 @@ const modelSelectFields: NodeListOf<HTMLSelectElement> =
   document.querySelectorAll('.model');
 modelSelectFields.forEach(modelSelectField =>
   modelSelectField.addEventListener('change', () => {
+    console.log('model selected', modelSelectField.value);
     if (modelSelectField.value === 'add') {
-      createNewModel();
+      // createMakeModel();
+    } else {
+      console.log('starting fetch');
+      fetch('/labels/get_trims', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({modelSelected: modelSelectField.value}),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('data', data);
+          const trimSelect = document.querySelector(
+            `#label-${modelSelectField.getAttribute('data-trim')}-trim`,
+          ) as HTMLSelectElement;
+          trimSelect.innerHTML = '';
+          let optionElement = document.createElement('option');
+          optionElement.value = '';
+          optionElement.textContent = 'Select a trim';
+          trimSelect.appendChild(optionElement);
+          data.trims.forEach((option: string) => {
+            let optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            trimSelect.appendChild(optionElement);
+          });
+
+          optionElement = document.createElement('option');
+          optionElement.value = 'add';
+          optionElement.textContent = 'Add New Trim';
+          trimSelect.appendChild(optionElement);
+        })
+        .catch(error => {
+          console.error('Error sending data to Flask:', error);
+        });
     }
   }),
 );
-
-const selectTrim: HTMLSelectElement = document.querySelector('#label-1-trim');
-if (selectTrim) {
-  selectTrim.addEventListener('change', () => {
-    const trimSelected = selectTrim.value;
-    if (trimSelected === 'add') {
-      createNewTrim();
-    }
-  });
-}
-
-const selectType: HTMLSelectElement = document.querySelector('#label-1-type');
-if (selectType) {
-  selectType.addEventListener('change', () => {
-    const typeSelected = selectType.value;
-    if (typeSelected === 'add') {
-      createNewType();
-    }
-  });
-}
 
 const decreaseStickersButton: HTMLButtonElement = document.querySelector(
   '#decreaseStickersButton',

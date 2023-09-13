@@ -343,3 +343,6 @@
   transform: translateY(0);
 }
 
+.landing_1st_section {
+  height: calc(100vh - 100px);
+}
