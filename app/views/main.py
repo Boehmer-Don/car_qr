@@ -16,7 +16,6 @@ main_blueprint = Blueprint("main", __name__)
 
 
 @main_blueprint.route("/")
-@login_required
 def index():
     return redirect(url_for("main.landing"))
 
