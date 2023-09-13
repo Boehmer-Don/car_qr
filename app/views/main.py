@@ -6,7 +6,7 @@ from flask import (
     Blueprint,
     flash,
 )
-from flask_login import login_required, current_user
+from flask_login import login_required
 from flask_mail import Message, Mail
 from app import models as m, db
 from app.logger import log
@@ -18,7 +18,7 @@ main_blueprint = Blueprint("main", __name__)
 @main_blueprint.route("/")
 @login_required
 def index():
-    return redirect(url_for("user.account", user_unique_id=current_user.unique_id))
+    return redirect(url_for("main.landing"))
 
 
 @main_blueprint.route("/l/<sticker_id>")
