@@ -317,6 +317,11 @@ def subscription(user_unique_id: str):
 
 @bp.route("/client_data/<sticker_id>", methods=["GET", "POST"])
 def client_data(sticker_id: str):
+    label: m.Label = db.session.scalar(
+        m.Label.select().where(m.Label.sticker_id == sticker_id)
+    )
+    user = label.user
+
     form: f.Client = f.Client()
     if form.validate_on_submit():
         client = db.session.scalar(
@@ -333,6 +338,21 @@ def client_data(sticker_id: str):
         )
         client.save()
         log(log.INFO, "Client created: [%s]", client)
+
+        msg = Message(
+            subject="New Customer",
+            sender=app.config["MAIL_DEFAULT_SENDER"],
+            recipients=[user.email],
+        )
+
+        msg.html = render_template(
+            "email/new_customer.htm",
+            name=f"{client.first_name} {client.last_name}",
+            email=client.email,
+            message=client.phone,
+        )
+        mail.send(msg)
+
         return redirect(url_for("user.thx_client", sticker_id=sticker_id))
     elif form.is_submitted():
         flash("Something went wrong. Form submission error", "danger")
