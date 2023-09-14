@@ -28,7 +28,7 @@ def register():
 
         # create e-mail message
         msg = Message(
-            subject="New password",
+            subject="Email Verification",
             sender=app.config["MAIL_DEFAULT_SENDER"],
             recipients=[user.email],
         )
