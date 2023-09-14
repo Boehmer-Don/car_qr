@@ -56,14 +56,15 @@ def create_app(environment="development"):
         }
         scheduler.configure(jobstores=JOB_STORES)
         scheduler.start()
-        # scheduler.add_job(subscriptions_expiration_notifier, 'cron', hour=7, minute=0, second=0)
         job = scheduler.get_job("subscriptions_expiration_notifier")
         if not job:
             scheduler.add_job(
                 id="subscriptions_expiration_notifier",
                 func=subscriptions_expiration_notifier,
-                trigger="interval",
-                seconds=10,
+                trigger="cron",
+                hour=configuration.SUBSCRIPTIONS_EXPIRATION_CHECK_HOUR,
+                minute=0,
+                second=0,
                 replace_existing=True,
             )
 
