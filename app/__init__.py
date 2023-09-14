@@ -6,6 +6,7 @@ from werkzeug.exceptions import HTTPException
 from flask_migrate import Migrate
 from flask_mail import Mail
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from app.logger import log
 from .database import db
 
@@ -50,12 +51,21 @@ def create_app(environment="development"):
     mail.init_app(app)
 
     if not app.config["TESTING"]:
-        scheduler.add_job(
-            subscriptions_expiration_notifier,
-            "interval",
-            seconds=10,
-        )
+        JOB_STORES = {
+            "default": SQLAlchemyJobStore(url=configuration.ALCHEMICAL_DATABASE_URL)
+        }
+        scheduler.configure(jobstores=JOB_STORES)
         scheduler.start()
+        # scheduler.add_job(subscriptions_expiration_notifier, 'cron', hour=7, minute=0, second=0)
+        job = scheduler.get_job("subscriptions_expiration_notifier")
+        if not job:
+            scheduler.add_job(
+                id="subscriptions_expiration_notifier",
+                func=subscriptions_expiration_notifier,
+                trigger="interval",
+                seconds=10,
+                replace_existing=True,
+            )
 
     # Register blueprints.
     app.register_blueprint(auth_blueprint)
