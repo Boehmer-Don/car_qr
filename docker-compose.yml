@@ -27,5 +27,28 @@ services:
     ports:
       - 127.0.0.1:${LOCAL_WEB_PORT:-8000}:8000
 
+  redis:
+    image: redis:alpine
+    restart: always
+    ports:
+      - 127.0.0.1:${REDIS_PORT}:6379
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+
+  worker:
+    build: .
+    restart: always
+    environment:
+      REDIS_URL_FOR_CELERY: ${REDIS_URL_FOR_CELERY_PROD}
+      FLASK_APP: wsgi:app
+      FLASK_ENV: production
+      FLASK_DEBUG: 0
+      APP_ENV: production
+    command: ./start_worker.sh
+    depends_on:
+      - redis
+
 volumes:
   db_data:

@@ -85,9 +85,23 @@ def populate(count: int = NUM_TEST_USERS):
             city=city,
             postal_code=postal_code,
             phone=phone,
+            created_at=datetime.now() - timedelta(days=randint(300, 365)),
         )
         user.save()
         users_counter += 1
+
+        current_period_start = user.created_at.timestamp()
+        current_period_end = user.created_at.timestamp() + 31536000
+        product_id = 1 if user.plan == m.UsersPlan.basic else 2
+        subscription = m.Subscription(
+            stripe_subscription_id=f"sub_{users_counter}",
+            user_id=user.id,
+            product_id=product_id,
+            current_period_start=current_period_start,
+            current_period_end=current_period_end,
+            is_active=True,
+        )
+        subscription.save()
 
 
 GIFTS = [
@@ -204,3 +218,23 @@ def add_pending_labels(user_id: int = 9):
         db.session.add(sticker)
     db.session.commit()
     print(f"Sticker set for user {user_id}")
+
+
+def add_subscriptions():
+    users = db.session.scalars(m.User.select()).all()
+    for user in users:
+        user.created_at = datetime.now() - timedelta(days=randint(300, 365))
+        user.save()
+        if not user.subscriptions:
+            current_period_start = user.created_at.timestamp()
+            current_period_end = user.created_at.timestamp() + 31536000
+            product_id = 1 if user.plan == m.UsersPlan.basic else 2
+            subscription = m.Subscription(
+                stripe_subscription_id=f"sub_{user.stripe_customer_id}",
+                user_id=user.id,
+                product_id=product_id,
+                current_period_start=current_period_start,
+                current_period_end=current_period_end,
+                is_active=True,
+            )
+            subscription.save()

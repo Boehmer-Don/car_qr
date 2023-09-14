@@ -169,3 +169,17 @@ def init(app: Flask):
         ).all()
         for label in pending_labels:
             print(label.code)
+
+    @app.cli.command()
+    def subscriptions_check():
+        from app.controllers.subscriptions import check_subscriptions
+
+        check_subscriptions()
+        print("Subscriptions checked")
+
+    @app.cli.command()
+    def add_subscriptions():
+        from tests.db import add_subscriptions
+
+        add_subscriptions()
+        print("Subscriptions added")
