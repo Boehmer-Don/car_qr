@@ -1,4 +1,3 @@
-import json
 import click
 from flask import Flask
 import sqlalchemy as sa
@@ -97,35 +96,9 @@ def init(app: Flask):
 
     @app.cli.command()
     def create_models():
-        with open("tests/db/test_models.json", "r") as f:
-            models_data = json.load(f)
-            added_makes_count = 0
-            added_models_count = 0
-            for make_name, models_list in models_data.items():
-                make = db.session.scalar(
-                    m.CarMake.select().where(m.CarMake.name == make_name)
-                )
-                if not make:
-                    make = m.CarMake(name=make_name)
-                    db.session.add(make)
-                    added_makes_count += 1
-                models_set = {model.name for model in make.models}
-                for model_name in models_list:
-                    if model_name in models_set:
-                        continue
-                    print(f"{model_name} is not in DB. Adding it...")
-                    models_set.add(model_name)
-                    model = m.CarModel(name=model_name)
-                    make.models.append(model)
-                    added_models_count += 1
-            db.session.commit()
-        print(f"{added_makes_count} makes added")
-        print(f"{added_models_count} models added")
+        from app.controllers import create_models
 
-        makes_count = db.session.query(m.CarMake).count()
-        models_count = db.session.query(m.CarModel).count()
-        print(f"Total makes: {makes_count}")
-        print(f"Total models: {models_count}")
+        create_models()
 
     @app.cli.command()
     def delete_models():
@@ -154,14 +127,6 @@ def init(app: Flask):
         print(f"Pending labels added for user {user_id}")
 
     @app.cli.command()
-    def get_models():
-        models = db.session.scalars(m.CarModel.select()).all()
-        with open("model_names.txt", "w") as f:
-            for model in models:
-                f.write(f"{model.make.name} {model.name}\n")
-                print(f"{model.make.name} {model.name}")
-
-    @app.cli.command()
     @click.option("--user-id", default=9, type=int)
     def get_pending_labels(user_id: int):
         pending_labels = db.session.scalars(
@@ -175,3 +140,15 @@ def init(app: Flask):
         from app.controllers import check_subscriptions
 
         check_subscriptions()
+
+    @app.cli.command()
+    def models_list():
+        models = db.session.scalars(m.CarModel.select()).all()
+        for model in models:
+            print(model.make.name, model.name, model.trims)
+
+    @app.cli.command()
+    def trims_list():
+        trims = db.session.scalars(m.CarTrim.select()).all()
+        for trim in trims:
+            print(trim.name, trim.model)
