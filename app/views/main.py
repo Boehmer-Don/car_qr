@@ -27,11 +27,11 @@ def redirect_to_outer_url(sticker_id: str):
     if not label:
         return redirect(url_for("main.landing"))
 
-    if label.gift:
-        return redirect(url_for("labels.gift", sticker_id=sticker_id))
-
     label.views += 1
     label.save()
+
+    if label.gift:
+        return redirect(url_for("labels.gift", sticker_id=sticker_id))
     return redirect(label.url)
 
 
