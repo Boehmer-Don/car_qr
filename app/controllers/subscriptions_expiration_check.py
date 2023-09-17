@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import render_template, current_app as app
+from flask import render_template, current_app as app, url_for
 from flask_mail import Message, Mail
 from app import models as m, db
 from app.logger import log
@@ -17,7 +17,7 @@ def check_subscriptions():
                 datetime.fromtimestamp(user.subscriptions[0].current_period_end)
                 - datetime.now()
             ).days
-            if days_left < 21:
+            if 0 < days_left < 21:
                 msg = Message(
                     subject="New Customer",
                     sender=app.config["MAIL_DEFAULT_SENDER"],
@@ -31,5 +31,25 @@ def check_subscriptions():
                     user.email,
                     days_left,
                 )
-                # mail.send(msg)
+                mail.send(msg)
+            elif days_left == 0:
+                user.activated = False
+                user.save()
+                msg = Message(
+                    subject="Subscription renewal",
+                    sender=app.config["MAIL_DEFAULT_SENDER"],
+                    recipients=[user.email],
+                )
+                url = url_for(
+                    "auth.activate",
+                    reset_password_uid=user.unique_id,
+                    _external=True,
+                )
+
+                msg.html = render_template(
+                    "email/confirm.htm",
+                    user=user,
+                    url=url,
+                )
+                mail.send(msg)
     log(log.INFO, "Subscriptions check ended")

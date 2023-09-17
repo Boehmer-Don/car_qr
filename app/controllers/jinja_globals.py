@@ -40,7 +40,10 @@ def get_user_logo():
 
 
 def gift_logo(url: str = None):
-    sticker_id = url.split("/gift/")[-1]
+    if "/gift/" in url:
+        sticker_id = url.split("/gift/")[-1]
+    elif "/thx_client/" in url:
+        sticker_id = url.split("/thx_client/")[-1]
     label = db.session.scalar(m.Label.select().where(m.Label.sticker_id == sticker_id))
     if label:
         return url_for("user.get_logo", user_unique_id=label.user.unique_id)
