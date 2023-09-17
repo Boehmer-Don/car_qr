@@ -93,25 +93,21 @@
                                         placeholder="Reference Name to Internally Identify" required />
                                 </div>
 
-                                <div class="relative w-full px-1">
+                                <div class="relative w-full px-1" hx-get="{{url_for('labels.makes_list')}}"
+                                    hx-target=".make-container" hx-trigger="click">
                                     <label for="make-{{ i+1 }}"
                                         class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Make
                                     </label>
                                     <input type="text" id="make-{{ i+1 }}" name="make-{{ i+1 }}" autocomplete="off"
-                                        minlength="2" maxlength="64"
+                                        minlength="2" maxlength="64" hx-post="{{url_for('labels.makes_list')}}"
+                                        hx-target=".make-container" hx-trigger="input"
                                         class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                                         placeholder="i.e. Ford" required />
                                     <p class="make-warning hidden absolute bottom-2.5 right-2 text-indigo-500">
                                         will add a new make</p>
-                                    <div
-                                        class="suggestion-container make-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-52 overflow-y-scroll z-10">
-                                        {% for make in makes %}
-                                        <p
-                                            class="make-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
-                                            {{ make.name }}
-                                        </p>
-                                        {% endfor %}
+                                    <div class="suggestion-container make-container">
+                                        {% include 'label/makes_list.html' %}
                                     </div>
                                 </div>
                             </div>
@@ -268,4 +264,5 @@
 <script src="{{ url_for('static', filename='js/label.js') }}" type="text/javascript" defer></script>
 <script src="{{ url_for('static', filename='js/new_label.js') }}" type="text/javascript" defer></script>
 <script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
+<script src="https://unpkg.com/htmx.org@1.9.5"></script>
 {% endblock %}

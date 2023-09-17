@@ -892,3 +892,18 @@ def gift(sticker_id: str):
         gift=label.gift,
         dealership=label.user.name_of_dealership,
     )
+
+
+@dealer_blueprint.route("/htmx", methods=["GET", "POST"])
+def htmx():
+    return render_template("label/test.html", testing_var="test_htmx")
+
+
+@dealer_blueprint.route("/makes_list", methods=["GET", "POST"])
+def makes_list():
+    makes_sql = sa.select(m.CarMake.name)
+    if request.method == "POST":
+        make_name = request.form.get("make-1")
+        makes_sql = makes_sql.where(m.CarMake.name.ilike(f"%{make_name}%"))
+    makes = db.session.scalars(makes_sql).all()
+    return render_template("label/makes_list.html", makes=makes, hidden=False)

@@ -1,0 +1,12 @@
+{% set is_hidden = 'hidden' %}
+{% if hidden == False %}
+{% set is_hidden = '' %}
+{% endif %}
+<div
+    class="{{is_hidden}} absolute top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-52 overflow-y-scroll z-10">
+    {% for make in makes %}
+    <p class="make-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+        {{ make }}
+    </p>
+    {% endfor %}
+</div>
