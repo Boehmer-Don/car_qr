@@ -346,7 +346,7 @@ def client_data(sticker_id: str):
         )
 
         msg.html = render_template(
-            "email/new_customer.htm",
+            "email/new_client.htm",
             name=f"{client.first_name} {client.last_name}",
             email=client.email,
             message=client.phone,
@@ -366,6 +366,7 @@ def client_data(sticker_id: str):
         "user/client_data.html",
         sticker_id=sticker_id,
         form=form,
+        user=user,
     )
 
 
@@ -374,7 +375,7 @@ def thx_client(sticker_id: str):
     label: m.Label = db.session.scalar(
         m.Label.select().where(m.Label.sticker_id == sticker_id)
     )
-    return render_template("user/thx_client.html", label_url=label.url)
+    return render_template("user/thx_client.html", label_url=label.url, user=label.user)
 
 
 @bp.route("/logo/<user_unique_id>")
