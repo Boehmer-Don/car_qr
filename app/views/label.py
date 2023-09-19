@@ -894,4 +894,5 @@ def gift(sticker_id: str):
         label_url=label.url,
         gift=label.gift,
         dealership=label.user.name_of_dealership,
+        user=label.user,
     )
