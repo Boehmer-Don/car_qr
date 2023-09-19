@@ -340,7 +340,7 @@ def client_data(sticker_id: str):
         log(log.INFO, "Client created: [%s]", client)
 
         msg = Message(
-            subject="New Customer",
+            subject="Sales Lead",
             sender=app.config["MAIL_DEFAULT_SENDER"],
             recipients=[user.email],
         )
@@ -350,6 +350,9 @@ def client_data(sticker_id: str):
             name=f"{client.first_name} {client.last_name}",
             email=client.email,
             message=client.phone,
+            username=f"{user.first_name} {user.last_name}",
+            label_name=label.name,
+            label_url=label.url,
         )
         mail.send(msg)
 

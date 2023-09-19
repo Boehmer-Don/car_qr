@@ -198,19 +198,22 @@ def edit_cart_label(label_unique_id: str):
     trims = db.session.scalars(m.CarTrim.select()).all()
     types = db.session.scalars(m.CarType.select()).all()
 
-    form: f.LabelForm = f.LabelForm()
+    form: f.LabelUpdateForm = f.LabelUpdateForm()
     if form.validate_on_submit():
+        mileage = float(form.mileage.data.replace(",", ""))
+        price = float(form.price.data.replace(",", ""))
+
         label.sticker_id = form.sticker_id.data
         label.gift = form.gift.data
         label.name = form.name.data
         label.make = form.make.data
         label.vehicle_model = form.vehicle_model.data
         label.year = form.year.data
-        label.mileage = form.mileage.data
+        label.mileage = mileage
         label.color = form.color.data
         label.trim = form.trim.data
         label.type_of_vehicle = form.type_of_vehicle.data
-        label.price = form.price.data
+        label.price = price
         label.url = form.url.data
         label.save()
         return redirect(
