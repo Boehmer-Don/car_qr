@@ -1,4 +1,5 @@
 import io
+import json
 from PIL import Image
 from flask_mail import Message
 from flask import Blueprint, render_template, url_for, redirect, flash, request, session
@@ -137,6 +138,22 @@ def activate(reset_password_uid: str):
         form=form,
         reset_password_uid=reset_password_uid,
     )
+
+
+@auth_blueprint.route("/get_provinces", methods=["GET", "POST"])
+def get_provinces():
+    country = request.args.get("country")
+    provinces = None
+    match country:
+        case "US":
+            with open("tests/db/us_states.json", "r") as f:
+                states_data = json.load(f)
+                provinces = [s.get("name") for s in states_data]
+        case "Canada":
+            with open("tests/db/canada_provinces.json", "r") as f:
+                provinces_data = json.load(f)
+                provinces = [p.get("name") for p in provinces_data]
+    return render_template("auth/provinces.html", provinces=provinces)
 
 
 @auth_blueprint.route("/plan/<user_unique_id>", methods=["GET", "POST"])

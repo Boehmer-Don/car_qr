@@ -1,0 +1,7 @@
+<select id="" name="province" required class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+dark:text-white">
+    <option value="" disabled selected>Select province</option>
+    {% for province in provinces %}
+    <option value="{{province}}">{{province}}</option>
+    {% endfor %}
+</select>

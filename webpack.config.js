@@ -46,6 +46,16 @@ const customConfig = {
   },
 };
 
+const countriesConfig = {
+  entry: {
+    main: './src/countries.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/countries.js', // <--- Will be compiled to this single file
+  },
+};
+
 const labelConfig = {
   entry: {
     main: './src/label.ts',
@@ -94,6 +104,7 @@ const configs = [
   labelConfig,
   newLabelConfig,
   reports,
+  countriesConfig,
 ].map(conf =>
   merge(defaultConfig, conf),
 );
