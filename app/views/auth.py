@@ -196,6 +196,17 @@ def payment(user_unique_id: str):
         flash("Incorrect reset password link", "danger")
         return redirect(url_for("main.index"))
 
+    provinces = []
+    match user.country:
+        case "Canada":
+            with open("tests/db/canada_provinces.json", "r") as provinces_file:
+                provinces_data = json.load(provinces_file)
+                provinces = [p.get("name") for p in provinces_data]
+        case "US":
+            with open("tests/db/us_states.json", "r") as states_file:
+                states_data = json.load(states_file)
+                provinces = [s.get("name") for s in states_data]
+
     form: f.PaymentForm = f.PaymentForm()
     if request.method == "GET":
         form.email.data = user.email
@@ -247,6 +258,7 @@ def payment(user_unique_id: str):
         user=user,
         form=form,
         user_unique_id=user_unique_id,
+        provinces=provinces,
     )
 
 

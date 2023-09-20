@@ -2,6 +2,10 @@
 dark:text-white">
     <option value="" disabled selected>Select province</option>
     {% for province in provinces %}
+    {% if user and user.province == province %}
+    <option value="{{province}}" selected>{{province}}</option>
+    {% else %}
     <option value="{{province}}">{{province}}</option>
+    {% endif %}
     {% endfor %}
 </select>
