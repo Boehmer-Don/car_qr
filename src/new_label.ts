@@ -16,6 +16,20 @@ const modelContainer: HTMLDivElement =
   document.querySelector('.model-container');
 const trimContainer: HTMLDivElement = document.querySelector('.trim-container');
 const typeContainer: HTMLDivElement = document.querySelector('.type-container');
+document.addEventListener('click', e => {
+  if (!makeContainer.classList.contains('hidden') && e.target !== makeInput) {
+    makeContainer.classList.add('hidden');
+  }
+  if (!modelContainer.classList.contains('hidden') && e.target !== modelInput) {
+    modelContainer.classList.add('hidden');
+  }
+  if (!trimContainer.classList.contains('hidden') && e.target !== trimInput) {
+    trimContainer.classList.add('hidden');
+  }
+  if (!typeContainer.classList.contains('hidden') && e.target !== typeInput) {
+    typeContainer.classList.add('hidden');
+  }
+});
 
 const makeInput: HTMLInputElement = document.querySelector('#make-1');
 const modelInput = document.querySelector(
