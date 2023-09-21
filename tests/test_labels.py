@@ -4,7 +4,7 @@ from flask_login import current_user
 from flask.testing import FlaskClient, FlaskCliRunner
 from click.testing import Result
 from app import models as m, db
-from tests.utils import login
+from tests.utils import login, logout
 
 
 def test_labels_active(populate: FlaskClient, test_labels_data: dict):
@@ -40,7 +40,6 @@ def test_labels_archived(populate: FlaskClient):
 
 
 def test_views_counter(populate: FlaskClient):
-    login(populate)
     all_labels = db.session.scalars(m.Label.select()).all()
     label: m.Label = all_labels[0]
     views_before = label.views
