@@ -6,6 +6,7 @@ from flask import (
     Blueprint,
     flash,
 )
+from flask_login import current_user
 from flask_mail import Message, Mail
 from app import models as m, db
 from app.logger import log
@@ -27,8 +28,9 @@ def redirect_to_outer_url(sticker_id: str):
     if not label:
         return redirect(url_for("main.landing"))
 
-    label.views += 1
-    label.save()
+    if not current_user.is_authenticated:
+        label.views += 1
+        label.save()
 
     if label.gift:
         return redirect(url_for("labels.gift", sticker_id=sticker_id))
