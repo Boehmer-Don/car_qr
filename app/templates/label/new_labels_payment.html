@@ -13,9 +13,15 @@
           Order Details
         </p>
         <p class="w-1/12 flex items-center justify-center"></p>
-        <p class="w-3/12 hidden md:flex items-center justify-center"></p>
-        <p class="w-3/12 flex items-center justify-center"></p>
-        <p class="w-1/12 flex items-center justify-center"></p>
+        <p class="w-4/12 hidden md:flex items-center justify-center"></p>
+        <div class="w-1/12 px-2 hidden md:flex items-center justify-center hover:text-indigo-500 cursor-pointer">
+          Gift
+        </div>
+        <p class="w-2/12 hidden md:flex items-center justify-center">
+          Edit
+        </p>
+        <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-delete-button">
+        </p>
       </div>
 
       <form action="{{url_for('labels.new_label_payment', user_unique_id=user_unique_id)}}" method="POST"
@@ -45,8 +51,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </a>
-          <p class="w-2/12 flex items-center justify-center">
-            <a href="{{url_for('labels.edit_cart_label', label_unique_id=label.unique_id)}}">
+          <div class="w-2/12 flex items-center justify-center relative">
+            <a href="{{url_for('labels.edit_cart_label', label_unique_id=label.unique_id)}}" class="label-edit-button">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
                 <path fill-rule="evenodd"
@@ -54,8 +60,10 @@
                   clip-rule="evenodd"></path>
               </svg>
             </a>
-          </p>
-          <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-delete-button"
+            <p class="cart-edit-hint hidden absolute -right-1 -top-3 border border-black bg-white">Edit</p>
+          </div>
+          <div
+            class="relative w-1/12 flex items-center justify-center hover:text-red-700 cursor-pointer label-delete-button"
             data-target="{{label.json}}">
             <a href="{{url_for('labels.delete_from_cart', label_unique_id=label.unique_id)}}"
               onclick="return confirm('Are you sure?')">
@@ -65,7 +73,8 @@
                   clip-rule="evenodd"></path>
               </svg>
             </a>
-          </p>
+            <p class="cart-delete-hint hidden absolute -right-10 bottom-1 border border-red-500 bg-white">Delete</p>
+          </div>
         </div>
 
         <div class="hidden w-full bg-gray-100 dark:bg-gray-700">
