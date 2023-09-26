@@ -108,5 +108,25 @@ class User(db.Model, UserMixin, ModelMixin):
         return u.json()
 
 
+class ExtraEmail(db.Model, ModelMixin):
+    __tablename__ = "extra_emails"
+
+    id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
+    unique_id: orm.Mapped[str] = orm.mapped_column(
+        sa.String(36),
+        default=gen_password_reset_id,
+    )
+    email: orm.Mapped[str] = orm.mapped_column(
+        sa.String(255),
+        unique=True,
+        nullable=False,
+    )
+    user_id: orm.Mapped[int] = orm.mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    user: orm.Mapped[User] = orm.relationship("User", backref="extra_emails")
+
+    def __repr__(self):
+        return f"<{self.id}:{self.email}>"
+
+
 class AnonymousUser(AnonymousUserMixin):
     pass

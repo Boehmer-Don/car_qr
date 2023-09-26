@@ -27,5 +27,8 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
-  "python.testing.pytestArgs": ["."]
+  "python.testing.pytestArgs": ["."],
+  "files.associations": {
+    "jinja-html": "html"
+  }
 }

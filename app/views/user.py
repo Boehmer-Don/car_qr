@@ -267,6 +267,16 @@ def account(user_unique_id: str):
         user.email = form.email.data
         if form.password.data:
             user.password = form.password.data
+        if form.extra_email.data:
+            extra_email: m.ExtraEmail = db.session.scalar(
+                m.ExtraEmail.select().where(m.ExtraEmail.email == form.extra_email.data)
+            )
+            if not extra_email:
+                extra_email = m.ExtraEmail(
+                    email=form.extra_email.data,
+                    user_id=user.id,
+                )
+                extra_email.save()
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
         user.name_of_dealership = form.name_of_dealership.data
@@ -434,3 +444,32 @@ def new_admin():
         return redirect(url_for("user.get_admins"))
 
     return render_template("user/new_admin.html", form=form)
+
+
+@bp.route("/extra-email/add", methods=["POST"])
+@login_required
+def add_extra_email():
+    request_data = request.data
+    ...
+
+
+@bp.route("/extra-email/delete/<extra_email_unique_id>", methods=["POST"])
+@login_required
+def delete_extra_email(extra_email_unique_id: str):
+    extra_email: m.ExtraEmail = db.session.scalar(
+        m.ExtraEmail.select().where(m.ExtraEmail.unique_id == extra_email_unique_id)
+    )
+    if not extra_email:
+        log(log.INFO, "Extra email not found")
+        return "Extra email not found", 404
+    if extra_email.user_id != current_user.id:
+        log(log.INFO, "Access denied. User is not owner of extra email")
+        return "Access denied. User is not owner of extra email", 403
+    db.session.delete(extra_email)
+    db.session.commit()
+    log(log.INFO, "Extra email %s deleted", extra_email.unique_id)
+    return redirect(request.referrer)
+
+
+# TODO test
+# TODO not deleting
