@@ -85,9 +85,23 @@ def populate(count: int = NUM_TEST_USERS):
             city=city,
             postal_code=postal_code,
             phone=phone,
+            created_at=datetime.now() - timedelta(days=randint(300, 365)),
         )
         user.save()
         users_counter += 1
+
+        current_period_start = user.created_at.timestamp()
+        current_period_end = user.created_at.timestamp() + 31536000
+        product_id = 1 if user.plan == m.UsersPlan.basic else 2
+        subscription = m.Subscription(
+            stripe_subscription_id=f"sub_{users_counter}",
+            user_id=user.id,
+            product_id=product_id,
+            current_period_start=current_period_start,
+            current_period_end=current_period_end,
+            is_active=True,
+        )
+        subscription.save()
 
 
 GIFTS = [
@@ -150,28 +164,28 @@ def add_labels(user_id: int = 9):
         if label.date_deactivated:
             label.price_sold = label.price - randint(1000, 3000)
         db.session.add(label)
-        make = db.session.scalar(m.CarMake.select().where(m.CarMake.name == label.make))
-        if not make:
-            make = m.CarMake(name=label.make)
-            make.save()
-        vehicle_type = db.session.scalar(
-            m.CarType.select().where(m.CarType.name == label.type_of_vehicle)
-        )
-        if not vehicle_type:
-            vehicle_type = m.CarType(name=label.type_of_vehicle)
-            vehicle_type.save()
-        model = db.session.scalar(
-            m.CarModel.select().where(m.CarModel.name == label.vehicle_model)
-        )
-        if not model:
-            model = m.CarModel(
-                name=label.vehicle_model, make_id=make.id, type_id=vehicle_type.id
-            )
-            model.save()
-        trim = db.session.scalar(m.CarTrim.select().where(m.CarTrim.name == label.trim))
-        if not trim:
-            trim = m.CarTrim(name=label.trim, model_id=model.id)
-            trim.save()
+        # make = db.session.scalar(m.CarMake.select().where(m.CarMake.name == label.make))
+        # if not make:
+        #     make = m.CarMake(name=label.make)
+        #     make.save()
+        # vehicle_type = db.session.scalar(
+        #     m.CarType.select().where(m.CarType.name == label.type_of_vehicle)
+        # )
+        # if not vehicle_type:
+        #     vehicle_type = m.CarType(name=label.type_of_vehicle)
+        #     vehicle_type.save()
+        # model = db.session.scalar(
+        #     m.CarModel.select().where(m.CarModel.name == label.vehicle_model)
+        # )
+        # if not model:
+        #     model = m.CarModel(
+        #         name=label.vehicle_model, make_id=make.id, type_id=vehicle_type.id
+        #     )
+        #     model.save()
+        # trim = db.session.scalar(m.CarTrim.select().where(m.CarTrim.name == label.trim))
+        # if not trim:
+        #     trim = m.CarTrim(name=label.trim, model_id=model.id)
+        #     trim.save()
     db.session.commit()
 
 

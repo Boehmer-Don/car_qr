@@ -9,5 +9,5 @@ from .auth import (
     PaymentForm,
 )
 from .user import UserForm, AdminForm, ResendInviteForm
-from .label import LabelForm, DeactivateLabelForm, LabelsAmountForm
+from .label import LabelForm, LabelUpdateForm, DeactivateLabelForm, LabelsAmountForm
 from .client import Client

@@ -24,6 +24,11 @@ class LabelForm(FlaskForm):
     next_url = StringField("Next URL")
 
 
+class LabelUpdateForm(LabelForm):
+    price = StringField("Price", validators=[DataRequired(), Length(1, 255)])
+    mileage = StringField("Mileage", validators=[DataRequired(), Length(1, 255)])
+
+
 class DeactivateLabelForm(FlaskForm):
     unique_id = StringField("Unique ID")
     active = BooleanField("Active")

@@ -16,6 +16,20 @@ const modelContainer: HTMLDivElement =
   document.querySelector('.model-container');
 const trimContainer: HTMLDivElement = document.querySelector('.trim-container');
 const typeContainer: HTMLDivElement = document.querySelector('.type-container');
+document.addEventListener('click', e => {
+  if (!makeContainer.classList.contains('hidden') && e.target !== makeInput) {
+    makeContainer.classList.add('hidden');
+  }
+  if (!modelContainer.classList.contains('hidden') && e.target !== modelInput) {
+    modelContainer.classList.add('hidden');
+  }
+  if (!trimContainer.classList.contains('hidden') && e.target !== trimInput) {
+    trimContainer.classList.add('hidden');
+  }
+  if (!typeContainer.classList.contains('hidden') && e.target !== typeInput) {
+    typeContainer.classList.add('hidden');
+  }
+});
 
 const makeInput: HTMLInputElement = document.querySelector('#make-1');
 const modelInput = document.querySelector(
@@ -250,7 +264,9 @@ const codeExistsError: HTMLParagraphElement = document.querySelector(
 const codeNotPendingError: HTMLParagraphElement = document.querySelector(
   '.sticker-code-not-pending-error',
 );
-let isError: boolean = false;
+let isPendingError: boolean = false;
+let isExistsError: boolean = false;
+console.log('codeExistsError', codeExistsError);
 if (codeInput) {
   codeInput.addEventListener('input', e => {
     fetch('/labels/check_label_code', {
@@ -268,14 +284,14 @@ if (codeInput) {
           codeInput.classList.add('border-2');
           codeInput.classList.add('bg-red-100');
           codeInput.classList.add('focus:border-red-700');
-          isError = true;
+          isPendingError = true;
         } else {
           codeNotPendingError.classList.add('hidden');
           codeInput.classList.remove('text-red-700');
           codeInput.classList.remove('border-2');
           codeInput.classList.remove('bg-red-100');
           codeInput.classList.remove('focus:border-red-700');
-          isError = false;
+          isPendingError = false;
         }
 
         if (data.exists === true) {
@@ -285,24 +301,27 @@ if (codeInput) {
           codeInput.classList.add('border-2');
           codeInput.classList.add('bg-red-100');
           codeInput.classList.add('focus:border-red-700');
-          isError = true;
+          isExistsError = true;
         } else {
           codeExistsError.classList.add('hidden');
           codeInput.classList.remove('text-red-700');
           codeInput.classList.remove('border-2');
           codeInput.classList.remove('bg-red-100');
           codeInput.classList.remove('focus:border-red-700');
-          isError = false;
+          isExistsError = false;
         }
+
+        labelForm.addEventListener('submit', e => {
+          if (isExistsError) {
+            e.preventDefault();
+          }
+          if (isPendingError) {
+            e.preventDefault();
+          }
+        });
       })
       .catch(error => {
         console.error('Error fetching sticker number:', error);
       });
   });
 }
-
-labelForm.addEventListener('submit', e => {
-  if (isError) {
-    e.preventDefault();
-  }
-});

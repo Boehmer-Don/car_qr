@@ -343,3 +343,35 @@ if (decreaseStickersButton && increaseStickersButton) {
     stickersQuantityInput.value = quantity.toString();
   });
 }
+
+const labelDeleteButtons: NodeListOf<HTMLDivElement> =
+  document.querySelectorAll('.label-delete-button');
+const deleteHints: NodeListOf<HTMLDivElement> =
+  document.querySelectorAll('.cart-delete-hint');
+labelDeleteButtons.forEach(e =>
+  e.addEventListener('mouseover', () => {
+    e.parentElement
+      .querySelector('.cart-delete-hint')
+      .classList.remove('hidden');
+  }),
+);
+labelDeleteButtons.forEach(e =>
+  e.addEventListener('mouseleave', () => {
+    e.parentElement.querySelector('.cart-delete-hint').classList.add('hidden');
+  }),
+);
+
+const labelEditButtons: NodeListOf<HTMLDivElement> =
+  document.querySelectorAll('.label-edit-button');
+const editHints: NodeListOf<HTMLDivElement> =
+  document.querySelectorAll('.cart-edit-hint');
+labelEditButtons.forEach(e =>
+  e.addEventListener('mouseover', () => {
+    e.parentElement.querySelector('.cart-edit-hint').classList.remove('hidden');
+  }),
+);
+labelEditButtons.forEach(e =>
+  e.addEventListener('mouseleave', () => {
+    e.parentElement.querySelector('.cart-edit-hint').classList.add('hidden');
+  }),
+);

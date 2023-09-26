@@ -84,31 +84,25 @@
 
           <div class="doubled_inputs">
             <div class="short_input_container short_input_container_left">
-              {{form.country.label(class='block text-sm
-              font-medium text-gray-900 dark:text-white')}}
-              {{form.country(
-              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
-              dark:text-white",
-              placeholder="Canada"
-              )
-              }}
-              {% for error in form.errors.country %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
+              <label for="country" class="block text-sm font-medium text-gray-900 dark:text-white">
+                Country
+              </label>
+              <select id="" name="country" required hx-get="{{ url_for('auth.get_provinces') }}" hx-trigger="change"
+                hx-target="#province_select" class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white">
+                <option value="" disabled selected>Select country</option>
+                <option value="Canada">Canada</option>
+                <option value="US">US</option>
+              </select>
             </div>
 
             <div class="short_input_container short_input_container_right">
-              {{form.province.label(class='block text-sm
-              font-medium text-gray-900 dark:text-white')}}
-              {{form.province(
-              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
-              dark:text-white",
-              placeholder="Ontario"
-              )
-              }}
-              {% for error in form.errors.province %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
+              <label for="province" class="block text-sm font-medium text-gray-900 dark:text-white">
+                Province
+              </label>
+              <div id="province_select">
+                {% include 'auth/provinces.html' %}
+              </div>
             </div>
           </div>
 
@@ -176,4 +170,6 @@
 <!-- prettier-ignore -->
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
+<script src="{{ url_for('static', filename='js/countries.js') }}" type="text/javascript" defer></script>
+<script src="https://unpkg.com/htmx.org@1.9.5"></script>
 {% endblock %}

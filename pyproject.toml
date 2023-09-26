@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "car-qr-label"
-version = "0.2.35"
+version = "0.3.10"
 description = ""
 authors = ["Simple2B <simple2b.info@gmail.com>"]
 
@@ -19,6 +19,7 @@ pydantic = "^1.10.7"
 alchemical = "^0.7.1"
 stripe = "^5.5.0"
 pillow = "^10.0.0"
+apscheduler = "^3.10.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.1"

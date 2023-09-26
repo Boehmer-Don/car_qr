@@ -21,4 +21,5 @@ declare const labelForm: HTMLFormElement;
 declare const codeInput: HTMLInputElement;
 declare const codeExistsError: HTMLParagraphElement;
 declare const codeNotPendingError: HTMLParagraphElement;
-declare let isError: boolean;
+declare let isPendingError: boolean;
+declare let isExistsError: boolean;

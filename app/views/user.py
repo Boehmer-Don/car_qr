@@ -1,5 +1,6 @@
 # flake8: noqa E712
 import io
+import json
 from datetime import datetime
 from flask import (
     Blueprint,
@@ -235,6 +236,17 @@ def account(user_unique_id: str):
         flash("Incorrect reset password link", "danger")
         return redirect(url_for("main.index"))
 
+    provinces = []
+    match user.country:
+        case "Canada":
+            with open("tests/db/canada_provinces.json", "r") as provinces_file:
+                provinces_data = json.load(provinces_file)
+                provinces = [p.get("name") for p in provinces_data]
+        case "US":
+            with open("tests/db/us_states.json", "r") as states_file:
+                states_data = json.load(states_file)
+                provinces = [s.get("name") for s in states_data]
+
     form: f.PaymentForm = f.PaymentForm()
     if request.method == "GET":
         form.email.data = user.email
@@ -280,6 +292,7 @@ def account(user_unique_id: str):
         form=form,
         user=user,
         user_unique_id=user_unique_id,
+        provinces=provinces,
     )
 
 
@@ -317,6 +330,11 @@ def subscription(user_unique_id: str):
 
 @bp.route("/client_data/<sticker_id>", methods=["GET", "POST"])
 def client_data(sticker_id: str):
+    label: m.Label = db.session.scalar(
+        m.Label.select().where(m.Label.sticker_id == sticker_id)
+    )
+    user = label.user
+
     form: f.Client = f.Client()
     if form.validate_on_submit():
         client = db.session.scalar(
@@ -333,6 +351,24 @@ def client_data(sticker_id: str):
         )
         client.save()
         log(log.INFO, "Client created: [%s]", client)
+
+        msg = Message(
+            subject="Sales Lead",
+            sender=app.config["MAIL_DEFAULT_SENDER"],
+            recipients=[user.email],
+        )
+
+        msg.html = render_template(
+            "email/new_client.htm",
+            name=f"{client.first_name} {client.last_name}",
+            email=client.email,
+            message=client.phone,
+            username=f"{user.first_name} {user.last_name}",
+            label_name=label.name,
+            label_url=label.url,
+        )
+        mail.send(msg)
+
         return redirect(url_for("user.thx_client", sticker_id=sticker_id))
     elif form.is_submitted():
         flash("Something went wrong. Form submission error", "danger")
@@ -343,6 +379,7 @@ def client_data(sticker_id: str):
         "user/client_data.html",
         sticker_id=sticker_id,
         form=form,
+        user=user,
     )
 
 
@@ -351,7 +388,7 @@ def thx_client(sticker_id: str):
     label: m.Label = db.session.scalar(
         m.Label.select().where(m.Label.sticker_id == sticker_id)
     )
-    return render_template("user/thx_client.html", label_url=label.url)
+    return render_template("user/thx_client.html", label_url=label.url, user=label.user)
 
 
 @bp.route("/logo/<user_unique_id>")

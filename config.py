@@ -52,6 +52,8 @@ class BaseConfig(BaseSettings):
     IMAGE_MAX_WIDTH: int = 512
     BASE_URL: str
 
+    SUBSCRIPTIONS_EXPIRATION_CHECK_HOUR: int = 7
+
     @staticmethod
     def configure(app: Flask):
         # Implement this method to do further configuration on your app.

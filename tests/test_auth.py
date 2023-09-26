@@ -69,7 +69,7 @@ def test_register(client: FlaskClient):
 
         assert len(outbox) == 1
         letter: Message = outbox[0]
-        assert letter.subject == "New password"
+        assert letter.subject == "Email Verification"
         assert "Confirm registration" in letter.html
         assert user.unique_id in letter.html
         html: str = letter.html

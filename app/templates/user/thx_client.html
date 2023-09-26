@@ -9,11 +9,13 @@
 <div class="flex justify-center">
     <div class="w-full md:w-1/3 h-screen px-3 flex items-center">
         <div>
+            {% if user.logo %}
             <div class="w-full flex justify-center mb-12">
-                <img src="{{url_for('static', filename='img/forbes_logo.png')}}" alt="forbes_logo.png">
+                <img src="{{gift_logo(request.url)}}" alt="forbes_logo.png">
             </div>
+            {% endif %}
 
-            <p class="text-xl font-bold text-center">Thank you for choosing Forbes Motors GM! </p>
+            <p class="text-xl font-bold text-center">Thank you for choosing {{user.name_of_dealership}}!</p>
             <p class="mt-10 text-center">Show your phone number at reception to pick up your free gift anytime!</p>
 
             <div class="mt-12 flex flex-row items-center justify-center">

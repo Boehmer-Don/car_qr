@@ -1,11 +1,12 @@
 import os
-
+import subprocess
 from flask import Flask, render_template
 from flask_login import LoginManager
 from werkzeug.exceptions import HTTPException
 from flask_migrate import Migrate
 from flask_mail import Mail
-
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from app.logger import log
 from .database import db
 
@@ -13,6 +14,12 @@ from .database import db
 login_manager = LoginManager()
 migration = Migrate()
 mail = Mail()
+scheduler = BackgroundScheduler()
+
+
+def subscriptions_expiration_notifier():
+    flask_proc = subprocess.Popen(["flask", "subscriptions-check"])
+    flask_proc.communicate()
 
 
 def create_app(environment="development"):
@@ -42,6 +49,24 @@ def create_app(environment="development"):
     migration.init_app(app, db)
     login_manager.init_app(app)
     mail.init_app(app)
+
+    if not app.config["TESTING"]:
+        JOB_STORES = {
+            "default": SQLAlchemyJobStore(url=configuration.ALCHEMICAL_DATABASE_URL)
+        }
+        scheduler.configure(jobstores=JOB_STORES)
+        scheduler.start()
+        job = scheduler.get_job("subscriptions_expiration_notifier")
+        if not job:
+            scheduler.add_job(
+                id="subscriptions_expiration_notifier",
+                func=subscriptions_expiration_notifier,
+                trigger="cron",
+                hour=configuration.SUBSCRIPTIONS_EXPIRATION_CHECK_HOUR,
+                minute=0,
+                second=0,
+                replace_existing=True,
+            )
 
     # Register blueprints.
     app.register_blueprint(auth_blueprint)

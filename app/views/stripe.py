@@ -168,7 +168,7 @@ def webhook():
 
                 # Notification to admin
                 msg = Message(
-                    subject="New password",
+                    subject="New label is activated",
                     sender=app.config["MAIL_DEFAULT_SENDER"],
                     recipients=[user.email],
                 )

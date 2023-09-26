@@ -1,0 +1,11 @@
+<select id="" name="province" required class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+dark:text-white">
+    <option value="" disabled selected>Select province</option>
+    {% for province in provinces %}
+    {% if user and user.province == province %}
+    <option value="{{province}}" selected>{{province}}</option>
+    {% else %}
+    <option value="{{province}}">{{province}}</option>
+    {% endif %}
+    {% endfor %}
+</select>
