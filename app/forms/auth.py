@@ -32,7 +32,10 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField("Register")
 
     def validate_email(form, field):
-        query = User.select().where(User.email == field.data)
+        query = User.select().where(
+            User.email == field.data,
+            User.activated.is_(True),
+        )
         if db.session.scalar(query) is not None:
             raise ValidationError("This email is already registered.")
 
@@ -114,7 +117,9 @@ class PaymentForm(FlaskForm):
     phone = StringField("Phone", validators=[Optional()])
     gift_enabled = BooleanField("Enable Gift")
     gift = StringField("Gift", validators=[Optional(), Length(0, 255)])
-    extra_emails = StringField("Extra Emails", validators=[Optional(), Email(), Length(0, 255)])
+    extra_emails = StringField(
+        "Extra Emails", validators=[Optional(), Email(), Length(0, 255)]
+    )
 
     # Payment Plan
     choices = [
