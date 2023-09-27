@@ -40,10 +40,12 @@ def redirect_to_outer_url(sticker_id: str):
 @main_blueprint.route("/landing", methods=["GET", "POST"])
 def landing():
     if current_user.is_authenticated:
-        if current_user.role.value=="admin":
+        if current_user.role.value == "admin":
             return redirect(url_for("user.get_all"))
-        elif current_user.role.value=="dealer":
-            return redirect(url_for("user.account",user_unique_id=current_user.unique_id))
+        elif current_user.role.value == "dealer":
+            return redirect(
+                url_for("user.account", user_unique_id=current_user.unique_id)
+            )
     mail = Mail()
     form = m.LandingForm()
     if form.validate_on_submit():
