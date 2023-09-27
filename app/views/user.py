@@ -278,8 +278,7 @@ def account(user_unique_id: str):
         user.postal_code = form.postal_code.data
         user.plan = form.plan.data
         user.phone = form.phone.data
-        if form.extra_emails.data:
-            user.extra_emails = form.extra_emails.data.strip()
+        user.extra_emails= "" if not form.extra_emails.data.strip() else form.extra_emails.data.strip()
         user.save()
         update_stripe_customer(user)
         log(log.INFO, "User data updated. User: [%s]", user)
