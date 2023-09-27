@@ -115,7 +115,7 @@ class PaymentForm(FlaskForm):
     gift_enabled = BooleanField("Enable Gift")
     gift = StringField("Gift", validators=[Optional(), Length(0, 255)])
     extra_email = StringField(
-        "Extra Email", validators=[Optional(), Email(), Length(0, 255)]
+        "Extra Emails", validators=[Optional(), Email(), Length(0, 255)]
     )
 
     # Payment Plan

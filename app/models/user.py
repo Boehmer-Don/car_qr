@@ -74,6 +74,7 @@ class User(db.Model, UserMixin, ModelMixin):
     stripe_customer_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(128), unique=True, nullable=True
     )
+    extra_emails: orm.Mapped[str] = orm.mapped_column(sa.String(26), default="")
 
     @hybrid_property
     def password(self):
@@ -106,26 +107,6 @@ class User(db.Model, UserMixin, ModelMixin):
     def json(self):
         u = s.User.from_orm(self)
         return u.json()
-
-
-class ExtraEmail(db.Model, ModelMixin):
-    __tablename__ = "extra_emails"
-
-    id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
-    unique_id: orm.Mapped[str] = orm.mapped_column(
-        sa.String(36),
-        default=gen_password_reset_id,
-    )
-    email: orm.Mapped[str] = orm.mapped_column(
-        sa.String(255),
-        unique=True,
-        nullable=False,
-    )
-    user_id: orm.Mapped[int] = orm.mapped_column(sa.Integer, sa.ForeignKey("users.id"))
-    user: orm.Mapped[User] = orm.relationship("User", backref="extra_emails")
-
-    def __repr__(self):
-        return f"<{self.id}:{self.email}>"
 
 
 class AnonymousUser(AnonymousUserMixin):

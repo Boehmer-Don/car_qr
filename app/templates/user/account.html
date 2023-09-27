@@ -50,6 +50,8 @@
                 </div>
               </div>
 
+
+
               <div class="doubled_inputs">
                 <div class="short_input_container short_input_container_left">
                   {{form.password.label(class='block mb-2 text-sm font-medium
@@ -196,21 +198,25 @@
               </div>
               <button type="submit"
                 class="w-full mt-4 px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
-                Save >
+                Save
               </button>
             </form>
 
-            <div>
-              <form id="extra-email-form" hx-post="{{ url_for('user.add_extra_email') }}"
-                hx-target="#extra-emails-container" hx-swap="innerHTML">
-                {{ form.extra_email.label(class='block mb-2 text-sm font-medium text-gray-900 dark:text-white') }}
-                {{ form.extra_email(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none
-                bg-inherit dark:text-white") }}
+            <div class="extra-email-inner">
+              <form id="extra-email-form"></form>
+                <label for="extra_email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Extra
+                  Email</label>
+                <input type="text" id="extra_email" name="extra_email" form="extra-email-form"
+                  class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
                 <button type="submit" id="add-button"
+                hx-post="{{ url_for('user.add_extra_email') }}"
+                hx-target="#extra-emails-container"
+                hx-swap="innerHTML"
+                hx-include="*"
                   class="w-full mt-4 px-3 py-1 text-base font-medium text-center text-white bg-indigo-500 rounded-lg hover:bg-indigo-600 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
                   Add
                 </button>
-              </form>
+
 
               <div id="extra-emails-container">
                 {% include "user/snippets/account_extra_emails.html" %}
@@ -219,6 +225,7 @@
             {% for error in form.errors.extra_email %}
             <small class="text-danger">{{ error }}</small>
             {% endfor %}
+
           </div>
         </div>
       </div>
