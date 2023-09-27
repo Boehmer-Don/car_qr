@@ -133,7 +133,6 @@ def test_account(client: FlaskClient):
     assert response.status_code != 200
 
 
-
 def test_subscription(client: FlaskClient):
     login(client)
     user: m.User = db.session.scalar(sa.select(m.User).where(m.User.id == 1))
