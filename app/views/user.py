@@ -449,8 +449,17 @@ def new_admin():
 @bp.route("/extra-email/add", methods=["POST"])
 @login_required
 def add_extra_email():
-    request_data = request.data
-    ...
+    email = request.form.get("extra_email")
+    extra_email: m.ExtraEmail = db.session.scalar(
+        m.ExtraEmail.select().where(m.ExtraEmail.email == email)
+    )
+    if not extra_email:
+        extra_email = m.ExtraEmail(
+            email=email,
+            user_id=current_user.id,
+        )
+        extra_email.save()
+    return render_template("user/snippets/account_extra_emails.html", user=current_user)
 
 
 @bp.route("/extra-email/delete/<extra_email_unique_id>", methods=["POST"])
@@ -468,8 +477,7 @@ def delete_extra_email(extra_email_unique_id: str):
     db.session.delete(extra_email)
     db.session.commit()
     log(log.INFO, "Extra email %s deleted", extra_email.unique_id)
-    return redirect(request.referrer)
+    return "", 200
 
 
-# TODO test
-# TODO not deleting
+# TODO tests

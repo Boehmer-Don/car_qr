@@ -1,0 +1,12 @@
+{% if user.extra_emails %}
+<div class="w-full py-3">
+  {% for extra_email in user.extra_emails %}
+  <div
+    class="flex justify-between items-center my-1"
+    hx-post="{{ url_for('user.delete_extra_email', extra_email_unique_id=extra_email.unique_id) }}">
+    <small class="font-medium">{{ extra_email.email }}</small>
+    <button class="px-1 py-1 text-white bg-red-500 rounded-lg">Remove</button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
