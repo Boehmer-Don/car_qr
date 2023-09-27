@@ -82,6 +82,7 @@ def test_account(client: FlaskClient):
     TEST_CITY = "Kyiv"
     TEST_POSTAL_CODE = "10000"
     TEST_PHONE = "555-555-55-55"
+    TEST_EXTRA_EMAILS = "test1@gmail.com,test2@gmail.com"
 
     login(client)
     user: m.User = db.session.scalar(sa.select(m.User).where(m.User.id == 1))
@@ -103,6 +104,30 @@ def test_account(client: FlaskClient):
             postal_code=TEST_POSTAL_CODE,
             phone=TEST_PHONE,
             plan="basic",
+            extra_emails=TEST_EXTRA_EMAILS,
+        ),
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Your account has been successfully updated" in response.data
+
+    response = client.post(
+        f"/user/account/{user.unique_id}",
+        data=dict(
+            email=TEST_EMAIL,
+            password=TEST_PASSWORD,
+            password_confirmation=TEST_PASSWORD,
+            first_name=TEST_FIRSTNAME,
+            last_name=TEST_LASTNAME,
+            name_of_dealership=TEST_NAME_OF_DEALERSHIP,
+            address_of_dealership=TEST_ADDRESS_OF_DEALERSHIP,
+            country=TEST_COUNTRY,
+            province=TEST_PROVINCE,
+            city=TEST_CITY,
+            postal_code=TEST_POSTAL_CODE,
+            phone=TEST_PHONE,
+            plan="basic",
+            extra_emails="   some ran dom email         ",
         ),
         follow_redirects=True,
     )
