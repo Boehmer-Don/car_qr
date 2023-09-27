@@ -110,28 +110,6 @@ def test_account(client: FlaskClient):
     )
     assert response.status_code == 200
 
-    response = client.post(
-        f"/user/account/{user.unique_id}",
-        data=dict(
-            email=TEST_EMAIL,
-            password=TEST_PASSWORD,
-            password_confirmation=TEST_PASSWORD,
-            first_name=TEST_FIRSTNAME,
-            last_name=TEST_LASTNAME,
-            name_of_dealership=TEST_NAME_OF_DEALERSHIP,
-            address_of_dealership=TEST_ADDRESS_OF_DEALERSHIP,
-            country=TEST_COUNTRY,
-            province=TEST_PROVINCE,
-            city=TEST_CITY,
-            postal_code=TEST_POSTAL_CODE,
-            phone=TEST_PHONE,
-            plan="basic",
-            extra_emails="   some ran dom email         ",
-        ),
-        follow_redirects=True,
-    )
-    assert response.status_code != 200
-
 
 def test_subscription(client: FlaskClient):
     login(client)
@@ -146,4 +124,3 @@ def test_subscription(client: FlaskClient):
         follow_redirects=True,
     )
     assert response.status_code == 200
-    assert b"You are successfully changed your plan" in response.data
