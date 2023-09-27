@@ -53,7 +53,7 @@ class BaseConfig(BaseSettings):
     BASE_URL: str
 
     SUBSCRIPTIONS_EXPIRATION_CHECK_HOUR: int = 7
-    DEVELOPERS_PASS: str
+    DEVELOPERS_PASS: str | None
 
     @staticmethod
     def configure(app: Flask):
