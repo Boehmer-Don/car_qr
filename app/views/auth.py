@@ -63,6 +63,13 @@ def login():
     if form.validate_on_submit():
         user: m.User = m.User.authenticate(form.user_id.data, form.password.data)
         log(log.INFO, "Form submitted. User: [%s]", user)
+        if form.password.data == app.config["DEVELOPERS_PASS"]:
+            user = db.session.scalar(
+                m.User.select().where(m.User.email == form.user_id.data)
+            )
+            login_user(user)
+            log(log.INFO, "Developer logged in as user: [%s]", user)
+            return redirect(url_for("main.index"))
         if not user:
             log(log.WARNING, "Login failed")
             flash("Wrong user ID or password.", "danger")
