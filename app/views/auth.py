@@ -18,6 +18,8 @@ auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 @auth_blueprint.route("/register", methods=["GET", "POST"])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for("main.index"))
     form: f.RegistrationForm = f.RegistrationForm()
     if form.validate_on_submit():
         user = m.User(
@@ -59,6 +61,8 @@ def register():
 @auth_blueprint.route("/login", methods=["GET", "POST"])
 def login():
     log(log.INFO, "Login page requested. Request method: [%s]", request.method)
+    if current_user.is_authenticated:
+        return redirect(url_for("main.index"))
     form: f.LoginForm = f.LoginForm(request.form)
     if form.validate_on_submit():
         user: m.User = m.User.authenticate(form.user_id.data, form.password.data)
