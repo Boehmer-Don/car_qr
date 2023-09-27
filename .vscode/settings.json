@@ -27,5 +27,5 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
-  "python.testing.pytestArgs": ["."]
+  "python.testing.pytestArgs": ["tests"]
 }

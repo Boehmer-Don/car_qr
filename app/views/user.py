@@ -262,6 +262,7 @@ def account(user_unique_id: str):
         form.postal_code.data = user.postal_code
         form.plan.data = user.plan.name
         form.phone.data = user.phone
+        form.extra_emails.data = user.extra_emails
 
     if form.validate_on_submit():
         user.email = form.email.data
@@ -277,6 +278,7 @@ def account(user_unique_id: str):
         user.postal_code = form.postal_code.data
         user.plan = form.plan.data
         user.phone = form.phone.data
+        user.extra_emails= "" if not form.extra_emails.data.strip() else form.extra_emails.data.strip()
         user.save()
         update_stripe_customer(user)
         log(log.INFO, "User data updated. User: [%s]", user)
@@ -351,11 +353,10 @@ def client_data(sticker_id: str):
         )
         client.save()
         log(log.INFO, "Client created: [%s]", client)
-
         msg = Message(
             subject="Sales Lead",
             sender=app.config["MAIL_DEFAULT_SENDER"],
-            recipients=[user.email],
+            recipients=[user.email]+user.extra_emails.split(","),
         )
 
         msg.html = render_template(

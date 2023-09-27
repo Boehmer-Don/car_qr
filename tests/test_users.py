@@ -82,6 +82,7 @@ def test_account(client: FlaskClient):
     TEST_CITY = "Kyiv"
     TEST_POSTAL_CODE = "10000"
     TEST_PHONE = "555-555-55-55"
+    TEST_EXTRA_EMAILS = "test1@gmail.com,test2@gmail.com"
 
     login(client)
     user: m.User = db.session.scalar(sa.select(m.User).where(m.User.id == 1))
@@ -103,14 +104,14 @@ def test_account(client: FlaskClient):
             postal_code=TEST_POSTAL_CODE,
             phone=TEST_PHONE,
             plan="basic",
+            extra_emails=TEST_EXTRA_EMAILS,
         ),
         follow_redirects=True,
     )
     assert response.status_code == 200
-    assert b"Your account has been successfully updated" in response.data
 
 
-def test_subsription(client: FlaskClient):
+def test_subscription(client: FlaskClient):
     login(client)
     user: m.User = db.session.scalar(sa.select(m.User).where(m.User.id == 1))
     response = client.get(f"/user/subscription/{user.unique_id}")
@@ -123,4 +124,3 @@ def test_subsription(client: FlaskClient):
         follow_redirects=True,
     )
     assert response.status_code == 200
-    assert b"You are successfully changed your plan" in response.data

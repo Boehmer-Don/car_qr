@@ -74,6 +74,7 @@ class User(db.Model, UserMixin, ModelMixin):
     stripe_customer_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(128), unique=True, nullable=True
     )
+    extra_emails: orm.Mapped[str] = orm.mapped_column(sa.String(255), default="")
 
     @hybrid_property
     def password(self):
