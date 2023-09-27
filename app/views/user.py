@@ -354,11 +354,10 @@ def client_data(sticker_id: str):
         )
         client.save()
         log(log.INFO, "Client created: [%s]", client)
-
         msg = Message(
             subject="Sales Lead",
             sender=app.config["MAIL_DEFAULT_SENDER"],
-            recipients=[user.email],
+            recipients=[user.email]+user.extra_emails.split(","),
         )
 
         msg.html = render_template(
