@@ -20,6 +20,7 @@ def create_stripe_customer(user: m.User):
             phone=user.phone,
             address={
                 "city": user.city,
+                "state": user.province,
                 "country": user.country,
                 "line1": user.address_of_dealership,
                 "postal_code": user.postal_code,
@@ -27,6 +28,7 @@ def create_stripe_customer(user: m.User):
             shipping={
                 "address": {
                     "city": user.city,
+                    "state": user.province,
                     "country": user.country,
                     "line1": user.address_of_dealership,
                     "postal_code": user.postal_code,
@@ -59,6 +61,7 @@ def update_stripe_customer(user: m.User):
                 "address": {
                     "city": user.city,
                     "country": user.country,
+                    "state": user.province,
                     "line1": user.address_of_dealership,
                     "postal_code": user.postal_code,
                 },
@@ -66,6 +69,7 @@ def update_stripe_customer(user: m.User):
                     "address": {
                         "city": user.city,
                         "country": user.country,
+                        "state": user.province,
                         "line1": user.address_of_dealership,
                         "postal_code": user.postal_code,
                     },

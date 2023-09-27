@@ -124,6 +124,7 @@ def webhook():
 
         case "customer.updated":
             response = event["data"]["object"]
+            log(log.INFO, "Customer [%s] updated ", response)
             user: m.User = db.session.scalar(
                 m.User.select().where(m.User.stripe_customer_id == response.id)
             )
