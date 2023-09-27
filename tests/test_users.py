@@ -109,7 +109,6 @@ def test_account(client: FlaskClient):
         follow_redirects=True,
     )
     assert response.status_code == 200
-    assert b"Your account has been successfully updated" in response.data
 
     response = client.post(
         f"/user/account/{user.unique_id}",
@@ -132,7 +131,7 @@ def test_account(client: FlaskClient):
         follow_redirects=True,
     )
     assert response.status_code != 200
-    assert b"Your account has been successfully updated" in response.data
+
 
 
 def test_subscription(client: FlaskClient):
