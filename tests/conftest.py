@@ -58,6 +58,11 @@ def app(monkeypatch):
 
     monkeypatch.setattr("stripe.Webhook.construct_event", mock_construct_event)
 
+    def mock_stripe_customer_modify(str, **user_data):
+        return {}
+
+    monkeypatch.setattr("stripe.Customer.modify", mock_stripe_customer_modify)
+
     app = create_app("testing")
     app.config.update(
         {

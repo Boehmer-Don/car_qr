@@ -86,6 +86,9 @@ def test_account(client: FlaskClient):
 
     login(client)
     user: m.User = db.session.scalar(sa.select(m.User).where(m.User.id == 1))
+    user.stripe_customer_id = "cus_test_stripe_customer_id"
+    db.session.commit()
+    # TODO mock stripe.Customer.modify method
     response = client.get(f"/user/account/{user.unique_id}")
     assert response.status_code == 200
     response = client.post(
