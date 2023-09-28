@@ -1,58 +1,58 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const basic_plan: Element = document.querySelector('#basic_plan_card');
-  const advanced_plan: Element = document.querySelector('#advanced_plan_card');
-  const basicPlanButton: HTMLInputElement =
-    document.querySelector('#basic_radio');
-  const advancedPlanButton: HTMLInputElement =
-    document.querySelector('#advanced_radio');
+// document.addEventListener('DOMContentLoaded', function () {
+//   const basic_plan: Element = document.querySelector('#basic_plan_card');
+//   const advanced_plan: Element = document.querySelector('#advanced_plan_card');
+//   const basicPlanButton: HTMLInputElement =
+//     document.querySelector('#basic_radio');
+//   const advancedPlanButton: HTMLInputElement =
+//     document.querySelector('#advanced_radio');
 
-  const planChosen: HTMLDivElement = document.querySelector('#plan_chosen');
-  if (planChosen) {
-    const planChosenData = planChosen.dataset.plan;
+//   const planChosen: HTMLDivElement = document.querySelector('#plan_chosen');
+//   if (planChosen) {
+//     const planChosenData = planChosen.dataset.plan;
 
-    if (planChosenData != 'Advanced Plan') {
-      basic_plan.classList.add('indigo');
-      basic_plan.classList.add('text-white');
-      advanced_plan.classList.remove('indigo');
-      advanced_plan.classList.remove('text-white');
-      basicPlanButton.checked = true;
-    } else {
-      advanced_plan.classList.add('indigo');
-      advanced_plan.classList.add('text-white');
-      basic_plan.classList.remove('indigo');
-      basic_plan.classList.remove('text-white');
-      advancedPlanButton.checked = true;
-    }
+//     if (planChosenData != 'Advanced Plan') {
+//       basic_plan.classList.add('indigo');
+//       basic_plan.classList.add('text-white');
+//       advanced_plan.classList.remove('indigo');
+//       advanced_plan.classList.remove('text-white');
+//       basicPlanButton.checked = true;
+//     } else {
+//       advanced_plan.classList.add('indigo');
+//       advanced_plan.classList.add('text-white');
+//       basic_plan.classList.remove('indigo');
+//       basic_plan.classList.remove('text-white');
+//       advancedPlanButton.checked = true;
+//     }
 
-    basic_plan.addEventListener('click', () => {
-      basic_plan.classList.add('indigo');
-      basic_plan.classList.add('text-white');
-      advanced_plan.classList.remove('indigo');
-      advanced_plan.classList.remove('text-white');
+//     basic_plan.addEventListener('click', () => {
+//       basic_plan.classList.add('indigo');
+//       basic_plan.classList.add('text-white');
+//       advanced_plan.classList.remove('indigo');
+//       advanced_plan.classList.remove('text-white');
 
-      if (basicPlanButton.checked == true) {
-        basicPlanButton.checked = false;
-      } else {
-        basicPlanButton.checked = true;
-        basicPlanButton.style.display = 'none';
-      }
-    });
+//       if (basicPlanButton.checked == true) {
+//         basicPlanButton.checked = false;
+//       } else {
+//         basicPlanButton.checked = true;
+//         basicPlanButton.style.display = 'none';
+//       }
+//     });
 
-    advanced_plan.addEventListener('click', () => {
-      advanced_plan.classList.add('indigo');
-      advanced_plan.classList.add('text-white');
-      basic_plan.classList.remove('indigo');
-      basic_plan.classList.remove('text-white');
+//     advanced_plan.addEventListener('click', () => {
+//       advanced_plan.classList.add('indigo');
+//       advanced_plan.classList.add('text-white');
+//       basic_plan.classList.remove('indigo');
+//       basic_plan.classList.remove('text-white');
 
-      if (advancedPlanButton.checked == true) {
-        advancedPlanButton.checked = false;
-      } else {
-        advancedPlanButton.checked = true;
-        advancedPlanButton.style.display = 'none';
-      }
-    });
-  }
-});
+//       if (advancedPlanButton.checked == true) {
+//         advancedPlanButton.checked = false;
+//       } else {
+//         advancedPlanButton.checked = true;
+//         advancedPlanButton.style.display = 'none';
+//       }
+//     });
+//   }
+// });
 
 const cleanEmail: HTMLInputElement =
   document.querySelector('.clean_email_input');
