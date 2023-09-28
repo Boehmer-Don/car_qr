@@ -904,13 +904,49 @@ def generic():
         return redirect(
             url_for("labels.get_active_labels", user_unique_id=current_user.unique_id)
         )
-
-    generic_labels_sql = (
-        sa.select(m.Label)
-        .where(m.Label.user.has(m.User.role == m.UsersRole.admin))
-        .order_by(m.Label.date_received.desc())
+    generic_stickers_sql = (
+        sa.select(m.Sticker)
+        .where(m.Sticker.user.has(m.User.role == m.UsersRole.admin))
+        .order_by(m.Sticker.created_at.desc())
     )
-    generic_labels = db.session.scalars(generic_labels_sql).all()
+    generic_stickers = db.session.scalars(generic_stickers_sql).all()
+
+    if request.form.get("generic-stickers-download"):
+        with io.StringIO() as proxy:
+            writer = csv.writer(proxy)
+            row = [
+                "Sticker ID",
+                "Date Created",
+                "Alphanumeric Code",
+            ]
+            writer.writerow(row)
+            for sticker in generic_stickers:
+                row = [
+                    sticker.id,
+                    sticker.created_at,
+                    sticker.code,
+                ]
+                writer.writerow(row)
+                sticker.downloaded = True
+                db.session.add(sticker)
+            db.session.commit()
+
+            mem = io.BytesIO()
+            mem.write(proxy.getvalue().encode("utf-8"))
+            mem.seek(0)
+
+        now = datetime.now()
+        download_name = f"generic_stickers_{now.strftime('%Y-%m-%d-%H-%M')}.csv"
+        return send_file(
+            mem,
+            as_attachment=True,
+            download_name=download_name,
+            mimetype="text/csv",
+            max_age=0,
+            last_modified=now,
+        )
+
+
     count_query = (
         sa.select(sa.func.count())
         .select_from(m.Label)
@@ -920,46 +956,62 @@ def generic():
 
     return render_template(
         "label/generic.html",
-        generic_labels=generic_labels,
+        generic_stickers=generic_stickers,
         page=pagination,
     )
 
 
 @dealer_blueprint.route("/generate_generic_labels", methods=["GET", "POST"])
 def generate_generic_labels():
+    if current_user.role != m.UsersRole.admin:
+        return redirect(
+                url_for(
+                    "labels.get_active_labels", user_unique_id=current_user.unique_id
+                )
+            )
     if request.method == "POST":
-        labels_amount = int(request.form.get("amount"))
+        labels_amount = int(request.form.get("amount",1))
         log(
             log.INFO,
-            "Generating [%s] labels for user [%s]",
+            "Generating GENERIC [%s] label(s) by admin [%s]",
             labels_amount,
-            user_unique_id,
+            current_user.email,
         )
         for _ in range(labels_amount):
             generated_code = generate_alphanumeric_code()
             while True:
-                pending_labels = db.session.scalar(
-                    m.Sticker.select().where(m.Sticker.code == generated_code)
-                )
-                active_labels = db.session.scalar(
+                existing_labels = db.session.scalars(
                     m.Label.select().where(m.Label.sticker_id == generated_code)
-                )
-                if not pending_labels and not active_labels:
+                ).all()
+                existing_stickers = db.session.scalars(
+                    m.Sticker.select()
+                ).all()
+
+                if not existing_labels or not existing_stickers:
                     break
                 generated_code = generate_alphanumeric_code()
 
             sticker = m.Sticker(
                 code=generated_code,
-                user_id=user.id,
+                user_id=current_user.id,
             )
             db.session.add(sticker)
         if labels_amount:
             db.session.commit()
+        return redirect(url_for("labels.generic"))
+    return render_template("label/generate_generic_labels.html",)
 
-        return redirect(
-            url_for(
-                "labels.download",
-                user_unique_id=user_unique_id,
-                amount=labels_amount,
-            )
-        )
+
+
+
+@dealer_blueprint.route("/assign_generic_labels", methods=["POST"])
+def assign_generic_labels():
+    user_email=request.form.get("user_email")
+    user:m.User = db.session.scalar(
+        m.User.select().where(m.User.email == user_email)
+    )
+
+    if not user:
+        log(log.ERROR, "Failed to find user : [%s]", user_email)
+        flash("Failed to find user", "danger")
+        return redirect(url_for("labels.generic"))
