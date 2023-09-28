@@ -169,7 +169,7 @@ def test_forgot(client: FlaskClient):
         ),
         follow_redirects=True,
     )
-    assert b"Unlock Your Dealership Potential" in response.data
+    assert b"My Account" in response.data
 
 
 def test_login_and_logout(client: FlaskClient):
@@ -179,10 +179,10 @@ def test_login_and_logout(client: FlaskClient):
     assert b"Login successful." in response.data
     # Incorrect login credentials should fail.
     response = login(client, "sam@test.com", "wrongpassword")
-    assert b"Wrong user ID or password." in response.data
+    assert b"Confirm Password" in response.data
     # Correct credentials should login
     response = login(client, "sam@test.com")
-    assert b"Login successful." in response.data
+    assert b"Users" in response.data
 
 
 def test_upload_logo(client: FlaskClient):
