@@ -896,3 +896,70 @@ def gift(sticker_id: str):
         dealership=label.user.name_of_dealership,
         user=label.user,
     )
+
+
+@dealer_blueprint.route("/generic", methods=["GET", "POST"])
+def generic():
+    if not current_user.role == m.UsersRole.admin:
+        return redirect(
+            url_for("labels.get_active_labels", user_unique_id=current_user.unique_id)
+        )
+
+    generic_labels_sql = (
+        sa.select(m.Label)
+        .where(m.Label.user.has(m.User.role == m.UsersRole.admin))
+        .order_by(m.Label.date_received.desc())
+    )
+    generic_labels = db.session.scalars(generic_labels_sql).all()
+    count_query = (
+        sa.select(sa.func.count())
+        .select_from(m.Label)
+        .where(m.Label.user.has(m.User.role == m.UsersRole.admin))
+    )
+    pagination = create_pagination(total=db.session.scalar(count_query))
+
+    return render_template(
+        "label/generic.html",
+        generic_labels=generic_labels,
+        page=pagination,
+    )
+
+
+@dealer_blueprint.route("/generate_generic_labels", methods=["GET", "POST"])
+def generate_generic_labels():
+    if request.method == "POST":
+        labels_amount = int(request.form.get("amount"))
+        log(
+            log.INFO,
+            "Generating [%s] labels for user [%s]",
+            labels_amount,
+            user_unique_id,
+        )
+        for _ in range(labels_amount):
+            generated_code = generate_alphanumeric_code()
+            while True:
+                pending_labels = db.session.scalar(
+                    m.Sticker.select().where(m.Sticker.code == generated_code)
+                )
+                active_labels = db.session.scalar(
+                    m.Label.select().where(m.Label.sticker_id == generated_code)
+                )
+                if not pending_labels and not active_labels:
+                    break
+                generated_code = generate_alphanumeric_code()
+
+            sticker = m.Sticker(
+                code=generated_code,
+                user_id=user.id,
+            )
+            db.session.add(sticker)
+        if labels_amount:
+            db.session.commit()
+
+        return redirect(
+            url_for(
+                "labels.download",
+                user_unique_id=user_unique_id,
+                amount=labels_amount,
+            )
+        )
