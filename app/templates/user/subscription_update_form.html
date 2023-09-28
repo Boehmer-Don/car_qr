@@ -1,10 +1,10 @@
 <form action="{{ url_for('auth.plan', user_unique_id=user.unique_id) }}" method="post" id="plan_form">
   {{ form_hidden_tag() }}
-  {% set basic_css_class = 'bg-indigo-700 text-white' if plan_selected == 'basic' or not plan_selected else '' %}
-  {% set advanced_css_class = 'bg-indigo-700 text-white' if plan_selected == 'advanced' else '' %}
+  {% set basic_css_class = 'bg-indigo-700 text-white' if user.plan.value == 'Basic Plan' else '' %}
+  {% set advanced_css_class = 'bg-indigo-700 text-white'if user.plan.value == 'Advanced Plan' else '' %}
 
-  {% set basic_radio_button = 'checked' if plan_selected == 'basic' or not plan_selected else '' %}
-  {% set advanced_radio_button = 'checked' if plan_selected == 'advanced' else '' %}
+  {% set basic_radio_button = 'checked' if user.plan.value == 'Basic Plan' else '' %}
+  {% set advanced_radio_button = 'checked' if user.plan.value == 'Advanced Plan' else '' %}
   <input type="hidden" name="update_plan" value="true">
   <div class="w-full h-90 flex testing_class justify-around dark:text-white">
     <div id="" class="plan_card {{basic_css_class}}"
