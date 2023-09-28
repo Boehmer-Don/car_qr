@@ -131,7 +131,7 @@
           {{ sticker.created_at.strftime('%Y-%m-%d') }}
         </p>
         <p class="w-3/12 hidden md:flex items-center justify-center">
-          <input name="sticker-codes" type="checkbox"/>
+          <input name="sticker-codes" value="{{sticker.code}}" type="checkbox"/>
         </p>
       </div>
       {% endfor %}
