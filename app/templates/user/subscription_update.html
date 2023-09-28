@@ -20,10 +20,8 @@
           </div>
 
           <form action="{{ url_for('stripe.subscription', user_unique_id=user.unique_id) }}" method="post">
-            {{ form.hidden_tag() }}
-            {% if user.subscription %}
-            {{ user.subscriptions[0].is_active }} {{ user.subscriptions[0].current_period_start }}
-            {% endif %}
+            {{ form_hidden_tag() }}
+
             <div class="w-full h-90 flex testing_class justify-around dark:text-white">
               <div id="basic_plan_card" class="plan_card">
                 <p class="text-sm mb-5">Basic</p>

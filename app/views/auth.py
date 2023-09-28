@@ -190,6 +190,26 @@ def plan(user_unique_id: str):
     )
 
 
+@auth_blueprint.route("/select_plan/<user_unique_id>", methods=["GET", "POST"])
+def select_plan(user_unique_id: str):
+    plan_selected = request.args.get("plan_selected")
+
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
+
+    return render_template(
+        "auth/register_plan_form.html",
+        user_unique_id=user_unique_id,
+        plan_selected=plan_selected,
+        user=user,
+    )
+
+
 @auth_blueprint.route("/payment/<user_unique_id>", methods=["GET", "POST"])
 def payment(user_unique_id: str):
     query = m.User.select().where(m.User.unique_id == user_unique_id)
