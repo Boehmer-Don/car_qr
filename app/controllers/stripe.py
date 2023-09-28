@@ -5,6 +5,7 @@ from flask import flash
 from flask import current_app as app
 from app.logger import log
 from app import models as m
+from app import schema as s
 from app.database import db
 
 
@@ -46,35 +47,38 @@ def create_stripe_customer(user: m.User):
 
 def update_stripe_customer(user: m.User):
     """Create a Stripe customer for the user."""
-    customer = None
     log(log.INFO, "update_stripe_customer for user: %s", user)
-    try:
-        customer = stripe.Customer.retrieve(user.stripe_customer_id)
-        customer.update(
-            update_dict={
-                "description": f"Car QR Code Dealer {user.email}",
-                "email": user.email,
-                "name": f"{user.first_name} {user.last_name}",
-                "phone": user.phone,
+    customer_data = s.StripeUpdateCustomer.parse_obj(
+        {
+            "description": f"Car QR Code Dealer {user.email}",
+            "email": user.email,
+            "name": f"{user.first_name} {user.last_name}",
+            "phone": user.phone,
+            "address": {
+                "city": user.city,
+                "country": user.country,
+                "line1": user.address_of_dealership,
+                "postal_code": user.postal_code,
+                "state": user.province,
+            },
+            "shipping": {
                 "address": {
                     "city": user.city,
                     "country": user.country,
                     "line1": user.address_of_dealership,
                     "postal_code": user.postal_code,
+                    "state": user.province,
                 },
-                "shipping": {
-                    "address": {
-                        "city": user.city,
-                        "country": user.country,
-                        "line1": user.address_of_dealership,
-                        "postal_code": user.postal_code,
-                    },
-                    "name": f"{user.first_name} {user.last_name}",
-                    "phone": user.phone,
-                },
-            }
+                "name": f"{user.first_name} {user.last_name}",
+                "phone": user.phone,
+            },
+        },
+    )
+    try:
+        customer = stripe.Customer.modify(
+            user.stripe_customer_id,
+            **customer_data.dict(exclude_unset=True),
         )
-        customer.save()
 
     except InvalidRequestError as e:
         log(log.ERROR, "update_stripe_customer: %s", e)
