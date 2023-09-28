@@ -235,6 +235,10 @@ def account(user_unique_id: str):
         log(log.INFO, "User not found")
         flash("Incorrect reset password link", "danger")
         return redirect(url_for("main.index"))
+    if not user.stripe_customer_id:
+        log(log.INFO, "User doesnt exist on stripe")
+        flash("User doesnt exist on stripe", "danger")
+        return redirect(url_for("main.index"))
 
     provinces = []
     match user.country:
@@ -278,7 +282,9 @@ def account(user_unique_id: str):
         user.postal_code = form.postal_code.data
         user.plan = form.plan.data
         user.phone = form.phone.data
-        user.extra_emails= "" if not form.extra_emails.data.strip() else form.extra_emails.data.strip()
+        user.extra_emails = (
+            "" if not form.extra_emails.data.strip() else form.extra_emails.data.strip()
+        )
         user.save()
         update_stripe_customer(user)
         log(log.INFO, "User data updated. User: [%s]", user)
@@ -356,7 +362,7 @@ def client_data(sticker_id: str):
         msg = Message(
             subject="Sales Lead",
             sender=app.config["MAIL_DEFAULT_SENDER"],
-            recipients=[user.email]+user.extra_emails.split(","),
+            recipients=[user.email] + user.extra_emails.split(","),
         )
 
         msg.html = render_template(
