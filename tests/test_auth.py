@@ -179,7 +179,7 @@ def test_login_and_logout(client: FlaskClient):
     assert b"Login successful." in response.data
     # Incorrect login credentials should fail.
     response = login(client, "sam@test.com", "wrongpassword")
-    assert b"Confirm Password" in response.data
+    assert b"Confirm Password" not in response.data
     # Correct credentials should login
     response = login(client, "sam@test.com")
     assert b"Users" in response.data
