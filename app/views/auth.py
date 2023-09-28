@@ -193,6 +193,7 @@ def plan(user_unique_id: str):
 @auth_blueprint.route("/select_plan/<user_unique_id>", methods=["GET", "POST"])
 def select_plan(user_unique_id: str):
     plan_selected = request.args.get("plan_selected")
+    update_plan = request.args.get("update_plan")
 
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
@@ -202,8 +203,14 @@ def select_plan(user_unique_id: str):
         flash("Incorrect reset password link", "danger")
         return redirect(url_for("main.index"))
 
+    template = (
+        "user/subscription_update_form.html"
+        if update_plan
+        else "auth/register_plan_form.html"
+    )
+
     return render_template(
-        "auth/register_plan_form.html",
+        template,
         user_unique_id=user_unique_id,
         plan_selected=plan_selected,
         user=user,
