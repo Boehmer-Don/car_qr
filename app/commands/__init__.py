@@ -101,6 +101,12 @@ def init(app: Flask):
         create_models()
 
     @app.cli.command()
+    def create_generic_labels():
+        from app.controllers import create_generic_labels
+
+        create_generic_labels()
+
+    @app.cli.command()
     def delete_models():
         delete_models_sql = sa.delete(m.CarModel)
         db.session.execute(delete_models_sql)

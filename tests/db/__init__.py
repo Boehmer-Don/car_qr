@@ -218,3 +218,18 @@ def add_pending_labels(user_id: int = 9):
         db.session.add(sticker)
     db.session.commit()
     print(f"Sticker set for user {user_id}")
+
+
+def add_generic_labels():
+    admin: m.User = db.session.scalar(
+        sa.select(m.User.id).where(m.User.role == m.UsersRole.admin)
+    )
+    for i in range(1, TEST_STICKERS_QUANTITY):
+        sticker = m.Sticker(
+            code=f"QR0000{i + admin}",
+            user_id=admin,
+            downloaded=random.choice([True, False]),
+        )
+        db.session.add(sticker)
+    db.session.commit()
+    print(f"Generic stickers created by admin {admin}")

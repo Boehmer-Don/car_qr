@@ -3,8 +3,11 @@ from flask import current_app as app, url_for
 from flask_login import current_user
 from flask.testing import FlaskClient, FlaskCliRunner
 from click.testing import Result
+import sqlalchemy as sa
+
 from app import models as m, db
 from tests.utils import login, logout
+from .db import add_generic_labels
 
 
 def test_labels_active(populate: FlaskClient, test_labels_data: dict):
@@ -214,3 +217,39 @@ def test_add_labels(runner: FlaskCliRunner, test_labels_data: dict):
     res: Result = runner.invoke(args=["add-labels", "--user-id", f"{TEST_USER_ID}"])
     assert "DB populated by 10 testing labels for user" in res.stdout
     assert (db.session.query(m.Label).count() - count_before) == len(test_labels_data)
+
+
+def test_generic_stickers(runner: FlaskClient, populate: FlaskClient):
+    runner.invoke(args=["create-admin"])
+    login(populate)
+    runner.invoke(args=["db-populate"])
+    admin = db.session.scalar(
+        sa.select(m.User).where(m.User.email == app.config["ADMIN_EMAIL"])
+    )
+    assert admin
+    add_generic_labels()
+    generic_stickers = db.session.scalars(
+        sa.select(m.Sticker)
+        .where(m.Sticker.user.has(m.User.role == m.UsersRole.admin))
+        .order_by(m.Sticker.created_at.desc())
+    ).all()
+    assert generic_stickers
+    response = populate.get("/labels/generic")
+    assert response.status_code == 200
+    assert b"Generic Labels" in response.data
+    assert generic_stickers[0].code in response.data.decode()
+    # making sure all downloaded stickers are in downloaded state
+    response = populate.post(
+        "/labels/generic",
+        data={"generic-stickers-download": True},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    # checking for attachment in response
+    assert response.headers["Content-Disposition"].startswith("attachment")
+    for sticker in generic_stickers:
+        assert sticker.downloaded
+
+
+# TODO test generate_generic_labels,assign_generic_labels

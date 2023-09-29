@@ -21,6 +21,26 @@ def test_list(populate: FlaskClient):
     assert users[10].email not in html
 
 
+# TODO
+def test_get_single_user(runner: FlaskClient, populate: FlaskClient):
+    # login(runner)
+    runner.invoke(args=["create-admin"])
+    login(populate)
+    admin = db.session.scalar(
+        sa.select(m.User).where(m.User.email == app.config["ADMIN_EMAIL"])
+    )
+    assert admin
+    user = db.session.scalar(sa.select(m.User).where(m.User.activated.is_(True)))
+    assert user
+    response = populate.get(f"/user/search?email={user.email}")
+    assert response.status_code == 200
+    assert user.email in response.data.decode()
+    # bad scenario
+    response = populate.get("/user/search?email=some_unexisting_email")
+    assert response.status_code == 200
+    assert user.email not in response.data.decode()
+
+
 def test_create_admin(runner: FlaskCliRunner):
     res: Result = runner.invoke(args=["create-admin"])
     assert "admin created" in res.output
