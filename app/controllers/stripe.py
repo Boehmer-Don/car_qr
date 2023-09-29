@@ -209,6 +209,9 @@ def create_payment_subscription_checkout_session(
                 },
             },
             mode="payment",
+            customer_update={
+                "shipping": "auto",
+            },
             automatic_tax={
                 "enabled": True,
             },
