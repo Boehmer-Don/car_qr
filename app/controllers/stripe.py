@@ -156,6 +156,7 @@ def create_subscription_checkout_session(
             mode="subscription",
             customer_update={
                 "shipping": "auto",
+                "address": "auto",
             },
             shipping_address_collection={
                 "allowed_countries": [
@@ -211,6 +212,13 @@ def create_payment_subscription_checkout_session(
             mode="payment",
             customer_update={
                 "shipping": "auto",
+                "address": "auto",
+            },
+            shipping_address_collection={
+                "allowed_countries": [
+                    "CA",
+                    "US",
+                ],
             },
             automatic_tax={
                 "enabled": True,
