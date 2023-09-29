@@ -125,8 +125,8 @@
             {{ loop.index + page.skip }}
           </p>
           <input id="label_details_button"
-            class="w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer"
-            name="generic-code-{{sticker.id}}" value={{ sticker.code }} disabled />
+            class="w-1/2 md:w-full flex items-center justify-start {% if sticker.downloaded %} text-gray-400 {% endif %} hover:text-indigo-500 cursor-pointer"
+            name="generic-code-{{sticker.id}}" value="{{ sticker.code }}" disabled />
 
           <p class="w-3/12 flex items-center justify-center">
             {{ sticker.created_at.strftime('%Y-%m-%d') }}

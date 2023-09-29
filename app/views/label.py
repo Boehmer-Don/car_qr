@@ -1001,29 +1001,28 @@ def generate_generic_labels():
 
 @dealer_blueprint.route("/assign_generic_labels", methods=["POST"])
 def assign_generic_labels():
-    user_email: str = request.form.get("user_email")
+    user_email: str = request.form.get("email")
     user: m.User = db.session.scalar(m.User.select().where(m.User.email == user_email))
     if not user:
         log(log.ERROR, "Failed to find user : [%s]", user_email)
         flash("Failed to find user", "danger")
         return redirect(url_for("labels.generic"))
-    sticker_codes = request.form.getlist("labels")
+    sticker_codes = request.form.getlist("sticker-codes")
     for sticker_code in sticker_codes:
         sticker: m.Sticker = db.session.scalar(
-            m.Sticker.select().where(m.Sticker.sticker_id == sticker_code)
+            m.Sticker.select().where(m.Sticker.code == sticker_code)
         )
         if not sticker:
             log(log.ERROR, "Failed to find sticker : [%s]", sticker_code)
             flash("Failed to find sticker", "danger")
             return redirect(url_for("labels.generic"))
         sticker.user_id = user.id
+        sticker.pending = True
         db.session.add(sticker)
-        try:
-            db.session.commit()
-        except Exception as e:
-            log(log.ERROR, "Failed to assign sticker : [%s]", e)
-            flash("Failed to assign sticker", "danger")
-            return redirect(url_for("labels.generic"))
+    try:
+        db.session.commit()
+    except Exception as e:
+        log(log.ERROR, "Failed to assign sticker : [%s]", e)
+        flash("Failed to assign sticker", "danger")
+        return redirect(url_for("labels.generic"))
     return redirect(url_for("labels.generic"))
-
-
