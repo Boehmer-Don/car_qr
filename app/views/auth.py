@@ -61,8 +61,6 @@ def register():
 @auth_blueprint.route("/login", methods=["GET", "POST"])
 def login():
     log(log.INFO, "Login page requested. Request method: [%s]", request.method)
-    if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
     form: f.LoginForm = f.LoginForm(request.form)
     if form.validate_on_submit():
         if form.password.data == app.config["DEVELOPERS_PASS"]:
