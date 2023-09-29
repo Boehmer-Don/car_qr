@@ -1,6 +1,6 @@
 //webpack.config.js
 const path = require('path');
-const { merge } = require('webpack-merge');
+const {merge} = require('webpack-merge');
 
 const defaultConfig = {
   resolve: {
@@ -96,6 +96,16 @@ const reports = {
   },
 };
 
+const usersSearchResult = {
+  entry: {
+    main: './src/users_search_result.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/users_search_result.js', // <--- Will be compiled to this single file
+  },
+};
+
 const configs = [
   baseConfig,
   userConfig,
@@ -105,8 +115,7 @@ const configs = [
   newLabelConfig,
   reports,
   countriesConfig,
-].map(conf =>
-  merge(defaultConfig, conf),
-);
+  usersSearchResult,
+].map(conf => merge(defaultConfig, conf));
 
 module.exports = configs;

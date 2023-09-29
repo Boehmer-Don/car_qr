@@ -376,22 +376,3 @@ labelEditButtons.forEach(e =>
   }),
 );
 
-const userSearchResults: HTMLDivElement = document.querySelector(
-  '#users-result'
-);
-const usersSearchSuggestions: NodeListOf<HTMLParagraphElement> = document.querySelectorAll(
-  '.users-search-suggestion'
-);
-
-usersSearchSuggestions.forEach(e =>
-  e.addEventListener('click', () => {
-    console.log('clicked body');
-
-    const userSearchInput: HTMLInputElement = document.querySelector(
-      '#table-search-users-input',
-    );
-
-    userSearchInput.value = e.innerHTML;
-    userSearchResults.classList.add('hidden');
-  }),
-);
