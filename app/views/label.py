@@ -1025,3 +1025,5 @@ def assign_generic_labels():
             flash("Failed to assign sticker", "danger")
             return redirect(url_for("labels.generic"))
     return redirect(url_for("labels.generic"))
+
+

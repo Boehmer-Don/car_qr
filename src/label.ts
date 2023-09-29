@@ -1,5 +1,5 @@
-import {Modal} from 'flowbite';
-import type {ModalOptions, ModalInterface} from 'flowbite';
+import { Modal } from 'flowbite';
+import type { ModalOptions, ModalInterface } from 'flowbite';
 
 interface ILabel {
   id: number;
@@ -37,9 +37,9 @@ const modalOptions: ModalOptions = {
   backdropClasses:
     'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
   closable: true,
-  onHide: () => {},
-  onShow: () => {},
-  onToggle: () => {},
+  onHide: () => { },
+  onShow: () => { },
+  onToggle: () => { },
 };
 
 function getLabelDetails(label: ILabel) {
@@ -244,7 +244,7 @@ makeSelectFields.forEach(makeSelectField =>
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({makeSelected: makeSelected}),
+        body: JSON.stringify({ makeSelected: makeSelected }),
       })
         .then(response => response.json())
         .then(data => {
@@ -287,7 +287,7 @@ modelSelectFields.forEach(modelSelectField =>
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({modelSelected: modelSelectField.value}),
+        body: JSON.stringify({ modelSelected: modelSelectField.value }),
       })
         .then(response => response.json())
         .then(data => {
@@ -373,5 +373,25 @@ labelEditButtons.forEach(e =>
 labelEditButtons.forEach(e =>
   e.addEventListener('mouseleave', () => {
     e.parentElement.querySelector('.cart-edit-hint').classList.add('hidden');
+  }),
+);
+
+const userSearchResults: HTMLDivElement = document.querySelector(
+  '#users-result'
+);
+const usersSearchSuggestions: NodeListOf<HTMLParagraphElement> = document.querySelectorAll(
+  '.users-search-suggestion'
+);
+
+usersSearchSuggestions.forEach(e =>
+  e.addEventListener('click', () => {
+    console.log('clicked body');
+
+    const userSearchInput: HTMLInputElement = document.querySelector(
+      '#table-search-users-input',
+    );
+
+    userSearchInput.value = e.innerHTML;
+    userSearchResults.classList.add('hidden');
   }),
 );

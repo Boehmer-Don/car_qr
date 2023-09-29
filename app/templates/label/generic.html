@@ -54,9 +54,7 @@
       </div>
     </div>
 
-    <form
-      action="#"
-      method="post" class="w-full mb-12">
+    <form action="#" method="post" class="w-full mb-12">
       <input type="hidden" name="generic-stickers-download" value="true">
       <div class="w-full flex justify-center">
         <button type="submit" id="download-pending-labels"
@@ -66,77 +64,81 @@
       </div>
     </form>
 
-      <!-- Search block -->
-      <form method="post" id="sticker-assign-form" action="{{url_for('labels.assign_generic_labels')}}">
+    <!-- Search block -->
+    <form method="post" id="sticker-assign-form" action="{{url_for('labels.assign_generic_labels')}}">
       <div class="flex p-1 font-bold text-black-400 dark:text-white my-3">
-        <div
-          class="w-full sm:w-11/12 xl:w-10/12 flex items-center justify-center py-1 pl-5 dark:bg-gray-800">
+        <div class="w-full sm:w-11/12 xl:w-10/12 flex items-center justify-center py-1 pl-5 dark:bg-gray-800">
           <label for="table-search" class="sr-only">Search</label>
           <div class="relative w-full">
             <!-- prettier-ignore -->
-            <input {% if search_query %}value={{ search_query }}{% endif %} type="text" id="table-search-users"
+            <input hx-get="{{url_for('user.get_user')}}" hx-trigger="keyup change delay:500ms" hx-target="#users-result"
+              hx-swap="" type="text" id="table-search-users-input"
               class="w-full block py-2 pl-3 text-xs font-extralight placeholder:text-gray-800 border rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search for users" />
+              placeholder="Search for users" name="email" />
+
+            {% include "label/user_search_results.html" %}
           </div>
           <!-- prettier-ignore -->
           <button type="submit" id="table-search-user-button"
             class="px-3 py-1.5 text-md text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 ml-2 font-medium rounded-lg text-center inline-flex items-center mr-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800">
-          Assign
+            Assign
           </button>
         </div>
       </div>
-      <!-- Search block -->
 
-    <div class="w-full bg-gray-100 dark:bg-gray-800">
-      <div class="w-full flex text-xs text-white font-bold px-1 py-3 md:p-3 bg-indigo-700 rounded-t-lg">
-        <p class="w-1/12 flex items-center justify-center">#</p>
-        <p class="w-1/2 md:w-full flex items-center justify-start">
-          Alphanumeric Code
-        </p>
-        <p class="w-1/12 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-4 -2 32 32" stroke-width="2.5"
-            stroke="currentColor" class="w-6 h-6 lg:hidden">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
+      <!--END Search block -->
 
-        </p>
+      <div class="w-full bg-gray-100 dark:bg-gray-800">
+        <div class="w-full flex text-xs text-white font-bold px-1 py-3 md:p-3 bg-indigo-700 rounded-t-lg">
+          <p class="w-1/12 flex items-center justify-center">#</p>
+          <p class="w-1/2 md:w-full flex items-center justify-start">
+            Alphanumeric Code
+          </p>
+          <p class="w-1/12 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-4 -2 32 32" stroke-width="2.5"
+              stroke="currentColor" class="w-6 h-6 lg:hidden">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
 
-        <p class="w-3/12 hidden md:flex items-center justify-center">
-        </p>
-        <p class="w-3/12 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
-            stroke="currentColor" class="w-6 h-6 lg:hidden">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
-          </svg>
-          <span class="hidden lg:block">Date Created</span>
-        </p>
-        <p class="w-2/12 hidden md:flex items-center justify-center"></p>
-        <p class="w-1/12 flex items-center justify-center"></p>
+          </p>
+
+          <p class="w-3/12 hidden md:flex items-center justify-center">
+          </p>
+          <p class="w-3/12 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
+              stroke="currentColor" class="w-6 h-6 lg:hidden">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+            </svg>
+            <span class="hidden lg:block">Date Created</span>
+          </p>
+          <p class="w-2/12 hidden md:flex items-center justify-center"></p>
+          <p class="w-1/12 flex items-center justify-center"></p>
+        </div>
+
+
+        {% for sticker in generic_stickers %}
+        <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
+          <p class="w-1/12 flex items-center justify-center">
+            {{ loop.index + page.skip }}
+          </p>
+          <input id="label_details_button"
+            class="w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer"
+            name="generic-code-{{sticker.id}}" value={{ sticker.code }} disabled />
+
+          <p class="w-3/12 flex items-center justify-center">
+            {{ sticker.created_at.strftime('%Y-%m-%d') }}
+          </p>
+          <p class="w-3/12 hidden md:flex items-center justify-center">
+            <input name="sticker-codes" value="{{sticker.code}}"
+              class="h-5 w-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" type="checkbox" />
+          </p>
+        </div>
+        {% endfor %}
       </div>
-
-      {% for sticker in generic_stickers %}
-      <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
-        <p class="w-1/12 flex items-center justify-center">
-          {{ loop.index + page.skip }}
-        </p>
-        <input id="label_details_button"
-          class="w-1/2 md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer"
-          name="generic-code-{{sticker.id}}"
-          value={{ sticker.code }} disabled/>
-
-        <p class="w-3/12 flex items-center justify-center">
-          {{ sticker.created_at.strftime('%Y-%m-%d') }}
-        </p>
-        <p class="w-3/12 hidden md:flex items-center justify-center">
-          <input name="sticker-codes" value="{{sticker.code}}" type="checkbox"/>
-        </p>
-      </div>
-      {% endfor %}
-    </div>
-  </form>
+    </form>
   </div>
 
   {% if page.pages > 1 %}
@@ -237,4 +239,5 @@
 <!-- prettier-ignore -->
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/label.js') }}" type="text/javascript" defer></script>
+<script src="https://unpkg.com/htmx.org@1.9.5"></script>
 {% endblock %}
