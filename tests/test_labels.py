@@ -268,4 +268,24 @@ def test_generate_generic_labels(populate: FlaskClient):
     assert db.session.scalar(sa.select(sa.func.count()).select_from(m.Sticker)) == 10
 
 
-# TODO test generate_generic_labels,assign_generic_labels
+# TODO test assign_generic_labels
+def test_assign_generic_labels(runner: FlaskClient, populate: FlaskClient):
+    runner.invoke(args=["create-admin"])
+    login(populate)
+    add_generic_labels()
+    admin = db.session.scalar(
+        sa.select(m.User).where(m.User.email == app.config["ADMIN_EMAIL"])
+    )
+    assert admin
+    login(populate)
+    generic_labels = db.session.scalars(m.Sticker.select())
+    populate.post(
+        "/labels/assign_generic_labels",
+        data={
+            "email": admin.email,
+            "sticker-codes": [sticker.code for sticker in generic_labels],
+        },
+    )
+    for label in db.session.scalars(m.Sticker.select()):
+        assert label.user_id == admin.id
+        assert label.pending == True
