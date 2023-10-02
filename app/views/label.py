@@ -896,3 +896,133 @@ def gift(sticker_id: str):
         dealership=label.user.name_of_dealership,
         user=label.user,
     )
+
+
+@dealer_blueprint.route("/generic", methods=["GET", "POST"])
+def generic():
+    if not current_user.role == m.UsersRole.admin:
+        return redirect(
+            url_for("labels.get_active_labels", user_unique_id=current_user.unique_id)
+        )
+    generic_stickers_sql = (
+        sa.select(m.Sticker)
+        .where(m.Sticker.user.has(m.User.role == m.UsersRole.admin))
+        .order_by(m.Sticker.created_at.desc())
+    )
+    generic_stickers = db.session.scalars(generic_stickers_sql).all()
+
+    if request.form.get("generic-stickers-download"):
+        with io.StringIO() as proxy:
+            writer = csv.writer(proxy)
+            row = [
+                "Sticker ID",
+                "Date Created",
+                "Alphanumeric Code",
+            ]
+            writer.writerow(row)
+            for sticker in generic_stickers:
+                row = [
+                    sticker.id,
+                    sticker.created_at,
+                    sticker.code,
+                ]
+                writer.writerow(row)
+                sticker.downloaded = True
+                db.session.add(sticker)
+            db.session.commit()
+
+            mem = io.BytesIO()
+            mem.write(proxy.getvalue().encode("utf-8"))
+            mem.seek(0)
+
+        now = datetime.now()
+        download_name = f"generic_stickers_{now.strftime('%Y-%m-%d-%H-%M')}.csv"
+        return send_file(
+            mem,
+            as_attachment=True,
+            download_name=download_name,
+            mimetype="text/csv",
+            max_age=0,
+            last_modified=now,
+        )
+
+    count_query = (
+        sa.select(sa.func.count())
+        .select_from(m.Label)
+        .where(m.Label.user.has(m.User.role == m.UsersRole.admin))
+    )
+    pagination = create_pagination(total=db.session.scalar(count_query))
+
+    return render_template(
+        "label/generic.html",
+        generic_stickers=generic_stickers,
+        page=pagination,
+    )
+
+
+@dealer_blueprint.route("/generate_generic_labels", methods=["GET", "POST"])
+def generate_generic_labels():
+    if current_user.role != m.UsersRole.admin:
+        return redirect(
+            url_for("labels.get_active_labels", user_unique_id=current_user.unique_id)
+        )
+    if request.method == "POST":
+        labels_amount = int(request.form.get("amount", 1))
+        log(
+            log.INFO,
+            "Generating GENERIC [%s] label(s) by admin [%s]",
+            labels_amount,
+            current_user.email,
+        )
+        for _ in range(labels_amount):
+            generated_code = generate_alphanumeric_code()
+            while True:
+                existing_labels = db.session.scalars(
+                    m.Label.select().where(m.Label.sticker_id == generated_code)
+                ).all()
+                existing_stickers = db.session.scalars(m.Sticker.select()).all()
+
+                if not existing_labels or not existing_stickers:
+                    break
+                generated_code = generate_alphanumeric_code()
+
+            sticker = m.Sticker(
+                code=generated_code,
+                user_id=current_user.id,
+            )
+            db.session.add(sticker)
+        if labels_amount:
+            db.session.commit()
+        return redirect(url_for("labels.generic"))
+    return render_template(
+        "label/generate_generic_labels.html",
+    )
+
+
+@dealer_blueprint.route("/assign_generic_labels", methods=["POST"])
+def assign_generic_labels():
+    user_email: str = request.form.get("email")
+    user: m.User = db.session.scalar(m.User.select().where(m.User.email == user_email))
+    if not user:
+        log(log.ERROR, "Failed to find user : [%s]", user_email)
+        flash("Failed to find user", "danger")
+        return redirect(url_for("labels.generic"))
+    sticker_codes = request.form.getlist("sticker-codes")
+    for sticker_code in sticker_codes:
+        sticker: m.Sticker = db.session.scalar(
+            m.Sticker.select().where(m.Sticker.code == sticker_code)
+        )
+        if not sticker:
+            log(log.ERROR, "Failed to find sticker : [%s]", sticker_code)
+            flash("Failed to find sticker", "danger")
+            return redirect(url_for("labels.generic"))
+        sticker.user_id = user.id
+        sticker.pending = True
+        db.session.add(sticker)
+    try:
+        db.session.commit()
+    except Exception as e:
+        log(log.ERROR, "Failed to assign sticker : [%s]", e)
+        flash("Failed to assign sticker", "danger")
+        return redirect(url_for("labels.generic"))
+    return redirect(url_for("labels.generic"))

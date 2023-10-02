@@ -1,0 +1,15 @@
+<div
+  id="users-result"
+  class="w-full absolute bg-white dark:bg-gray-600 rounded  {% if user_emails %} h-72 overflow-y-scroll {% endif %}" >
+  {% if user_emails %} {% for user_email in user_emails %}
+  <p
+    class="users-search-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-400 p-3 ">
+    {{ user_email | trim }}
+  </p>
+  {% endfor %} {% endif %}
+</div>
+
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/users_search_result.js') }}" type="text/javascript" defer></script>
+{% endblock %}
