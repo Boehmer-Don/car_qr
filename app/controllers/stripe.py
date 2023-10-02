@@ -1,8 +1,9 @@
 import stripe
 from stripe.error import InvalidRequestError
 import sqlalchemy as sa
-from flask import flash
+from flask import flash, url_for, redirect
 from flask import current_app as app
+
 from app.logger import log
 from app import models as m
 from app import schema as s
@@ -46,7 +47,7 @@ def create_stripe_customer(user: m.User):
 
 
 def update_stripe_customer(user: m.User):
-    """Create a Stripe customer for the user."""
+    """Create or update a Stripe customer for the user."""
     log(log.INFO, "update_stripe_customer for user: %s", user)
     customer_data = s.StripeUpdateCustomer.parse_obj(
         {
@@ -74,18 +75,25 @@ def update_stripe_customer(user: m.User):
             },
         },
     )
+
     try:
+        if not user.stripe_customer_id:
+            customer = create_stripe_customer(user)
+            user.stripe_customer_id = customer.id
+            user.save()
         customer = stripe.Customer.modify(
             user.stripe_customer_id,
             **customer_data.dict(exclude_unset=True),
         )
+        log(log.INFO, "Updated stripe customer: %s", customer)
+        flash("Customer updated successfully", "success")
 
     except InvalidRequestError as e:
+        # Handle Stripe API errors and log them
         log(log.ERROR, "update_stripe_customer: %s", e)
-        flash("Error while updating a stripe customer", "danger")
-
-    log(log.INFO, "Updated stripe customer: %s", customer)
-    flash("Stripe customer updated successfully", "success")
+        flash("Error while updating a Stripe customer", "danger")
+        return redirect(url_for("user.account", user_unique_id=user.user_unique_id))
+    # Redirect to the same page regardless of success or error
     return customer
 
 
