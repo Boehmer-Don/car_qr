@@ -252,4 +252,20 @@ def test_generic_stickers(runner: FlaskClient, populate: FlaskClient):
         assert sticker.downloaded
 
 
+def test_generate_generic_labels(populate: FlaskClient):
+    # getting template
+    login(populate)
+    response = populate.get("/labels/generate_generic_labels")
+    assert "Generate generic labels" in response.data.decode()
+    # creating labels
+    assert db.session.scalar(sa.select(sa.func.count()).select_from(m.Sticker)) == 0
+    response = populate.post(
+        "/labels/generate_generic_labels",
+        data={"amount": 10},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert db.session.scalar(sa.select(sa.func.count()).select_from(m.Sticker)) == 10
+
+
 # TODO test generate_generic_labels,assign_generic_labels
