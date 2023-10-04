@@ -376,3 +376,13 @@ labelEditButtons.forEach(e =>
   }),
 );
 
+
+const selectAllGenericLabelsBtn = document.querySelector("#select-all-generic-labels");
+
+selectAllGenericLabelsBtn.addEventListener('click', () => {
+   const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  for (var i = 0; i < checkboxes.length; i++) {
+    var checkbox = checkboxes[i] as HTMLInputElement; // Type casting
+    checkbox.checked = true;
+  }
+  });
