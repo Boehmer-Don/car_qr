@@ -383,6 +383,13 @@ selectAllGenericLabelsBtn.addEventListener('click', () => {
    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
   for (var i = 0; i < checkboxes.length; i++) {
     var checkbox = checkboxes[i] as HTMLInputElement; // Type casting
-    checkbox.checked = true;
+    if (checkbox.checked == false){
+      checkbox.checked = true;
+        selectAllGenericLabelsBtn.textContent = "Unselect all"
+    }
+    else{
+      checkbox.checked = false;
+      selectAllGenericLabelsBtn.textContent  = "Select all"
+    }
   }
   });
