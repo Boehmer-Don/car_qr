@@ -376,14 +376,13 @@ labelEditButtons.forEach(e =>
   }),
 );
 
-function selectAllCheckboxes() {
-  console.log('abc')
-  // Get all checkboxes by their type (you can adjust this selector as needed)
-  var checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
-  // Loop through the checkboxes and set their 'checked' property to true
+const selectAllGenericLabelsBtn = document.querySelector("#select-all-generic-labels");
+
+selectAllGenericLabelsBtn.addEventListener('click', () => {
+   const checkboxes = document.querySelectorAll('input[type="checkbox"]');
   for (var i = 0; i < checkboxes.length; i++) {
     var checkbox = checkboxes[i] as HTMLInputElement; // Type casting
     checkbox.checked = true;
   }
-}
+  });
