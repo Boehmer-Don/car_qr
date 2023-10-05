@@ -907,7 +907,7 @@ def generic():
     generic_stickers_sql = (
         sa.select(m.Sticker)
         .where(m.Sticker.user.has(m.User.role == m.UsersRole.admin))
-        .order_by(m.Sticker.created_at.desc())
+        .order_by(m.Sticker.created_at.asc())
     )
     generic_stickers = db.session.scalars(generic_stickers_sql).all()
 
