@@ -393,3 +393,20 @@ selectAllGenericLabelsBtn.addEventListener('click', () => {
     }
   }
   });
+
+const labelsAmountInput = document.querySelector<HTMLInputElement>("#labels-amount-input");
+let debounceTimeout: NodeJS.Timeout | undefined;
+
+const checkboxes = document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
+
+labelsAmountInput?.addEventListener('input', () => {
+  if (debounceTimeout) {
+    clearTimeout(debounceTimeout);
+  }
+  debounceTimeout = setTimeout(() => {
+    const amount = parseInt(labelsAmountInput.value);
+    checkboxes.forEach((checkbox, index) => {
+      checkbox.checked = index < amount;
+    });
+  }, 250);
+});

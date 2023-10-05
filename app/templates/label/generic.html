@@ -72,12 +72,15 @@
           <div class="relative w-full">
             <!-- prettier-ignore -->
             <input hx-get="{{url_for('user.get_user')}}" hx-trigger="keyup change delay:500ms" hx-target="#users-result"
-              hx-swap="" type="text" id="table-search-users-input"
+              hx-swap="" type="text" id="table-search-users-input" required
               class="w-full block py-2 pl-3 text-xs font-extralight placeholder:text-gray-800 border rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Search for users" name="email" />
 
             {% include "label/user_search_results.html" %}
           </div>
+          <input id="labels-amount-input" required
+            class="mx-3 py-2 pl-3 text-xs font-extralight placeholder:text-gray-800 border rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Add amount" />
           <!-- prettier-ignore -->
           <button type="submit" id="table-search-user-button"
             class="px-3 py-1.5 text-md text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 ml-2 font-medium rounded-lg text-center inline-flex items-center mr-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800">
@@ -115,7 +118,8 @@
             <span class="hidden lg:block">Date Created</span>
           </p>
           <p class="w-2/12 hidden md:flex items-center justify-center">
-            <button class="p-1 text-md text-white border border-gray-300 rounded" type="button" id="select-all-generic-labels">Select all</button>
+            <button class="p-1 text-md text-white border border-gray-300 rounded" type="button"
+              id="select-all-generic-labels">Select all</button>
           </p>
           <p class="w-1/12 flex items-center justify-center">
 
