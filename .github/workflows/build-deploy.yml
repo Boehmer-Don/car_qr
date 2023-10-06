@@ -16,7 +16,7 @@ jobs:
         python-version: [3.11]
         poetry-version: [1.5.1]
         os: [Linux]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3.5.2
@@ -45,7 +45,7 @@ jobs:
         python-version: [3.11]
         poetry-version: [1.5.1]
         os: [Linux]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     # if: github.ref == 'refs/heads/develop'
     needs: tests
     steps:
