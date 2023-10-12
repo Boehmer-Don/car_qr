@@ -10,7 +10,6 @@ from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from app.logger import log
 from .database import db
 
-# instantiate extensions
 login_manager = LoginManager()
 migration = Migrate()
 mail = Mail()
