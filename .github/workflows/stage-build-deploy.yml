@@ -103,7 +103,7 @@ jobs:
           username: ${{ env.STAGE_USERNAME }}
           key: ${{ env.STAGE_SSH_KEY }}
           source: docker-compose.dev.yaml
-          target: ~/site_dev
+          target: ~/car_qr
       - name: deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
