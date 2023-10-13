@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "car-qr-label"
-version = "0.3.42"
+version = "0.3.43"
 description = ""
 authors = ["Simple2B <simple2b.info@gmail.com>"]
 
