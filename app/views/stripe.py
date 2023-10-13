@@ -136,12 +136,16 @@ def webhook():
             user.first_name, user.last_name = response["name"].split(" ", 1)
             user.email = response["email"]
             user.country = response["address"]["country"]
-            user.city = response["address"]["city"]
-            user.province = response["address"]["state"]
+            user.city = (
+                response["address"]["city"] if response["address"]["city"] else ""
+            )
+            user.province = (
+                response["address"]["state"] if response["address"]["state"] else ""
+            )
             user.address_of_dealership = (
                 response["address"]["line1"] if response["address"]["line1"] else ""
             )
-            user.name_of_dealership = response["name"]
+            user.name_of_dealership = response["name"] if response["name"] else ""
             user.phone = response["phone"]
             user.postal_code = response["address"]["postal_code"]
 
@@ -160,7 +164,9 @@ def webhook():
                 "Payment intent succeeded. LABEL IDS ARE:\n [%s]",
                 label_unique_ids,
             )
-            label_unique_ids_list = label_unique_ids.split(",")
+            label_unique_ids_list = (
+                label_unique_ids.split(",") if label_unique_ids else []
+            )
             for label_id in label_unique_ids_list:
                 label: m.Label = db.session.scalar(
                     m.Label.select().where(m.Label.unique_id == label_id)
