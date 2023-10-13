@@ -38,6 +38,7 @@ def webhook():
 
     match event["type"]:
         case "customer.subscription.created":
+            log(log.INFO, "CREATING SUBSCRIPTION EVENT\n")
             response = event["data"]["object"]
             user: m.User = db.session.scalar(
                 m.User.select().where(m.User.stripe_customer_id == response.customer)
@@ -72,6 +73,7 @@ def webhook():
                 subscription.stripe_subscription_id,
             )
         case "customer.subscription.updated":
+            log(log.INFO, "UPDATING SUBSCRIPTION EVENT\n")
             response = event["data"]["object"]
             subscription: m.Subscription = db.session.scalar(
                 m.Subscription.select().where(
@@ -123,6 +125,7 @@ def webhook():
             user.save()
 
         case "customer.updated":
+            log(log.INFO, "UPDATING CUSTOMER EVENT\n")
             response = event["data"]["object"]
             user: m.User = db.session.scalar(
                 m.User.select().where(m.User.stripe_customer_id == response.id)
@@ -135,7 +138,9 @@ def webhook():
             user.country = response["address"]["country"]
             user.city = response["address"]["city"]
             user.province = response["address"]["state"]
-            user.address_of_dealership = response["address"]["line1"]
+            user.address_of_dealership = (
+                response["address"]["line1"] if response["address"]["line1"] else ""
+            )
             user.name_of_dealership = response["name"]
             user.phone = response["phone"]
             user.postal_code = response["address"]["postal_code"]
@@ -144,11 +149,17 @@ def webhook():
             log(log.INFO, "User [%s] updated ", user)
 
         case "payment_intent.succeeded":
+            log(log.INFO, "ONE TIME PAYMENT EVENT\n")
             response = event["data"]["object"]
             user = db.session.scalar(
                 m.User.select().where(m.User.stripe_customer_id == response.customer)
             )
             label_unique_ids = response.metadata.get("labels_unique_ids")
+            log(
+                log.INFO,
+                "Payment intent succeeded. LABEL IDS ARE:\n [%s]",
+                label_unique_ids,
+            )
             label_unique_ids_list = label_unique_ids.split(",")
             for label_id in label_unique_ids_list:
                 label: m.Label = db.session.scalar(
