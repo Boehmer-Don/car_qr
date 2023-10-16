@@ -20,6 +20,8 @@ services:
     image: simple2b/car-qr-label:0.3
     restart: always
     command: sh ./start_server.sh
+    env_file:
+      - .env
     environment:
       APP_ENV: production
     depends_on:
