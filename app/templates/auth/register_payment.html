@@ -42,32 +42,7 @@
               {% endfor %}
             </div>
 
-            <div class="doubled_inputs">
-              <div class="short_input_container short_input_container_left">
-                {{form.password.label(class='block mb-2 text-sm font-medium
-                text-gray-900 dark:text-white')}}
-                {{form.password(
-                class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit',
-                placeholder="Password"
-                )
-                }}{% for error in form.errors.password %}
-                <small class="text-danger">{{error}}</small>
-                {% endfor %}
-              </div>
 
-              <div class="short_input_container short_input_container_right">
-                {{form.password_confirmation.label(class='block mb-2 text-sm
-                font-medium text-gray-900 dark:text-white')}}
-                {{form.password_confirmation(
-                class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit',
-                placeholder="Confirm Password"
-                )
-                }}
-                {% for error in form.errors.password_confirmation %}
-                <small class="text-danger">{{error}}</small>
-                {% endfor %}
-              </div>
-            </div>
 
             <div class="doubled_inputs">
               <div class="short_input_container short_input_container_left">
