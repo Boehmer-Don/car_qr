@@ -910,14 +910,15 @@ def generic():
         .order_by(m.Sticker.created_at.asc())
     )
     generic_stickers = db.session.scalars(generic_stickers_sql).all()
-
     if request.form.get("generic-stickers-download"):
+        landing_url = app.config.get("LANDING_URL")
         with io.StringIO() as proxy:
             writer = csv.writer(proxy)
             row = [
                 "Sticker ID",
                 "Date Created",
                 "Alphanumeric Code",
+                "Landing URL",
             ]
             writer.writerow(row)
             for sticker in generic_stickers:
@@ -925,6 +926,7 @@ def generic():
                     sticker.id,
                     sticker.created_at,
                     sticker.code,
+                    f"{landing_url}/{sticker.code}",
                 ]
                 writer.writerow(row)
                 sticker.downloaded = True
