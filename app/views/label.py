@@ -602,7 +602,7 @@ def download():
         return send_file(
             io.BytesIO(user.logo[0].file),
             as_attachment=True,
-            download_name=f"logo_{user.first_name}_{user.last_name}_{datetime.now()}.png",
+            download_name=f"{user.first_name}_{user.last_name}_{datetime.now()}.png",
             mimetype="image/png",
             max_age=0,
             last_modified=datetime.now(),
@@ -643,7 +643,7 @@ def download():
         now = datetime.now()
         download_name = f"all_pending_qrs_{now.strftime('%Y-%m-%d-%H-%M-%S')}.csv"
         if user:
-            download_name = f"pending_qrs_{user.first_name}_{user.last_name}_{now.strftime('%Y-%m-%d-%H-%M-%S')}.csv"
+            download_name = f"{user.first_name}_{user.last_name}_{now.strftime('%Y-%m-%d-%H-%M-%S')}.csv"
         return send_file(
             mem,
             as_attachment=True,
