@@ -28,6 +28,11 @@ services:
       - db
     ports:
       - 127.0.0.1:${LOCAL_WEB_PORT:-8000}:8000
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.car-qr-stage.rule=Host(`car-qr.simple2b.net`)'
+      - 'traefik.http.routers.car-qr-stage.tls=true'
+      - 'traefik.http.routers.car-qr-stage.tls.certresolver=myresolver'
 
 volumes:
   db_data:
