@@ -132,8 +132,9 @@ def webhook():
             )
             if not user:
                 log(log.ERROR, "User [%s] not found", response.id)
-
-            user.first_name, user.last_name = response["name"].split(" ", 1)
+            user.first_name, user.last_name = (
+                response["name"].split(" ", 1) if response["name"] else ("", "")
+            )
             user.email = response["email"]
             user.country = response["address"]["country"]
             user.city = (
