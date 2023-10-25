@@ -240,7 +240,9 @@ def resend_invite():
 def account(user_unique_id: str):
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
-
+    admin_emails = db.session.scalars(
+        sa.select(m.User.email).where(m.User.role == m.UsersRole.admin)
+    ).all()
     if not user:
         log(log.INFO, "User not found")
         flash("Incorrect reset password link", "danger")
@@ -291,6 +293,12 @@ def account(user_unique_id: str):
         user.extra_emails = (
             "" if not form.extra_emails.data.strip() else form.extra_emails.data.strip()
         )
+        if user.email in admin_emails:
+            log(
+                log.INFO, "User %s tried to switch email to admin email", user_unique_id
+            )
+            flash("Please, use another email", "danger")
+            return redirect(url_for("user.account", user_unique_id=user_unique_id))
         user.save()
         update_stripe_customer(user)
         log(log.INFO, "User data updated. User: [%s]", user)
