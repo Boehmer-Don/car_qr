@@ -1,0 +1,61 @@
+version: "3"
+services:
+  db:
+    image: postgres:14
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-passwd}
+      POSTGRES_DB: db
+      PGDATABASE: db
+      PGPASSWORD: ${POSTGRES_PASSWORD:-passwd}
+      PGUSER: ${POSTGRES_USER:-postgres}
+
+  app:
+    image: simple2b/car-qr-label:0.3
+    restart: always
+    command: sh ./start_server.sh
+    environment:
+      APP_ENV: production
+    env_file:
+      - .env
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`autoqrcode.com`)"
+      - "traefik.http.routers.app.tls=true"
+      - "traefik.http.routers.app.tls.certresolver=myresolver"
+      - "traefik.http.services.app.loadbalancer.server.port=8000"
+  backup:
+    image: simple2b/pg-backup:1.0
+
+    links:
+      - db
+    volumes:
+      - ./backup:/backup
+    environment:
+      # scheduler
+      SCHEDULE_DAY: ${SCHEDULE_DAY:-3}
+      POSTGRES_DATABASE: db
+      POSTGRES_HOST: db
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-passwd}
+      POSTGRES_EXTRA_OPTS: "--schema=public --blobs"
+      DAYS_HISTORY: 7
+      S3_REGION: ${S3_REGION:-**None**}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-**None**}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-**None**}
+      S3_BUCKET: ${S3_BUCKET:-**None**}
+      S3_PREFIX: ${S3_PREFIX:-**None**}
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-**None**}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-**None**}
+      AWS_DEFAULT_REGION: ${S3_REGION:-**None**}
+networks:
+  default:
+    name: qr_network
+
+volumes:
+  db_data:
