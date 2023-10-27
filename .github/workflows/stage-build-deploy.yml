@@ -103,6 +103,7 @@ jobs:
           host: ${{ env.STAGE_HOST }}
           username: ${{ env.STAGE_USERNAME }}
           key: ${{ env.STAGE_SSH_KEY }}
+          port: ${{ env.STAGE_PORT }}
           source: docker-compose.dev.yaml
           target: ~/car_qr
       - name: deploy
