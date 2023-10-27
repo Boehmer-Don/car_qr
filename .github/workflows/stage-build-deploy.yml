@@ -11,6 +11,7 @@ env:
   STAGE_HOST: ${{ secrets.SSH_HOST_IP }}
   STAGE_USERNAME: ${{ secrets.SSH_USER }}
   STAGE_SSH_KEY: ${{ secrets.SSH_KEY }}
+  STAGE_PORT: ${{secrets.SSH_PORT}}
   SITE_DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
 jobs:
@@ -109,6 +110,7 @@ jobs:
         with:
           host: ${{ env.STAGE_HOST }}
           username: ${{ env.STAGE_USERNAME }}
+          port: ${{ env.STAGE_PORT }}
           key: ${{ env.STAGE_SSH_KEY }}
           script: |
             cd /home/runner/car_qr &&
