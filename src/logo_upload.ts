@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
+  console.log('logo_upload.ts loaded');
   const dropZone = document.querySelector('#drop_zone') as HTMLElement;
-  const imageUploadInput = document.querySelector('#image_upload') as HTMLInputElement;
+  const imageUploadInput = document.querySelector(
+    '#image_upload',
+  ) as HTMLInputElement;
 
   dropZone.addEventListener('dragover', function (e) {
     e.preventDefault();
@@ -13,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   dropZone.addEventListener('drop', function (e: DragEvent) {
+    console.log(e);
     e.preventDefault();
     dropZone.style.backgroundColor = '#fff';
 
@@ -38,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function handleImageUpload(file: File) {
+    console.log(file);
     const formData = new FormData();
     formData.append('file', file);
 
@@ -45,6 +50,14 @@ document.addEventListener('DOMContentLoaded', function () {
     reader.onload = function (e) {
       dropZone.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-height: 240px;">`;
       // You can add your fetch request here to send the image data to the server.
+      fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+      })
+        .then(response => console.log(response))
+        .catch(error => {
+          console.error('Error:', error);
+        });
     };
     reader.readAsDataURL(file);
   }
