@@ -58,7 +58,7 @@ class Label(db.Model, ModelMixin):
         sa.DateTime,
         nullable=True,
     )
-    url: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
+    url: orm.Mapped[str] = orm.mapped_column(sa.String(255), default="")
     status: orm.Mapped[LabelStatus] = orm.mapped_column(
         sa.Enum(LabelStatus), default=LabelStatus.cart
     )
