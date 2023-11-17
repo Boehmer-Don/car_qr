@@ -267,6 +267,10 @@ def account(user_unique_id: str):
             with open("tests/db/us_states.json", "r") as states_file:
                 states_data = json.load(states_file)
                 provinces = [s.get("name") for s in states_data]
+        case _:
+            with open("tests/db/canada_provinces.json", "r") as provinces_file:
+                provinces_data = json.load(provinces_file)
+                provinces = [p.get("name") for p in provinces_data]
 
     form: f.PaymentForm = f.PaymentForm()
     if request.method == "GET":
