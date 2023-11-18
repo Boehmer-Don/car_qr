@@ -90,17 +90,13 @@ if (imageUploadInput) {
   });
 }
 
-const hrefArray = window.location.href.split('user_unique_id=');
-const userUniqueId = hrefArray[hrefArray.length - 1];
-const imageUploadUrl = '/auth/logo-upload/' + userUniqueId;
-
 function handleImageUpload(file: File) {
   const formData = new FormData();
   formData.append('file', file);
 
   const reader = new FileReader();
   reader.onload = function (e) {
-    fetch(imageUploadUrl, {
+    fetch('/auth/sidebar-logo-upload', {
       method: 'POST',
       body: formData,
     })

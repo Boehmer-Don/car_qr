@@ -26,9 +26,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Allow users to click on dropZone to trigger the file input
-  dropZone.addEventListener('click', function () {
-    imageUploadInput.click();
-  });
+  // dropZone.addEventListener('click', function () {
+  //   imageUploadInput.click();
+  // });
 
   imageUploadInput.addEventListener('change', function (e: Event) {
     const target = e.target as HTMLInputElement;

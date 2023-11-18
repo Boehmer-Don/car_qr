@@ -298,18 +298,7 @@ def payment(user_unique_id: str):
     )
 
 
-@auth_blueprint.route("/logo-upload/<user_unique_id>", methods=["GET", "POST"])
-def logo_upload(user_unique_id: str):
-    change_logo = request.args.get("change_logo")
-
-    query = m.User.select().where(m.User.unique_id == user_unique_id)
-    user: m.User | None = db.session.scalar(query)
-
-    if not user:
-        log(log.INFO, "User not found")
-        flash("Incorrect reset password link", "danger")
-        return redirect(url_for("main.index"))
-
+def image_upload(user):
     if request.method == "POST":
         # Upload logo image file
         file = request.files["file"]
@@ -354,6 +343,35 @@ def logo_upload(user_unique_id: str):
             log(log.ERROR, "Error saving logo: [%s]", e)
             flash("Error saving logo", "danger")
             return redirect(url_for("auth.logo_upload", user_unique_id=user.unique_id))
+        log(log.INFO, "Uploaded logo for user: [%s]", user)
+
+
+@auth_blueprint.route("/sidebar-logo-upload", methods=["GET", "POST"])
+def sidebar_logo_upload():
+    query = m.User.select().where(m.User.unique_id == current_user.unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
+
+    image_upload(user)
+
+
+@auth_blueprint.route("/logo-upload/<user_unique_id>", methods=["GET", "POST"])
+def logo_upload(user_unique_id: str):
+    change_logo = request.args.get("change_logo")
+
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User | None = db.session.scalar(query)
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("Incorrect reset password link", "danger")
+        return redirect(url_for("main.index"))
+
+    image_upload(user)
 
     log(log.INFO, "Uploaded logo for user: [%s]", user)
     return render_template(
