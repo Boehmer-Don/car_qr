@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('logo_upload.ts loaded');
   const dropZone = document.querySelector('#drop_zone') as HTMLElement;
   const imageUploadInput = document.querySelector(
     '#image_upload',
@@ -16,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   dropZone.addEventListener('drop', function (e: DragEvent) {
-    console.log(e);
     e.preventDefault();
     dropZone.style.backgroundColor = '#fff';
 
@@ -42,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function handleImageUpload(file: File) {
-    console.log(file);
     const formData = new FormData();
     formData.append('file', file);
 

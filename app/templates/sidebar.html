@@ -59,12 +59,11 @@
         </div>
         {% endif %}
 
-        <a href="{{url_for('auth.logo_upload', user_unique_id=current_user.unique_id, change_logo='true')}}">
-          <button type="button"
-            class="absolute top-0 left-0 w-full h-full mr-2 opacity-0 hover:opacity-70 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
-            Change Logo
-          </button>
-        </a>
+        <button type="button" id="sidebar-logo-upload"
+          class="absolute top-0 left-0 w-full h-full mr-2 opacity-0 hover:opacity-70 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+          Change Logo
+        </button>
+        <input type="file" id="sidebar-image-input" class="hidden" accept=".png, .jpg">
       </div>
       {% endif %}
 

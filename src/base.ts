@@ -66,3 +66,49 @@ flashMessages.forEach(function (flashMessage) {
     flashMessage.classList.add('hidden');
   }, 2000);
 });
+
+// Sidebar image upload
+const sidebarLogoUpload = document.querySelector('#sidebar-logo-upload');
+const imageUploadInput = document.querySelector(
+  '#sidebar-image-input',
+) as HTMLInputElement;
+
+if (sidebarLogoUpload) {
+  sidebarLogoUpload.addEventListener('click', function () {
+    imageUploadInput.click();
+  });
+}
+
+if (imageUploadInput) {
+  imageUploadInput.addEventListener('change', function (e: Event) {
+    const target = e.target as HTMLInputElement;
+    const files = target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      handleImageUpload(file);
+    }
+  });
+}
+
+const hrefArray = window.location.href.split('user_unique_id=');
+const userUniqueId = hrefArray[hrefArray.length - 1];
+const imageUploadUrl = '/auth/logo-upload/' + userUniqueId;
+
+function handleImageUpload(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    fetch(imageUploadUrl, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => console.log(response))
+      .then(() => window.location.reload())
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  };
+  reader.readAsDataURL(file);
+}

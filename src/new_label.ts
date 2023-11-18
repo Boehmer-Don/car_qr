@@ -1,5 +1,3 @@
-console.log('new_label.ts');
-
 const suggestionContainers: NodeListOf<HTMLDivElement> =
   document.querySelectorAll('.suggestion-container');
 
@@ -172,11 +170,9 @@ if (makeInput) {
       .then(res => res.json())
       .then(data => {
         if (data.makes.length === 0) {
-          console.log('data.makes.length === 0', data.makes);
           makeInput.classList.add('text-indigo-500');
           makeWarning.classList.remove('hidden');
         } else {
-          console.log('data.makes.length != 0', data.makes);
           makeInput.classList.remove('text-indigo-500');
           makeWarning.classList.add('hidden');
           makes.push(...data.makes);
@@ -266,7 +262,6 @@ const codeNotPendingError: HTMLParagraphElement = document.querySelector(
 );
 let isPendingError: boolean = false;
 let isExistsError: boolean = false;
-console.log('codeExistsError', codeExistsError);
 if (codeInput) {
   codeInput.addEventListener('input', e => {
     fetch('/labels/check_label_code', {

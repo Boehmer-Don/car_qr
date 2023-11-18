@@ -1,5 +1,5 @@
-import { Modal } from 'flowbite';
-import type { ModalOptions, ModalInterface } from 'flowbite';
+import {Modal} from 'flowbite';
+import type {ModalOptions, ModalInterface} from 'flowbite';
 
 interface ILabel {
   id: number;
@@ -37,9 +37,9 @@ const modalOptions: ModalOptions = {
   backdropClasses:
     'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
   closable: true,
-  onHide: () => { },
-  onShow: () => { },
-  onToggle: () => { },
+  onHide: () => {},
+  onShow: () => {},
+  onToggle: () => {},
 };
 
 function getLabelDetails(label: ILabel) {
@@ -244,7 +244,7 @@ makeSelectFields.forEach(makeSelectField =>
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ makeSelected: makeSelected }),
+        body: JSON.stringify({makeSelected: makeSelected}),
       })
         .then(response => response.json())
         .then(data => {
@@ -277,21 +277,18 @@ const modelSelectFields: NodeListOf<HTMLSelectElement> =
   document.querySelectorAll('.model');
 modelSelectFields.forEach(modelSelectField =>
   modelSelectField.addEventListener('change', () => {
-    console.log('model selected', modelSelectField.value);
     if (modelSelectField.value === 'add') {
       // createMakeModel();
     } else {
-      console.log('starting fetch');
       fetch('/labels/get_trims', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ modelSelected: modelSelectField.value }),
+        body: JSON.stringify({modelSelected: modelSelectField.value}),
       })
         .then(response => response.json())
         .then(data => {
-          console.log('data', data);
           const trimSelect = document.querySelector(
             `#label-${modelSelectField.getAttribute('data-trim')}-trim`,
           ) as HTMLSelectElement;
@@ -376,28 +373,34 @@ labelEditButtons.forEach(e =>
   }),
 );
 
+const selectAllGenericLabelsBtn = document.querySelector(
+  '#select-all-generic-labels',
+);
 
-const selectAllGenericLabelsBtn = document.querySelector("#select-all-generic-labels");
-
-selectAllGenericLabelsBtn.addEventListener('click', () => {
-   const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-  for (var i = 0; i < checkboxes.length; i++) {
-    var checkbox = checkboxes[i] as HTMLInputElement; // Type casting
-    if (checkbox.checked == false){
-      checkbox.checked = true;
-        selectAllGenericLabelsBtn.textContent = "Unselect all"
+if (selectAllGenericLabelsBtn) {
+  selectAllGenericLabelsBtn.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+      var checkbox = checkboxes[i] as HTMLInputElement; // Type casting
+      if (checkbox.checked == false) {
+        checkbox.checked = true;
+        selectAllGenericLabelsBtn.textContent = 'Unselect all';
+      } else {
+        checkbox.checked = false;
+        selectAllGenericLabelsBtn.textContent = 'Select all';
+      }
     }
-    else{
-      checkbox.checked = false;
-      selectAllGenericLabelsBtn.textContent  = "Select all"
-    }
-  }
   });
+}
 
-const labelsAmountInput = document.querySelector<HTMLInputElement>("#labels-amount-input");
+const labelsAmountInput = document.querySelector<HTMLInputElement>(
+  '#labels-amount-input',
+);
 let debounceTimeout: NodeJS.Timeout | undefined;
 
-const checkboxes = document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
+const checkboxes = document.querySelectorAll<HTMLInputElement>(
+  'input[type="checkbox"]',
+);
 
 labelsAmountInput?.addEventListener('input', () => {
   if (debounceTimeout) {

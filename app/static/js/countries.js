@@ -1,1 +1,8 @@
-console.log("countries.ts");
+/******/ (() => { // webpackBootstrap
+var __webpack_exports__ = {};
+/*!**************************!*\
+  !*** ./src/countries.ts ***!
+  \**************************/
+
+/******/ })()
+;
