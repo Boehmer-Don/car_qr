@@ -31,8 +31,10 @@ def redirect_to_outer_url(sticker_id: str):
 
     if not current_user.is_authenticated:
         log(log.INFO, "Unauthorized user. Counting views. Label: [%s]", label)
+        log(log.INFO, "views before: [%s]", label.views)
         label.views += 1
         label.save()
+        log(log.INFO, "views after: [%s]", label.views)
 
     if label.gift:
         log(log.INFO, "Redirecting to gift page. Label: [%s]", label)
