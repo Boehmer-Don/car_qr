@@ -358,6 +358,8 @@ def sidebar_logo_upload():
 
     image_upload(user)
 
+    return 200
+
 
 @auth_blueprint.route("/logo-upload/<user_unique_id>", methods=["GET", "POST"])
 def logo_upload(user_unique_id: str):
