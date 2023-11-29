@@ -89,7 +89,16 @@ def get_user():
     email_input = request.args.get("email", type=str)
     if not email_input:
         return ""
-    emails_query = sa.select(m.User.email).where(m.User.email.ilike(f"%{email_input}%"))
+    emails_query = (
+        sa.select(m.User.email)
+        .where(
+            m.User.first_name.ilike(f"%{email_input}%")
+            | m.User.email.ilike(f"%{email_input}%")
+            | m.User.last_name.ilike(f"%{email_input}%")
+            | m.User.name_of_dealership.ilike(f"%{email_input}%")
+        )
+        .where(m.User.activated, m.User.deleted.is_(False))
+    )
     user_emails: m.User | None = db.session.scalars(emails_query).all()
     return render_template("label/user_search_results.html", user_emails=user_emails)
 
@@ -258,6 +267,10 @@ def account(user_unique_id: str):
             with open("tests/db/us_states.json", "r") as states_file:
                 states_data = json.load(states_file)
                 provinces = [s.get("name") for s in states_data]
+        case _:
+            with open("tests/db/canada_provinces.json", "r") as provinces_file:
+                provinces_data = json.load(provinces_file)
+                provinces = [p.get("name") for p in provinces_data]
 
     form: f.PaymentForm = f.PaymentForm()
     if request.method == "GET":

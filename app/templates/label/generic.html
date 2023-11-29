@@ -68,11 +68,10 @@
     <form method="post" id="sticker-assign-form" action="{{url_for('labels.assign_generic_labels')}}">
       <div class="flex p-1 font-bold text-black-400 dark:text-white my-3">
         <div class="w-full sm:w-11/12 xl:w-10/12 flex items-center justify-center py-1 pl-5 dark:bg-gray-800">
-          <label for="table-search" class="sr-only">Search</label>
           <div class="relative w-full">
             <!-- prettier-ignore -->
             <input hx-get="{{url_for('user.get_user')}}" hx-trigger="keyup change delay:500ms" hx-target="#users-result"
-              hx-swap="" type="text" id="table-search-users-input" required
+              hx-swap="innerHTML" type="text" id="table-search-users-input" required
               class="w-full block py-2 pl-3 text-xs font-extralight placeholder:text-gray-800 border rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Search for users" name="email" />
 

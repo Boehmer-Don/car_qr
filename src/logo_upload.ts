@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
   const dropZone = document.querySelector('#drop_zone') as HTMLElement;
-  const imageUploadInput = document.querySelector('#image_upload') as HTMLInputElement;
+  const imageUploadInput = document.querySelector(
+    '#image_upload',
+  ) as HTMLInputElement;
 
   dropZone.addEventListener('dragover', function (e) {
     e.preventDefault();
@@ -24,9 +26,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Allow users to click on dropZone to trigger the file input
-  dropZone.addEventListener('click', function () {
-    imageUploadInput.click();
-  });
+  // dropZone.addEventListener('click', function () {
+  //   imageUploadInput.click();
+  // });
 
   imageUploadInput.addEventListener('change', function (e: Event) {
     const target = e.target as HTMLInputElement;
@@ -45,6 +47,14 @@ document.addEventListener('DOMContentLoaded', function () {
     reader.onload = function (e) {
       dropZone.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-height: 240px;">`;
       // You can add your fetch request here to send the image data to the server.
+      fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+      })
+        .then(response => console.log(response))
+        .catch(error => {
+          console.error('Error:', error);
+        });
     };
     reader.readAsDataURL(file);
   }

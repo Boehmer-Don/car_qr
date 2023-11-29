@@ -1,9 +1,7 @@
-<div
-  id="users-result"
-  class="w-full absolute bg-white dark:bg-gray-600 rounded  {% if user_emails %} h-72 overflow-y-scroll {% endif %}" >
+<div id="users-result"
+  class="w-full absolute bg-white dark:bg-gray-600 {% if user_emails %} overflow-y-scroll {% endif %}">
   {% if user_emails %} {% for user_email in user_emails %}
-  <p
-    class="users-search-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-400 p-3 ">
+  <p class="users-search-suggestion font-medium cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-400 p-2">
     {{ user_email | trim }}
   </p>
   {% endfor %} {% endif %}

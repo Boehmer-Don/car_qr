@@ -22,18 +22,26 @@ def index():
 
 @main_blueprint.route("/l/<sticker_id>")
 def redirect_to_outer_url(sticker_id: str):
+    log(log.INFO, "Current user: [%s]", current_user)
     label: m.Label = db.session.scalar(
         m.Label.select().where(m.Label.sticker_id == sticker_id)
     )
     if not label:
+        log(log.WARNING, "Label not found. Sticker ID: [%s]", sticker_id)
         return redirect(url_for("main.landing"))
 
     if not current_user.is_authenticated:
+        log(log.INFO, "Unauthorized user. Counting views. Label: [%s]", label)
+        log(log.INFO, "views before: [%s]", label.views)
         label.views += 1
         label.save()
+        log(log.INFO, "views after: [%s]", label.views)
 
     if label.gift:
+        log(log.INFO, "Redirecting to gift page. Label: [%s]", label)
         return redirect(url_for("labels.gift", sticker_id=sticker_id))
+
+    log(log.INFO, "Redirecting to outer URL. Label: [%s]", label)
     return redirect(label.url)
 
 
