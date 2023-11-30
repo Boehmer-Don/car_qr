@@ -46,6 +46,8 @@ def app(monkeypatch):
 
         class StripeObject:
             customer = "test_stripe_customer_id"
+            amount_received = 2000
+            created = datetime.now().timestamp()
             metadata = {"labels_unique_ids": labels_unique_ids}
 
         stripe_object = StripeObject()
