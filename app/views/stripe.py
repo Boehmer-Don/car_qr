@@ -35,8 +35,7 @@ def webhook():
         event = stripe.Webhook.construct_event(
             payload,
             sig_header,
-            "whsec_690a695c990b1fb1b64cc2680384641d23bce02bcc1386e29ba99ecb835b9a6b",
-            # os.environ.get("ENDPOINT_SECRET"),
+            os.environ.get("ENDPOINT_SECRET"),
         )
     except Exception as e:
         raise e
@@ -212,6 +211,12 @@ def webhook():
                     payment_date=datetime.fromtimestamp(response.created),
                 )
                 mail.send(msg)
+                log(
+                    log.INFO,
+                    "Email notification sent to [%s] about labels payment",
+                    user.email,
+                    label,
+                )
         case _:
             log(log.ERROR, "Unhandled event type %s", event["type"])
             return jsonify(success=False), 404
