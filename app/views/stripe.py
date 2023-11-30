@@ -1,6 +1,7 @@
-import stripe
-import os
 from datetime import datetime
+import os
+
+import stripe
 from flask import (
     Blueprint,
     render_template,
@@ -13,6 +14,7 @@ from flask import (
 from flask import current_app as app
 from flask_mail import Message
 from flask_login import current_user, login_user
+
 from app import models as m, db, mail
 from app import forms as f
 from app.logger import log
@@ -206,6 +208,8 @@ def webhook():
                     user=user,
                     url=url,
                     labels=labels_queryset,
+                    total_amount=(response.amount_received) / 100,
+                    payment_date=datetime.fromtimestamp(response.created),
                 )
                 mail.send(msg)
         case _:
@@ -213,6 +217,19 @@ def webhook():
             return jsonify(success=False), 404
 
     return jsonify(success=True)
+
+
+# @stripe_blueprint.route("/test", methods=["GET", "POST"])
+# def test():
+#     labels = db.session.query(m.Label).all()[0:5]
+#     return render_template(
+#         "email/invoice_notification.html",
+#         user=current_user,
+#         url="https://google.com",
+#         labels=labels,
+#         total_amount=100,
+#         payment_date=datetime.fromtimestamp(1701350851),
+#     )
 
 
 @stripe_blueprint.route("/subscription", methods=["GET", "POST"])

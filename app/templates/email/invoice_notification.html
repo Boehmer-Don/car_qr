@@ -175,7 +175,7 @@
                                                                                     <h5 class="text-teal-700"
                                                                                         style="color: #13795b; padding-top: 0; padding-bottom: 0; font-weight: 500; vertical-align: baseline; font-size: 20px; line-height: 24px; margin: 0;"
                                                                                         align="left">
-                                                                                        New label activated at
+                                                                                        New label/labels activated at
                                                                                         {{config["APP_NAME"]}}!
                                                                                     </h5>
                                                                                     <table class="s-5 w-full"
@@ -225,7 +225,8 @@
                                                                                         <p class="text-gray-700"
                                                                                             style="line-height: 24px; font-size: 16px; color: #4a5568; width: 100%; margin: 0;"
                                                                                             align="left">
-                                                                                            Please use the link to go to
+                                                                                            Please use the button to go
+                                                                                            to
                                                                                             your dashboard
                                                                                         </p>
                                                                                     </div>
@@ -284,10 +285,11 @@
                                                                                                     <a href="{{url}}"
                                                                                                         target="_blank"
                                                                                                         style="color: #ffffff; font-size: 16px; font-family: Helvetica, Arial, sans-serif; text-decoration: none; border-radius: 6px; line-height: 20px; display: block; font-weight: normal; white-space: nowrap; background-color: #0d6efd; padding: 8px 12px; border: 1px solid #0d6efd;">Go</a>
-                                                                                                </td>
 
+                                                                                                </td>
                                                                                             </tr>
                                                                                             <!-- New Table with Refined Inline Styles -->
+
                                                                                             <table class="custom-table"
                                                                                                 role="presentation"
                                                                                                 border="1"
@@ -307,6 +309,25 @@
     border-radius: 6px;
 ">
                                                                                                 <thead>
+                                                                                                    <h1>Details:</h1>
+                                                                                                    <p
+                                                                                                        style="color:#4a5580">
+                                                                                                        Total
+                                                                                                        Amount Paid:
+                                                                                                        {{total_amount}}$
+                                                                                                    </p>
+
+
+                                                                                                    <p
+                                                                                                        style="color:#4a5580">
+                                                                                                        Payment date:
+                                                                                                        {{payment_date.strftime('%Y-%m-%d
+                                                                                                        %H:%M')}}
+                                                                                                    </p>
+
+                                                                                                    <h3 style="">
+                                                                                                        Purchased
+                                                                                                        labels:</h3>
                                                                                                     <tr style="
             background-color: #f7fafc;
             color: #1a202c;
@@ -333,17 +354,12 @@
                                                                                                             Color</th>
                                                                                                         <th
                                                                                                             style="padding: 12px;">
-                                                                                                            Trim</th>
-                                                                                                        <th
-                                                                                                            style="padding: 12px;">
                                                                                                             Type of
                                                                                                             Vehicle</th>
                                                                                                         <th
                                                                                                             style="padding: 12px;">
                                                                                                             Price</th>
-                                                                                                        <th
-                                                                                                            style="padding: 12px;">
-                                                                                                            Status</th>
+
                                                                                                     </tr>
                                                                                                 </thead>
                                                                                                 <tbody>
