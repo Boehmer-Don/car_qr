@@ -31,7 +31,10 @@ def webhook():
 
     try:
         event = stripe.Webhook.construct_event(
-            payload, sig_header, os.environ.get("ENDPOINT_SECRET")
+            payload,
+            sig_header,
+            "whsec_690a695c990b1fb1b64cc2680384641d23bce02bcc1386e29ba99ecb835b9a6b",
+            # os.environ.get("ENDPOINT_SECRET"),
         )
     except Exception as e:
         raise e
@@ -168,6 +171,7 @@ def webhook():
             label_unique_ids_list = (
                 label_unique_ids.split(",") if label_unique_ids else []
             )
+            labels_queryset = []
             for label_id in label_unique_ids_list:
                 label: m.Label = db.session.scalar(
                     m.Label.select().where(m.Label.unique_id == label_id)
@@ -175,6 +179,7 @@ def webhook():
                 label.date_activated = datetime.now()
                 label.status = m.LabelStatus.active
                 label.save()
+                labels_queryset.append(label)
 
                 # Cancel pending stickers
                 sticker: m.Sticker = db.session.scalar(
@@ -197,9 +202,10 @@ def webhook():
                 )
 
                 msg.html = render_template(
-                    "email/admin_notification.htm",
+                    "email/invoice_notification.html",
                     user=user,
                     url=url,
+                    labels=labels_queryset,
                 )
                 mail.send(msg)
         case _:
