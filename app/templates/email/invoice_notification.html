@@ -111,70 +111,94 @@
                 <div class="custom-table"
                     style="display:grid;grid-template-columns: repeat(8,minmax(0,1fr));padding:15px;">
 
-                    <div style="
-    grid-column: span 8/span 8;
-">
+                    <div style="grid-column: span 8/span 8;">
                         <h1>Details:</h1>
                         <p style="color:#4a5580">Total Amount Paid: {{total_amount}}$</p>
                         <p style="color:#4a5580">Payment date: {{payment_date.strftime('%Y-%m-%d %H:%M')}}</p>
                         <h3>Purchased labels:</h3>
                     </div>
-
-                    <div
-                        style="padding: 12px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);">
-                        Name</div>
-                    <div
-                        style="padding: 12px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);">
-                        Make</div>
-                    <div
-                        style="padding: 12px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);">
-                        Model</div>
-                    <div
-                        style="padding: 12px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);">
-                        Year</div>
-                    <div
-                        style="padding: 12px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);">
-                        Mileage</div>
-                    <div
-                        style="padding: 12px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);">
-                        Color</div>
-                    <div
-                        style="padding: 12px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);">
-                        Type of Vehicle</div>
-                    <div
-                        style="padding: 12px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);">
-                        Price</div>
-
-
-                    {% for label in labels %}
-
-                    <div style="padding: 12px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;">{{ label.name
-                        }}
-                    </div>
-                    <div style="padding: 12px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;">{{ label.make
-                        }}
-                    </div>
-                    <div style="padding: 12px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;">{{
-                        label.vehicle_model }}
-                    </div>
-                    <div style="padding: 12px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;">{{ label.year
-                        }}
-                    </div>
-                    <div style="padding: 12px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;">{{
-                        label.mileage
-                        }}</div>
-                    <div style="padding: 12px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;">{{ label.color
-                        }}
-                    </div>
-                    <div style="padding: 12px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;">{{
-                        label.type_of_vehicle }}
-                    </div>
-                    <div style="padding: 12px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;">{{ label.price
-                        }}
-                    </div>
-
-                    {% endfor %}
                 </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th
+                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
+                                Name</th>
+                            <th
+                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
+                                Make</th>
+                            <th
+                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
+                                Model</th>
+                            <th
+                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
+                                Year</th>
+                            <th
+                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
+                                Mileage</th>
+                            <th
+                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
+                                Color</th>
+                            <th
+                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
+                                Type of Vehicle</th>
+                            <th
+                                style="padding: 12px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;;">
+                                Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for label in labels %}
+                        <tr>
+                            <td style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;">{{
+                                label.name
+                                }}
+                            </td>
+                            <td
+                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
+                                {{
+                                label.make
+                                }}
+                            </td>
+                            <td
+                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
+                                {{
+                                label.vehicle_model }}
+                            </td>
+                            <td
+                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
+                                {{
+                                label.year
+                                }}
+                            </td>
+                            <td
+                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
+                                {{
+                                label.mileage
+                                }}</td>
+                            <td
+                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
+                                {{
+                                label.color
+                                }}
+                            </td>
+                            <td
+                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
+                                {{
+                                label.type_of_vehicle }}
+                            </td>
+                            <td
+                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
+                                {{
+                                label.price
+                                }}
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
