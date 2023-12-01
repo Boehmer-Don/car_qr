@@ -209,6 +209,7 @@ def webhook():
                     labels=labels_queryset,
                     total_amount=(response.amount_received) / 100,
                     payment_date=datetime.fromtimestamp(response.created),
+                    total_amount_with_tax=((response.amount_received) / 100) * 0.12,
                 )
                 mail.send(msg)
                 log(
