@@ -77,6 +77,16 @@ class Label(db.Model, ModelMixin):
         return f"<{self.id}:{self.name}>"
 
     @property
+    def mileage_formated(self) -> str:
+        if not self.mileage:
+            return "0"
+        return f"{self.mileage:,.0f}"
+
+    @property
+    def price_formated(self) -> str:
+        return format(self.price, ",")
+
+    @property
     def json(self):
         label = s.Label.from_orm(self)
         return label.json()

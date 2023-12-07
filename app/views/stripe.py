@@ -136,6 +136,7 @@ def webhook():
             )
             if not user:
                 log(log.ERROR, "User [%s] not found", response.id)
+                return jsonify(success=False), 404
             user.first_name, user.last_name = (
                 response["name"].split(" ", 1) if response["name"] else ("", "")
             )
@@ -150,7 +151,6 @@ def webhook():
             user.address_of_dealership = (
                 response["address"]["line1"] if response["address"]["line1"] else ""
             )
-            user.name_of_dealership = response["name"] if response["name"] else ""
             user.phone = response["phone"]
             user.postal_code = response["address"]["postal_code"]
 
@@ -190,34 +190,34 @@ def webhook():
                     sticker.pending = False
                     sticker.save()
 
-                # Notification to admin
-                msg = Message(
-                    subject="New label is activated",
-                    sender=app.config["MAIL_DEFAULT_SENDER"],
-                    recipients=[user.email],
-                )
-                url = url_for(
-                    "labels.get_active_labels",
-                    user_unique_id=user.unique_id,
-                    _external=True,
-                )
+            # Notification to admin
+            msg = Message(
+                subject="New label is activated",
+                sender=app.config["MAIL_DEFAULT_SENDER"],
+                recipients=[user.email],
+            )
+            url = url_for(
+                "labels.get_active_labels",
+                user_unique_id=user.unique_id,
+                _external=True,
+            )
 
-                msg.html = render_template(
-                    "email/invoice_notification.html",
-                    user=user,
-                    url=url,
-                    labels=labels_queryset,
-                    total_amount=(response.amount_received) / 100,
-                    payment_date=datetime.fromtimestamp(response.created),
-                    total_amount_with_tax=((response.amount_received) / 100) * 0.12,
-                )
-                mail.send(msg)
-                log(
-                    log.INFO,
-                    "Email notification sent to [%s] about labels payment",
-                    user.email,
-                    label,
-                )
+            msg.html = render_template(
+                "email/invoice_notification.html",
+                user=user,
+                url=url,
+                labels=labels_queryset,
+                total_amount=(response.amount_received) / 100,
+                payment_date=datetime.fromtimestamp(response.created),
+                total_amount_with_tax=((response.amount_received) / 100) * 0.12,
+            )
+            mail.send(msg)
+            log(
+                log.INFO,
+                "Email notification sent to [%s] about labels payment [%s]",
+                user.email,
+                label,
+            )
         case _:
             log(log.ERROR, "Unhandled event type %s", event["type"])
             return jsonify(success=False), 404

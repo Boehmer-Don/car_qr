@@ -1,210 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Helvetica, Arial, sans-serif;
-            line-height: 24px;
-            font-weight: normal;
-            font-size: 16px;
-            color: #000000;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Helvetica, Arial, sans-serif;
+        line-height: 24px;
+        font-weight: normal;
+        font-size: 16px;
+        color: #000000;
+      }
 
-        .bg-light {
-            background-color: #f7fafc;
-        }
+      .bg-light {
+        background-color: #f7fafc;
+      }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            box-sizing: border-box;
-        }
+      .container {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        box-sizing: border-box;
+      }
 
-        .card {
-            border-radius: 6px;
-            overflow: hidden;
-            width: 100%;
-            border: 1px solid #e2e8f0;
-            background-color: #ffffff;
-            margin-top: 40px;
-        }
+      .card {
+        border-radius: 6px;
+        overflow: hidden;
+        width: 100%;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        margin-top: 40px;
+      }
 
-        .card-body {
-            padding: 20px;
-        }
+      .card-body {
+        padding: 20px;
+      }
 
-        .h3 {
-            padding: 0;
-            margin: 0;
-            font-weight: 500;
-            font-size: 28px;
-            line-height: 33.6px;
-        }
+      .h3 {
+        padding: 0;
+        margin: 0;
+        font-weight: 500;
+        font-size: 28px;
+        line-height: 33.6px;
+      }
 
-        .text-teal {
-            color: #13795b;
-            font-weight: 500;
-            font-size: 20px;
-            line-height: 24px;
-            margin: 0;
-        }
+      .text-teal {
+        color: #13795b;
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 24px;
+        margin: 0;
+      }
 
-        .btn {
-            border-radius: 6px;
-            border-collapse: separate !important;
-            text-align: center;
-        }
+      .btn {
+        border-radius: 6px;
+        border-collapse: separate !important;
+        text-align: center;
+      }
 
-        .btn-primary {
-            background-color: #0d6efd;
-            border: 1px solid #0d6efd;
-            padding: 8px 12px;
-            color: #ffffff;
-            display: block;
-            text-decoration: none;
-        }
+      .btn-primary {
+        background-color: #0d6efd;
+        border: 1px solid #0d6efd;
+        padding: 8px 12px;
+        color: #ffffff;
+        display: block;
+        text-decoration: none;
+      }
 
-        .custom-table {
-            font-family: Helvetica, Arial, sans-serif;
-            border-spacing: 0px;
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-            line-height: 150%;
-            background-color: #ffffff;
-            color: #333333;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-        }
+      .custom-table {
+        font-family: Helvetica, Arial, sans-serif;
+        border-spacing: 0px;
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+        line-height: 150%;
+        background-color: #ffffff;
+        color: #333333;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+      }
 
-        .custom-table th,
-        .custom-table td {
-            padding: 12px;
-            border-bottom: 1px solid #e2e8f0;
-        }
+      .custom-table th,
+      .custom-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .visited-link a:visited {
+        color: inherit;
+      }
     </style>
-</head>
+  </head>
 
-<body class="bg-light">
+  <body class="bg-light">
     <div class="container">
-        <div class="card">
-            <div class="card-body">
-                <h1 class="h3">Thank you for purchasing!</h1>
-                <p class="text-teal">New label/labels activated at {{config["APP_NAME"]}}!</p>
+      <div class="card">
+        <div class="card-body">
+          <h1 class="h3">Thank you for purchasing!</h1>
+          <p class="text-teal">
+            New label/labels activated at {{config["APP_NAME"]}}!
+          </p>
 
-                <div class="space-y-3">
-                    <p class="text-gray-700">Please use the button to go to your dashboard</p>
-                </div>
+          <div class="space-y-3">
+            <p class="text-gray-700">
+              Please use the button to go to your dashboard
+            </p>
+          </div>
 
-                <!-- Button -->
-                <div class="btn btn-primary">
-                    <a href="{{url}}" target="_blank">Go</a>
-                </div>
+          <!-- Button -->
+          <div class="btn btn-primary visited-link">
+            <a href="{{url}}" target="_blank">Go</a>
+          </div>
 
-                <!-- Details Table -->
-                <div class="custom-table"
-                    style="display:grid;grid-template-columns: repeat(8,minmax(0,1fr));padding:15px;">
-
-                    <div style="grid-column: span 8/span 8;">
-                        <h1>Details:</h1>
-                        <p style="color:#4a5580">Total Amount Paid: {{total_amount}}$</p>
-                        <p style="color:#4a5580">Payment date: {{payment_date.strftime('%Y-%m-%d %H:%M')}}</p>
-                        <p style="color:#4a5580">Tax: 12% * {{total_amount}}$ = {{total_amount_with_tax}}$ </p>
-                        <h3>Purchased labels:</h3>
-                    </div>
-                </div>
-
-                <table style="width:100%;">
-                    <thead>
-                        <tr>
-                            <th
-                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
-                                Name</th>
-                            <th
-                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
-                                Make</th>
-                            <th
-                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
-                                Model</th>
-                            <th
-                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
-                                Year</th>
-                            <th
-                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
-                                Mileage</th>
-                            <th
-                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
-                                Color</th>
-                            <th
-                                style="padding: 5px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;">
-                                Type of Vehicle</th>
-                            <th
-                                style="padding: 12px;border: 0.5px solid rgba(0, 0, 0, 0.107);background-color:rgba(0, 0, 0, 0.043);font-size:12px;;">
-                                Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for label in labels %}
-                        <tr>
-                            <td style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;">{{
-                                label.name
-                                }}
-                            </td>
-                            <td
-                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
-                                {{
-                                label.make
-                                }}
-                            </td>
-                            <td
-                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
-                                {{
-                                label.vehicle_model }}
-                            </td>
-                            <td
-                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
-                                {{
-                                label.year
-                                }}
-                            </td>
-                            <td
-                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
-                                {{
-                                label.mileage
-                                }}</td>
-                            <td
-                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
-                                {{
-                                label.color
-                                }}
-                            </td>
-                            <td
-                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
-                                {{
-                                label.type_of_vehicle }}
-                            </td>
-                            <td
-                                style="padding: 5px; border: 0.5px solid rgba(0, 0, 0, 0.107);font-size:12px;word-break:break-all;">
-                                {{
-                                label.price
-                                }}
-                            </td>
-                        </tr>
-
-                        {% endfor %}
-                    </tbody>
-                </table>
+          <!-- Details Table -->
+          <div
+            class="custom-table"
+            style="
+              display: grid;
+              grid-template-columns: repeat(8, minmax(0, 1fr));
+              padding: 15px;
+            ">
+            <div style="grid-column: span 8 / span 8">
+              <h1>Details:</h1>
+              <p style="color: #4a5580">Total Amount Paid: {{total_amount}}</p>
+              <p style="color: #4a5580">
+                Payment date: {{payment_date.strftime('%Y-%m-%d %H:%M')}}
+              </p>
+              <p style="color: #4a5580">
+                Tax: 12% * {{total_amount}}$ = {{total_amount_with_tax}}
+              </p>
+              <h3>Purchased labels:</h3>
             </div>
+          </div>
+
+          <table style="width: 100%">
+            <thead>
+              <tr>
+                <th
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    background-color: rgba(0, 0, 0, 0.043);
+                    font-size: 12px;
+                  ">
+                  Name
+                </th>
+                <th
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    background-color: rgba(0, 0, 0, 0.043);
+                    font-size: 12px;
+                  ">
+                  Make
+                </th>
+                <th
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    background-color: rgba(0, 0, 0, 0.043);
+                    font-size: 12px;
+                  ">
+                  Model
+                </th>
+                <th
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    background-color: rgba(0, 0, 0, 0.043);
+                    font-size: 12px;
+                  ">
+                  Year
+                </th>
+                <th
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    background-color: rgba(0, 0, 0, 0.043);
+                    font-size: 12px;
+                  ">
+                  Mileage
+                </th>
+                <th
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    background-color: rgba(0, 0, 0, 0.043);
+                    font-size: 12px;
+                  ">
+                  Color
+                </th>
+                <th
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    background-color: rgba(0, 0, 0, 0.043);
+                    font-size: 12px;
+                  ">
+                  Type of Vehicle
+                </th>
+                <th
+                  style="
+                    padding: 12px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    background-color: rgba(0, 0, 0, 0.043);
+                    font-size: 12px;
+                  ">
+                  Price
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for label in labels %}
+              <tr>
+                <td
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    font-size: 12px;
+                  ">
+                  {{ label.name }}
+                </td>
+                <td
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    font-size: 12px;
+                    word-break: break-all;
+                  ">
+                  {{ label.make }}
+                </td>
+                <td
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    font-size: 12px;
+                    word-break: break-all;
+                  ">
+                  {{ label.vehicle_model }}
+                </td>
+                <td
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    font-size: 12px;
+                    word-break: break-all;
+                  ">
+                  {{ label.year }}
+                </td>
+                <td
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    font-size: 12px;
+                    word-break: break-all;
+                  ">
+                  {{ label.mileage_formated }}
+                </td>
+                <td
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    font-size: 12px;
+                    word-break: break-all;
+                  ">
+                  {{ label.color }}
+                </td>
+                <td
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    font-size: 12px;
+                    word-break: break-all;
+                  ">
+                  {{ label.type_of_vehicle }}
+                </td>
+                <td
+                  style="
+                    padding: 5px;
+                    border: 0.5px solid rgba(0, 0, 0, 0.107);
+                    font-size: 12px;
+                    word-break: break-all;
+                  ">
+                  {{ label.price_formated }}
+                </td>
+              </tr>
+
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
-
-
-</body>
-
+  </body>
 </html>
