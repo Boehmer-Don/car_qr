@@ -158,12 +158,20 @@ def add_labels(user_id: int = 9):
             date_activated=date_activated,
             date_deactivated=date_deactivated,
             user_id=user_id,
-            views=randint(0, 99),
             gift=gift,
         )
+        db.session.add(label)
+        db.session.flush()
+
+        for _ in range(randint(0, 99)):
+            db.session.add(
+                m.LabelView(
+                    label_id=label.id,
+                    created_at=date_received + timedelta(days=randint(1, 30)),
+                ),
+            )
         if label.date_deactivated:
             label.price_sold = label.price - randint(1000, 3000)
-        db.session.add(label)
         # make = db.session.scalar(m.CarMake.select().where(m.CarMake.name == label.make))
         # if not make:
         #     make = m.CarMake(name=label.make)

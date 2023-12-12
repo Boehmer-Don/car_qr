@@ -12,6 +12,7 @@ from .utils import ModelMixin
 from app.logger import log
 from app import schema as s
 from .user import User
+from .label_view import LabelView
 
 
 def gen_label_unique_id() -> str:
@@ -66,9 +67,6 @@ class Label(db.Model, ModelMixin):
         sa.Integer,
         sa.ForeignKey("users.id"),
     )
-    views: orm.Mapped[int] = orm.mapped_column(
-        sa.Integer, server_default="0", default=0
-    )
     gift: orm.Mapped[str] = orm.mapped_column(sa.String(128), default="", nullable=True)
 
     user: orm.Mapped[User] = orm.relationship("User", backref="labels")
@@ -81,6 +79,12 @@ class Label(db.Model, ModelMixin):
         if not self.mileage:
             return "0"
         return f"{self.mileage:,.0f}"
+
+    @property
+    def views(self) -> int:
+        return db.session.scalar(
+            sa.select(sa.func.count(LabelView.id)).where(LabelView.label_id == self.id)
+        )
 
     @property
     def price_formated(self) -> str:

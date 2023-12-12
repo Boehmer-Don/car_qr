@@ -4,6 +4,7 @@ import string
 import csv
 import io
 from datetime import datetime, timedelta
+
 from flask import (
     Blueprint,
     render_template,
@@ -26,6 +27,7 @@ from app import models as m, db
 from app import forms as f
 from app.logger import log
 from app.controllers.date_convert import date_convert
+from app.controllers.graphs import create_graph
 
 
 dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
@@ -45,6 +47,7 @@ def get_active_labels():
             .select_from(m.Label)
             .where(m.Label.status == m.LabelStatus.active)
         )
+
     else:
         query = (
             m.Label.select()
@@ -58,15 +61,33 @@ def get_active_labels():
             .where(m.Label.user_id == current_user.id)
             .where(m.Label.status == m.LabelStatus.active)
         )
+
     pagination = create_pagination(total=db.session.scalar(count_query))
+    labels: list[m.Label] = db.session.execute(
+        query.offset((pagination.page - 1) * pagination.per_page).limit(
+            pagination.per_page
+        )
+    ).scalars()
+    label_views_data_query = (
+        sa.select(
+            sa.func.date(m.LabelView.created_at).label("date"),
+            sa.func.count().label("total_views"),
+        )
+        .join(m.Label, m.Label.id == m.LabelView.label_id)
+        .where(m.Label.status == m.LabelStatus.active)
+        .group_by(sa.func.date(m.LabelView.created_at))
+        .order_by(sa.func.date(m.LabelView.created_at))
+    )
+
+    label_views_data = list(db.session.execute(label_views_data_query).all())
+
+    labels_chart = create_graph(label_views_data)
+
     return render_template(
         "label/labels_active.html",
-        labels=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
-        ).scalars(),
+        labels=labels,
         page=pagination,
+        labels_chart=labels_chart,
     )
 
 
