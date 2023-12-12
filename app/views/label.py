@@ -27,9 +27,7 @@ from app import models as m, db
 from app import forms as f
 from app.logger import log
 from app.controllers.date_convert import date_convert
-from pyecharts.charts import Line
-from pyecharts import options as opts
-from markupsafe import Markup
+from app.controllers.graphs import create_graph
 
 
 dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
@@ -83,27 +81,7 @@ def get_active_labels():
 
     label_views_data = list(db.session.execute(label_views_data_query).all())
 
-    dates, values = zip(*label_views_data)
-
-    line = Line(init_opts=opts.InitOpts(width="100%", height="300px"))
-    line.set_global_opts(
-        title_opts=opts.TitleOpts(title=""),
-        legend_opts=opts.LegendOpts(is_show=False),
-        yaxis_opts=opts.AxisOpts(name="Views"),
-        xaxis_opts=opts.AxisOpts(name="Date"),
-    )
-
-    line.add_xaxis(dates)
-    line.add_yaxis(
-        series_name="Views this day",
-        y_axis=values,
-        is_smooth=True,
-        is_symbol_show=True,
-        symbol="circle",
-        symbol_size=6,
-        linestyle_opts=opts.LineStyleOpts(width=2),
-    )
-    labels_chart = Markup(line.render_embed())
+    labels_chart = create_graph(label_views_data)
 
     return render_template(
         "label/labels_active.html",

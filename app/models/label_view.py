@@ -26,7 +26,6 @@ class LabelView(db.Model, ModelMixin):
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
         default=datetime.utcnow,
-        server_default=sa.func.now(),
     )
 
     def __repr__(self):
