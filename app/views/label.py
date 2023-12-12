@@ -4,6 +4,7 @@ import string
 import csv
 import io
 from datetime import datetime, timedelta
+
 from flask import (
     Blueprint,
     render_template,
@@ -26,6 +27,9 @@ from app import models as m, db
 from app import forms as f
 from app.logger import log
 from app.controllers.date_convert import date_convert
+from pyecharts.charts import Line
+from pyecharts import options as opts
+from markupsafe import Markup
 
 
 dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
@@ -45,6 +49,12 @@ def get_active_labels():
             .select_from(m.Label)
             .where(m.Label.status == m.LabelStatus.active)
         )
+        label_views = (
+            sa.select(m.LabelView)
+            .join(m.Label)
+            .where(m.Label.status == m.LabelStatus.active)
+            .order_by(m.LabelView.created_at)
+        )
     else:
         query = (
             m.Label.select()
@@ -58,15 +68,52 @@ def get_active_labels():
             .where(m.Label.user_id == current_user.id)
             .where(m.Label.status == m.LabelStatus.active)
         )
+        label_views = (
+            sa.select(m.LabelView)
+            .join(m.Label)
+            .where(m.Label.status == m.LabelStatus.active)
+            .where(m.Label.user_id == current_user.id)
+            .order_by(m.LabelView.created_at)
+        )
     pagination = create_pagination(total=db.session.scalar(count_query))
+    labels: list[m.Label] = db.session.execute(
+        query.offset((pagination.page - 1) * pagination.per_page).limit(
+            pagination.per_page
+        )
+    ).scalars()
+    label_views = list(db.session.execute(label_views).scalars())
+
+    line = Line(init_opts=opts.InitOpts(width="100%", height="300px"))
+    line.set_global_opts(
+        title_opts=opts.TitleOpts(title=""),
+        legend_opts=opts.LegendOpts(is_show=False),
+        yaxis_opts=opts.AxisOpts(name="Views"),
+        xaxis_opts=opts.AxisOpts(name="Date"),
+    )
+
+    data = {}
+    for view in label_views:
+        if view.created_at.date() not in data:
+            data[view.created_at.date()] = 1
+        else:
+            data[view.created_at.date()] += 1
+    line.add_xaxis(list(map(str, data.keys())))
+    line.add_yaxis(
+        series_name="Views this day",
+        y_axis=data.values(),
+        is_smooth=True,
+        is_symbol_show=True,
+        symbol="circle",
+        symbol_size=6,
+        linestyle_opts=opts.LineStyleOpts(width=2),
+    )
+    labels_chart = Markup(line.render_embed())
+
     return render_template(
         "label/labels_active.html",
-        labels=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
-        ).scalars(),
+        labels=labels,
         page=pagination,
+        labels_chart=labels_chart,
     )
 
 
