@@ -49,12 +49,7 @@ def get_active_labels():
             .select_from(m.Label)
             .where(m.Label.status == m.LabelStatus.active)
         )
-        label_views = (
-            sa.select(m.LabelView)
-            .join(m.Label)
-            .where(m.Label.status == m.LabelStatus.active)
-            .order_by(m.LabelView.created_at)
-        )
+
     else:
         query = (
             m.Label.select()
@@ -68,20 +63,27 @@ def get_active_labels():
             .where(m.Label.user_id == current_user.id)
             .where(m.Label.status == m.LabelStatus.active)
         )
-        label_views = (
-            sa.select(m.LabelView)
-            .join(m.Label)
-            .where(m.Label.status == m.LabelStatus.active)
-            .where(m.Label.user_id == current_user.id)
-            .order_by(m.LabelView.created_at)
-        )
+
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels: list[m.Label] = db.session.execute(
         query.offset((pagination.page - 1) * pagination.per_page).limit(
             pagination.per_page
         )
     ).scalars()
-    label_views = list(db.session.execute(label_views).scalars())
+    label_views_data_query = (
+        sa.select(
+            sa.func.date(m.LabelView.created_at).label("date"),
+            sa.func.count().label("total_views"),
+        )
+        .join(m.Label, m.Label.id == m.LabelView.label_id)
+        .where(m.Label.status == m.LabelStatus.active)
+        .group_by(sa.func.date(m.LabelView.created_at))
+        .order_by(sa.func.date(m.LabelView.created_at))
+    )
+
+    label_views_data = list(db.session.execute(label_views_data_query).all())
+
+    dates, values = zip(*label_views_data)
 
     line = Line(init_opts=opts.InitOpts(width="100%", height="300px"))
     line.set_global_opts(
@@ -91,16 +93,10 @@ def get_active_labels():
         xaxis_opts=opts.AxisOpts(name="Date"),
     )
 
-    data = {}
-    for view in label_views:
-        if view.created_at.date() not in data:
-            data[view.created_at.date()] = 1
-        else:
-            data[view.created_at.date()] += 1
-    line.add_xaxis(list(map(str, data.keys())))
+    line.add_xaxis(dates)
     line.add_yaxis(
         series_name="Views this day",
-        y_axis=data.values(),
+        y_axis=values,
         is_smooth=True,
         is_symbol_show=True,
         symbol="circle",
