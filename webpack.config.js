@@ -106,6 +106,17 @@ const usersSearchResult = {
   },
 };
 
+const passwordConfig = {
+  entry: {
+    main: './src/password.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/password.js', // <--- Will be compiled to this single file
+  },
+};
+
+
 const configs = [
   baseConfig,
   userConfig,
@@ -116,6 +127,7 @@ const configs = [
   reports,
   countriesConfig,
   usersSearchResult,
+  passwordConfig
 ].map(conf => merge(defaultConfig, conf));
 
 module.exports = configs;
