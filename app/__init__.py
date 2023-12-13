@@ -2,6 +2,7 @@ import os
 import subprocess
 from flask import Flask, render_template
 from flask_login import LoginManager
+from pyecharts.globals import CurrentConfig
 from werkzeug.exceptions import HTTPException
 from flask_migrate import Migrate
 from flask_mail import Mail
@@ -48,7 +49,7 @@ def create_app(environment="development"):
     migration.init_app(app, db)
     login_manager.init_app(app)
     mail.init_app(app)
-
+    CurrentConfig.ONLINE_HOST = "/static/js/"
     if not app.config["TESTING"]:
         JOB_STORES = {
             "default": SQLAlchemyJobStore(url=configuration.ALCHEMICAL_DATABASE_URL)
