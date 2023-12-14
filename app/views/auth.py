@@ -91,8 +91,8 @@ def login():
             log(log.INFO, "Redirecting to users page.")
             return redirect(url_for("user.get_all"))
         else:
-            log(log.INFO, "Redirecting to labels page.")
-            return redirect(url_for("labels.get_active_labels"))
+            log(log.INFO, "Redirecting to dashboard.")
+            return redirect(url_for("report.dashboard"))
 
     elif form.is_submitted():
         log(log.WARNING, "Form submitted error: [%s]", form.errors)
