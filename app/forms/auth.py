@@ -14,8 +14,14 @@ from app import db
 
 
 class LoginForm(FlaskForm):
-    user_id = StringField("Email", [DataRequired()])
-    password = PasswordField("Password", [DataRequired()])
+    user_id = StringField(
+        "Email", [DataRequired()], render_kw={"placeholder": "Enter your email"}
+    )
+    password = PasswordField(
+        "Password",
+        [DataRequired()],
+        render_kw={"placeholder": "Enter your password", "autocomplete": "off"},
+    )
     submit = SubmitField("Login")
 
 
