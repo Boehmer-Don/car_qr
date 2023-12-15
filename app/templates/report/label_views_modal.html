@@ -1,4 +1,6 @@
 <!-- Main modal -->
+{% from "macros/close_modal.html" import closeModal with context %}
+
 <div class="modal" id="modal-label-view-{{ unique_id }}">
     <div class="modal-underlay" onclick="closeModal()"></div>
     <div class="modal-content">
@@ -32,14 +34,6 @@
         </div>
 
     </div>
+</div>
 
-    <script id="script-label-view-{{ unique_id }}">
-        function closeModal() {
-            const modal = document.getElementById("modal-label-view-{{ unique_id }}");
-            const script = document.getElementById("script-label-view-{{ unique_id }}");
-            if (modal && script) {
-                modal.remove();
-                script.remove();
-            }
-        }
-    </script>
+{{ closeModal( unique_id ) }}
