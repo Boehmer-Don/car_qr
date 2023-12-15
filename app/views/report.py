@@ -64,23 +64,15 @@ def dashboard():
     )
     download = request.args.get("download")
 
-    if views_filter == "Asc":
-        order_by = m.Label.views.asc()
-    elif views_filter == "Desc":
-        order_by = m.Label.views.desc()
-    else:
-        order_by = m.Label.id
+    query = sa.select(m.Label).where(m.Label.user_id == current_user.id)
 
-    query = (
-        m.Label.select().where(m.Label.user_id == current_user.id).order_by(order_by)
-    )
     count_query = (
         sa.select(sa.func.count())
         .select_from(m.Label)
         .where(m.Label.user_id == current_user.id)
     )
 
-    if exclude:
+    if exclude and exclude != "None":
         log(log.INFO, f"Excluding labels: {exclude}")
         exclude_list = exclude.split(",")
         for label_to_exclude in exclude_list:
@@ -135,12 +127,6 @@ def dashboard():
         log(log.INFO, f"Filtering by trim: {trim_filter}")
         query = query.where(m.Label.trim == trim_filter)
         count_query = count_query.where(m.Label.trim == trim_filter)
-    if views_filter == "Asc":
-        log(log.INFO, f"Filtering by views: {views_filter}")
-        query = query.order_by(m.Label.views.asc())
-    elif views_filter == "Desc":
-        log(log.INFO, f"Filtering by views: {views_filter}")
-        query = query.order_by(m.Label.views.desc())
     if price_lower:
         log(log.INFO, f"Filtering by price_lower: {price_lower}")
         query = query.where(m.Label.price >= price_lower)
@@ -157,26 +143,28 @@ def dashboard():
         log(log.INFO, f"Filtering by price_sold_upper: {price_sold_upper}")
         query = query.where(m.Label.price_sold <= price_sold_upper)
         count_query = count_query.where(m.Label.price_sold <= price_sold_upper)
-    if views_options_filter == "0-10":
+
+    query = query.order_by(m.Label.id.desc())
+
+    if views_options_filter in ["0-10", "10-50", "50-100", "100-1000", "1000-10000"]:
+        total_views = sa.func.count(m.LabelView.id).label("total_views")
         log(log.INFO, f"Filtering by views_options_filter: {views_options_filter}")
-        query = query.where(m.Label.views <= 10)
-        count_query = count_query.where(m.Label.views <= 10)
-    elif views_options_filter == "10-50":
-        log(log.INFO, f"Filtering by views_options_filter: {views_options_filter}")
-        query = query.where(m.Label.views >= 10).where(m.Label.views <= 50)
-        count_query = count_query.where(m.Label.views >= 10).where(m.Label.views <= 50)
-    elif views_options_filter == "50-100":
-        log(log.INFO, f"Filtering by views_options_filter: {views_options_filter}")
-        query = query.where(m.Label.views >= 50).where(m.Label.views <= 100)
-        count_query = count_query.where(m.Label.views >= 50).where(m.Label.views <= 100)
-    elif views_options_filter == "100-1000":
-        log(log.INFO, f"Filtering by views_options_filter: {views_options_filter}")
-        query = query.where(m.Label.views >= 100).where(m.Label.views <= 1000)
-        count_query = count_query.where(m.Label.views >= 100).where(
-            m.Label.views <= 1000
+        query = (
+            query.add_columns(total_views)
+            .join(m.Label._views)
+            .group_by(m.Label.id)
+            .having(sa.between(total_views, *views_options_filter.split("-")))
+            .order_by(sa.text("total_views DESC"))
+        )
+        count_query = (
+            count_query.add_columns(total_views)
+            .join(m.Label._views)
+            .group_by(m.Label.id)
+            .having(sa.between(total_views, *views_options_filter.split("-")))
         )
 
-    pagination = create_pagination(total=db.session.scalar(count_query))
+    count_query = db.session.scalar(count_query)
+    pagination = create_pagination(total=0 if count_query is None else count_query)
     labels = (
         db.session.execute(
             query.offset((pagination.page - 1) * pagination.per_page).limit(
@@ -308,6 +296,23 @@ def get_models():
         .distinct(m.Label.vehicle_model)
     ).all()
     return {"models": labels}
+
+
+@report_blueprint.route("/get_label_views_datetime/<unique_id>", methods=["GET"])
+@login_required
+def get_label_views_datetime(unique_id: str):
+    label: m.Label | None = db.session.scalar(
+        m.Label.select().where(m.Label.unique_id == unique_id)
+    )
+    if not label:
+        log(log.ERROR, f"Label not found: {unique_id}")
+        return {"error": "Label not found"}, 404
+    list_views = label.list_views
+    return render_template(
+        "report/label_views_modal.html",
+        list_views=list_views,
+        unique_id=label.unique_id,
+    )
 
 
 @report_blueprint.route("/all", methods=["GET", "POST"])

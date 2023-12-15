@@ -125,7 +125,7 @@ def activate(reset_password_uid: str):
 
     form: f.RegistrationStep2Form = f.RegistrationStep2Form()
     if form.validate_on_submit():
-        user.unique_id = m.user.gen_password_reset_id()
+        user.unique_id = m.generate_uuid()
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
         user.name_of_dealership = form.name_of_dealership.data
@@ -456,7 +456,7 @@ def password_recovery(reset_password_uid):
 
     if form.validate_on_submit():
         user.password = form.password.data
-        user.unique_id = m.gen_password_reset_id()
+        user.unique_id = m.generate_uuid()
         user.save()
         login_user(user)
         flash("Login successful.", "success")

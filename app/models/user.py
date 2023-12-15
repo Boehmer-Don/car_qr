@@ -1,5 +1,4 @@
 from datetime import datetime
-from uuid import uuid4
 import enum
 from flask_login import UserMixin, AnonymousUserMixin
 import sqlalchemy as sa
@@ -8,13 +7,9 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.database import db
-from .utils import ModelMixin
+from .utils import ModelMixin, generate_uuid
 from app.logger import log
 from app import schema as s
-
-
-def gen_password_reset_id() -> str:
-    return str(uuid4())
 
 
 class UsersPlan(enum.Enum):
@@ -50,11 +45,11 @@ class User(db.Model, UserMixin, ModelMixin):
     )
     unique_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(36),
-        default=gen_password_reset_id,
+        default=generate_uuid,
     )
     reset_password_uid: orm.Mapped[str] = orm.mapped_column(
         sa.String(64),
-        default=gen_password_reset_id,
+        default=generate_uuid,
     )
 
     first_name: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
@@ -99,7 +94,7 @@ class User(db.Model, UserMixin, ModelMixin):
 
     def reset_password(self):
         self.password_hash = ""
-        self.reset_password_uid = gen_password_reset_id()
+        self.reset_password_uid = generate_uuid()
         self.save()
 
     def __repr__(self):

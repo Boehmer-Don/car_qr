@@ -13,7 +13,6 @@ from flask import (
     redirect,
     url_for,
     send_file,
-    Response,
 )
 from flask_login import login_required, current_user
 from flask_mail import Message, Mail
@@ -47,6 +46,16 @@ def get_active_labels():
             .select_from(m.Label)
             .where(m.Label.status == m.LabelStatus.active)
         )
+        label_views_data_query = (
+            sa.select(
+                sa.func.date(m.LabelView.created_at).label("date"),
+                sa.func.count().label("total_views"),
+            )
+            .join(m.Label, m.Label.id == m.LabelView.label_id)
+            .where(m.Label.status == m.LabelStatus.active)
+            .group_by(sa.func.date(m.LabelView.created_at))
+            .order_by(sa.func.date(m.LabelView.created_at))
+        )
 
     else:
         query = (
@@ -61,6 +70,19 @@ def get_active_labels():
             .where(m.Label.user_id == current_user.id)
             .where(m.Label.status == m.LabelStatus.active)
         )
+        label_views_data_query = (
+            sa.select(
+                sa.func.date(m.LabelView.created_at).label("date"),
+                sa.func.count().label("total_views"),
+            )
+            .join(m.Label, m.Label.id == m.LabelView.label_id)
+            .where(
+                m.Label.status == m.LabelStatus.active,
+                m.Label.user_id == current_user.id,
+            )
+            .group_by(sa.func.date(m.LabelView.created_at))
+            .order_by(sa.func.date(m.LabelView.created_at))
+        )
 
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels: list[m.Label] = db.session.execute(
@@ -68,27 +90,35 @@ def get_active_labels():
             pagination.per_page
         )
     ).scalars()
+
+    label_views_data = db.session.execute(label_views_data_query).all()
+
+    labels_graph = create_graph(label_views_data)
+
+    return render_template(
+        "label/labels_active.html",
+        labels=labels,
+        page=pagination,
+        labels_graph=labels_graph,
+    )
+
+
+@dealer_blueprint.route("/<label_unique_id>/views", methods=["GET"])
+@login_required
+def get_label_graph_views(label_unique_id: str):
     label_views_data_query = (
         sa.select(
             sa.func.date(m.LabelView.created_at).label("date"),
             sa.func.count().label("total_views"),
         )
         .join(m.Label, m.Label.id == m.LabelView.label_id)
-        .where(m.Label.status == m.LabelStatus.active)
+        .where(m.Label.unique_id == label_unique_id)
         .group_by(sa.func.date(m.LabelView.created_at))
         .order_by(sa.func.date(m.LabelView.created_at))
     )
-
-    label_views_data = list(db.session.execute(label_views_data_query).all())
-
-    labels_chart = create_graph(label_views_data)
-
-    return render_template(
-        "label/labels_active.html",
-        labels=labels,
-        page=pagination,
-        labels_chart=labels_chart,
-    )
+    label_views_data = db.session.execute(label_views_data_query).all()
+    labels_graph = create_graph(label_views_data)
+    return render_template("label/label_graph_views.html", labels_graph=labels_graph)
 
 
 @dealer_blueprint.route("/archived", methods=["GET"])
@@ -105,6 +135,18 @@ def get_archived_labels():
             .select_from(m.Label)
             .where(m.Label.status == m.LabelStatus.archived)
         )
+        label_views_data_query = (
+            sa.select(
+                sa.func.date(m.LabelView.created_at).label("date"),
+                sa.func.count().label("total_views"),
+            )
+            .join(m.Label, m.Label.id == m.LabelView.label_id)
+            .where(
+                m.Label.status == m.LabelStatus.archived,
+            )
+            .group_by(sa.func.date(m.LabelView.created_at))
+            .order_by(sa.func.date(m.LabelView.created_at))
+        )
     else:
         query = (
             m.Label.select()
@@ -118,16 +160,34 @@ def get_archived_labels():
             .where(m.Label.user_id == current_user.id)
             .where(m.Label.status == m.LabelStatus.archived)
         )
+        label_views_data_query = (
+            sa.select(
+                sa.func.date(m.LabelView.created_at).label("date"),
+                sa.func.count().label("total_views"),
+            )
+            .join(m.Label, m.Label.id == m.LabelView.label_id)
+            .where(
+                m.Label.status == m.LabelStatus.archived,
+                m.Label.user_id == current_user.id,
+            )
+            .group_by(sa.func.date(m.LabelView.created_at))
+            .order_by(sa.func.date(m.LabelView.created_at))
+        )
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels = db.session.execute(
         query.offset((pagination.page - 1) * pagination.per_page).limit(
             pagination.per_page
         )
     ).scalars()
+
+    label_views_data = db.session.execute(label_views_data_query).all()
+
+    labels_graph = create_graph(label_views_data)
     return render_template(
         "label/labels_archived.html",
         labels=labels,
         page=pagination,
+        labels_graph=labels_graph,
     )
 
 

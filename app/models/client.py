@@ -1,9 +1,8 @@
 from datetime import datetime
-from uuid import uuid4
 import sqlalchemy as sa
 from sqlalchemy import orm
 from app.database import db
-from .utils import ModelMixin
+from .utils import ModelMixin, generate_uuid
 
 
 class Client(db.Model, ModelMixin):
@@ -12,7 +11,7 @@ class Client(db.Model, ModelMixin):
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     unique_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(36),
-        default=str(uuid4()),
+        default=generate_uuid,
     )
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,

@@ -1,0 +1,39 @@
+<!-- Main modal -->
+{% from "macros/close_modal.html" import closeModal with context %}
+
+<div class="modal" id="modal-label-view-{{ unique_id }}">
+    <div class="modal-underlay" onclick="closeModal()"></div>
+    <div class="modal-content">
+        <div class="w-[20rem] bg-gray-100 dark:bg-gray-800">
+            <div class="w-full flex text-xs text-white font-bold px-1 py-3 md:p-3 bg-indigo-700 rounded-t-lg">
+                <p class="w-1/2 md:w-8/12 flex items-center justify-start">
+                    Day
+                </p>
+                <p class="w-1/2 md:w-8/12 flex items-center justify-start">
+                    Time
+                </p>
+            </div>
+            <div class="w-full h-full max-h-96 overflow-y-scroll">
+                {% for view in list_views %}
+                <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
+                    <p class="w-1/2 md:w-8/12 flex items-center justify-start">
+                        {{ view.day }}
+                    </p>
+                    <p class="w-1/2 md:w-8/12 flex items-center justify-start">
+                        {{ view.time }}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="flex justify-center">
+            <button type="submit"
+                class="mt-3 px-5 py-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                Export to Excel
+            </button>
+        </div>
+
+    </div>
+</div>
+
+{{ closeModal( unique_id ) }}

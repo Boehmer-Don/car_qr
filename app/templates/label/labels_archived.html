@@ -31,6 +31,10 @@
       </ul>
     </div>
 
+    <div id="lebals-graph-view">
+      {{ labels_graph }}
+    </div>
+
     <div class="w-full p-3">
       <h3 class="mt-6 md:mt-0 text-lg font-bold">Archived Labels</h3>
 
@@ -55,6 +59,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
           <span class="hidden lg:block">Views</span>
+        </p>
+        <p class="w-1/12 flex items-center justify-center">
+          <span class="hidden lg:block">Graph</span>&nbsp;Active
         </p>
 
         <p class="w-3/12 flex items-center justify-center">
@@ -91,10 +98,22 @@
           {{ label.name }}
         </p>
         <p class="w-1/12 flex items-center justify-center">
-          {{ days_active(label.date_received, label.date_deactivated) }}
+          {{ label.views }}
+        </p>
+        <p class="w-1/12 flex items-center justify-center">
+          <button hx-get="{{ url_for('labels.get_label_graph_views', label_unique_id=label.unique_id) }}"
+            hx-trigger="click" hx-target="#lebals-graph-view" hx-swap="outerHTML">
+            <svg class="w-6 h-6 p-1 hover:text-indigo-500 cursor-pointer aria-hidden=" true"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M1 1v14h16m0-9-3-2-3 5-3-2-3 4" />
+            </svg>
+          </button>
+
         </p>
         <p class="w-3/12 flex items-center justify-center">
-          10<span class="hidden xl:block">&nbsp;days active</span>
+          {{ days_active(label.date_received, label.date_deactivated) }}<span class="hidden xl:block">&nbsp;days
+            active</span>
         </p>
         <p class="w-3/12 hidden md:flex items-center justify-center">
           <!-- {{ label.date_received.strftime('%y-%m-%d') }} -->

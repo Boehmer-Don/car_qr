@@ -1,0 +1,12 @@
+{% macro closeModal(unique_id) -%}
+<script id="script-label-view-{{ unique_id }}">
+    function closeModal() {
+        const modal = document.getElementById("modal-label-view-{{ unique_id }}");
+        const script = document.getElementById("script-label-view-{{ unique_id }}");
+        if (modal && script) {
+            modal.remove();
+            script.remove();
+        }
+    }
+</script>
+{%- endmacro %}
