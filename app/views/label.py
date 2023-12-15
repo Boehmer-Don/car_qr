@@ -427,7 +427,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 status=m.LabelStatus.cart,
                 user_id=current_user.id,
                 gift=request.form.get(f"gift-{i}"),
-                location_id=location.id if location else None,
+                location_id=location_id,
             ).save()
             log(log.INFO, "Created label [%s]", label)
         return redirect(
