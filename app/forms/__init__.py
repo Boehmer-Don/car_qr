@@ -11,3 +11,4 @@ from .auth import (
 from .user import UserForm, AdminForm, ResendInviteForm
 from .label import LabelForm, LabelUpdateForm, DeactivateLabelForm, LabelsAmountForm
 from .client import Client
+from .label_location import LabelLocationForm

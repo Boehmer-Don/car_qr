@@ -3,13 +3,13 @@ import enum
 from flask_login import UserMixin, AnonymousUserMixin
 import sqlalchemy as sa
 from sqlalchemy import orm
-from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.database import db
 from .utils import ModelMixin, generate_uuid
 from app.logger import log
 from app import schema as s
+from .label_location import LabelLocation
 
 
 class UsersPlan(enum.Enum):
@@ -73,7 +73,11 @@ class User(db.Model, UserMixin, ModelMixin):
         sa.String(255), nullable=True, default=""
     )
 
-    @hybrid_property
+    label_locations: orm.Mapped[list["LabelLocation"]] = orm.relationship(
+        back_populates="user"
+    )
+
+    @property
     def password(self):
         return self.password_hash
 
