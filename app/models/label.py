@@ -8,15 +8,11 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.database import db
-from .utils import ModelMixin
+from .utils import ModelMixin, generate_uuid
 from app.logger import log
 from app import schema as s
 from .user import User
 from .label_view import LabelView
-
-
-def gen_label_unique_id() -> str:
-    return str(uuid4())
 
 
 class LabelStatus(enum.Enum):
@@ -31,7 +27,7 @@ class Label(db.Model, ModelMixin):
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     unique_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(36),
-        default=gen_label_unique_id,
+        default=generate_uuid,
     )
     sticker_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(16), default="", nullable=True
@@ -71,7 +67,6 @@ class Label(db.Model, ModelMixin):
 
     user: orm.Mapped[User] = orm.relationship("User", backref="labels")
     _views: orm.Mapped[list[LabelView]] = orm.relationship(
-        "LabelView",
         back_populates="label",
     )
 

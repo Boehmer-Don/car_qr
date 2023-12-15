@@ -6,14 +6,10 @@ import sqlalchemy as sa
 from sqlalchemy import orm
 
 from app.database import db
-from .utils import ModelMixin
+from .utils import ModelMixin, generate_uuid
 
 if TYPE_CHECKING:
     from .label import Label
-
-
-def generate_uuid() -> str:
-    return str(uuid4())
 
 
 class LabelView(db.Model, ModelMixin):
