@@ -21,6 +21,7 @@ class LabelForm(FlaskForm):
     user_id = IntegerField("User ID", validators=[DataRequired()])
     views = IntegerField("Views")
     gift = StringField("Gift", validators=[DataRequired(), Length(0, 255)])
+    location_id = IntegerField("Location ID", default=None)
     next_url = StringField("Next URL")
 
 

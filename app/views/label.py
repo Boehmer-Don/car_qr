@@ -357,6 +357,9 @@ def new_label_set_details(user_unique_id: str, amount: int):
     models = db.session.scalars(m.CarModel.select()).all()
     trims = db.session.scalars(m.CarTrim.select()).all()
     types = db.session.scalars(m.CarType.select()).all()
+    label_locations = db.session.scalars(
+        m.LabelLocation.select().where(m.LabelLocation.user_id == current_user.id)
+    ).all()
     if request.method == "POST":
         for i in range(1, int(amount) + 1):
             make_input = request.form.get(f"make-{i}")
@@ -400,6 +403,15 @@ def new_label_set_details(user_unique_id: str, amount: int):
             if url_input and not url_input.startswith("http"):
                 url_input = f"https://{url_input}"
 
+            location_id = request.form.get(f"location-{i}")
+            if location_id:
+                location = db.session.scalars(
+                    m.LabelLocation.select().where(
+                        m.LabelLocation.id == location_id,
+                        m.LabelLocation.user_id == current_user.id,
+                    )
+                ).first()
+                location_id = location.id if location else None
             label = m.Label(
                 sticker_id=request.form.get(f"sticker-number-{i}"),
                 name=request.form.get(f"name-{i}"),
@@ -415,6 +427,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 status=m.LabelStatus.cart,
                 user_id=current_user.id,
                 gift=request.form.get(f"gift-{i}"),
+                location_id=location.id if location else None,
             ).save()
             log(log.INFO, "Created label [%s]", label)
         return redirect(
@@ -429,6 +442,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
         models=models,
         trims=trims,
         types=types,
+        label_locations=label_locations,
     )
 
 
@@ -443,7 +457,7 @@ def new_label_payment(user_unique_id: str):
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
     trims = db.session.scalars(m.CarTrim.select()).all()
-    types = db.session.scalars(m.CarType.select()).all()
+    types = db.session.scalars(m.CarType.select()).all())
     if request.method == "POST":
         if request.form.get("edit"):
             for index, label in enumerate(labels):
