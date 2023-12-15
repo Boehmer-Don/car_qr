@@ -457,7 +457,7 @@ def new_label_payment(user_unique_id: str):
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
     trims = db.session.scalars(m.CarTrim.select()).all()
-    types = db.session.scalars(m.CarType.select()).all())
+    types = db.session.scalars(m.CarType.select()).all()
     if request.method == "POST":
         if request.form.get("edit"):
             for index, label in enumerate(labels):
