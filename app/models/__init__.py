@@ -12,4 +12,5 @@ from .sticker import Sticker
 from .client import Client
 from .landing import LandingForm
 from .label_view import LabelView
+from .label_location import LabelLocation
 from .utils import generate_uuid

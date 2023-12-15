@@ -1,4 +1,5 @@
 # flake8: noqa F401
+from typing import TYPE_CHECKING
 from datetime import datetime
 import enum
 from uuid import uuid4
@@ -13,6 +14,10 @@ from app.logger import log
 from app import schema as s
 from .user import User
 from .label_view import LabelView
+
+
+if TYPE_CHECKING:
+    from .label_location import LabelLocation
 
 
 class LabelStatus(enum.Enum):
@@ -31,6 +36,10 @@ class Label(db.Model, ModelMixin):
     )
     sticker_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(16), default="", nullable=True
+    )
+    location_id: orm.Mapped[str] = orm.mapped_column(
+        sa.ForeignKey("label_locations.id"),
+        nullable=True,
     )
     name: orm.Mapped[str] = orm.mapped_column(sa.String(256), default="")
     make: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
@@ -70,8 +79,16 @@ class Label(db.Model, ModelMixin):
         back_populates="label",
     )
 
+    _location: orm.Mapped["LabelLocation"] = orm.relationship(
+        back_populates="labels",
+    )
+
     def __repr__(self):
         return f"<{self.id}:{self.name}>"
+
+    @property
+    def location(self) -> str:
+        return self._location.name if self._location else ""
 
     @property
     def mileage_formated(self) -> str:
