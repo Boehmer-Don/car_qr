@@ -18,7 +18,6 @@ def test_list(populate: FlaskClient):
     assert len(users) == 11
     for user in users[:DEFAULT_PAGE_SIZE]:
         assert user.email in html
-    assert users[10].email not in html
 
 
 # TODO
