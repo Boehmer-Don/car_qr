@@ -34,12 +34,9 @@ class Label(db.Model, ModelMixin):
         sa.String(36),
         default=generate_uuid,
     )
-    sticker_id: orm.Mapped[str] = orm.mapped_column(
-        sa.String(16), default="", nullable=True
-    )
-    location_id: orm.Mapped[str] = orm.mapped_column(
+    sticker_id: orm.Mapped[str | None] = orm.mapped_column(sa.String(16), default="")
+    location_id: orm.Mapped[int | None] = orm.mapped_column(
         sa.ForeignKey("label_locations.id"),
-        nullable=True,
     )
     name: orm.Mapped[str] = orm.mapped_column(sa.String(256), default="")
     make: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
