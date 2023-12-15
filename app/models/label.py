@@ -70,6 +70,10 @@ class Label(db.Model, ModelMixin):
     gift: orm.Mapped[str] = orm.mapped_column(sa.String(128), default="", nullable=True)
 
     user: orm.Mapped[User] = orm.relationship("User", backref="labels")
+    _views: orm.Mapped[list[LabelView]] = orm.relationship(
+        "LabelView",
+        back_populates="label",
+    )
 
     def __repr__(self):
         return f"<{self.id}:{self.name}>"
@@ -82,9 +86,11 @@ class Label(db.Model, ModelMixin):
 
     @property
     def views(self) -> int:
-        return db.session.scalar(
-            sa.select(sa.func.count(LabelView.id)).where(LabelView.label_id == self.id)
-        )
+        return len(self._views)
+
+    @property
+    def list_views(self) -> list[LabelView]:
+        return self._views
 
     @property
     def price_formated(self) -> str:

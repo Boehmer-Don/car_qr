@@ -298,6 +298,23 @@ def get_models():
     return {"models": labels}
 
 
+@report_blueprint.route("/get_label_views_datetime/<unique_id>", methods=["GET"])
+@login_required
+def get_label_views_datetime(unique_id: str):
+    label: m.Label | None = db.session.scalar(
+        m.Label.select().where(m.Label.unique_id == unique_id)
+    )
+    if not label:
+        log(log.ERROR, f"Label not found: {unique_id}")
+        return {"error": "Label not found"}, 404
+    list_views = label.list_views
+    return render_template(
+        "report/label_views_modal.html",
+        list_views=list_views,
+        unique_id=label.unique_id,
+    )
+
+
 @report_blueprint.route("/all", methods=["GET", "POST"])
 @login_required
 def all():

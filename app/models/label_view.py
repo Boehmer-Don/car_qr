@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from datetime import datetime
 from uuid import uuid4
 import sqlalchemy as sa
@@ -5,6 +7,9 @@ from sqlalchemy import orm
 
 from app.database import db
 from .utils import ModelMixin
+
+if TYPE_CHECKING:
+    from .label import Label
 
 
 def generate_uuid() -> str:
@@ -27,6 +32,15 @@ class LabelView(db.Model, ModelMixin):
         sa.DateTime,
         default=datetime.utcnow,
     )
+    label: orm.Mapped["Label"] = orm.relationship(back_populates="_views")
+
+    @property
+    def day(self) -> str:
+        return self.created_at.strftime("%Y-%m-%d")
+
+    @property
+    def time(self) -> str:
+        return self.created_at.strftime("%H:%M:%S")
 
     def __repr__(self):
         return f"<{self.id}:{self.label_id} - {self.created_at}>"
