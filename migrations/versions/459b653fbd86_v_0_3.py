@@ -1,7 +1,7 @@
 """v 0.3
 
-Revision ID: 8a8b6d35b660
-Revises: 
+Revision ID: 459b653fbd86
+Revises:
 Create Date: 2023-11-20 09:23:23.060501
 
 """
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = "8a8b6d35b660"
+revision = "459b653fbd86"
 down_revision = None
 branch_labels = None
 depends_on = None
