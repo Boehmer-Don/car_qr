@@ -1,7 +1,7 @@
 # flake8: noqa F401
 import io
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta, time
 from flask import (
     Blueprint,
     render_template,
@@ -14,9 +14,15 @@ from flask import (
 from flask_login import login_required, current_user
 import sqlalchemy as sa
 from flask import current_app as app
+
+from pyecharts import options as opts
+from pyecharts.charts import Bar
+
+
 from app.controllers import create_pagination
 from app import models as m, db
 from app import forms as f
+from app.controllers.graphs import create_bar_graph
 from app.logger import log
 from app.controllers.jinja_globals import days_active
 from app.controllers.date_convert import date_convert
@@ -164,6 +170,57 @@ def dashboard():
         )
 
     count_query = db.session.scalar(count_query)
+
+    now = datetime.now()
+
+    # Calculate the start of the current week (assuming Monday is the start of the week)
+    start_of_week = now - timedelta(days=now.weekday())
+
+    # Create a list of days in the current week
+    week_days = [
+        (start_of_week - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)
+    ]
+    tomorrow = now + timedelta(days=1)
+
+    view_query = (
+        sa.Select(
+            sa.func.count(m.LabelView.created_at).label("count"),
+            m.LabelView.created_at,
+        )
+        .where(
+            m.LabelView.created_at.between(
+                sa.cast(sa.literal(week_days[-1]), sa.DateTime(timezone=True)),
+                sa.cast(
+                    sa.literal(tomorrow.strftime("%Y-%m-%d")),
+                    sa.DateTime(timezone=True),
+                ),
+            ),
+        )
+        .group_by(m.LabelView.created_at)
+        .order_by(m.LabelView.created_at.desc())
+    )
+
+    view_data = db.session.execute(view_query).all()
+    period_dict = {
+        "Morning": [0, 0, 0, 0, 0, 0, 0],
+        "Afternoon": [0, 0, 0, 0, 0, 0, 0],
+        "Evening": [0, 0, 0, 0, 0, 0, 0],
+    }
+    for data in view_data:
+        date = data[1]
+        hour = data[1].hour
+        try:
+            index = week_days.index(date.strftime("%Y-%m-%d"))
+        except ValueError:
+            continue
+        if hour < 12:
+            period_dict["Morning"][index] += data[0]
+        elif hour < 18:
+            period_dict["Afternoon"][index] += data[0]
+        else:
+            period_dict["Evening"][index] += data[0]
+    test_g = create_bar_graph(week_days, period_dict)
+
     pagination = create_pagination(total=0 if count_query is None else count_query)
     labels = (
         db.session.execute(
@@ -204,7 +261,7 @@ def dashboard():
             .where(m.Label.user_id == current_user.id)
             .group_by(m.Label.vehicle_model)
         ).all()
-
+    now = datetime.now()
     if download == "true":
         log(log.INFO, f"Downloading report")
         labels = db.session.scalars(query).all()
@@ -253,7 +310,6 @@ def dashboard():
             mem.write(proxy.getvalue().encode("utf-8"))
             mem.seek(0)
 
-        now = datetime.now()
         return send_file(
             mem,
             as_attachment=True,
@@ -282,6 +338,7 @@ def dashboard():
         views_options_filter=views_options_filter,
         exclude=exclude,
         page=pagination,
+        test_graph=test_g,
     )
 
 
@@ -312,6 +369,7 @@ def get_label_views_datetime(unique_id: str):
         "report/label_views_modal.html",
         list_views=list_views,
         unique_id=label.unique_id,
+        location=label.location,
     )
 
 

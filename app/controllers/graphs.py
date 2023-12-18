@@ -1,7 +1,7 @@
 import datetime
 from typing import List
 
-from pyecharts.charts import Line  # type: ignore
+from pyecharts.charts import Line, Bar  # type: ignore
 from pyecharts import options as opts  # type: ignore
 from markupsafe import Markup
 
@@ -33,3 +33,28 @@ def create_graph(label_views_data: List[tuple[datetime.date, int]]) -> Markup:
         linestyle_opts=opts.LineStyleOpts(width=2),
     )
     return Markup(line.render_embed())
+
+
+def create_bar_graph(days_of_week: [], period_dict: dict) -> Markup:
+    bar = (
+        Bar(init_opts=opts.InitOpts(width="100%", height="300px"))
+        .add_xaxis(days_of_week)
+        .add_yaxis(
+            "Morning",
+            period_dict["Morning"],
+        )
+        .add_yaxis(
+            "Afternoon",
+            period_dict["Afternoon"],
+        )
+        .add_yaxis(
+            "Evening",
+            period_dict["Evening"],
+        )
+        .set_global_opts(
+            title_opts=opts.TitleOpts(title="Weekday Time Periods"),
+            yaxis_opts=opts.AxisOpts(name="Views"),
+            legend_opts=opts.LegendOpts(pos_right="center", pos_top="top"),
+        )
+    )
+    return Markup(bar.render_embed())

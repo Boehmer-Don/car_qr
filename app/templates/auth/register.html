@@ -14,7 +14,7 @@
           <div class="flex w-full h-1 bg-gray-300 rounded-sm">
             <div class="w-1/5 h-1 bg-indigo-700 rounded-l-sm"></div>
           </div>
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+          <h2 class="text-2xl font-bold text-gray-900">
             Sign Up
           </h2>
           <form class="mt-8 space-y-6 from" role="form" action="{{ url_for('auth.register') }}" method="post">
@@ -25,7 +25,7 @@
               text-gray-900 dark:text-white')}}
               {{form.email(
               class="clean_email_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
-              dark:text-white"
+              "
               )
               }}
 
@@ -37,7 +37,7 @@
               {{form.password.label(class='block mb-2 text-sm font-medium
               text-gray-900 dark:text-white')}}
               {{form.password(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit"
               )
               }}{% for error in form.errors.password %}
               <small class="text-danger">{{error}}</small>
@@ -47,7 +47,7 @@
               {{form.password_confirmation.label(class='block mb-2 text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.password_confirmation(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit"
               )
               }}
               {% for error in form.errors.password_confirmation %}

@@ -127,8 +127,20 @@ GIFTS = [
     "Special Financing Rates",
 ]
 
+LABEL_LOCATIONS = ("A1", "A2", "A3", "A4", "B1", "B2", "B3", "C1", "C2", "C3")
+
 
 def add_labels(user_id: int = 9):
+    if not db.session.scalar(sa.select(m.User.id).where(m.User.id == user_id)):
+        print(f"User with id [{user_id}] not found")
+        return
+    location_ids = []
+    for location in LABEL_LOCATIONS:
+        location = m.LabelLocation(name=location, user_id=user_id)
+        db.session.add(location)
+        db.session.flush()
+        location_ids.append(location.id)
+
     with open("tests/db/test_labels.json", "r") as f:
         labels_data = json.load(f)
     for index, label in enumerate(labels_data):
@@ -159,6 +171,7 @@ def add_labels(user_id: int = 9):
             date_deactivated=date_deactivated,
             user_id=user_id,
             gift=gift,
+            location_id=random.choice(location_ids),
         )
         db.session.add(label)
         db.session.flush()
