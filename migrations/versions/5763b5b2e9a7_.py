@@ -1,8 +1,8 @@
-"""v 0.3
+"""empty message
 
-Revision ID: 459b653fbd86
+Revision ID: 5763b5b2e9a7
 Revises:
-Create Date: 2023-11-20 09:23:23.060501
+Create Date: 2023-09-28 10:43:39.243340
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = "459b653fbd86"
+revision = "5763b5b2e9a7"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -107,7 +107,7 @@ def upgrade():
         ),
         sa.Column("date_activated", sa.DateTime(), nullable=True),
         sa.Column("date_deactivated", sa.DateTime(), nullable=True),
-        sa.Column("url", sa.String(length=255), nullable=False),
+        sa.Column("url", sa.String(length=64), nullable=False),
         sa.Column(
             "status",
             sa.Enum("cart", "active", "archived", name="labelstatus"),
@@ -207,10 +207,11 @@ def upgrade():
     with op.batch_alter_table("trims", schema=None) as batch_op:
         batch_op.create_index(batch_op.f("ix_trims_name"), ["name"], unique=False)
 
-    with op.batch_alter_table("apscheduler_jobs", schema=None) as batch_op:
-        batch_op.drop_index("ix_apscheduler_jobs_next_run_time")
+    # comment out because of error:
+    # with op.batch_alter_table('apscheduler_jobs', schema=None) as batch_op:
+    #     batch_op.drop_index('ix_apscheduler_jobs_next_run_time')
 
-    op.drop_table("apscheduler_jobs")
+    # op.drop_table('apscheduler_jobs')
     # ### end Alembic commands ###
 
 
