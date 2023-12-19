@@ -12,6 +12,7 @@ from flask import (
     send_file,
 )
 from flask_login import login_required, current_user
+from markupsafe import Markup
 import sqlalchemy as sa
 from flask import current_app as app
 
@@ -173,42 +174,26 @@ def dashboard():
 
     now = datetime.now()
 
-    week_days = [(now - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+    end_date = now - timedelta(days=6)
 
     view_query = (
         sa.Select(
             sa.func.count(m.LabelView.created_at).label("count"),
             m.LabelView.created_at,
         )
+        .join(m.Label)
         .where(
+            m.Label.user_id == current_user.id,
             sa.cast(m.LabelView.created_at, sa.Date).between(
-                week_days[-1], week_days[0]
-            )
+                end_date.strftime("%Y-%m-%d"), now.strftime("%Y-%m-%d")
+            ),
         )
         .group_by(m.LabelView.created_at)
         .order_by(m.LabelView.created_at.desc())
     )
 
     view_data = db.session.execute(view_query).all()
-    period_dict = {
-        "Morning": [0, 0, 0, 0, 0, 0, 0],
-        "Afternoon": [0, 0, 0, 0, 0, 0, 0],
-        "Evening": [0, 0, 0, 0, 0, 0, 0],
-    }
-    for data in view_data:
-        date = data[1]
-        hour = data[1].hour
-        try:
-            index = week_days.index(date.strftime("%Y-%m-%d"))
-        except ValueError:
-            continue
-        if hour <= 12:
-            period_dict["Morning"][index] += data[0]
-        elif hour <= 17:
-            period_dict["Afternoon"][index] += data[0]
-        else:
-            period_dict["Evening"][index] += data[0]
-    test_g = create_bar_graph(week_days, period_dict)
+    graph = create_bar_graph(view_data, show_by_week_day=True)
 
     pagination = create_pagination(total=0 if count_query is None else count_query)
     labels = (
@@ -327,7 +312,7 @@ def dashboard():
         views_options_filter=views_options_filter,
         exclude=exclude,
         page=pagination,
-        test_graph=test_g,
+        test_graph=graph,
     )
 
 
@@ -387,3 +372,57 @@ def all():
         ).scalars(),
         page=pagination,
     )
+
+
+@report_blueprint.route("/get_label_views_graph", methods=["GET"])
+@login_required
+def get_label_views_graph():
+    start_date = request.args.get("start_date_graph")
+    end_date = request.args.get("end_date_graph")
+    label_id = request.args.get("label_id")
+    if start_date and end_date and label_id:
+        where = sa.and_(
+            m.LabelView.label_id == label_id,
+            m.Label.user_id == current_user.id,
+            sa.cast(m.LabelView.created_at, sa.Date).between(
+                start_date,
+                end_date,
+            ),
+        )
+    elif start_date and end_date and not label_id:
+        where = sa.and_(
+            m.Label.user_id == current_user.id,
+            sa.cast(m.LabelView.created_at, sa.Date).between(
+                start_date,
+                end_date,
+            ),
+        )
+    elif (not start_date or not end_date) and label_id:
+        where = sa.and_(
+            m.LabelView.label_id == label_id,
+            m.Label.user_id == current_user.id,
+        )
+
+    else:
+        error_markup = Markup(
+            "<h3 class='mt-6 md:mt-0 text-lg font-bold text-red-700' >Please provide a valid period</h3>"
+        )
+        return render_template(
+            "report/graph_report_label_view.html", graph=error_markup
+        )
+
+    view_query = (
+        sa.Select(
+            sa.func.count(m.LabelView.created_at).label("count"),
+            m.LabelView.created_at,
+        )
+        .join(m.Label)
+        .where(where)
+        .group_by(m.LabelView.created_at)
+        .order_by(m.LabelView.created_at.desc())
+    )
+
+    view_data = db.session.execute(view_query).all()
+    graph = create_bar_graph(view_data)
+
+    return render_template("report/graph_report_label_view.html", graph=graph)

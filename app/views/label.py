@@ -360,6 +360,12 @@ def new_label_set_details(user_unique_id: str, amount: int):
     label_locations = db.session.scalars(
         m.LabelLocation.select().where(m.LabelLocation.user_id == current_user.id)
     ).all()
+    last_label = db.session.scalar(
+        sa.Select(m.Label)
+        .where(m.Label.user_id == current_user.id)
+        .order_by(m.Label.id.desc())
+        .limit(1)
+    )
     if request.method == "POST":
         for i in range(1, int(amount) + 1):
             make_input = request.form.get(f"make-{i}")
@@ -443,6 +449,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
         trims=trims,
         types=types,
         label_locations=label_locations,
+        last_label=last_label,
     )
 
 

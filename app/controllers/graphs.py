@@ -1,9 +1,11 @@
 import datetime
-from typing import List
+from typing import List, Tuple
 
 from pyecharts.charts import Line, Bar  # type: ignore
 from pyecharts import options as opts  # type: ignore
 from markupsafe import Markup
+
+DateTimeTuple = Tuple[int, datetime.datetime]
 
 
 def create_graph(label_views_data: List[tuple[datetime.date, int]]) -> Markup:
@@ -35,14 +37,40 @@ def create_graph(label_views_data: List[tuple[datetime.date, int]]) -> Markup:
     return Markup(line.render_embed())
 
 
-def create_bar_graph(week_days: List[str], period_dict: dict) -> Markup:
-    days_of_week = [
-        datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%A")
-        for date in week_days
-    ]
+def create_bar_graph(
+    view_data: List[DateTimeTuple], show_by_week_day: bool = False
+) -> Markup:
+    date_range = []
+    period_dict = {  # type: ignore
+        "Morning": [],
+        "Afternoon": [],
+        "Evening": [],
+    }
+    for total, date in view_data:
+        day = date.strftime("%Y-%m-%d")
+        hour = date.hour
+        if day not in date_range:
+            date_range.append(day)
+            period_dict["Morning"].append(0)
+            period_dict["Afternoon"].append(0)
+            period_dict["Evening"].append(0)
+        index = date_range.index(date.strftime("%Y-%m-%d"))
+        if hour <= 12:
+            period_dict["Morning"][index] += total
+        elif hour <= 17:
+            period_dict["Afternoon"][index] += total
+        else:
+            period_dict["Evening"][index] += total
+
+    if show_by_week_day:
+        date_range = [
+            datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%A")
+            for date in date_range
+        ]
+
     bar = (
         Bar(init_opts=opts.InitOpts(width="100%", height="300px"))
-        .add_xaxis(days_of_week)
+        .add_xaxis(date_range)
         .add_yaxis(
             "Morning",
             period_dict["Morning"],
@@ -56,7 +84,6 @@ def create_bar_graph(week_days: List[str], period_dict: dict) -> Markup:
             period_dict["Evening"],
         )
         .set_global_opts(
-            title_opts=opts.TitleOpts(title="Weekday Time Periods"),
             yaxis_opts=opts.AxisOpts(name="Views"),
             legend_opts=opts.LegendOpts(pos_right="center", pos_top="top"),
         )

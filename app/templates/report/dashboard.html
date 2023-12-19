@@ -6,7 +6,45 @@
   <h1 class="text-2xl md:text-4xl font-bold mt-10 mb-4 md:mt-12 md:mb-10 px-5">
     Reporting
   </h1>
-  <div class="flex justify-center p-4">{{ test_graph }}</div>
+  {% set graph_period = "[name='start_date_graph'], [name='end_date_graph']" %}
+
+
+  <div class="w-full flex flex-col p-4 gap-2">
+    <h3 class="mt-6 md:mt-0 text-lg font-bold">Set date period</h3>
+    <div date-rangepicker datepicker-buttons class="flex gap-8">
+      <div class="relative w-34 max-w-sm">
+        <input datepicker type="text" name="start_date_graph" autocomplete="off"
+          class="border-0 text-black placeholder:text-black text-sm rounded-lg focus:ring-blue-500 block w-full p-0 dark:bg-gray-800 dark:placeholder-white dark:text-white dark:focus:ring-blue-500 cursor-pointer"
+          placeholder="Start and End Date">
+        <div class="absolute inset-y-0 right-0 top-[-8px] flex items-center pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
+            stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+          </svg>
+        </div>
+      </div>
+      <div class="relative w-28 max-w-sm hidden">
+        <input datepicker type="text" name="end_date_graph" autocomplete="off"
+          class="border-0 text-black placeholder:text-black text-sm rounded-lg focus:ring-blue-500 block w-full p-0 pl-3 dark:bg-gray-800 dark:placeholder-white dark:text-white dark:focus:ring-blue-500 cursor-pointer"
+          placeholder="{% if end_date_graph %}{{end_date_graph.strftime('%y-%m-%d')}}{% else %}End Date{% endif %}">
+        <div class="absolute inset-y-0 right-0 flex items-center pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
+            stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+          </svg>
+        </div>
+      </div>
+      <button type="button" hx-get="{{ url_for('report.get_label_views_graph') }}" hx-include="{{ graph_period }}"
+        hx-target="#graph-report-label-view" hx-trigger="click"
+        class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        See result by date period
+      </button>
+    </div>
+
+    <div id="graph-report-label-view" class="w-full flex justify-center">{{ test_graph }}</div>
+  </div>
   <div class="lg:flex-row text-xs lg:text-sm md:px-5 md:pb-5">
     <div class="w-full p-3 md:pl-0">
       <h3 class="mt-6 md:mt-0 text-lg font-bold">Create a report</h3>
@@ -329,7 +367,9 @@
         <p class="hidden md:flex md:w-2/12 items-center justify-center hover:text-indigo-500 cursor-pointer">
           {{ label.price_sold }}
         </p>
-        <p class="w-1/12 flex items-center justify-center">{{ label.views }}</p>
+        <p class="w-1/12 flex items-center justify-center cursor-pointer"
+          hx-get="{{ url_for('report.get_label_views_graph', label_id=[label.id]) }}" hx-include="{{ graph_period }}"
+          hx-target="#graph-report-label-view" hx-trigger="click">{{ label.views }}</p>
         <p class="w-1/12 flex items-center justify-center cursor-pointer"
           hx-get="{{ url_for('report.get_label_views_datetime', unique_id=label.unique_id) }}" hx-target="body"
           hx-swap="beforeend">
