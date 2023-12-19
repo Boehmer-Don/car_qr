@@ -173,14 +173,7 @@ def dashboard():
 
     now = datetime.now()
 
-    # Calculate the start of the current week (assuming Monday is the start of the week)
-    start_of_week = now - timedelta(days=now.weekday())
-
-    # Create a list of days in the current week
-    week_days = [
-        (start_of_week - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)
-    ]
-    tomorrow = now + timedelta(days=1)
+    week_days = [(now - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
 
     view_query = (
         sa.Select(
@@ -188,13 +181,9 @@ def dashboard():
             m.LabelView.created_at,
         )
         .where(
-            m.LabelView.created_at.between(
-                sa.cast(sa.literal(week_days[-1]), sa.DateTime(timezone=True)),
-                sa.cast(
-                    sa.literal(tomorrow.strftime("%Y-%m-%d")),
-                    sa.DateTime(timezone=True),
-                ),
-            ),
+            sa.cast(m.LabelView.created_at, sa.Date).between(
+                week_days[-1], week_days[0]
+            )
         )
         .group_by(m.LabelView.created_at)
         .order_by(m.LabelView.created_at.desc())
@@ -213,9 +202,9 @@ def dashboard():
             index = week_days.index(date.strftime("%Y-%m-%d"))
         except ValueError:
             continue
-        if hour < 12:
+        if hour <= 12:
             period_dict["Morning"][index] += data[0]
-        elif hour < 18:
+        elif hour <= 17:
             period_dict["Afternoon"][index] += data[0]
         else:
             period_dict["Evening"][index] += data[0]

@@ -35,7 +35,11 @@ def create_graph(label_views_data: List[tuple[datetime.date, int]]) -> Markup:
     return Markup(line.render_embed())
 
 
-def create_bar_graph(days_of_week: [], period_dict: dict) -> Markup:
+def create_bar_graph(week_days: List[str], period_dict: dict) -> Markup:
+    days_of_week = [
+        datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%A")
+        for date in week_days
+    ]
     bar = (
         Bar(init_opts=opts.InitOpts(width="100%", height="300px"))
         .add_xaxis(days_of_week)
