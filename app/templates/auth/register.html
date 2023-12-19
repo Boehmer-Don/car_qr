@@ -25,6 +25,7 @@
               text-gray-900 dark:text-white')}}
               {{form.email(
               class="clean_email_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              dark:text-white
               "
               )
               }}
@@ -37,7 +38,7 @@
               {{form.password.label(class='block mb-2 text-sm font-medium
               text-gray-900 dark:text-white')}}
               {{form.password(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
               )
               }}{% for error in form.errors.password %}
               <small class="text-danger">{{error}}</small>
@@ -47,7 +48,7 @@
               {{form.password_confirmation.label(class='block mb-2 text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.password_confirmation(
-              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
               )
               }}
               {% for error in form.errors.password_confirmation %}
