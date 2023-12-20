@@ -38,35 +38,50 @@ def create_graph(label_views_data: List[tuple[datetime.date, int]]) -> Markup:
 
 
 def create_bar_graph(
-    view_data: List[DateTimeTuple], show_by_week_day: bool = False
+    view_data: List[DateTimeTuple], week_dates: List[str] | None = None
 ) -> Markup:
-    date_range = []
     period_dict = {  # type: ignore
         "Morning": [],
         "Afternoon": [],
         "Evening": [],
     }
-    for total, date in view_data:
-        day = date.strftime("%Y-%m-%d")
-        hour = date.hour
-        if day not in date_range:
-            date_range.append(day)
-            period_dict["Morning"].append(0)
-            period_dict["Afternoon"].append(0)
-            period_dict["Evening"].append(0)
-        index = date_range.index(date.strftime("%Y-%m-%d"))
-        if hour <= 12:
-            period_dict["Morning"][index] += total
-        elif hour <= 17:
-            period_dict["Afternoon"][index] += total
-        else:
-            period_dict["Evening"][index] += total
-
-    if show_by_week_day:
+    date_range = []
+    if week_dates:
+        period_dict["Morning"] = [0] * len(week_dates)
+        period_dict["Afternoon"] = [0] * len(week_dates)
+        period_dict["Evening"] = [0] * len(week_dates)
+        for total, date in view_data:
+            day = date.strftime("%Y-%m-%d")
+            hour = date.hour
+            if day in week_dates:
+                index = week_dates.index(day)
+                if hour <= 12:
+                    period_dict["Morning"][index] += total
+                elif hour <= 17:
+                    period_dict["Afternoon"][index] += total
+                else:
+                    period_dict["Evening"][index] += total
         date_range = [
-            datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%A")
-            for date in date_range
+            datetime.datetime.strptime(day, "%Y-%m-%d").strftime("%A")
+            for day in week_dates
         ]
+
+    else:
+        for total, date in view_data:
+            day = date.strftime("%Y-%m-%d")
+            hour = date.hour
+            if day not in date_range:
+                date_range.append(day)
+                period_dict["Morning"].append(0)
+                period_dict["Afternoon"].append(0)
+                period_dict["Evening"].append(0)
+            index = date_range.index(date.strftime("%Y-%m-%d"))
+            if hour <= 12:
+                period_dict["Morning"][index] += total
+            elif hour <= 17:
+                period_dict["Afternoon"][index] += total
+            else:
+                period_dict["Evening"][index] += total
 
     bar = (
         Bar(init_opts=opts.InitOpts(width="100%", height="300px"))

@@ -174,7 +174,12 @@ def dashboard():
 
     now = datetime.now()
 
-    end_date = now - timedelta(days=6)
+    week_start = now - timedelta(days=now.weekday() + 1)
+    week_end = week_start + timedelta(days=6)
+
+    week_dates = [
+        (week_start + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)
+    ]
 
     view_query = (
         sa.Select(
@@ -185,15 +190,15 @@ def dashboard():
         .where(
             m.Label.user_id == current_user.id,
             sa.cast(m.LabelView.created_at, sa.Date).between(
-                end_date.strftime("%Y-%m-%d"), now.strftime("%Y-%m-%d")
+                week_start.strftime("%Y-%m-%d"), week_end.strftime("%Y-%m-%d")
             ),
         )
         .group_by(m.LabelView.created_at)
-        .order_by(m.LabelView.created_at.desc())
+        .order_by(m.LabelView.created_at.asc())
     )
 
     view_data = db.session.execute(view_query).all()
-    graph = create_bar_graph(view_data, show_by_week_day=True)
+    graph = create_bar_graph(view_data, week_dates)
 
     pagination = create_pagination(total=0 if count_query is None else count_query)
     labels = (
