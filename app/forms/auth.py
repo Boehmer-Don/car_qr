@@ -26,14 +26,23 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    email = StringField("Email Address", validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired(), Length(6, 30)])
+    email = StringField(
+        "Email Address",
+        validators=[DataRequired(), Email()],
+        render_kw={"placeholder": "Enter your email"},
+    )
+    password = PasswordField(
+        "Password",
+        validators=[DataRequired(), Length(6, 30)],
+        render_kw={"placeholder": "Enter your password", "autocomplete": "off"},
+    )
     password_confirmation = PasswordField(
         "Confirm Password",
         validators=[
             DataRequired(),
             EqualTo("password", message="Password do not match."),
         ],
+        render_kw={"placeholder": "Enter your confirm password", "autocomplete": "off"},
     )
     submit = SubmitField("Register")
 
