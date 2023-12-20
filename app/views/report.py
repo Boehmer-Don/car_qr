@@ -385,6 +385,7 @@ def get_label_views_graph():
     start_date = request.args.get("start_date_graph")
     end_date = request.args.get("end_date_graph")
     label_id = request.args.get("label_id")
+    week_dates = None
     if start_date and end_date and label_id:
         where = sa.and_(
             m.LabelView.label_id == label_id,
@@ -409,11 +410,20 @@ def get_label_views_graph():
         )
 
     else:
-        error_markup = Markup(
-            "<h3 class='mt-6 md:mt-0 text-lg font-bold text-red-700' >Please provide a valid period</h3>"
-        )
-        return render_template(
-            "report/graph_report_label_view.html", graph=error_markup
+        now = datetime.now()
+
+        week_start = now - timedelta(days=now.weekday() + 1)
+        week_end = week_start + timedelta(days=6)
+
+        week_dates = [
+            (week_start + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)
+        ]
+
+        where = sa.and_(
+            m.Label.user_id == current_user.id,
+            sa.cast(m.LabelView.created_at, sa.Date).between(
+                week_start.strftime("%Y-%m-%d"), week_end.strftime("%Y-%m-%d")
+            ),
         )
 
     view_query = (
@@ -428,6 +438,52 @@ def get_label_views_graph():
     )
 
     view_data = db.session.execute(view_query).all()
-    graph = create_bar_graph(view_data)
+    graph = create_bar_graph(view_data, week_dates)
 
-    return render_template("report/graph_report_label_view.html", graph=graph)
+    return render_template("report/graph_report_label.html", graph=graph)
+
+
+@report_blueprint.route("/get_label_location_views_graph", methods=["GET"])
+@login_required
+def get_label_location_views_graph():
+    start_date = request.args.get("start_date_graph")
+    end_date = request.args.get("end_date_graph")
+    x_axis_name = "Today"
+    if start_date and end_date:
+        x_axis_name = f"{start_date} - {end_date}"
+        where = sa.and_(
+            m.LabelLocation.user_id == current_user.id,
+            sa.cast(m.LabelView.created_at, sa.Date).between(
+                start_date,
+                end_date,
+            ),
+        )
+    else:
+        now = datetime.now()
+        where = sa.and_(
+            m.LabelLocation.user_id == current_user.id,
+            sa.cast(m.LabelView.created_at, sa.Date) == now.date(),
+        )
+
+    query = (
+        sa.Select(m.LabelLocation.name, sa.func.count(m.LabelView.id).label("count"))
+        .join(m.Label, m.LabelLocation.id == m.Label.location_id)
+        .join(m.LabelView, m.Label.id == m.LabelView.label_id)
+        .where(where)
+        .group_by(m.LabelLocation.name)
+    )
+    result = db.session.execute(query).all()
+
+    bar = Bar(init_opts=opts.InitOpts(width="100%", height="300px"))
+    bar.set_global_opts(
+        yaxis_opts=opts.AxisOpts(name="Views"),
+        legend_opts=opts.LegendOpts(pos_right="center", pos_top="top"),
+    )
+    yaxis = bar.add_xaxis([x_axis_name])
+    for data in result:
+        location_name, view_count = data
+        yaxis.add_yaxis(location_name, [view_count])
+
+    return render_template(
+        "report/graph_report_label.html", graph=Markup(bar.render_embed())
+    )
