@@ -1,7 +1,7 @@
 # flake8: noqa F401
 import io
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta, time
 from flask import (
     Blueprint,
     render_template,
@@ -12,11 +12,18 @@ from flask import (
     send_file,
 )
 from flask_login import login_required, current_user
+from markupsafe import Markup
 import sqlalchemy as sa
 from flask import current_app as app
+
+from pyecharts import options as opts
+from pyecharts.charts import Bar
+
+
 from app.controllers import create_pagination
 from app import models as m, db
 from app import forms as f
+from app.controllers.graphs import create_bar_graph
 from app.logger import log
 from app.controllers.jinja_globals import days_active
 from app.controllers.date_convert import date_convert
@@ -164,6 +171,35 @@ def dashboard():
         )
 
     count_query = db.session.scalar(count_query)
+
+    now = datetime.now()
+
+    week_start = now - timedelta(days=now.weekday() + 1)
+    week_end = week_start + timedelta(days=6)
+
+    week_dates = [
+        (week_start + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)
+    ]
+
+    view_query = (
+        sa.Select(
+            sa.func.count(m.LabelView.created_at).label("count"),
+            m.LabelView.created_at,
+        )
+        .join(m.Label)
+        .where(
+            m.Label.user_id == current_user.id,
+            sa.cast(m.LabelView.created_at, sa.Date).between(
+                week_start.strftime("%Y-%m-%d"), week_end.strftime("%Y-%m-%d")
+            ),
+        )
+        .group_by(m.LabelView.created_at)
+        .order_by(m.LabelView.created_at.asc())
+    )
+
+    view_data = db.session.execute(view_query).all()
+    graph = create_bar_graph(view_data, week_dates)
+
     pagination = create_pagination(total=0 if count_query is None else count_query)
     labels = (
         db.session.execute(
@@ -204,7 +240,7 @@ def dashboard():
             .where(m.Label.user_id == current_user.id)
             .group_by(m.Label.vehicle_model)
         ).all()
-
+    now = datetime.now()
     if download == "true":
         log(log.INFO, f"Downloading report")
         labels = db.session.scalars(query).all()
@@ -253,7 +289,6 @@ def dashboard():
             mem.write(proxy.getvalue().encode("utf-8"))
             mem.seek(0)
 
-        now = datetime.now()
         return send_file(
             mem,
             as_attachment=True,
@@ -282,6 +317,7 @@ def dashboard():
         views_options_filter=views_options_filter,
         exclude=exclude,
         page=pagination,
+        test_graph=graph,
     )
 
 
@@ -312,6 +348,7 @@ def get_label_views_datetime(unique_id: str):
         "report/label_views_modal.html",
         list_views=list_views,
         unique_id=label.unique_id,
+        location=label.location,
     )
 
 
@@ -340,3 +377,57 @@ def all():
         ).scalars(),
         page=pagination,
     )
+
+
+@report_blueprint.route("/get_label_views_graph", methods=["GET"])
+@login_required
+def get_label_views_graph():
+    start_date = request.args.get("start_date_graph")
+    end_date = request.args.get("end_date_graph")
+    label_id = request.args.get("label_id")
+    if start_date and end_date and label_id:
+        where = sa.and_(
+            m.LabelView.label_id == label_id,
+            m.Label.user_id == current_user.id,
+            sa.cast(m.LabelView.created_at, sa.Date).between(
+                start_date,
+                end_date,
+            ),
+        )
+    elif start_date and end_date and not label_id:
+        where = sa.and_(
+            m.Label.user_id == current_user.id,
+            sa.cast(m.LabelView.created_at, sa.Date).between(
+                start_date,
+                end_date,
+            ),
+        )
+    elif (not start_date or not end_date) and label_id:
+        where = sa.and_(
+            m.LabelView.label_id == label_id,
+            m.Label.user_id == current_user.id,
+        )
+
+    else:
+        error_markup = Markup(
+            "<h3 class='mt-6 md:mt-0 text-lg font-bold text-red-700' >Please provide a valid period</h3>"
+        )
+        return render_template(
+            "report/graph_report_label_view.html", graph=error_markup
+        )
+
+    view_query = (
+        sa.Select(
+            sa.func.count(m.LabelView.created_at).label("count"),
+            m.LabelView.created_at,
+        )
+        .join(m.Label)
+        .where(where)
+        .group_by(m.LabelView.created_at)
+        .order_by(m.LabelView.created_at.desc())
+    )
+
+    view_data = db.session.execute(view_query).all()
+    graph = create_bar_graph(view_data)
+
+    return render_template("report/graph_report_label_view.html", graph=graph)

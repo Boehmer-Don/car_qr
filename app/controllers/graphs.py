@@ -1,9 +1,11 @@
 import datetime
-from typing import List
+from typing import List, Tuple
 
-from pyecharts.charts import Line  # type: ignore
+from pyecharts.charts import Line, Bar  # type: ignore
 from pyecharts import options as opts  # type: ignore
 from markupsafe import Markup
+
+DateTimeTuple = Tuple[int, datetime.datetime]
 
 
 def create_graph(label_views_data: List[tuple[datetime.date, int]]) -> Markup:
@@ -33,3 +35,72 @@ def create_graph(label_views_data: List[tuple[datetime.date, int]]) -> Markup:
         linestyle_opts=opts.LineStyleOpts(width=2),
     )
     return Markup(line.render_embed())
+
+
+def create_bar_graph(
+    view_data: List[DateTimeTuple], week_dates: List[str] | None = None
+) -> Markup:
+    period_dict = {  # type: ignore
+        "Morning": [],
+        "Afternoon": [],
+        "Evening": [],
+    }
+    date_range = []
+    if week_dates:
+        period_dict["Morning"] = [0] * len(week_dates)
+        period_dict["Afternoon"] = [0] * len(week_dates)
+        period_dict["Evening"] = [0] * len(week_dates)
+        for total, date in view_data:
+            day = date.strftime("%Y-%m-%d")
+            hour = date.hour
+            if day in week_dates:
+                index = week_dates.index(day)
+                if hour <= 12:
+                    period_dict["Morning"][index] += total
+                elif hour <= 17:
+                    period_dict["Afternoon"][index] += total
+                else:
+                    period_dict["Evening"][index] += total
+        date_range = [
+            datetime.datetime.strptime(day, "%Y-%m-%d").strftime("%A")
+            for day in week_dates
+        ]
+
+    else:
+        for total, date in view_data:
+            day = date.strftime("%Y-%m-%d")
+            hour = date.hour
+            if day not in date_range:
+                date_range.append(day)
+                period_dict["Morning"].append(0)
+                period_dict["Afternoon"].append(0)
+                period_dict["Evening"].append(0)
+            index = date_range.index(date.strftime("%Y-%m-%d"))
+            if hour <= 12:
+                period_dict["Morning"][index] += total
+            elif hour <= 17:
+                period_dict["Afternoon"][index] += total
+            else:
+                period_dict["Evening"][index] += total
+
+    bar = (
+        Bar(init_opts=opts.InitOpts(width="100%", height="300px"))
+        .add_xaxis(date_range)
+        .add_yaxis(
+            "Morning",
+            period_dict["Morning"],
+        )
+        .add_yaxis(
+            "Afternoon",
+            period_dict["Afternoon"],
+        )
+        .add_yaxis(
+            "Evening",
+            period_dict["Evening"],
+        )
+        .set_global_opts(
+            yaxis_opts=opts.AxisOpts(name="Views"),
+            legend_opts=opts.LegendOpts(pos_right="center", pos_top="top"),
+        )
+    )
+    return Markup(bar.render_embed())
