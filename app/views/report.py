@@ -340,10 +340,43 @@ def get_label_views_datetime(unique_id: str):
     label: m.Label | None = db.session.scalar(
         m.Label.select().where(m.Label.unique_id == unique_id)
     )
+    download = request.args.get("download")
     if not label:
         log(log.ERROR, f"Label not found: {unique_id}")
         return {"error": "Label not found"}, 404
     list_views = label.list_views
+
+    if download == "True":
+        now = datetime.now()
+        log(log.INFO, f"Downloading label views")
+        with io.StringIO() as proxy:
+            writer = csv.writer(proxy)
+            row = [
+                "day",
+                "time",
+                "location",
+            ]
+            writer.writerow(row)
+            for label_view in list_views:
+                row = [
+                    label_view.day,
+                    label_view.time,
+                    label.location,
+                ]
+                writer.writerow(row)
+
+            mem = io.BytesIO()
+            mem.write(proxy.getvalue().encode("utf-8"))
+            mem.seek(0)
+        return send_file(
+            mem,
+            as_attachment=True,
+            download_name=f"label_views_{now.strftime('%Y-%m-%d-%H-%M-%S')}.csv",
+            mimetype="text/csv",
+            max_age=0,
+            last_modified=now,
+        )
+
     return render_template(
         "report/label_views_modal.html",
         list_views=list_views,

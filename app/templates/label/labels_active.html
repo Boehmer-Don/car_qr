@@ -109,8 +109,8 @@
         </p>
         <p class="w-1/12 flex items-center justify-center">{{ label.views }}</p>
         <p class="w-1/12 flex items-center justify-center">
-          <button hx-get="{{ url_for('labels.get_label_graph_views', label_unique_id=label.unique_id) }}"
-            hx-trigger="click" hx-target="#lebals-graph-view" hx-swap="outerHTML">
+          <button hx-get="{{ url_for('report.get_label_views_graph', label_id=[label.id]) }}"
+            hx-target="#lebals-graph-view" hx-trigger="click">
             <svg class="w-6 h-6 p-1 hover:text-indigo-500 cursor-pointer aria-hidden=" true"
               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

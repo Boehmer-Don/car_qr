@@ -138,22 +138,57 @@ function selectModel() {
 function selectTrim() {
   const suggestionsGot: NodeListOf<HTMLParagraphElement> =
     document.querySelectorAll('.trim-suggestion');
+  const suggestionValues: string[] = [];
   suggestionsGot.forEach(suggestion => {
+    suggestionValues.push(suggestion.innerHTML.trim());
     suggestion.addEventListener('click', e => {
       trimInput.value = (e.target as HTMLParagraphElement).innerHTML.trim();
       trimContainer.classList.add('hidden');
     });
+  });
+
+  trimInput.addEventListener('input', e => {
+    const highlight = 'text-indigo-500';
+
+    if (
+      !suggestionValues.includes(trimInput.value) &&
+      !trimInput.classList.contains(highlight)
+    ) {
+      trimInput.classList.add(highlight);
+    } else if (
+      suggestionValues.includes(trimInput.value) &&
+      trimInput.classList.contains(highlight)
+    ) {
+      trimInput.classList.remove(highlight);
+    }
   });
 }
 
 function selectType() {
   const suggestionsGot: NodeListOf<HTMLParagraphElement> =
     document.querySelectorAll('.type-suggestion');
+  const suggestionValuesTypes: string[] = [];
   suggestionsGot.forEach(suggestion => {
+    suggestionValuesTypes.push(suggestion.innerHTML.trim());
     suggestion.addEventListener('click', e => {
       typeInput.value = (e.target as HTMLParagraphElement).innerHTML.trim();
       typeContainer.classList.add('hidden');
     });
+  });
+  typeInput.addEventListener('input', e => {
+    const highlight = 'text-indigo-500';
+
+    if (
+      !suggestionValuesTypes.includes(typeInput.value) &&
+      !typeInput.classList.contains(highlight)
+    ) {
+      typeInput.classList.add(highlight);
+    } else if (
+      suggestionValuesTypes.includes(typeInput.value) &&
+      typeInput.classList.contains(highlight)
+    ) {
+      typeInput.classList.remove(highlight);
+    }
   });
 }
 

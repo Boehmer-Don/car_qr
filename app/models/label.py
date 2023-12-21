@@ -74,6 +74,7 @@ class Label(db.Model, ModelMixin):
     user: orm.Mapped[User] = orm.relationship("User", backref="labels")
     _views: orm.Mapped[list[LabelView]] = orm.relationship(
         back_populates="label",
+        order_by=LabelView.created_at.desc(),
     )
 
     _location: orm.Mapped["LabelLocation"] = orm.relationship(
