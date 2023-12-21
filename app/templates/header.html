@@ -3,6 +3,17 @@
   <div class="px-3 py-3 lg:px-5 lg:pl-3">
     <div class="flex items-center justify-between">
       <div class="flex items-center justify-start">
+        {% if current_user.role and current_user.role.value == "dealer" %}
+        <a href="{{ url_for('labels.get_active_labels', user_unique_id=current_user.unique_id) }}"
+          class="flex ml-2 md:mr-24">
+          <img src="{{url_for('static',filename='img/forbes_motors.jpg')}}" class="h-8 mr-3" alt="Simple2b Logo" />
+
+          <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap text-white">
+            Auto QR Code
+          </span>
+          {# <small class="px-2 font-mono text-gray-400">{{config.APP_VERSION}}</small> #}
+        </a>
+        {% else %}
         <a href="/" class="flex ml-2 md:mr-24">
           <img src="{{url_for('static',filename='img/forbes_motors.jpg')}}" class="h-8 mr-3" alt="Simple2b Logo" />
 
@@ -11,6 +22,7 @@
           </span>
           {# <small class="px-2 font-mono text-gray-400">{{config.APP_VERSION}}</small> #}
         </a>
+        {%endif%}
       </div>
 
       <!-- Mobile menu button -->
