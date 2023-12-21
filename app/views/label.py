@@ -236,17 +236,20 @@ def label_details():
                     user_unique_id=current_user.unique_id,
                 )
             )
-        label.sticker_id = form.sticker_id.data
-        label.name = form.name.data
-        label.make = form.make.data
-        label.vehicle_model = form.vehicle_model.data
-        label.year = form.year.data
-        label.mileage = form.mileage.data
-        label.color = form.color.data
-        label.trim = form.trim.data
-        label.type_of_vehicle = form.type_of_vehicle.data
-        label.price = form.price.data
-        label.url = form.url.data
+        # comment bs this fields are not required
+
+        # label.sticker_id = form.sticker_id.data
+        # label.name = form.name.data
+        # label.make = form.make.data
+        # label.vehicle_model = form.vehicle_model.data
+        # label.year = form.year.data
+        # label.mileage = form.mileage.data
+        # label.color = form.color.data
+        # label.trim = form.trim.data
+        # label.type_of_vehicle = form.type_of_vehicle.data
+        # label.price = form.price.data
+        # label.url = form.url.data
+        label.gift = form.gift.data
         label.save()
         if form.next_url.data:
             return redirect(form.next_url.data)
@@ -265,7 +268,7 @@ def edit_cart_label(label_unique_id: str):
         sa.select(m.Label).where(m.Label.unique_id == label_unique_id)
     )
     if not label:
-        log(log.ERROR, "Failed to find label : [%s]", form.unique_id.data)
+        log(log.ERROR, "Failed to find label : [%s]", label_unique_id)
         flash("Failed to find label", "danger")
         return redirect(
             url_for(
@@ -570,15 +573,6 @@ def get_trims():
 
     trims = db.session.scalars(trims_query).all()
     return {"trims": trims, "make": make, "type": vehicle_type}
-
-
-def generate_alphanumeric_code():
-    letters = "".join(secrets.choice(string.ascii_letters) for _ in range(2))
-    digits = "".join(
-        secrets.choice(string.digits)
-        for _ in range(app.config.get("ALPHANUMERIC_CODE_LENGTH") - 2)
-    )
-    return letters + digits
 
 
 @dealer_blueprint.route("/generate/<user_unique_id>", methods=["GET", "POST"])

@@ -99,6 +99,30 @@ function getLabelDetails(label: ILabel) {
   const labelGift: HTMLInputElement =
     document.querySelector('#label-edit-gift');
   labelGift.value = label.gift;
+  if (
+    window.location.href.includes('report/create') &&
+    labelGift.getAttribute('is-edit') !== 'true'
+  ) {
+    labelGift.setAttribute('is-edit', 'true');
+    labelGift.readOnly = false;
+    labelGift.addEventListener('input', () => {
+      const editButton = document.querySelector('#edit-label-gift-button');
+      if (
+        labelGift.value === label.gift &&
+        !editButton.classList.contains('hidden')
+      ) {
+        editButton.classList.add('hidden');
+      }
+      if (
+        labelGift.value !== label.gift &&
+        editButton.classList.contains('hidden') &&
+        labelGift.value.trim().length > 0
+      ) {
+        editButton.classList.remove('hidden');
+      }
+      console.log(labelGift.value);
+    });
+  }
 
   const giftPreviewPageUrl: HTMLButtonElement = document.querySelector(
     '#gift-page-preview-button',
