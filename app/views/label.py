@@ -26,7 +26,7 @@ from app import models as m, db
 from app import forms as f
 from app.logger import log
 from app.controllers.date_convert import date_convert
-from app.controllers.graphs import create_graph
+from app.controllers.graphs import create_graph, create_bar_graph
 
 
 dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
@@ -35,54 +35,16 @@ dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
 @dealer_blueprint.route("/active", methods=["GET"])
 @login_required
 def get_active_labels():
-    if current_user.role and current_user.role.value == "admin":
-        query = (
-            m.Label.select()
-            .where(m.Label.status == m.LabelStatus.active)
-            .order_by(m.Label.date_activated.desc())
-        )
-        count_query = (
-            sa.select(sa.func.count())
-            .select_from(m.Label)
-            .where(m.Label.status == m.LabelStatus.active)
-        )
-        label_views_data_query = (
-            sa.select(
-                sa.func.date(m.LabelView.created_at).label("date"),
-                sa.func.count().label("total_views"),
-            )
-            .join(m.Label, m.Label.id == m.LabelView.label_id)
-            .where(m.Label.status == m.LabelStatus.active)
-            .group_by(sa.func.date(m.LabelView.created_at))
-            .order_by(sa.func.date(m.LabelView.created_at))
-        )
+    now = datetime.now()
+    where = sa.and_(
+        m.Label.status == m.LabelStatus.active, m.Label.user_id == current_user.id
+    )
 
-    else:
-        query = (
-            m.Label.select()
-            .where(m.Label.user_id == current_user.id)
-            .where(m.Label.status == m.LabelStatus.active)
-            .order_by(m.Label.date_received.desc())
-        )
-        count_query = (
-            sa.select(sa.func.count())
-            .select_from(m.Label)
-            .where(m.Label.user_id == current_user.id)
-            .where(m.Label.status == m.LabelStatus.active)
-        )
-        label_views_data_query = (
-            sa.select(
-                sa.func.date(m.LabelView.created_at).label("date"),
-                sa.func.count().label("total_views"),
-            )
-            .join(m.Label, m.Label.id == m.LabelView.label_id)
-            .where(
-                m.Label.status == m.LabelStatus.active,
-                m.Label.user_id == current_user.id,
-            )
-            .group_by(sa.func.date(m.LabelView.created_at))
-            .order_by(sa.func.date(m.LabelView.created_at))
-        )
+    if current_user.role and current_user.role.value == "admin":
+        where = sa.and_(m.Label.status == m.LabelStatus.active)
+
+    query = m.Label.select().where(where).order_by(m.Label.date_received.desc())
+    count_query = sa.select(sa.func.count()).select_from(m.Label).where(where)
 
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels: list[m.Label] = db.session.execute(
@@ -91,15 +53,37 @@ def get_active_labels():
         )
     ).scalars()
 
-    label_views_data = db.session.execute(label_views_data_query).all()
+    week_start = now - timedelta(days=now.weekday() + 1)
+    week_end = week_start + timedelta(days=6)
 
-    labels_graph = create_graph(label_views_data)
+    week_dates = [
+        (week_start + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)
+    ]
+
+    view_query = (
+        sa.Select(
+            sa.func.count(m.LabelView.created_at).label("count"),
+            m.LabelView.created_at,
+        )
+        .join(m.Label)
+        .where(
+            where,
+            sa.cast(m.LabelView.created_at, sa.Date).between(
+                week_start.strftime("%Y-%m-%d"), week_end.strftime("%Y-%m-%d")
+            ),
+        )
+        .group_by(m.LabelView.created_at)
+        .order_by(m.LabelView.created_at.asc())
+    )
+
+    view_data = db.session.execute(view_query).all()
+    graph = create_bar_graph(view_data, week_dates)
 
     return render_template(
         "label/labels_active.html",
         labels=labels,
         page=pagination,
-        labels_graph=labels_graph,
+        graph_view=graph,
     )
 
 

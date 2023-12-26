@@ -116,6 +116,18 @@ const passwordConfig = {
   },
 };
 
+const controllerConfig = [
+  {
+    entry: {
+      main: './src/controllers/graph_view.ts',
+    },
+    output: {
+      path: path.resolve(__dirname, './app/static'),
+      filename: 'js/controllers/graph_view.js', // <--- Will be compiled to this single file
+    },
+  }
+];
+
 
 const configs = [
   baseConfig,
@@ -127,7 +139,8 @@ const configs = [
   reports,
   countriesConfig,
   usersSearchResult,
-  passwordConfig
+  passwordConfig,
+  ...controllerConfig
 ].map(conf => merge(defaultConfig, conf));
 
 module.exports = configs;

@@ -317,7 +317,7 @@ def dashboard():
         views_options_filter=views_options_filter,
         exclude=exclude,
         page=pagination,
-        test_graph=graph,
+        graph_view=graph,
     )
 
 
@@ -417,6 +417,7 @@ def all():
 def get_label_views_graph():
     start_date = request.args.get("start_date_graph")
     end_date = request.args.get("end_date_graph")
+    status = request.args.get("status")
     label_id = request.args.get("label_id")
     week_dates = None
     if start_date and end_date and label_id:
