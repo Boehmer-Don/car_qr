@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.database import db
 from .utils import ModelMixin, generate_uuid
 from app.logger import log
-from app import schema as s
+
 from .user import User
 from .label_view import LabelView
 
@@ -108,5 +108,7 @@ class Label(db.Model, ModelMixin):
 
     @property
     def json(self):
+        from app import schema as s
+
         label = s.Label.from_orm(self)
         return label.json()

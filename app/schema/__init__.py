@@ -3,3 +3,4 @@ from .pagination import Pagination
 from .user import User
 from .label import Label
 from .stripe import StripeUpdateCustomer
+from .report import QueryModelLabelsGraphView, QueryModelLocationsGraphView

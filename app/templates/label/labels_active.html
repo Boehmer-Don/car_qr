@@ -1,10 +1,14 @@
-{% extends 'base.html' %} {% block links %}
+{% extends 'base.html' %}
+{% from "components/graph_view.html" import graphView with context %} {% block links %}
 <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/datepicker.min.js"></script>
 {% endblock %} {% block content %}
 <div class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
   <h1 class="text-2xl md:text-4xl font-bold mt-10 mb-4 md:mt-12 md:mb-10 px-5">
     Welcome Back {{ current_user.first_name }},
   </h1>
+
+
   <div class="lg:flex-row text-xs lg:text-sm md:px-5 md:pb-5">
     {% if current_user.role and current_user.role.value == 'dealer' %}
     <div
@@ -35,12 +39,11 @@
     </div>
     {% endif %}
 
-    <div id="lebals-graph-view">
-      {{ labels_graph}}
-    </div>
+
 
     <div class="w-full p-3">
       <h3 class="mt-6 md:mt-0 text-lg font-bold">Active Labels</h3>
+      {{ graphView("active") }}
 
       {% if current_user.role and current_user.role.value == 'dealer' %}
       <div class="flex justify-between">
@@ -78,6 +81,7 @@
         <p class="w-1/12 hidden md:flex items-center justify-center">
           <span class="hidden lg:block">Graph</span>
         </p>
+        <p class="w-1/12 flex items-center justify-center">Export</p>
 
         <p class="w-3/12 hidden md:flex items-center justify-center">
           <span class="hidden lg:block">Days</span>&nbsp;Active
@@ -110,14 +114,22 @@
         <p class="w-1/12 flex items-center justify-center">{{ label.views }}</p>
         <p class="w-1/12 flex items-center justify-center">
           <button hx-get="{{ url_for('report.get_label_views_graph', label_id=[label.id]) }}"
-            hx-target="#lebals-graph-view" hx-trigger="click">
+            hx-target="#graph-data-label-view" hx-trigger="click">
             <svg class="w-6 h-6 p-1 hover:text-indigo-500 cursor-pointer aria-hidden=" true"
               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M1 1v14h16m0-9-3-2-3 5-3-2-3 4" />
             </svg>
           </button>
-
+        </p>
+        <p class="w-1/12 flex items-center justify-center cursor-pointer"
+          hx-get="{{ url_for('report.get_label_views_datetime', unique_id=label.unique_id) }}" hx-target="body"
+          hx-swap="beforeend">
+          <svg class=" w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 18 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 6V2a.97.97 0 0 0-.933-1H5.828a2 2 0 0 0-1.414.586L1.586 4.414A2 2 0 0 0 1 5.828V18a.969.969 0 0 0 .933 1H14a1 1 0 0 0 1-1M6 1v4a1 1 0 0 1-1 1H1m6 6h9m-1.939-2.768L16.828 12l-2.767 2.768" />
+          </svg>
         </p>
         <p class="w-3/12 hidden md:flex items-center justify-center">
           {{time_delta(label.date_received)}}

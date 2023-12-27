@@ -8,7 +8,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.database import db
 from .utils import ModelMixin, generate_uuid
 from app.logger import log
-from app import schema as s
 from .label_location import LabelLocation
 
 
@@ -106,6 +105,8 @@ class User(db.Model, UserMixin, ModelMixin):
 
     @property
     def json(self):
+        from app import schema as s
+
         u = s.User.from_orm(self)
         return u.json()
 
