@@ -135,7 +135,7 @@ def create_location_graph(
     )
     for data in select_result:
         location_name, label_view_date, view_count = data  # type: ignore
-        label_view_date = label_view_date.strftime("%A") if by_week else label_view_date.strftime("%Y-%m-%d")  # type: ignore
+        label_view_date = label_view_date.strftime("%A" if by_week else "%Y-%m-%d")  # type: ignore
         if label_view_date not in y_graph_date:
             y_graph_date[label_view_date] = dict()
 
