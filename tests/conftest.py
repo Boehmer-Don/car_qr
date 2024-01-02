@@ -3,6 +3,7 @@ import json
 from datetime import datetime, timedelta
 from flask import Flask
 from flask.testing import FlaskClient
+from random import randint
 
 from app import create_app, db
 from app import models as m
@@ -123,7 +124,7 @@ def populate(client: FlaskClient, test_labels_data: dict):
         date_deactivated = None
         if label_status == m.LabelStatus.archived:
             date_deactivated = datetime.now() + timedelta(days=2)
-        m.Label(
+        label = m.Label(
             sticker_id=f"QR0000{index + 1}",
             name=label["name"],
             make=label["make"],
@@ -138,5 +139,11 @@ def populate(client: FlaskClient, test_labels_data: dict):
             user_id=1,
             status=label_status,
             date_deactivated=date_deactivated,
-        ).save()
+        )
+        label.save()
+        for _ in range(randint(1, 6)):
+            view = m.LabelView(label_id=label.id)
+            view.created_at = datetime.now() + timedelta(days=randint(1, 30))
+            view.save()
+
     yield client
