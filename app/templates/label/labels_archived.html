@@ -1,5 +1,8 @@
-{% extends 'base.html' %} {% block links %}
+{% extends 'base.html' %}
+{% from "components/graph_view.html" import graphView with context %}
+{% block links %}
 <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/datepicker.min.js"></script>
 {% endblock %} {% block content %}
 <div class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
   <h1 class="text-2xl md:text-4xl font-bold mt-10 mb-4 md:mt-12 md:mb-10 px-5">
@@ -31,12 +34,10 @@
       </ul>
     </div>
 
-    <div id="lebals-graph-view">
-      {{ labels_graph }}
-    </div>
 
     <div class="w-full p-3">
       <h3 class="mt-6 md:mt-0 text-lg font-bold">Archived Labels</h3>
+      {{ graphView("archived") }}
 
       <p class="my-5">
         List of all of your archived labels.

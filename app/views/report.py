@@ -174,15 +174,6 @@ def dashboard():
 
     count_query = db.session.scalar(count_query)
 
-    now = datetime.now()
-
-    week_start = now - timedelta(days=now.weekday() + 1)
-    week_end = week_start + timedelta(days=6)
-
-    week_dates = [
-        (week_start + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)
-    ]
-
     view_query = (
         sa.Select(
             sa.func.count(m.LabelView.created_at).label("count"),
@@ -191,16 +182,13 @@ def dashboard():
         .join(m.Label)
         .where(
             m.Label.user_id == current_user.id,
-            sa.cast(m.LabelView.created_at, sa.Date).between(
-                week_start.strftime("%Y-%m-%d"), week_end.strftime("%Y-%m-%d")
-            ),
         )
         .group_by(m.LabelView.created_at)
         .order_by(m.LabelView.created_at.asc())
     )
 
     view_data = db.session.execute(view_query).all()
-    graph = create_bar_graph(view_data, week_dates)
+    graph = create_bar_graph(view_data, by_week=True)
 
     pagination = create_pagination(total=0 if count_query is None else count_query)
     labels = (
@@ -422,7 +410,7 @@ def get_label_views_graph(query: s.QueryModelLabelsGraphView):
     end_date = query.end_date_graph
     status = query.status
     label_id = query.label_id
-    week_dates = None
+    by_week = False
 
     if start_date and end_date and label_id:
         where = sa.and_(
@@ -448,20 +436,9 @@ def get_label_views_graph(query: s.QueryModelLabelsGraphView):
         )
 
     else:
-        now = datetime.now()
-
-        week_start = now - timedelta(days=now.weekday() + 1)
-        week_end = week_start + timedelta(days=6)
-
-        week_dates = [
-            (week_start + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)
-        ]
-
+        by_week = True
         where = sa.and_(
             m.Label.user_id == current_user.id,
-            sa.cast(m.LabelView.created_at, sa.Date).between(
-                week_start.strftime("%Y-%m-%d"), week_end.strftime("%Y-%m-%d")
-            ),
         )
 
     view_query: sa.Select = (
@@ -481,7 +458,7 @@ def get_label_views_graph(query: s.QueryModelLabelsGraphView):
     )
 
     view_data = db.session.execute(view_query).all()
-    graph = create_bar_graph(view_data, week_dates)
+    graph = create_bar_graph(view_data, by_week=by_week)
 
     return render_template("report/graph_report_label.html", graph=graph)
 
@@ -493,8 +470,7 @@ def get_label_location_views_graph(query: s.QueryModelLocationsGraphView):
     start_date = query.start_date_graph
     end_date = query.end_date_graph
     status = query.status
-    date_period = []
-    now = datetime.now()
+    by_week = False
     if start_date and end_date:
         where = sa.and_(
             m.LabelLocation.user_id == current_user.id,
@@ -504,17 +480,9 @@ def get_label_location_views_graph(query: s.QueryModelLocationsGraphView):
             ),
         )
     else:
-        week_start = now - timedelta(days=now.weekday() + 1)
-        week_end = week_start + timedelta(days=6)
-
-        date_period = [
-            (week_start + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)
-        ]
+        by_week = True
         where = sa.and_(
             m.LabelLocation.user_id == current_user.id,
-            sa.cast(m.LabelView.created_at, sa.Date).between(
-                week_start.strftime("%Y-%m-%d"), week_end.strftime("%Y-%m-%d")
-            ),
         )
 
     location_query: sa.Select = (
@@ -542,7 +510,7 @@ def get_label_location_views_graph(query: s.QueryModelLocationsGraphView):
     ).all()
 
     graph = create_location_graph(
-        select_result=result, location_names=location_names, date_period=date_period
+        select_result=result, location_names=location_names, by_week=by_week
     )
 
     return render_template("report/graph_report_label.html", graph=graph)

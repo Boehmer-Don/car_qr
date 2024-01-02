@@ -6,6 +6,15 @@ from pyecharts import options as opts  # type: ignore
 from markupsafe import Markup
 
 DateTimeTuple = Tuple[int, datetime.datetime]
+WEEK_DAYS = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+]
 
 
 def create_graph(label_views_data: List[tuple[datetime.date, int]]) -> Markup:
@@ -37,34 +46,29 @@ def create_graph(label_views_data: List[tuple[datetime.date, int]]) -> Markup:
     return Markup(line.render_embed())
 
 
-def create_bar_graph(
-    view_data: List[DateTimeTuple], week_dates: List[str] | None = None
-) -> Markup:
+def create_bar_graph(view_data: List[DateTimeTuple], by_week: bool = False) -> Markup:
     period_dict = {  # type: ignore
         "Morning": [],
         "Afternoon": [],
         "Evening": [],
     }
     date_range = []
-    if week_dates:
-        period_dict["Morning"] = [0] * len(week_dates)
-        period_dict["Afternoon"] = [0] * len(week_dates)
-        period_dict["Evening"] = [0] * len(week_dates)
+    if by_week:
+        period_dict["Morning"] = [0] * len(WEEK_DAYS)
+        period_dict["Afternoon"] = [0] * len(WEEK_DAYS)
+        period_dict["Evening"] = [0] * len(WEEK_DAYS)
         for total, date in view_data:
-            day = date.strftime("%Y-%m-%d")
+            day = date.strftime("%A")
             hour = date.hour
-            if day in week_dates:
-                index = week_dates.index(day)
+            if day in WEEK_DAYS:
+                index = WEEK_DAYS.index(day)
                 if hour <= 12:
                     period_dict["Morning"][index] += total
                 elif hour <= 17:
                     period_dict["Afternoon"][index] += total
                 else:
                     period_dict["Evening"][index] += total
-        date_range = [
-            datetime.datetime.strptime(day, "%Y-%m-%d").strftime("%A")
-            for day in week_dates
-        ]
+        date_range = WEEK_DAYS
 
     else:
         for total, date in view_data:
@@ -109,13 +113,13 @@ def create_bar_graph(
 def create_location_graph(
     select_result: Tuple[str, datetime.datetime, int],
     location_names: List[str],
-    date_period: List[str],
+    by_week: bool = False,
 ) -> Markup:
     y_graph_date = dict()  # type: ignore
     datazoom_opts = opts.DataZoomOpts()
 
-    if date_period:
-        y_graph_date = {date: {} for date in date_period}
+    if by_week:
+        y_graph_date = {date: {} for date in WEEK_DAYS}
         now = datetime.datetime.now()
         day_range = 14
         start_range = day_range * (now.weekday() + 1)
@@ -131,7 +135,7 @@ def create_location_graph(
     )
     for data in select_result:
         location_name, label_view_date, view_count = data  # type: ignore
-        label_view_date = label_view_date.strftime("%Y-%m-%d")  # type: ignore
+        label_view_date = label_view_date.strftime("%A") if by_week else label_view_date.strftime("%Y-%m-%d")  # type: ignore
         if label_view_date not in y_graph_date:
             y_graph_date[label_view_date] = dict()
 
@@ -140,14 +144,7 @@ def create_location_graph(
         else:
             y_graph_date[label_view_date][location_name] += view_count  # type: ignore
 
-    x_graph_data = (
-        [
-            datetime.datetime.strptime(day, "%Y-%m-%d").strftime("%A")
-            for day in y_graph_date.keys()
-        ]
-        if date_period
-        else list(y_graph_date.keys())
-    )
+    x_graph_data = WEEK_DAYS if by_week else list(y_graph_date.keys())
     bar.add_xaxis(x_graph_data)  # type: ignore
     for name in location_names:
         bar.add_yaxis(
