@@ -1,5 +1,5 @@
 # flake8: noqa F401
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from datetime import datetime
 import enum
 from uuid import uuid4
@@ -77,7 +77,7 @@ class Label(db.Model, ModelMixin):
         order_by=LabelView.created_at.desc(),
     )
 
-    _location: orm.Mapped["LabelLocation"] = orm.relationship(
+    _location: orm.Mapped[Optional["LabelLocation"]] = orm.relationship(
         back_populates="labels",
     )
 
@@ -87,6 +87,10 @@ class Label(db.Model, ModelMixin):
     @property
     def location(self) -> str:
         return self._location.name if self._location else ""
+
+    @property
+    def location_object(self) -> Optional["LabelLocation"]:
+        return self._location
 
     @property
     def mileage_formated(self) -> str:

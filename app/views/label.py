@@ -65,12 +65,16 @@ def get_active_labels():
 
     view_data = db.session.execute(view_query).all()
     graph = create_bar_graph(view_data, by_week=True)
+    label_locations = db.session.scalars(
+        m.LabelLocation.select().where(m.LabelLocation.user_id == current_user.id)
+    ).all()
 
     return render_template(
         "label/labels_active.html",
         labels=labels,
         page=pagination,
         graph_view=graph,
+        locations=label_locations,
     )
 
 
@@ -191,6 +195,8 @@ def label_details():
         # label.type_of_vehicle = form.type_of_vehicle.data
         # label.price = form.price.data
         # label.url = form.url.data
+        if form.location_id.data and form.location_id.data != label.location_id:
+            label.location_id = form.location_id.data
         label.gift = form.gift.data
         label.save()
         if form.next_url.data:

@@ -1,6 +1,11 @@
 import {Modal} from 'flowbite';
 import type {ModalOptions, ModalInterface} from 'flowbite';
 
+interface LabelLocation {
+  id: number;
+  name: string;
+}
+
 interface ILabel {
   id: number;
   unique_id: string;
@@ -19,6 +24,7 @@ interface ILabel {
   user_id: number;
   views: number;
   gift: string;
+  location_object: LabelLocation | null;
 }
 
 const $modalElement: HTMLElement = document.querySelector('#labelDetailsModal');
@@ -79,6 +85,29 @@ function getLabelDetails(label: ILabel) {
   }
   const labelUrl: HTMLInputElement = document.querySelector('#label-edit-url');
   labelUrl.value = label.url;
+  const selectLabelLocation: HTMLSelectElement = document.querySelector(
+    '#label-edit-location',
+  );
+  const allOptions = Array.from(selectLabelLocation.options);
+  if (label.location_object) {
+    allOptions.forEach(option => {
+      if (option.value === label.location_object?.id.toString()) {
+        option.selected = true;
+      }
+    });
+  } else {
+    const isEnabledOptions =
+      allOptions.filter(option => !option.disabled).length > 1;
+    if (!isEnabledOptions) {
+      const newOption = document.createElement('option');
+      newOption.text = 'Select a location';
+      newOption.value = '';
+      newOption.selected = true;
+      newOption.disabled = true;
+      selectLabelLocation.appendChild(newOption);
+    }
+  }
+
   const labelViews: HTMLInputElement =
     document.querySelector('#label-edit-views');
   labelViews.value = label.views.toString();
@@ -99,30 +128,6 @@ function getLabelDetails(label: ILabel) {
   const labelGift: HTMLInputElement =
     document.querySelector('#label-edit-gift');
   labelGift.value = label.gift;
-  if (
-    window.location.href.includes('report/create') &&
-    labelGift.getAttribute('is-edit') !== 'true'
-  ) {
-    labelGift.setAttribute('is-edit', 'true');
-    labelGift.readOnly = false;
-    labelGift.addEventListener('input', () => {
-      const editButton = document.querySelector('#edit-label-gift-button');
-      if (
-        labelGift.value === label.gift &&
-        !editButton.classList.contains('hidden')
-      ) {
-        editButton.classList.add('hidden');
-      }
-      if (
-        labelGift.value !== label.gift &&
-        editButton.classList.contains('hidden') &&
-        labelGift.value.trim().length > 0
-      ) {
-        editButton.classList.remove('hidden');
-      }
-      console.log(labelGift.value);
-    });
-  }
 
   const giftPreviewPageUrl: HTMLButtonElement = document.querySelector(
     '#gift-page-preview-button',

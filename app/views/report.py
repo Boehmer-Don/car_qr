@@ -80,7 +80,9 @@ def dashboard():
         .select_from(m.Label)
         .where(m.Label.user_id == current_user.id)
     )
-
+    label_locations = db.session.scalars(
+        m.LabelLocation.select().where(m.LabelLocation.user_id == current_user.id)
+    ).all()
     if exclude and exclude != "None":
         log(log.INFO, f"Excluding labels: {exclude}")
         exclude_list = exclude.split(",")
@@ -290,6 +292,7 @@ def dashboard():
 
     return render_template(
         "report/dashboard.html",
+        locations=label_locations,
         labels=labels,
         makes=makes,
         make_filter=make_filter,

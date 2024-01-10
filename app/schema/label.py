@@ -2,6 +2,14 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
+class LabelLocation(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        orm_mode = True
+
+
 class Label(BaseModel):
     id: int
     unique_id: str
@@ -21,6 +29,7 @@ class Label(BaseModel):
     user_id: int
     views: int
     gift: str | None
+    location_object: LabelLocation | None
 
     class Config:
         orm_mode = True
