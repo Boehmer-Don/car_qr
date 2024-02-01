@@ -290,6 +290,20 @@ def account(user_unique_id: str):
         form.extra_emails.data = user.extra_emails
 
     if form.validate_on_submit():
+        query = (
+            m.User.select()
+            .where(m.User.email == form.email.data)
+            .where(m.User.id != int(user.id))
+        )
+        if db.session.scalar(query) is not None:
+            log(
+                log.INFO,
+                "User %s tried to switch email to existing email",
+                user_unique_id,
+            )
+            flash("Please, use another email", "danger")
+            return redirect(url_for("user.account", user_unique_id=user_unique_id))
+
         user.email = form.email.data
         if form.password.data:
             user.password = form.password.data
