@@ -14,7 +14,7 @@ services:
       PGUSER: ${POSTGRES_USER:-postgres}
 
   app:
-    image: simple2b/car-qr-label:0.3.89
+    image: simple2b/car-qr-label:0.3.94
     restart: always
     command: sh ./start_server.sh
     environment:

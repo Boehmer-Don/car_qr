@@ -40,6 +40,7 @@ def webhook():
     except Exception as e:
         raise e
 
+    log(log.INFO, "Stripe received event: %s", event["type"])
     match event["type"]:
         case "customer.subscription.created":
             log(log.INFO, "CREATING SUBSCRIPTION EVENT\n")
