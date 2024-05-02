@@ -1,4 +1,5 @@
 from datetime import datetime
+import sqlalchemy as sa
 from flask import render_template, current_app as app, url_for
 from flask_mail import Message, Mail
 from app import models as m, db
@@ -10,9 +11,9 @@ mail = Mail()
 
 def check_subscriptions():
     log(log.INFO, "Subscriptions check started")
-    users = db.session.scalars(m.User.select()).all()
+    users = db.session.scalars(sa.select(m.User)).all()
     for user in users:
-        if user.role == m.UsersRole.dealer:
+        if user.role == m.UsersRole.dealer and user.subscriptions:
             days_left = (
                 datetime.fromtimestamp(user.subscriptions[0].current_period_end)
                 - datetime.now()
