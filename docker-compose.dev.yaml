@@ -17,7 +17,7 @@ services:
       - 127.0.0.1:${LOCAL_DB_PORT:-15430}:5432
 
   app:
-    image: simple2b/car-qr-label:0.3.99
+    image: simple2b/car-qr-label:0.3.101
     restart: always
     command: sh ./start_server.sh
     env_file:
