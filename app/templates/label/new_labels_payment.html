@@ -279,7 +279,7 @@
 
     <div class="flex justify-between text-black">
       <p class="mb-5 font-bold">Total</p>
-      <p id="total">$ {{ len(labels) * 20.00 }}</p>
+      <p id="total">$ {{ labels | length * 20.00 }}</p>
     </div>
 
     <div class="w-full flex justify-center">
