@@ -20,6 +20,11 @@ def index():
     return redirect(url_for("main.landing"))
 
 
+@main_blueprint.route("/no-content")
+def no_content():
+    return "", 200
+
+
 @main_blueprint.route("/l/<sticker_id>")
 def redirect_to_outer_url(sticker_id: str):
     log(log.INFO, "Current user: [%s]", current_user)

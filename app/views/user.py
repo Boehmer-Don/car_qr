@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 from flask import (
     Blueprint,
+    abort,
     render_template,
     request,
     flash,
@@ -19,17 +20,20 @@ from flask import current_app as app
 from app.controllers import create_pagination, update_stripe_customer
 from app import models as m, db, mail
 from app import forms as f
+from app.controllers.user import role_required
 from app.logger import log
+
+from .sellers import seller
 
 
 bp = Blueprint("user", __name__, url_prefix="/user")
+bp.register_blueprint(seller)
 
 
 @bp.route("/", methods=["GET"])
 @login_required
+@role_required([m.UsersRole.admin.value])
 def get_all():
-    if current_user.role != m.UsersRole.admin:
-        return redirect(url_for("main.index"))
     q = request.args.get("q", type=str, default=None)
     query = (
         m.User.select()
@@ -105,6 +109,7 @@ def get_user():
 
 @bp.route("/admins", methods=["GET"])
 @login_required
+@role_required([m.UsersRole.admin.value])
 def get_admins():
     if current_user.role != m.UsersRole.admin:
         return redirect(url_for("main.index"))
@@ -201,8 +206,26 @@ def delete(id: int):
     return "ok", 200
 
 
+@bp.route("/activation", methods=["POST"])
+@login_required
+def activation():
+    log(log.INFO, "User activation request")
+    if current_user.role != m.UsersRole.seller:
+        log(log.ERROR, "User [%s] is not a seller", current_user)
+        return abort(403)
+    current_user.activated = not current_user.activated
+    db.session.commit()
+
+    log(log.INFO, "User set [%s] for account.", current_user.activated)
+    if current_user.activated:
+        return redirect(url_for("user.account", user_unique_id=current_user.unique_id))
+    # TODO mabye redirect to login page
+    return redirect(url_for("auth.logout"))
+
+
 @bp.route("/resend-invite", methods=["POST"])
 @login_required
+@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
 def resend_invite():
     form: f.ResendInviteForm = f.ResendInviteForm()
     if form.validate_on_submit():
@@ -460,11 +483,8 @@ def get_logo(user_unique_id: str):
 
 @bp.route("/new_admin", methods=["GET", "POST"])
 @login_required
+@role_required([m.UsersRole.admin.value])
 def new_admin():
-    if not current_user.role == m.UsersRole.admin:
-        log(log.INFO, "Access denied. User is not admin")
-        return redirect(url_for("main.index"))
-
     form: f.AdminForm = f.AdminForm()
     if form.validate_on_submit():
         user = m.User(

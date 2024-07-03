@@ -19,12 +19,19 @@ class UsersPlan(enum.Enum):
 class UsersRole(enum.Enum):
     admin = "admin"
     dealer = "dealer"
+    seller = "seller"
+    buyer = "buyer"
 
 
 class User(db.Model, UserMixin, ModelMixin):
     __tablename__ = "users"
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
+
+    _seller_id: orm.Mapped[int | None] = orm.mapped_column(
+        sa.ForeignKey("users.id"),
+    )
+
     role: orm.Mapped[UsersPlan] = orm.mapped_column(
         sa.Enum(UsersRole), default=UsersRole.dealer
     )
@@ -75,6 +82,22 @@ class User(db.Model, UserMixin, ModelMixin):
     label_locations: orm.Mapped[list["LabelLocation"]] = orm.relationship(
         back_populates="user"
     )
+
+    sellers: orm.Mapped[list["User"]] = orm.relationship(order_by=created_at.desc())
+
+    @property
+    def seller_id(self):
+        return self._seller_id
+
+    @seller_id.setter
+    def seller_id(self, value):
+        if self.role == UsersRole.seller or self.role == UsersRole.buyer:
+            raise ValueError("Only dealer or admin can set seller")
+        self._seller_id = value
+
+    @property
+    def full_name(self):
+        return f"{self.first_name or ''} {self.last_name or ''}"
 
     @property
     def password(self):

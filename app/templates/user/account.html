@@ -14,7 +14,7 @@
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white text-center">
               My Account
             </h1>
-            <form class="mt-8 space-y-6 from mx-2 md:mx-6" role="form"
+            <form class="mt-8 space-y-6 from mx-2 md:mx-6" role="form" id="user-account-form"
               action="{{ url_for('user.account', user_unique_id=user_unique_id) }}" method="post">
               {{ form.hidden_tag() }}
 
@@ -218,11 +218,28 @@
                 </div>
               </div>
 
-              <button type="submit"
+
+            </form>
+            <div class="flex justify-between">
+              <button type="submit" form="user-account-form"
                 class="w-full mt-4 px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
                 Save >
               </button>
-            </form>
+              {% if current_user.role.value == 'seller' %}
+              {% if current_user.activated %}
+              <button onclick="onClickActivation()"
+                class="w-full mt-4 px-5 py-3 text-base font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                Deactivate Account
+              </button>
+              {% else %}
+
+              <button onclick="onClickActivation()"
+                class="w-full mt-4 px-5 py-3 text-base font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                Activate Account
+              </button>
+              {% endif %}
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>
@@ -234,6 +251,19 @@
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
+<script>
+  const onClickActivation = async () => {
+    if (confirm('Are you sure you want to {{ "Deactivate" if current_user.activated else "Activate" }} account?')) {
+      const response = await fetch(`/user/activation`, {
+        method: 'POST',
+      });
+      if (response.ok) {
+        console.log('Account {{ "Deactivated" if current_user.activated else "Activated" }}');
+        location.reload();
+      }
+    };
+  }
+</script>
 <script src="{{ url_for('static', filename='js/user.js') }}" type="text/javascript" defer></script>
 <script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
 <script src="https://unpkg.com/htmx.org@1.9.5"></script>
