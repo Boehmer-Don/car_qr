@@ -65,7 +65,7 @@ def test_seller_CRU(client: FlaskClient):
 def test_login_as_seller(client: FlaskClient):
     user = set_user(client, role=m.UsersRole.dealer)
     seller = m.User(
-        email="seller@gmail.com",
+        email="seller123@gmail.com",
         password="seller",
         role=m.UsersRole.seller,
         seller_id=user.id,

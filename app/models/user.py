@@ -91,8 +91,9 @@ class User(db.Model, UserMixin, ModelMixin):
 
     @seller_id.setter
     def seller_id(self, value):
-        if self.role == UsersRole.seller or self.role == UsersRole.buyer:
-            raise ValueError("Only dealer or admin can set seller")
+        user = db.session.scalar(sa.select(User).where(User.id == value))
+        if not user or user.role != UsersRole.dealer:
+            raise ValueError("Only dealer can be assigned as seller")
         self._seller_id = value
 
     @property
