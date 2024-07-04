@@ -6,7 +6,7 @@ from click.testing import Result
 import sqlalchemy as sa
 
 from app import models as m, db
-from tests.utils import login, logout
+from tests.utils import login, set_user
 from .db import add_generic_labels
 
 
@@ -144,24 +144,6 @@ def test_label_edit(populate: FlaskClient):
     # assert label.type_of_vehicle == TEST_LABEL_TYPE
 
 
-def test_deactivate_label(populate: FlaskClient):
-    label: m.Label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
-    assert label
-    login(populate)
-    response = populate.post(
-        f"labels/deactivate",
-        data=dict(
-            unique_id=label.unique_id,
-        ),
-    )
-    assert response
-    assert response.status_code == 302
-
-    label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
-    assert label.status == m.LabelStatus.archived
-    assert label.date_deactivated
-
-
 def test_add_new_labels(client: FlaskClient):
     TEST_LABELS_AMOUNT = 5
     login(client)
@@ -290,3 +272,37 @@ def test_assign_generic_labels(runner: FlaskClient, populate: FlaskClient):
     for label in db.session.scalars(m.Sticker.select()):
         assert label.user_id == admin.id
         assert label.pending == True
+
+
+def test_sell_car_label(populate: FlaskClient):
+    label: m.Label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
+    dealer = set_user(populate, role=m.UsersRole.dealer)
+    seller = set_user(populate, role=m.UsersRole.seller, is_login=False)
+    seller.seller_id = dealer.id  # type: ignore
+    db.session.commit()
+
+    assert not db.session.scalars(sa.select(m.SaleReport)).all()
+
+    assert label
+
+    res = populate.get(f"labels/sell/{label.unique_id}")
+    assert res
+    assert res.status_code == 200
+    assert "Sell the car label" in res.data.decode()
+
+    response = populate.post(
+        "labels/sell",
+        data=dict(
+            label_unique_id=label.unique_id,
+            seller_unique_id=seller.unique_id,
+            price_sold=10000,
+        ),
+        follow_redirects=True,
+    )
+    assert response
+    assert response.status_code == 200
+    assert label.sticker_id not in response.data.decode()
+
+    assert label.status == m.LabelStatus.archived
+    assert label.date_deactivated
+    assert db.session.scalars(sa.select(m.SaleReport)).all()

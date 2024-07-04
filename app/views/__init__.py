@@ -6,3 +6,4 @@ from .label import dealer_blueprint
 from .report import report_blueprint
 from .stripe import stripe_blueprint
 from .label_location import location_blueprint
+from .sale_report import sale_report as sale_report_blueprint

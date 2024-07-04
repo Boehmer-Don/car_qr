@@ -20,10 +20,10 @@
         <li class="mr-2">
           <a href="{{ url_for('labels.get_archived_labels') }}"
             class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">
-            Archived
+            Archived 123
           </a>
         </li>
-        {% if current_user.plan.value == 'advanced' %}'
+        {% if current_user.plan.value == 'advanced' %}
         <li class="mr-2 hidden">
           <a href="{{ url_for('report.all') }}"
             class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">
@@ -240,7 +240,6 @@
 </div>
 
 {% include 'label/edit_label.html' %}
-{% include 'label/deactivate_label.html'%}
 <!-- prettier-ignore -->
 {% endblock %}
 <!-- prettier-ignore -->

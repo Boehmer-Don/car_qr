@@ -27,7 +27,7 @@
             Archived
           </a>
         </li>
-        {% if current_user.plan.value == 'advanced' %}'
+        {% if current_user.plan.value == 'advanced' %}
         <li class="mr-2 hidden">
           <a href="{{ url_for('report.all') }}"
             class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">
@@ -150,8 +150,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
         </a>
-        <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-deactivate-button"
-          data-target="{{label.json}}">
+        <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer"
+          hx-get="{{ url_for('labels.get_sell_car_label_modal', label_unique_id=label.unique_id) }}" hx-target="body"
+          hx-swap="beforeend" hx-indicator="#htmx-spinner">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
             stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -255,7 +256,6 @@
 </div>
 
 {% include 'label/edit_label.html' %}
-{% include 'label/deactivate_label.html'%}
 <!-- prettier-ignore -->
 {% endblock %}
 <!-- prettier-ignore -->

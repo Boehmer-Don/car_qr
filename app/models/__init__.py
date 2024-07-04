@@ -13,4 +13,5 @@ from .client import Client
 from .landing import LandingForm
 from .label_view import LabelView
 from .label_location import LabelLocation
+from .sale_report import SaleReport
 from .utils import generate_uuid

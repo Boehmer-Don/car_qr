@@ -96,6 +96,9 @@ def login():
             return redirect(
                 url_for("labels.get_active_labels", user_unique_id=user.unique_id)
             )
+        elif current_user.role == m.UsersRole.seller:
+            log(log.INFO, "Redirecting to sale reports.")
+            return redirect(url_for("sale_report.get_all"))
         return redirect(url_for("user.account", user_unique_id=user.unique_id))
 
     elif form.is_submitted():
