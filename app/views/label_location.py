@@ -21,7 +21,7 @@ location_blueprint = Blueprint(
 
 @location_blueprint.route("/create", methods=["GET"])
 @login_required
-@role_required([m.UsersRole.admin.value, m.UsersRole.dealer.value])
+@role_required([m.UsersRole.admin, m.UsersRole.dealer])
 def get_location_modal():
     """htmx"""
     log(log.INFO, "get label location from")
@@ -35,7 +35,7 @@ def get_location_modal():
 
 @location_blueprint.route("/create", methods=["POST"])
 @login_required
-@role_required([m.UsersRole.admin.value, m.UsersRole.dealer.value])
+@role_required([m.UsersRole.admin, m.UsersRole.dealer])
 def create_location():
     """htmx"""
     log(log.INFO, "Creating label location")

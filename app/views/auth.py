@@ -353,7 +353,7 @@ def image_upload(user):
 
 @auth_blueprint.route("/sidebar-logo-upload", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def sidebar_logo_upload():
     query = m.User.select().where(m.User.unique_id == current_user.unique_id)
     user: m.User | None = db.session.scalar(query)
@@ -392,14 +392,14 @@ def logo_upload(user_unique_id: str):
 
 
 @auth_blueprint.route("/thankyou-subscription", methods=["GET"])
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def thankyou_subscription():
     log(log.INFO, "Payment succeeded. User: [%s]", current_user)
     return render_template("auth/thankyou_subscription.html")
 
 
 @auth_blueprint.route("/thankyou-labels", methods=["GET"])
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def thankyou_labels():
     log(log.INFO, "Payment succeeded. User: [%s]", current_user)
     return render_template("auth/thankyou_labels.html")

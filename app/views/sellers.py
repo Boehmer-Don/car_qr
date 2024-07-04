@@ -26,7 +26,7 @@ seller = Blueprint("seller", __name__, url_prefix="/sellers")
 
 @seller.route("/", methods=["GET"])
 @login_required
-@role_required([m.UsersRole.dealer.value])
+@role_required([m.UsersRole.dealer])
 def get_user_sellers():
     log(log.INFO, "Getting user sellers")
     login_as_seller_form = f.LoginAsSellerForm()
@@ -67,7 +67,7 @@ def get_user_sellers():
 
 @seller.route("/create", methods=["GET"])
 @login_required
-@role_required([m.UsersRole.dealer.value])
+@role_required([m.UsersRole.dealer])
 def get_create_modal():
     form = f.SellerForm()
     return render_template("seller/add_modal.html", form=form)
@@ -75,7 +75,7 @@ def get_create_modal():
 
 @seller.route("/create", methods=["POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value])
+@role_required([m.UsersRole.dealer])
 def create():
     form = f.SellerForm()
     if not form.validate_on_submit():
@@ -100,7 +100,7 @@ def create():
 
 @seller.route("/edit/<unique_id>", methods=["GET"])
 @login_required
-@role_required([m.UsersRole.dealer.value])
+@role_required([m.UsersRole.dealer])
 def get_edit_modal(unique_id: str):
     user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id))
 
@@ -115,7 +115,7 @@ def get_edit_modal(unique_id: str):
 
 @seller.route("/edit", methods=["POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value])
+@role_required([m.UsersRole.dealer])
 def edit():
     form = f.EditSellerFrom()
     if not form.validate_on_submit():
@@ -145,7 +145,7 @@ def edit():
 
 @seller.route("/login-as-seller", methods=["POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value])
+@role_required([m.UsersRole.dealer])
 def login_as_seller():
     form = f.LoginAsSellerForm()
     if not form.validate_on_submit():

@@ -2,11 +2,11 @@ from functools import wraps
 from flask import abort, redirect, request, url_for
 from flask_login import current_user
 
-
+from app import models as m
 from app.logger import log
 
 
-def role_required(required_role: list[str]):
+def role_required(required_role: list[m.UsersRole]):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -18,7 +18,7 @@ def role_required(required_role: list[str]):
                 log(log.ERROR, "User is deleted or not activated")
                 return redirect(url_for("auth.logout"))
 
-            if current_user.role.value not in required_role:
+            if current_user.role not in required_role:
                 log(
                     log.ERROR,
                     "User with role :[%s] does not have permission to access route: [%s]",

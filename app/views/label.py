@@ -35,7 +35,7 @@ dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
 
 @dealer_blueprint.route("/active", methods=["GET"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_active_labels():
     where = sa.and_(
         m.Label.status == m.LabelStatus.active, m.Label.user_id == current_user.id
@@ -82,7 +82,7 @@ def get_active_labels():
 
 @dealer_blueprint.route("/<label_unique_id>/views", methods=["GET"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_label_graph_views(label_unique_id: str):
     label_views_data_query = (
         sa.select(
@@ -101,7 +101,7 @@ def get_label_graph_views(label_unique_id: str):
 
 @dealer_blueprint.route("/archived", methods=["GET"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_archived_labels():
     where = sa.and_(
         m.Label.status == m.LabelStatus.archived, m.Label.user_id == current_user.id
@@ -143,7 +143,7 @@ def get_archived_labels():
 
 @dealer_blueprint.route("/deactivate", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def deactivate_label():
     form: f.DeactivateLabelForm = f.DeactivateLabelForm()
     if form.validate_on_submit():
@@ -172,7 +172,7 @@ def deactivate_label():
 
 @dealer_blueprint.route("/edit", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def label_details():
     form: f.LabelForm = f.LabelForm()
     if form.validate_on_submit():
@@ -217,7 +217,7 @@ def label_details():
 
 @dealer_blueprint.route("/edit_cart_label/<label_unique_id>", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def edit_cart_label(label_unique_id: str):
     label = db.session.scalar(
         sa.select(m.Label).where(m.Label.unique_id == label_unique_id)
@@ -278,14 +278,14 @@ def edit_cart_label(label_unique_id: str):
 
 @dealer_blueprint.route("/reporting", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def reporting():
     return render_template("label/reporting.html")
 
 
 @dealer_blueprint.route("/amount/<user_unique_id>", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def new_label_set_amount(user_unique_id: str):
     form: f.LabelsAmountForm = f.LabelsAmountForm()
     if form.validate_on_submit():
@@ -312,7 +312,7 @@ def new_label_set_amount(user_unique_id: str):
 
 @dealer_blueprint.route("/details/<user_unique_id>/<amount>", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def new_label_set_details(user_unique_id: str, amount: int):
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
@@ -416,7 +416,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
 
 @dealer_blueprint.route("/payment/<user_unique_id>/", methods=["GET", "POST", "PUT"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def new_label_payment(user_unique_id: str):
     labels = db.session.scalars(
         m.Label.select()
@@ -537,7 +537,7 @@ def get_trims():
 
 @dealer_blueprint.route("/generate/<user_unique_id>", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def generate(user_unique_id: str):
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
@@ -593,7 +593,7 @@ def generate(user_unique_id: str):
 
 @dealer_blueprint.route("/order/<user_unique_id>")
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def order(user_unique_id: str):
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
@@ -625,7 +625,7 @@ def order(user_unique_id: str):
 
 @dealer_blueprint.route("/download", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def download():
     landing_url = app.config.get("LANDING_URL")
     user_unique_id = request.args.get("user_unique_id")
@@ -727,7 +727,7 @@ def download():
 
 @dealer_blueprint.route("/new_make", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def new_make():
     new_make = request.form.get("new_make_name")
     next_url = request.form.get("next_url")
@@ -744,7 +744,7 @@ def new_make():
 
 @dealer_blueprint.route("/new_model", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def new_model():
     new_model = request.form.get("new_model_name")
     next_url = request.form.get("next_url")
@@ -771,7 +771,7 @@ def new_model():
 
 @dealer_blueprint.route("/add_new_model", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def add_new_model():
     make_input = request.form.get("new_make_name")
     model_input = request.form.get("new_model_name")
@@ -846,7 +846,7 @@ def add_new_model():
 
 @dealer_blueprint.route("/new_trim", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def new_trim():
     new_trim = request.form.get("new_trim_name")
     next_url = request.form.get("next_url")
@@ -863,7 +863,7 @@ def new_trim():
 
 @dealer_blueprint.route("/new_type", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def new_type():
     new_type = request.form.get("new_type_name")
     next_url = request.form.get("next_url")
@@ -880,7 +880,7 @@ def new_type():
 
 @dealer_blueprint.route("/check_label_code", methods=["POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def check_label_code():
     code = request.json.get("codeTyped")
 
@@ -912,7 +912,7 @@ def check_label_code():
 
 @dealer_blueprint.route("/delete_from_cart/<label_unique_id>")
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def delete_from_cart(label_unique_id):
     label = db.session.scalar(
         sa.select(m.Label).where(m.Label.unique_id == label_unique_id)

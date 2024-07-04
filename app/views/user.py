@@ -32,7 +32,7 @@ bp.register_blueprint(seller)
 
 @bp.route("/", methods=["GET"])
 @login_required
-@role_required([m.UsersRole.admin.value])
+@role_required([m.UsersRole.admin])
 def get_all():
     q = request.args.get("q", type=str, default=None)
     query = (
@@ -109,7 +109,7 @@ def get_user():
 
 @bp.route("/admins", methods=["GET"])
 @login_required
-@role_required([m.UsersRole.admin.value])
+@role_required([m.UsersRole.admin])
 def get_admins():
     if current_user.role != m.UsersRole.admin:
         return redirect(url_for("main.index"))
@@ -225,7 +225,7 @@ def activation():
 
 @bp.route("/resend-invite", methods=["POST"])
 @login_required
-@role_required([m.UsersRole.dealer.value, m.UsersRole.admin.value])
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def resend_invite():
     form: f.ResendInviteForm = f.ResendInviteForm()
     if form.validate_on_submit():
@@ -483,7 +483,7 @@ def get_logo(user_unique_id: str):
 
 @bp.route("/new_admin", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.admin.value])
+@role_required([m.UsersRole.admin])
 def new_admin():
     form: f.AdminForm = f.AdminForm()
     if form.validate_on_submit():
