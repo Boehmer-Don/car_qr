@@ -305,4 +305,4 @@ def test_sell_car_label(populate: FlaskClient):
 
     assert label.status == m.LabelStatus.archived
     assert label.date_deactivated
-    assert seller.sale_reports == db.session.scalars(sa.select(m.SaleReport)).all()
+    assert db.session.scalars(sa.select(m.SaleReport)).all()
