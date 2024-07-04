@@ -10,6 +10,7 @@ from app import models as m
 from app import forms as f
 from app import mail, db
 from app.controllers import create_stripe_customer, create_subscription_checkout_session
+from app.controllers.user import role_required
 from app.logger import log
 
 
@@ -90,11 +91,12 @@ def login():
         if current_user.role == m.UsersRole.admin:
             log(log.INFO, "Redirecting to users page.")
             return redirect(url_for("user.get_all"))
-        else:
+        elif current_user.role == m.UsersRole.dealer:
             log(log.INFO, "Redirecting to dashboard.")
             return redirect(
                 url_for("labels.get_active_labels", user_unique_id=user.unique_id)
             )
+        return redirect(url_for("user.account", user_unique_id=user.unique_id))
 
     elif form.is_submitted():
         log(log.WARNING, "Form submitted error: [%s]", form.errors)
@@ -281,6 +283,7 @@ def payment(user_unique_id: str):
         )
         if not product:
             log(log.ERROR, "Stripe product not found: [%s]", user.plan.value)
+            # TODO handle error
 
         # create stripe customer
         stripe_user = create_stripe_customer(user)
@@ -349,6 +352,8 @@ def image_upload(user):
 
 
 @auth_blueprint.route("/sidebar-logo-upload", methods=["GET", "POST"])
+@login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def sidebar_logo_upload():
     query = m.User.select().where(m.User.unique_id == current_user.unique_id)
     user: m.User | None = db.session.scalar(query)
@@ -387,14 +392,14 @@ def logo_upload(user_unique_id: str):
 
 
 @auth_blueprint.route("/thankyou-subscription", methods=["GET"])
-@login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def thankyou_subscription():
     log(log.INFO, "Payment succeeded. User: [%s]", current_user)
     return render_template("auth/thankyou_subscription.html")
 
 
 @auth_blueprint.route("/thankyou-labels", methods=["GET"])
-@login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def thankyou_labels():
     log(log.INFO, "Payment succeeded. User: [%s]", current_user)
     return render_template("auth/thankyou_labels.html")

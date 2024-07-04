@@ -1,0 +1,56 @@
+<div tabindex="-1" id="modal-view-add-seller" hx-get="{{ url_for('main.no_content') }}" hx-trigger="click"
+    hx-swap="delete" hx-target="#modal-view-add-seller" hx-indicator="#htmx-spinner"
+    class="fixed bg-opacity-80 bg-gray-600 top-0 left-0 right-0 z-50 items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full justify-end items-end flex">
+    <div class="rounded-lg relative w-2/5 bg-white" onclick="event.stopPropagation();">
+        <form class="p-8 grid grid-cols-4 gap-4 bg-white dark:bg-gray-800 rounded-lg p-1"
+            action="{{ url_for('user.seller.create') }}" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="col-span-2">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    First Name
+                </label>
+                <input type="text" name="first_name" autocomplete="off" minlength="1" maxlength="64" autofocus
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="Enter first name" required />
+            </div>
+            <div class="col-span-2">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    last Name
+                </label>
+                <input type="text" name="last_name" autocomplete="off" minlength="1" maxlength="64" autofocus
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="Enter last name" required />
+            </div>
+            <div class="col-span-4">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Email
+                </label>
+                <input type="email" name="email" autocomplete="off" minlength="1" maxlength="64" autofocus
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="Enter email" required />
+            </div>
+            <div class="col-span-2">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Password
+                </label>
+                <input type="password" name="password" autocomplete="off" minlength="1" maxlength="64" autofocus
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="**********" required />
+            </div>
+            <div class="col-span-2">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Confirm password
+                </label>
+                <input type="password" name="password_confirmation" autocomplete="off" minlength="1" maxlength="64"
+                    autofocus
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="**********" required />
+            </div>
+
+            <button type="submit"
+                class="col-span-4 py-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                Submit
+            </button>
+        </form>
+    </div>
+</div>

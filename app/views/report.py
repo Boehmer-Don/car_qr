@@ -26,6 +26,7 @@ from app import models as m, db
 from app import forms as f
 from app import schema as s
 from app.controllers.graphs import create_bar_graph, create_location_graph
+from app.controllers.user import role_required
 from app.logger import log
 from app.controllers.jinja_globals import days_active
 from app.controllers.date_convert import date_convert
@@ -35,6 +36,7 @@ report_blueprint = Blueprint("report", __name__, url_prefix="/report")
 
 @report_blueprint.route("/create", methods=["GET", "POST"])
 @login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def dashboard():
     exclude = request.args.get("exclude")
     views_filter = request.args.get("views_filter")
@@ -316,6 +318,7 @@ def dashboard():
 
 @report_blueprint.route("/get_models", methods=["POST"])
 @login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_models():
     make = request.json.get("makeSelected")
     labels = db.session.scalars(
@@ -329,6 +332,7 @@ def get_models():
 
 @report_blueprint.route("/get_label_views_datetime/<unique_id>", methods=["GET"])
 @login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_label_views_datetime(unique_id: str):
     label: m.Label | None = db.session.scalar(
         m.Label.select().where(m.Label.unique_id == unique_id)
@@ -380,6 +384,7 @@ def get_label_views_datetime(unique_id: str):
 
 @report_blueprint.route("/all", methods=["GET", "POST"])
 @login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def all():
     query = (
         m.Label.select()
@@ -408,6 +413,7 @@ def all():
 @report_blueprint.route("/get_label_views_graph", methods=["GET"])
 @validate()
 @login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_label_views_graph(query: s.QueryModelLabelsGraphView):
     start_date = query.start_date_graph
     end_date = query.end_date_graph
@@ -469,6 +475,7 @@ def get_label_views_graph(query: s.QueryModelLabelsGraphView):
 @report_blueprint.route("/get_label_location_views_graph", methods=["GET"])
 @validate()
 @login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_label_location_views_graph(query: s.QueryModelLocationsGraphView):
     start_date = query.start_date_graph
     end_date = query.end_date_graph

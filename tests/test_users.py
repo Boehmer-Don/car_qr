@@ -3,7 +3,7 @@ from flask.testing import FlaskClient, FlaskCliRunner
 from click.testing import Result
 import sqlalchemy as sa
 from app import models as m, db
-from tests.utils import login
+from tests.utils import login, set_user
 from app import mail
 
 
@@ -146,3 +146,22 @@ def test_subscription(client: FlaskClient):
         follow_redirects=True,
     )
     assert response.status_code == 200
+
+
+def test_activate(client: FlaskClient):
+    set_user(client, role=m.UsersRole.dealer)
+
+    res = client.post("/user/activation")
+    assert res.status_code == 403
+
+    user = set_user(client, role=m.UsersRole.seller)
+    assert user.activated
+    res = client.post("/user/activation", follow_redirects=True)
+    assert res.status_code == 200
+    assert not user.activated
+
+    # TODO fix this
+    # login(email=user.email, password="123456", client=client)
+    # res = client.post("/user/activation", follow_redirects=True)
+    # assert res.status_code == 200
+    # assert "You were logged out." in res.data.decode()
