@@ -141,33 +141,73 @@ def get_archived_labels():
     )
 
 
-@dealer_blueprint.route("/deactivate", methods=["GET", "POST"])
+@dealer_blueprint.route("/sell/<label_unique_id>", methods=["GET"])
 @login_required
 @role_required([m.UsersRole.dealer, m.UsersRole.admin])
-def deactivate_label():
-    form: f.DeactivateLabelForm = f.DeactivateLabelForm()
-    if form.validate_on_submit():
-        label: m.Label = db.session.scalar(
-            sa.select(m.Label).where(m.Label.unique_id == form.unique_id.data)
+def get_sell_car_label_modal(label_unique_id: str):
+    form: f.SoldLabelForm() = f.SoldLabelForm()
+    form.label_unique_id.data = label_unique_id
+
+    sellers = db.session.scalars(
+        sa.select(m.User).where(
+            m.User.seller_id == current_user.id,
+            m.User.role == m.UsersRole.seller,
+            m.User.activated.is_(True),
         )
-        if not label:
-            log(log.ERROR, "Failed to find label : [%s]", form.unique_id.data)
-            flash("Failed to find label", "danger")
-            return redirect(
-                url_for(
-                    "labels.get_active_labels",
-                    user_unique_id=current_user.unique_id,
-                )
-            )
-        label.status = m.LabelStatus.archived
-        label.price_sold = form.price_sold.data
-        label.date_deactivated = datetime.utcnow()
-        label.save()
-        log(log.INFO, "Deactivated label : [%s]", form.unique_id.data)
-    elif form.is_submitted():
+    ).all()
+
+    return render_template(
+        "label/modal/sell_car_label.html", form=form, sellers=sellers
+    )
+
+
+@dealer_blueprint.route("/sell", methods=["POST"])
+@login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
+def sell_car_label():
+    form: f.SoldLabelForm() = f.SoldLabelForm()
+
+    redirect_url = url_for(
+        "labels.get_active_labels",
+        user_unique_id=current_user.unique_id,
+    )
+    if not form.validate_on_submit():
         log(log.ERROR, "User save errors: [%s]", form.errors)
         flash(f"Failed to validate form: {form.errors}", "danger")
-    return redirect(url_for("labels.get_archived_labels"))
+        return redirect(redirect_url)
+    label = db.session.scalar(
+        sa.select(m.Label).where(m.Label.unique_id == form.label_unique_id.data)
+    )
+    if not label:
+        log(log.ERROR, "Failed to find label : [%s]", form.label_unique_id.data)
+        flash("Failed to find label", "danger")
+        return redirect(redirect_url)
+
+    seller = db.session.scalar(
+        sa.select(m.User).where(
+            m.User.unique_id == form.seller_unique_id.data,
+            m.User.role == m.UsersRole.seller,
+            m.User.activated.is_(True),
+            m.User._seller_id == current_user.id,
+        )
+    )
+    if not seller:
+        log(log.ERROR, "Failed to find seller : [%s]", form.seller_unique_id.data)
+        flash("Failed to find seller", "danger")
+        return redirect(redirect_url)
+
+    m.SaleReport(
+        label_id=label.id,
+        seller_id=seller.id,
+    ).save()
+
+    label.status = m.LabelStatus.archived
+    label.price_sold = form.price_sold.data
+    label.date_deactivated = datetime.utcnow()
+    label.save()
+    log(log.INFO, "Sold label : [%s]", form.label_unique_id.data)
+
+    return redirect(redirect_url)
 
 
 @dealer_blueprint.route("/edit", methods=["GET", "POST"])

@@ -1,3 +1,4 @@
+from datetime import datetime
 import click
 from flask import Flask
 import sqlalchemy as sa
@@ -158,3 +159,30 @@ def init(app: Flask):
         trims = db.session.scalars(m.CarTrim.select()).all()
         for trim in trims:
             print(trim.name, trim.model)
+
+    @app.cli.command("buy-lebels")
+    @click.option("--user-id", default=9, type=int)
+    def buy_labels_from_cart(user_id: int):
+        """Buy labels from cart (without using stripe)"""
+        user = db.session.scalar(sa.select(m.User).where(m.User.id == user_id))
+        if not user:
+            print(f"User with id [{user_id}] not found")
+            return
+        labels = db.session.scalars(
+            sa.select(m.Label).where(
+                m.Label.user_id == user_id, m.Label.status == m.LabelStatus.cart
+            )
+        ).all()
+
+        for label in labels:
+            label.date_activated = datetime.now()
+            label.status = m.LabelStatus.active
+            label.save()
+
+            # Cancel pending stickers
+            sticker: m.Sticker = db.session.scalar(
+                m.Sticker.select().where(m.Sticker.code == label.sticker_id)
+            )
+            if sticker:
+                sticker.pending = False
+                sticker.save()

@@ -1,5 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, BooleanField, FloatField
+from wtforms import (
+    DecimalField,
+    HiddenField,
+    StringField,
+    IntegerField,
+    FloatField,
+    ValidationError,
+)
 from wtforms.validators import DataRequired, Length
 
 
@@ -30,11 +37,18 @@ class LabelUpdateForm(LabelForm):
     mileage = StringField("Mileage", validators=[DataRequired(), Length(1, 255)])
 
 
-class DeactivateLabelForm(FlaskForm):
-    unique_id = StringField("Unique ID")
-    active = BooleanField("Active")
-    next_url = StringField("Next URL")
-    price_sold = IntegerField("Price Sold")
+class SoldLabelForm(FlaskForm):
+    label_unique_id = HiddenField("Label Unique ID", validators=[DataRequired()])
+    seller_unique_id = StringField("Seller Unique ID", validators=[DataRequired()])
+    price_sold = DecimalField(
+        "Price Sold",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "i.e. 10000", "min": "1"},
+    )
+
+    def validate_price_sold(self, field):
+        if field.data < 0:
+            raise ValidationError("Price sold must be greater than 0")
 
 
 class LabelsAmountForm(FlaskForm):

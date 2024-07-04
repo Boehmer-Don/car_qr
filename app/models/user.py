@@ -2,6 +2,7 @@ from datetime import datetime
 import enum
 from flask_login import UserMixin, AnonymousUserMixin
 import sqlalchemy as sa
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy import orm
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -85,7 +86,7 @@ class User(db.Model, UserMixin, ModelMixin):
 
     sellers: orm.Mapped[list["User"]] = orm.relationship(order_by=created_at.desc())
 
-    @property
+    @hybrid_property
     def seller_id(self):
         return self._seller_id
 
