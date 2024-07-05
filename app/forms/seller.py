@@ -7,10 +7,13 @@ from app import models as m, db
 from .base import BaseForm
 
 
-class SellerForm(BaseForm):
+class BaseSellerForm(BaseForm):
     first_name = StringField("first_name", validators=[DataRequired(), Length(0, 64)])
     last_name = StringField("last_name", validators=[DataRequired(), Length(0, 64)])
     email = StringField("email", validators=[DataRequired(), Length(0, 255), Email()])
+
+
+class SellerForm(BaseSellerForm):
     password = PasswordField("Password", validators=[DataRequired(), Length(6, 30)])
     password_confirmation = PasswordField(
         "Confirm Password",
@@ -26,11 +29,8 @@ class SellerForm(BaseForm):
             raise ValidationError("This email is already registered.")
 
 
-class EditSellerFrom(BaseForm):
+class EditSellerFrom(BaseSellerForm):
     unique_id = StringField("unique_id", validators=[DataRequired()])
-    first_name = StringField("first_name", validators=[Optional(), Length(0, 64)])
-    last_name = StringField("last_name", validators=[Optional(), Length(0, 64)])
-    email = StringField("email", validators=[Optional(), Length(0, 255), Email()])
     activated = BooleanField("Activated", validators=[Optional()])
 
     new_password = PasswordField("New password", validators=[Optional(), Length(6, 30)])
