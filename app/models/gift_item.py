@@ -43,4 +43,4 @@ class GiftItem(db.Model, ModelMixin):
         self._is_default = value
 
     def __repr__(self):
-        return f"<{self.id}:{self.created_at}>"
+        return f"<{self.id}:{self.created_at} Default: {self.is_default}>"

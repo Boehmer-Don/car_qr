@@ -76,3 +76,62 @@ def add():
     db.session.commit()
     flash("Gift Item added successfully", "success")
     return redirect(url_for("gift_item.get_all"))
+
+
+@gift_item.route("/<unique_id>/edit-modal", methods=["GET"])
+@login_required
+@role_required([m.UsersRole.admin])
+def edit_modal(unique_id: str):
+    """htmx"""
+    log(log.INFO, "Getting gift item edit modal")
+    item = db.session.scalar(
+        sa.select(m.GiftItem).where(m.GiftItem.unique_id == unique_id)
+    )
+    if not item:
+        log(log.ERROR, f"Gift item with unique id [{unique_id}] not found")
+        return render_template(
+            "toast.html", message="Gift item not found", category="danger"
+        )
+    form = f.EditGiftItemForm()
+    form.gift_item_unique_id.data = item.unique_id
+    form.description.data = item.description
+    form.price.data = item.price
+    form.min_qty.data = item.min_qty
+    form.max_qty.data = item.max_qty
+    form.is_default.data = item.is_default
+    return render_template("gift_item/edit_modal.html", form=form)
+
+
+@gift_item.route("/edit", methods=["POST"])
+@login_required
+@role_required([m.UsersRole.admin])
+def edit():
+    log(log.INFO, "Getting gift item edit")
+    form = f.EditGiftItemForm()
+    if not form.validate_on_submit():
+        log(log.ERROR, f"Invalid data [{form.format_errors}]")
+        flash(f"Invalid data [{form.format_errors}]", "danger")
+        return redirect(url_for("gift_item.get_all"))
+
+    item = db.session.scalar(
+        sa.select(m.GiftItem).where(
+            m.GiftItem.unique_id == form.gift_item_unique_id.data
+        )
+    )
+    if not item:
+        log(
+            log.ERROR,
+            f"Gift item with unique id [{form.gift_item_unique_id.data}] not found",
+        )
+        flash("Gift item not found", "danger")
+        return redirect(url_for("gift_item.get_all"))
+
+    item.description = form.description.data
+    item.price = form.price.data
+    item.min_qty = form.min_qty.data
+    item.max_qty = form.max_qty.data
+    if form.is_default.data:
+        item.is_default = form.is_default.data
+    db.session.commit()
+    flash("Gift Item updated successfully", "success")
+    return redirect(url_for("gift_item.get_all"))

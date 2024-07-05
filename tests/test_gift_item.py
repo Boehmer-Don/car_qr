@@ -48,29 +48,34 @@ def test_gift_items_CRUD(client: FlaskClient):
     assert res.status_code == 200
     assert b"Gift Item added successfully" in res.data
 
-    # res = client.get("/gift-items", follow_redirects=True)
-    # assert res.status_code == 200
-    # assert b"Test gift box" in res.data
+    res = client.get("/gift-items", follow_redirects=True)
+    assert res.status_code == 200
+    assert b"Test gift box" in res.data
 
-    # gift_item = db.session.scalar(sa.select(m.GiftItem))
-    # assert gift_item
+    gift_item = db.session.scalar(sa.select(m.GiftItem))
+    assert gift_item
 
-    # res = client.get(f"/gift-items/{gift_item.id}/edit-modal")
-    # assert res.status_code == 200
-    # assert b"Edit Gift Item" in res.data
+    res = client.get(f"/gift-items/{gift_item.id}/edit-modal")
+    assert res.status_code == 200
+    assert b"Gift item not found" in res.data
 
-    # test_gift_box["descriptions"] = "Updated"
-    # test_gift_box["price"] = 200.0
+    res = client.get(f"/gift-items/{gift_item.unique_id}/edit-modal")
+    assert res.status_code == 200
+    assert b"Edit Gift Item" in res.data
 
-    # res = client.post(
-    #     f"/gift-items/{gift_item.id}/edit",
-    #     data=test_gift_box,
-    #     follow_redirects=True,
-    # )
-    # assert res.status_code == 200
-    # assert b"Gift Item updated successfully" in res.data
-    # assert gift_item.description == "Updated"
-    # assert gift_item.price == 200.0
+    test_gift_box["description"] = "Updated"
+    test_gift_box["price"] = 200.0
+    test_gift_box["gift_item_unique_id"] = gift_item.unique_id
+
+    res = client.post(
+        "/gift-items/edit",
+        data=test_gift_box,
+        follow_redirects=True,
+    )
+    assert res.status_code == 200
+    assert b"Gift Item updated successfully" in res.data
+    assert gift_item.description == "Updated"
+    assert gift_item.price == 200.0
 
     # res = client.delete(f"/gift-items/{gift_item.id}/delete")
     # assert res.status_code == 200

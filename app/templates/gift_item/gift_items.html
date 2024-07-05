@@ -10,7 +10,7 @@
         </h1>
         <button type="button" hx-get="{{ url_for('gift_item.add_modal') }}" hx-trigger="click" hx-swap="beforeend"
             hx-target="body" hx-indicator="#htmx-spinner"
-            class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">Sets
+            class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">Set
             Add Gift</button>
     </div>
     </button>
@@ -27,7 +27,13 @@
                     Min Qty
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Min Qty
+                    Max Qty
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Default
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Action
                 </th>
             </tr>
         </thead>
@@ -41,11 +47,28 @@
                 <td class="px-6 py-4">
                     {{ item.price }}
                 </td>
+
+                <td class="px-6 py-4">
+                    {{ item.min_qty }}
+                </td>
                 <td class="px-6 py-4">
                     {{ item.max_qty }}
                 </td>
                 <td class="px-6 py-4">
-                    {{ item.min_qty }}
+                    <div class="flex items-center me-4">
+                        {% if item.is_default %}
+                        <input checked type="checkbox" value="" disabled
+                            class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        {% else %}
+                        <input type="checkbox" value="" disabled
+                            class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        {% endif %}
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
+                        hx-get="{{ url_for('gift_item.edit_modal', unique_id=item.unique_id) }}" hx-trigger="click"
+                        hx-swap="beforeend" hx-target="body" hx-indicator="#htmx-spinner">Edit</div>
                 </td>
             </tr>
             {% endfor %}
