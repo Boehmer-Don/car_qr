@@ -13,11 +13,11 @@ from .base import BaseForm
 class GiftItemForm(BaseForm):
     description = StringField(
         "Description",
-        validators=[DataRequired(), Length(0, 255)],
+        validators=[DataRequired(), Length(0, 264)],
         render_kw={
             "placeholder": "Enter gift item description",
             "minlength": 1,
-            "maxlength": 255,
+            "maxlength": 264,
         },
     )
     price = DecimalField(

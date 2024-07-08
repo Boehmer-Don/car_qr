@@ -1,7 +1,8 @@
 # flake8: noqa E712
-import io
-import json
+
 from datetime import datetime
+
+from pydantic import ValidationError
 from flask import (
     Blueprint,
     render_template,
@@ -18,6 +19,7 @@ import sqlalchemy as sa
 
 from app.controllers import create_pagination, role_required
 from app import models as m, db
+from app.schema import ad_gift_boxes
 from app import forms as f
 from app.logger import log
 
@@ -46,3 +48,64 @@ def get_all():
         ).scalars(),
         page=pagination,
     )
+
+
+@sale_report.route("/<sale_rep_unique_id>/gift-box-modal", methods=["GET"])
+@login_required
+@role_required([m.UsersRole.seller])
+def gift_boxs_modal(sale_rep_unique_id: str):
+
+    sale_report = db.session.scalar(
+        sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_rep_unique_id)
+    )
+
+    if not sale_report or sale_report.seller_id != current_user.id:
+        log(
+            log.ERROR,
+            "Sale report not found [%s], or not owned by current user",
+            sale_rep_unique_id,
+        )
+        return render_template(
+            "toast.html", message="Sale report not found", category="danger"
+        )
+
+    form = f.GiftBoxForm()
+    form.sale_rep_unique_id.data = sale_rep_unique_id
+
+    gift_boxs = db.session.scalars(sa.select(m.GiftItem)).all()
+    defualt_amount = (
+        db.session.scalar(
+            sa.select(m.GiftItem.price).where(m.GiftItem._is_default.is_(True))
+        )
+        or 0
+    )
+
+    return render_template(
+        "sale_report/gift_box_modal.html",
+        gift_boxs=gift_boxs,
+        sale_report=sale_report,
+        defualt_amount=defualt_amount,
+        form=form,
+    )
+
+
+@sale_report.route("/set-gift-boxes", methods=["POST"])
+@login_required
+@role_required([m.UsersRole.seller])
+def set_gift_boxes():
+    form = f.GiftBoxForm()
+    if not form.validate_on_submit():
+        log(log.ERROR, "Form validation failed [%s]", form.errors)
+        flash(f"Form validation failed [{form.format_errors}]", "danger")
+        return redirect(url_for("sale_report.get_all"))
+
+    try:
+        gift_boxes = ad_gift_boxes.validate_json(form.gift_boxes.data)
+    except ValidationError as e:
+        log(log.ERROR, "Gift boxes json validation failed [%s]", e)
+        flash("Gift boxes validation failed ", "danger")
+        return redirect(url_for("sale_report.get_all"))
+
+    # TODO: Add gift boxes to sale report
+
+    return redirect(url_for("sale_report.get_all"))
