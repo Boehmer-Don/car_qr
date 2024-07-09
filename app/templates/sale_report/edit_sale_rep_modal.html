@@ -20,7 +20,7 @@
                 {{ form.sale_rep_unique_id }}
                 {{ form.unique_id(class_="hidden") }}
 
-                {% if not sale_report.is_first_oil_done %}
+                {% if not sale_report.oil_changes[0].is_done %}
                 <div class="col-span-2 relative">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -30,13 +30,14 @@
                         </svg>
                     </div>
                     <input datepicker datepicker-min-date="{{ today }}" id="first_oil_change" type="text"
-                        name="first_oil_change" required value="{{ sale_report.first_oil_change.strftime('%m-%d-%Y') }}"
+                        name="first_oil_change" required
+                        value="{{ sale_report.oil_changes[0].date.strftime('%m-%d-%Y') }}"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Select first oil change date">
                 </div>
                 {% endif %}
 
-                {% if not sale_report.is_second_oil_change_done %}
+                {% if not sale_report.oil_changes[1].is_done %}
                 <div class="col-span-2 relative">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -47,7 +48,7 @@
                     </div>
                     <input datepicker datepicker-min-date="{{ today }}" id="second_oil_change" required
                         name="second_oil_change" type="text"
-                        value="{{ sale_report.second_oil_change.strftime('%m-%d-%Y') }}"
+                        value="{{ sale_report.oil_changes[1].date.strftime('%m-%d-%Y') }}"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Select second oil change date">
                 </div>

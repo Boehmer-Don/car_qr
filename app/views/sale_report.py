@@ -33,8 +33,6 @@ def get_all():
     log(log.INFO, "Getting sale reports")
     stmt = sa.and_(
         m.SaleReport.seller_id == current_user.id,
-        m.SaleReport.first_oil_change.is_(None),
-        m.SaleReport.second_oil_change.is_(None),
     )
     query = sa.select(m.SaleReport).where(stmt).order_by(m.SaleReport.created_at.desc())
     count_query = sa.select(sa.func.count()).where(stmt).select_from(m.SaleReport)
@@ -57,11 +55,7 @@ def get_all():
 @role_required([m.UsersRole.seller])
 def get_all_panding_oil():
     log(log.INFO, "Get all panding oil")
-    stmt = sa.and_(
-        m.SaleReport.seller_id == current_user.id,
-        m.SaleReport.first_oil_change.isnot(None),
-        m.SaleReport.second_oil_change.isnot(None),
-    )
+    stmt = sa.and_(m.SaleReport.seller_id == current_user.id)
     query = sa.select(m.SaleReport).where(stmt).order_by(m.SaleReport.created_at.desc())
     count_query = sa.select(sa.func.count()).where(stmt).select_from(m.SaleReport)
 
@@ -227,7 +221,7 @@ def oil_change_modal(sale_rep_unique_id: str):
             "toast.html", message="Sale report not found", category="danger"
         )
 
-    if sale_report.is_completed:
+    if sale_report.oil_changes:
         log(
             log.ERROR,
             "Sale report [%s] is already completed",
@@ -275,7 +269,7 @@ def set_oil_change_modal():
         flash("Sale report not found", "danger")
         return redirect(url_for("sale_report.get_all"))
 
-    if sale_report.is_completed:
+    if sale_report.oil_changes:
         log(
             log.ERROR,
             "Sale report [%s] is already completed",
@@ -284,11 +278,18 @@ def set_oil_change_modal():
         flash("Sale report is already completed", "success")
         return redirect(url_for("sale_report.get_all"))
 
-    sale_report.first_oil_change = form.first_oil_change.data
-    sale_report.second_oil_change = form.second_oil_change.data
-    sale_report.is_notfy_by_email = form.is_notfy_by_email.data
-    sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
-
+    db.session.add(
+        m.OilChange(
+            sale_rep_id=sale_report.id,
+            date=form.first_oil_change.data,
+        )
+    )
+    db.session.add(
+        m.OilChange(
+            sale_rep_id=sale_report.id,
+            date=form.second_oil_change.data,
+        )
+    )
     db.session.commit()
 
     return redirect(url_for("sale_report.get_all"))
@@ -308,6 +309,7 @@ def edit_modal(sale_rep_unique_id: str):
         not sale_report
         or sale_report.seller_id != current_user.id
         or not sale_report.buyer
+        or len(sale_report.oil_changes) < 2
     ):
         log(
             log.ERROR,
@@ -355,6 +357,7 @@ def edit():
         not sale_report
         or sale_report.seller_id != current_user.id
         or not sale_report.buyer
+        or len(sale_report.oil_changes) < 2
     ):
         log(
             log.ERROR,
@@ -364,8 +367,12 @@ def edit():
         flash("Sale report not found", "danger")
         return redirect(url_for("sale_report.get_all_panding_oil"))
 
-    sale_report.first_oil_change = form.first_oil_change.data
-    sale_report.second_oil_change = form.second_oil_change.data
+    first_oil_change = sale_report.oil_changes[0]
+    second_oil_change = sale_report.oil_changes[1]
+
+    first_oil_change.date = form.is_notfy_by_email.data
+    second_oil_change.date = form.is_notfy_by_email.data
+
     sale_report.is_notfy_by_email = form.is_notfy_by_email.data
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
 
@@ -375,5 +382,7 @@ def edit():
     sale_report.buyer.phone = form.phone.data
     if form.new_password.data:
         sale_report.buyer.password = form.new_password.data
+
+    db.session.commit()
 
     return redirect(url_for("sale_report.get_all_panding_oil"))

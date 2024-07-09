@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from .label import Label
     from .user import User
     from .gift_box import GiftBox
+    from .oil_change import OilChange
 
 
 class SaleReport(db.Model, ModelMixin):
@@ -36,12 +37,6 @@ class SaleReport(db.Model, ModelMixin):
         sa.DateTime,
         default=datetime.utcnow,
     )
-    first_oil_change: orm.Mapped[datetime | None] = orm.mapped_column(sa.DateTime)
-    second_oil_change: orm.Mapped[datetime | None] = orm.mapped_column(sa.DateTime)
-    is_first_oil_done: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
-    is_second_oil_change_done: orm.Mapped[bool] = orm.mapped_column(
-        sa.Boolean, default=False
-    )
 
     is_notfy_by_email: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
     is_notfy_by_phone: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
@@ -54,13 +49,9 @@ class SaleReport(db.Model, ModelMixin):
         back_populates="sale_rep"
     )
 
-    @hybrid_property
-    def is_completed(self):
-        return (
-            self.with_gift_boxes
-            and self.first_oil_change is not None
-            and self.second_oil_change is not None
-        )
+    oil_changes: orm.Mapped[list["OilChange"]] = orm.relationship(
+        back_populates="sale_rep"
+    )
 
     @hybrid_property
     def with_gift_boxes(self) -> bool:
