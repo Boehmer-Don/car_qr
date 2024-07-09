@@ -369,18 +369,18 @@ Flask-SQLAlchemy = ">=1.0"
 
 [[package]]
 name = "flask-pydantic"
-version = "0.11.0"
+version = "0.12.0"
 description = "Flask extension for integration with Pydantic library"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "Flask-Pydantic-0.11.0.tar.gz", hash = "sha256:eef679b24e34ffb02e24e1d998ac023007aa2b531927fdc2f9b8114a12c19bb4"},
-    {file = "Flask_Pydantic-0.11.0-py3-none-any.whl", hash = "sha256:c5a6283d1227631683ceb72a41f652036829476fbb6e7b6ccef8cae8ed51ebab"},
+    {file = "Flask-Pydantic-0.12.0.tar.gz", hash = "sha256:b80f18cc7efe332b47eafbae141541e9875777132ba30d7c95f9fef9bf2a6977"},
+    {file = "Flask_Pydantic-0.12.0-py3-none-any.whl", hash = "sha256:c80825d74eefa137d8d7f2396f6b376ee128329196d79eff1442bcfd816a6228"},
 ]
 
 [package.dependencies]
 Flask = "*"
-pydantic = ">=1.7"
+pydantic = ">=2.0"
 
 [[package]]
 name = "flask-sqlalchemy"
@@ -1431,4 +1431,4 @@ email = ["email-validator"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f2b641eb9ff4216d2a71a7e1914b4bc35c586689e9df85b5fc15d1478745b84a"
+content-hash = "6a0bb1d0a5841aaa5dda0c06994ba6f0d11fb5c6425ee5d362af2c063b620137"

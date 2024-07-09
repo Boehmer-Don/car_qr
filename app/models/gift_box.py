@@ -1,9 +1,14 @@
+from typing import TYPE_CHECKING
+
 from datetime import datetime
 import sqlalchemy as sa
 from sqlalchemy import orm
 
 from app.database import db
 from .utils import ModelMixin, generate_uuid
+
+if TYPE_CHECKING:
+    from .sale_report import SaleReport
 
 
 class GiftBox(db.Model, ModelMixin):
@@ -27,6 +32,8 @@ class GiftBox(db.Model, ModelMixin):
     description: orm.Mapped[str] = orm.mapped_column(sa.String(264))
     total_price: orm.Mapped[float] = orm.mapped_column(sa.Float)
     qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)
+
+    sale_rep: orm.Mapped["SaleReport"] = orm.relationship(back_populates="gift_boxes")
 
     def __repr__(self):
         return f"<{self.id}:{self.created_at}>"
