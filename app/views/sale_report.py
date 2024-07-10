@@ -33,6 +33,7 @@ def get_all():
     log(log.INFO, "Getting sale reports")
     stmt = sa.and_(
         m.SaleReport.seller_id == current_user.id,
+        sa.not_(sa.exists().where(m.OilChange.sale_rep_id == m.SaleReport.id)),
     )
     query = sa.select(m.SaleReport).where(stmt).order_by(m.SaleReport.created_at.desc())
     count_query = sa.select(sa.func.count()).where(stmt).select_from(m.SaleReport)
@@ -55,7 +56,10 @@ def get_all():
 @role_required([m.UsersRole.seller])
 def get_all_panding_oil():
     log(log.INFO, "Get all panding oil")
-    stmt = sa.and_(m.SaleReport.seller_id == current_user.id)
+    stmt = sa.and_(
+        m.SaleReport.seller_id == current_user.id,
+        sa.exists().where(m.OilChange.sale_rep_id == m.SaleReport.id),
+    )
     query = sa.select(m.SaleReport).where(stmt).order_by(m.SaleReport.created_at.desc())
     count_query = sa.select(sa.func.count()).where(stmt).select_from(m.SaleReport)
 
@@ -290,6 +294,10 @@ def set_oil_change_modal():
             date=form.second_oil_change.data,
         )
     )
+
+    sale_report.is_notfy_by_email = form.is_notfy_by_email.data
+    sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
+
     db.session.commit()
 
     return redirect(url_for("sale_report.get_all"))
@@ -370,8 +378,8 @@ def edit():
     first_oil_change = sale_report.oil_changes[0]
     second_oil_change = sale_report.oil_changes[1]
 
-    first_oil_change.date = form.is_notfy_by_email.data
-    second_oil_change.date = form.is_notfy_by_email.data
+    first_oil_change.date = form.first_oil_change.data
+    second_oil_change.date = form.second_oil_change.data
 
     sale_report.is_notfy_by_email = form.is_notfy_by_email.data
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data

@@ -74,12 +74,11 @@
             {% endfor %}
         </tbody>
         <script>
-            function openOilChangeModal() {
+            async function openOilChangeModal() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const saleRepUniqueID = urlParams.get('sale_rep_unique_id');
-                console.log(saleRepUniqueID);
                 if (saleRepUniqueID) {
-                    htmx.ajax('GET', `/sale-reports/${saleRepUniqueID}/oil-change-modal`, {
+                    await htmx.ajax('GET', `/sale-reports/${saleRepUniqueID}/oil-change-modal`, {
                         target: 'body',
                         swap: 'beforeend',
                         indicator: '#htmx-spinner'
