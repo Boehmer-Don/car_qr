@@ -20,7 +20,7 @@ class GiftItem(db.Model, ModelMixin):
         default=datetime.utcnow,
     )
 
-    description: orm.Mapped[str] = orm.mapped_column(sa.String(64))
+    description: orm.Mapped[str] = orm.mapped_column(sa.String(264))
     price: orm.Mapped[float] = orm.mapped_column(sa.Float)
     min_qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)
     max_qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)

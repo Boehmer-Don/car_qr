@@ -114,5 +114,5 @@ class Label(db.Model, ModelMixin):
     def json(self):
         from app import schema as s
 
-        label = s.Label.from_orm(self)
-        return label.json()
+        label = s.Label.model_json_schema(self)
+        return label

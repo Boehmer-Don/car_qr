@@ -128,6 +128,18 @@ const controllerConfig = [
   }
 ];
 
+const giftBoxModal =  {
+    entry: {
+      main: './src/gift_box_modal.ts',
+    },
+    output: {
+      path: path.resolve(__dirname, './app/static'),
+      filename: 'js/gift_box_modal.js', // <--- Will be compiled to this single file
+    },
+  }
+
+
+
 
 const configs = [
   baseConfig,
@@ -140,6 +152,7 @@ const configs = [
   countriesConfig,
   usersSearchResult,
   passwordConfig,
+  giftBoxModal,
   ...controllerConfig
 ].map(conf => merge(defaultConfig, conf));
 
