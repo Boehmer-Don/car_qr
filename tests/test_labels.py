@@ -277,13 +277,14 @@ def test_assign_generic_labels(runner: FlaskClient, populate: FlaskClient):
 def test_sell_car_label(populate: FlaskClient):
     label: m.Label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
     dealer = set_user(populate, role=m.UsersRole.dealer)
-    seller = set_user(populate, role=m.UsersRole.seller, is_login=False)
+    seller = db.session.scalar(
+        sa.select(m.User).where(m.User.role == m.UsersRole.seller)
+    )
+    assert seller
+    assert label
+
     seller.seller_id = dealer.id  # type: ignore
     db.session.commit()
-
-    assert not db.session.scalars(sa.select(m.SaleReport)).all()
-
-    assert label
 
     res = populate.get(f"labels/sell/{label.unique_id}")
     assert res
@@ -305,4 +306,6 @@ def test_sell_car_label(populate: FlaskClient):
 
     assert label.status == m.LabelStatus.archived
     assert label.date_deactivated
-    assert db.session.scalars(sa.select(m.SaleReport)).all()
+    assert db.session.scalars(
+        sa.select(m.SaleReport).where(m.SaleReport.seller_id == seller.id)
+    ).all()

@@ -6,15 +6,11 @@ from pydantic import ValidationError
 from flask import (
     Blueprint,
     render_template,
-    request,
     flash,
     redirect,
-    session,
     url_for,
-    Response,
 )
-from flask_login import login_required, current_user, login_user, logout_user
-from flask_mail import Message
+from flask_login import login_required, current_user
 import sqlalchemy as sa
 
 from app.controllers import create_pagination, role_required
@@ -282,16 +278,19 @@ def set_oil_change_modal():
         flash("Sale report is already completed", "success")
         return redirect(url_for("sale_report.get_all"))
 
+    try:
+        first_oil_change = datetime.strptime(form.first_oil_change.data, "%Y-%m-%d")
+        second_oil_change = datetime.strptime(form.second_oil_change.data, "%Y-%m-%d")
+    except ValueError as e:
+        log(log.ERROR, "Date validation failed [%s]", e)
+        flash("Date validation failed", "danger")
+        return redirect(url_for("sale_report.get_all"))
+
+    db.session.add(m.OilChange(sale_rep_id=sale_report.id, date=first_oil_change))
     db.session.add(
         m.OilChange(
             sale_rep_id=sale_report.id,
-            date=form.first_oil_change.data,
-        )
-    )
-    db.session.add(
-        m.OilChange(
-            sale_rep_id=sale_report.id,
-            date=form.second_oil_change.data,
+            date=second_oil_change,
         )
     )
 
@@ -299,7 +298,7 @@ def set_oil_change_modal():
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
 
     db.session.commit()
-
+    flash("Oil change data added successfully", "success")
     return redirect(url_for("sale_report.get_all"))
 
 
@@ -377,11 +376,19 @@ def edit():
 
     first_oil_change = sale_report.oil_changes[0]
     second_oil_change = sale_report.oil_changes[1]
-
-    if form.first_oil_change.data:
-        first_oil_change.date = form.first_oil_change.data
-    if form.second_oil_change.data:
-        second_oil_change.date = form.second_oil_change.data
+    try:
+        if form.first_oil_change.data:
+            first_oil_change.date = datetime.strptime(
+                form.first_oil_change.data, "%Y-%m-%d"
+            )
+        if form.second_oil_change.data:
+            second_oil_change.date = datetime.strptime(
+                form.second_oil_change.data, "%Y-%m-%d"
+            )
+    except ValueError as e:
+        log(log.ERROR, "Date validation failed [%s]", e)
+        flash("Date validation failed", "danger")
+        return redirect(url_for("sale_report.get_all"))
 
     sale_report.is_notfy_by_email = form.is_notfy_by_email.data
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
@@ -394,5 +401,5 @@ def edit():
         sale_report.buyer.password = form.new_password.data
 
     db.session.commit()
-
+    flash("Sale report updated successfully", "success")
     return redirect(url_for("sale_report.get_all_panding_oil"))

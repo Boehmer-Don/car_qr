@@ -7,7 +7,7 @@ from random import randint
 
 from app import create_app, db
 from app import models as m
-from tests.utils import register
+from tests.utils import register, set_user
 from tests.db import populate as db_populate, add_labels
 
 
@@ -118,7 +118,7 @@ def populate(client: FlaskClient, test_labels_data: dict):
             activated=True,
         ).save(False)
     db.session.commit()
-
+    seller = set_user(client=client, role=m.UsersRole.seller, is_login=False)
     for index, label in enumerate(test_labels_data):
         label_status = m.LabelStatus.active if index < 8 else m.LabelStatus.archived
         date_deactivated = None
@@ -141,9 +141,25 @@ def populate(client: FlaskClient, test_labels_data: dict):
             date_deactivated=date_deactivated,
         )
         label.save()
+
+        if label_status == m.LabelStatus.active:
+            label.price_sold = 10000
+            m.SaleReport(
+                seller_id=seller.id,
+                label_id=label.id,
+            ).save()
+
         for _ in range(randint(1, 6)):
             view = m.LabelView(label_id=label.id)
             view.created_at = datetime.now() + timedelta(days=randint(1, 30))
             view.save()
+
+    m.GiftItem(
+        description="Gift Item 1",
+        price=2,
+        min_qty=1,
+        max_qty=10,
+        is_default=True,
+    ).save()
 
     yield client

@@ -88,18 +88,12 @@ class TestingConfig(BaseConfig):
     """Testing configuration."""
 
     ENV: ClassVar[str] = "testing"
+    WTF_CSRF_ENABLED: bool = False
     TESTING: bool = True
     PRESERVE_CONTEXT_ON_EXCEPTION: bool = False
     ALCHEMICAL_DATABASE_URL: str = "sqlite:///" + os.path.join(
         BASE_DIR, "database-test.sqlite3"
     )
-
-    class Config:
-        fields = {
-            "ALCHEMICAL_DATABASE_URL": {
-                "env": "TEST_DATABASE_URL",
-            }
-        }
 
 
 class ProductionConfig(BaseConfig):
