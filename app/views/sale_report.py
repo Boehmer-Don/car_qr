@@ -378,8 +378,10 @@ def edit():
     first_oil_change = sale_report.oil_changes[0]
     second_oil_change = sale_report.oil_changes[1]
 
-    first_oil_change.date = form.first_oil_change.data
-    second_oil_change.date = form.second_oil_change.data
+    if form.first_oil_change.data:
+        first_oil_change.date = form.first_oil_change.data
+    if form.second_oil_change.data:
+        second_oil_change.date = form.second_oil_change.data
 
     sale_report.is_notfy_by_email = form.is_notfy_by_email.data
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data

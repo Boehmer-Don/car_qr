@@ -58,6 +58,10 @@ class SaleReport(db.Model, ModelMixin):
         return bool(self.gift_boxes)
 
     @property
+    def oil_change_done(self) -> bool:
+        return all(oil_change.is_done for oil_change in self.oil_changes)
+
+    @property
     def sold_date(self):
         return self.created_at.strftime("%Y-%m-%d")
 

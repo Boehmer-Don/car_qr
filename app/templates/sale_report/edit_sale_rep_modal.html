@@ -64,7 +64,7 @@
                 </div>
 
                 {% endif %}
-                {% if not sale_report.is_second_oil_change_done or not sale_report.is_first_oil_done %}
+                {% if not sale_report.oil_change_done %}
                 <div class="col-span-2 flex items-center ">
                     <input name="is_notfy_by_email" type="checkbox" {{ 'checked' if sale_report.is_notfy_by_email }}
                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
