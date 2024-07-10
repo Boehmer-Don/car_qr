@@ -49,8 +49,8 @@ def test_sale_reports(populate: FlaskClient):
 
     form_data = {
         "sale_rep_unique_id": sale_rep.unique_id,
-        "first_oil_change": "2021-01-01",
-        "second_oil_change": "2021-01-01",
+        "first_oil_change": "01/01/2021",
+        "second_oil_change": "01/01/2021",
         "is_notfy_by_email": True,
     }
     res = populate.post(
@@ -78,7 +78,7 @@ def test_sale_reports(populate: FlaskClient):
         "first_name": "test",
         "last_name": "user",
         "email": "b2@b.com",
-        "first_oil_change": "2021-03-01",
+        "first_oil_change": "01/07/2021",
     }
     res = populate.post("/sale-reports/edit", follow_redirects=True, data=form_data)
     assert res.status_code == 200

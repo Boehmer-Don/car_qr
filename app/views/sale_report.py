@@ -22,6 +22,9 @@ from app.logger import log
 sale_report = Blueprint("sale_report", __name__, url_prefix="/sale-reports")
 
 
+DATE_FORMAT = "%m/%d/%Y"
+
+
 @sale_report.route("/", methods=["GET"])
 @login_required
 @role_required([m.UsersRole.seller])
@@ -279,8 +282,8 @@ def set_oil_change_modal():
         return redirect(url_for("sale_report.get_all"))
 
     try:
-        first_oil_change = datetime.strptime(form.first_oil_change.data, "%Y-%m-%d")
-        second_oil_change = datetime.strptime(form.second_oil_change.data, "%Y-%m-%d")
+        first_oil_change = datetime.strptime(form.first_oil_change.data, DATE_FORMAT)
+        second_oil_change = datetime.strptime(form.second_oil_change.data, DATE_FORMAT)
     except ValueError as e:
         log(log.ERROR, "Date validation failed [%s]", e)
         flash("Date validation failed", "danger")
@@ -379,11 +382,11 @@ def edit():
     try:
         if form.first_oil_change.data:
             first_oil_change.date = datetime.strptime(
-                form.first_oil_change.data, "%Y-%m-%d"
+                form.first_oil_change.data, DATE_FORMAT
             )
         if form.second_oil_change.data:
             second_oil_change.date = datetime.strptime(
-                form.second_oil_change.data, "%Y-%m-%d"
+                form.second_oil_change.data, DATE_FORMAT
             )
     except ValueError as e:
         log(log.ERROR, "Date validation failed [%s]", e)
