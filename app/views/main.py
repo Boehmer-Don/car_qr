@@ -42,6 +42,10 @@ def redirect_to_outer_url(sticker_id: str):
     db.session.commit()
     log(log.INFO, "views after: [%s]", label.views)
 
+    if label.oil_not_changed:
+        log(log.INFO, "Label has report Label: [%s]", label)
+        return redirect(url_for("buyer.login", sticker_id=sticker_id))
+
     if label.gift:
         log(log.INFO, "Redirecting to gift page. Label: [%s]", label)
         return redirect(url_for("labels.gift", sticker_id=sticker_id))

@@ -41,7 +41,10 @@ class SaleReport(db.Model, ModelMixin):
     is_notfy_by_email: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
     is_notfy_by_phone: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
 
-    label: orm.Mapped["Label"] = orm.relationship(viewonly=True)
+    label: orm.Mapped["Label"] = orm.relationship(
+        viewonly=True, back_populates="sale_report"
+    )
+
     seller: orm.Mapped["User"] = orm.relationship(foreign_keys=[seller_id])
     buyer: orm.Mapped["User"] = orm.relationship(foreign_keys=[buyer_id])
 
@@ -56,6 +59,10 @@ class SaleReport(db.Model, ModelMixin):
     @hybrid_property
     def with_gift_boxes(self) -> bool:
         return bool(self.gift_boxes)
+
+    @property
+    def oil_change_not_done(self) -> bool:
+        return any(oil_change.is_not_done for oil_change in self.oil_changes)
 
     @property
     def oil_change_done(self) -> bool:
