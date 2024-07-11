@@ -132,8 +132,8 @@ class User(db.Model, UserMixin, ModelMixin):
     def json(self):
         from app import schema as s
 
-        u = s.User.from_orm(self)
-        return u.json()
+        u = s.User.model_dump_json(self)
+        return u
 
 
 class AnonymousUser(AnonymousUserMixin):
