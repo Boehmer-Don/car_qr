@@ -50,7 +50,7 @@ def test_sale_reports(populate: FlaskClient):
     form_data = {
         "sale_rep_unique_id": sale_rep.unique_id,
         "first_oil_change": "01/01/2021",
-        "second_oil_change": "01/01/2021",
+        "second_oil_change": "01/28/2021",
         "is_notfy_by_email": True,
     }
     res = populate.post(

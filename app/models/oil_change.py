@@ -36,5 +36,11 @@ class OilChange(db.Model, ModelMixin):
 
     sale_rep: orm.Mapped["SaleReport"] = orm.relationship(back_populates="oil_changes")
 
+    @property
+    def is_not_done(self) -> bool:
+        return (
+            not self.is_done and self.date.date() >= datetime.today().date()
+        )  # wecan't change the oil in the past
+
     def __repr__(self):
         return f"<{self.id}:{self.created_at}"

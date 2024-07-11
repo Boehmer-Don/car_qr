@@ -1,16 +1,12 @@
 # flake8: noqa F401
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 from datetime import datetime
 import enum
-from uuid import uuid4
 import sqlalchemy as sa
 from sqlalchemy import orm
-from sqlalchemy.ext.hybrid import hybrid_property
-from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.database import db
 from .utils import ModelMixin, generate_uuid
-from app.logger import log
 
 from .user import User
 from .label_view import LabelView
@@ -18,6 +14,7 @@ from .label_view import LabelView
 
 if TYPE_CHECKING:
     from .label_location import LabelLocation
+    from .sale_report import SaleReport
 
 
 class LabelStatus(enum.Enum):
@@ -81,8 +78,17 @@ class Label(db.Model, ModelMixin):
         back_populates="labels",
     )
 
+    sale_report: orm.Mapped[Union["SaleReport", None]] = orm.relationship(
+        back_populates="label",
+        uselist=False,
+    )
+
     def __repr__(self):
         return f"<{self.id}:{self.name}>"
+
+    @property
+    def oil_not_changed(self) -> bool:
+        return bool(self.sale_report and self.sale_report.oil_change_not_done)
 
     @property
     def location(self) -> str:

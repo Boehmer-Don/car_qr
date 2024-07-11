@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
 
 
 class LabelLocation(BaseModel):
@@ -30,6 +30,14 @@ class Label(BaseModel):
     gift: str | None
     location_object: LabelLocation | None
 
-    class Config:
-        orm_mode = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
+    @field_serializer("date_received")
+    def serialize_date_received(self, value: datetime):
+        return value.isoformat()
+
+    @field_serializer("date_deactivated")
+    def serialize_date_deactivated(self, value: datetime | None):
+        if value is None:
+            return None
+        return value.isoformat()
+
+    model_config = ConfigDict(from_attributes=True)

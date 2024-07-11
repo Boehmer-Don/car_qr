@@ -284,9 +284,12 @@ def set_oil_change_modal():
     try:
         first_oil_change = datetime.strptime(form.first_oil_change.data, DATE_FORMAT)
         second_oil_change = datetime.strptime(form.second_oil_change.data, DATE_FORMAT)
+
+        if first_oil_change.date() >= second_oil_change.date():
+            raise ValueError("First oil change date should be greater than second")
     except ValueError as e:
         log(log.ERROR, "Date validation failed [%s]", e)
-        flash("Date validation failed", "danger")
+        flash(f"Date validation failed Error: {e}", "danger")
         return redirect(url_for("sale_report.get_all"))
 
     db.session.add(m.OilChange(sale_rep_id=sale_report.id, date=first_oil_change))
@@ -388,10 +391,12 @@ def edit():
             second_oil_change.date = datetime.strptime(
                 form.second_oil_change.data, DATE_FORMAT
             )
+        if first_oil_change.date.date() >= second_oil_change.date.date():
+            raise ValueError("First oil change date should be greater than second")
     except ValueError as e:
         log(log.ERROR, "Date validation failed [%s]", e)
-        flash("Date validation failed", "danger")
-        return redirect(url_for("sale_report.get_all"))
+        flash(f"Date validation failed Error: {e}", "danger")
+        return redirect(url_for("sale_report.get_all_panding_oil"))
 
     sale_report.is_notfy_by_email = form.is_notfy_by_email.data
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
