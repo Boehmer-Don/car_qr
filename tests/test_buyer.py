@@ -15,11 +15,15 @@ def test_login_and_confirm(populate: FlaskClient):
     )
     assert label
 
-    for inx in range(1, 3):
-        m.OilChange(
-            sale_rep_id=label.sale_report.id,
-            date=datetime.now() + timedelta(days=inx),
-        ).save()
+    m.OilChange(
+        sale_rep_id=label.sale_report.id,
+        date=datetime.now(),
+    ).save()
+
+    m.OilChange(
+        sale_rep_id=label.sale_report.id,
+        date=datetime.now() + timedelta(days=1),
+    ).save()
 
     assert label.oil_not_changed
 
@@ -60,3 +64,4 @@ def test_login_and_confirm(populate: FlaskClient):
     )
     assert res.status_code == 200
     assert oil_change.is_done
+    assert not label.oil_not_changed
