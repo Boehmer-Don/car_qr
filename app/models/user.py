@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from datetime import datetime
 import enum
 from flask_login import UserMixin, AnonymousUserMixin
@@ -10,6 +12,10 @@ from app.database import db
 from .utils import ModelMixin, generate_uuid
 from app.logger import log
 from .label_location import LabelLocation
+
+
+if TYPE_CHECKING:
+    from .dealer_gift_item import DealerGiftItem
 
 
 class UsersPlan(enum.Enum):
@@ -85,6 +91,10 @@ class User(db.Model, UserMixin, ModelMixin):
     )
 
     sellers: orm.Mapped[list["User"]] = orm.relationship(order_by=created_at.desc())
+
+    gift_items: orm.Mapped[list["DealerGiftItem"]] = orm.relationship(
+        back_populates="dealer"
+    )
 
     @hybrid_property
     def seller_id(self):

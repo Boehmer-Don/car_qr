@@ -60,6 +60,7 @@ def add():
 
     gift_item = m.GiftItem(
         description=form.description.data,
+        SKU=form.SKU.data,
         price=form.price.data,
         min_qty=form.min_qty.data,
         max_qty=form.max_qty.data,
@@ -89,6 +90,7 @@ def edit_modal(unique_id: str):
     form.gift_item_unique_id.data = item.unique_id
     form.description.data = item.description
     form.price.data = item.price
+    form.SKU.data = item.SKU
     form.min_qty.data = item.min_qty
     form.max_qty.data = item.max_qty
     form.is_default.data = item.is_default
@@ -122,6 +124,7 @@ def edit():
     item.description = form.description.data
     item.price = form.price.data
     item.min_qty = form.min_qty.data
+    item.SKU = form.SKU.data
     item.max_qty = form.max_qty.data
     item.is_default = form.is_default.data
     db.session.commit()
