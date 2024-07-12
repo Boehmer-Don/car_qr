@@ -39,7 +39,7 @@ class OilChange(db.Model, ModelMixin):
     @property
     def is_not_done(self) -> bool:
         return (
-            not self.is_done and self.date.date() >= datetime.today().date()
+            not self.is_done and datetime.today().date() >= self.date.date()
         )  # wecan't change the oil in the past
 
     def __repr__(self):
