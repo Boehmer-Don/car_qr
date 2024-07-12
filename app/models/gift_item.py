@@ -33,13 +33,6 @@ class GiftItem(db.Model, ModelMixin):
 
     @is_default.setter  # type: ignore
     def is_default(self, value):
-        if value:
-            items = db.session.scalars(
-                sa.select(self.__class__).where(self.__class__._is_default.is_(True))
-            ).all()
-
-            for item in items:
-                item.is_default = False
         self._is_default = value
 
     def __repr__(self):

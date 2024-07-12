@@ -35,7 +35,7 @@ class GiftItemForm(BaseForm):
         validators=[DataRequired()],
         render_kw={"min": 1, "placeholder": "Enter max qty"},
     )
-    is_default = BooleanField("is_default", default=False)
+    is_default = BooleanField("is_default", default=True)
 
     def validate_price(self, field):
         if field.data < 0:

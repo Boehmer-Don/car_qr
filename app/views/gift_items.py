@@ -123,8 +123,7 @@ def edit():
     item.price = form.price.data
     item.min_qty = form.min_qty.data
     item.max_qty = form.max_qty.data
-    if form.is_default.data:
-        item.is_default = form.is_default.data
+    item.is_default = form.is_default.data
     db.session.commit()
     flash("Gift Item updated successfully", "success")
     return redirect(url_for("gift_item.get_all"))
