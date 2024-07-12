@@ -162,30 +162,50 @@ def get_admins():
     )
 
 
+@bp.route("/<unique_id>/edit_modal", methods=["GET"])
+@login_required
+@role_required([m.UsersRole.admin])
+def edit_modal(unique_id: str):
+    """htmx"""
+    user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id))
+    if not user:
+        log(log.ERROR, "Not found user by id : [%s]", unique_id)
+        return render_template(
+            "toast.html", message="User not found", toast_type="danger"
+        )
+    form: f.UserForm = f.UserForm()
+
+    return render_template("user/edit_modal.html", form=form, user=user)
+
+
 @bp.route("/save", methods=["POST"])
 @login_required
 def save():
     form: f.UserForm = f.UserForm()
-    if form.validate_on_submit():
-        query = m.User.select().where(m.User.id == int(form.user_id.data))
-        user: m.User | None = db.session.scalar(query)
-        if not user:
-            log(log.ERROR, "Not found user by id : [%s]", form.user_id.data)
-            flash("Failed to find user", "danger")
-        user.first_name = form.first_name.data
-        user.last_name = form.last_name.data
-        user.email = form.email.data
-        if form.password.data.strip("*\n "):
-            user.password = form.password.data
-        user.save()
-        if form.next_url.data:
-            return redirect(form.next_url.data)
-        return redirect(url_for("user.get_all"))
-
-    else:
+    if not form.validate_on_submit():
         log(log.ERROR, "User save errors: [%s]", form.errors)
         flash(f"{form.errors}", "danger")
         return redirect(url_for("user.get_all"))
+    user = db.session.scalar(
+        sa.select(m.User).where(m.User.id == int(form.user_id.data))
+    )
+    if not user:
+        log(log.ERROR, "Not found user by id : [%s]", form.user_id.data)
+        flash("Failed to find user", "danger")
+        return redirect(url_for("user.get_all"))
+
+    user.first_name = form.first_name.data
+    user.last_name = form.last_name.data
+    user.email = form.email.data
+    if form.password.data and form.password.data.strip("*\n "):
+        user.password = form.password.data
+    user.save()
+    if form.next_url.data:
+        return redirect(form.next_url.data)
+
+    if user.role == m.UsersRole.admin:
+        return redirect(url_for("user.get_admins"))
+    return redirect(url_for("user.get_all"))
 
 
 @bp.route("/delete/<int:id>", methods=["DELETE"])
@@ -223,48 +243,56 @@ def activation():
     return redirect(url_for("auth.logout"))
 
 
+@bp.route("/resend-invite", methods=["GET"])
+@login_required
+@role_required([m.UsersRole.admin])
+def resend_invite_modal():
+    """htmx"""
+    user_email = request.args.get("user_email", type=str, default=None)
+    form: f.ResendInviteForm = f.ResendInviteForm()
+    if user_email:
+        form.email.data = user_email
+    return render_template("user/resend_invite_modal.html", form=form)
+
+
 @bp.route("/resend-invite", methods=["POST"])
 @login_required
-@role_required([m.UsersRole.dealer, m.UsersRole.admin])
+@role_required([m.UsersRole.admin])
 def resend_invite():
     form: f.ResendInviteForm = f.ResendInviteForm()
-    if form.validate_on_submit():
-        query = m.User.select().where(m.User.email == form.email.data)
-        user: m.User | None = db.session.scalar(query)
-        if not user:
-            log(log.ERROR, "Not found user by id. Creating a new user.")
-            user = m.User(email=form.email.data)
-            log(log.INFO, "User created: [%s]", user)
-            user.save()
-            flash("A new user created", "info")
-
-        log(log.INFO, "Sending an invite for user: [%s]", user)
-        msg = Message(
-            subject="New password",
-            sender=app.config["MAIL_DEFAULT_SENDER"],
-            recipients=[user.email],
-        )
-        url = url_for(
-            "auth.activate",
-            reset_password_uid=user.unique_id,
-            _external=True,
-        )
-        msg.html = render_template(
-            "email/confirm_invite.htm",
-            user=user,
-            url=url,
-        )
-        mail.send(msg)
-        flash("Your invite has been successfully sent!", "success")
-        log(log.INFO, "Invite is resend for user: [%s]", user)
-        if form.next_url.data:
-            return redirect(form.next_url.data)
-        return redirect(url_for("user.get_all"))
-
-    else:
+    if not form.validate_on_submit():
         log(log.ERROR, "User save errors: [%s]", form.errors)
         flash(f"{form.errors}", "danger")
         return redirect(url_for("user.get_all"))
+
+    user = db.session.scalar(sa.select(m.User).where(m.User.email == form.email.data))
+    if not user:
+        log(log.ERROR, "Not found user by id. Creating a new user.")
+        user = m.User(email=form.email.data)
+        log(log.INFO, "User created: [%s]", user)
+        user.save()
+        flash("A new user created", "info")
+
+    log(log.INFO, "Sending an invite for user: [%s]", user)
+    msg = Message(
+        subject="New password",
+        sender=app.config["MAIL_DEFAULT_SENDER"],
+        recipients=[user.email],
+    )
+    url = url_for(
+        "auth.activate",
+        reset_password_uid=user.unique_id,
+        _external=True,
+    )
+    msg.html = render_template(
+        "email/confirm_invite.htm",
+        user=user,
+        url=url,
+    )
+    mail.send(msg)
+    flash("Your invite has been successfully sent!", "success")
+    log(log.INFO, "Invite is resend for user: [%s]", user)
+    return redirect(url_for("user.get_all"))
 
 
 @bp.route("/account/<user_unique_id>", methods=["GET", "POST"])
@@ -486,19 +514,24 @@ def get_logo(user_unique_id: str):
 @role_required([m.UsersRole.admin])
 def new_admin():
     form: f.AdminForm = f.AdminForm()
-    if form.validate_on_submit():
-        user = m.User(
-            role=m.UsersRole.admin,
-            email=form.email.data,
-            phone=form.phone.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            password=form.password.data,
-            activated=True,
-        )
-        log(log.INFO, "Form submitted. New admin: [%s]", user)
-        flash("New admin created!", "success")
-        user.save()
-        return redirect(url_for("user.get_admins"))
+    if request.method == "GET":
+        return render_template("user/new_admin.html", form=form)
 
-    return render_template("user/new_admin.html", form=form)
+    if not form.validate_on_submit():
+        log(log.ERROR, "Form validation error: [%s]", form.errors)
+        flash(f"{form.errors}", "danger")
+        return render_template("user/new_admin.html", form=form)
+
+    user = m.User(
+        role=m.UsersRole.admin,
+        email=form.email.data,
+        phone=form.phone.data,
+        first_name=form.first_name.data,
+        last_name=form.last_name.data,
+        password=form.password.data,
+        activated=True,
+    )
+    log(log.INFO, "Form submitted. New admin: [%s]", user)
+    flash("New admin created!", "success")
+    user.save()
+    return redirect(url_for("user.get_admins"))

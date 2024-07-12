@@ -6,7 +6,7 @@ from wtforms import (
     ValidationError,
     BooleanField,
 )
-from wtforms.validators import DataRequired, Email, Length, EqualTo
+from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
 
 from app import models as m
 from app import db
@@ -15,15 +15,15 @@ from app import db
 class UserForm(FlaskForm):
     next_url = StringField("next_url")
     user_id = StringField("user_id", [DataRequired()])
-    email = StringField("email", [DataRequired(), Email()])
+    email = StringField("email", [DataRequired(), Email(), Length(1, 255)])
     activated = BooleanField("activated")
-    first_name = StringField("First Name", [DataRequired()])
-    last_name = StringField("Last Name", [DataRequired()])
-    password = PasswordField("Password", validators=[DataRequired(), Length(6, 30)])
+    first_name = StringField("First Name", [DataRequired(), Optional(), Length(0, 64)])
+    last_name = StringField("Last Name", [DataRequired(), Length(0, 64)])
+    password = PasswordField("Password", validators=[Optional(), Length(6, 30)])
     password_confirmation = PasswordField(
         "Confirm Password",
         validators=[
-            DataRequired(),
+            Optional(),
             EqualTo("password", message="Password do not match."),
         ],
     )
@@ -40,10 +40,16 @@ class UserForm(FlaskForm):
 
 
 class AdminForm(FlaskForm):
-    email = StringField("email", [DataRequired(), Email()])
-    phone = StringField("Phone", [DataRequired(), Length(6, 15)])
-    first_name = StringField("First Name", [DataRequired()])
-    last_name = StringField("Last Name", [DataRequired()])
+    email = StringField("email", [DataRequired(), Email(), Length(1, 64)])
+    phone = StringField(
+        "Phone",
+        [
+            DataRequired(),
+            Length(6, 15),
+        ],
+    )
+    first_name = StringField("First Name", [DataRequired(), Length(0, 64)])
+    last_name = StringField("Last Name", [DataRequired(), Length(0, 64)])
     password = PasswordField("Password", validators=[DataRequired(), Length(6, 30)])
     password_confirmation = PasswordField(
         "Confirm Password",
@@ -61,6 +67,8 @@ class AdminForm(FlaskForm):
 
 
 class ResendInviteForm(FlaskForm):
-    next_url = StringField("next_url")
-    user_id = StringField("user_id", [DataRequired()])
-    email = StringField("email", [DataRequired(), Email()])
+    email = StringField(
+        "email",
+        [DataRequired(), Email(), Length(1, 255)],
+        render_kw={"placeholder": "example@company.com"},
+    )

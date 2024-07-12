@@ -128,13 +128,6 @@ class User(db.Model, UserMixin, ModelMixin):
     def __repr__(self):
         return f"<{self.id}:{self.email}>"
 
-    @property
-    def json(self):
-        from app import schema as s
-
-        u = s.User.model_dump_json(self)
-        return u
-
 
 class AnonymousUser(AnonymousUserMixin):
     pass
