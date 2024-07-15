@@ -34,7 +34,6 @@ def create_app(environment="development"):
         location_blueprint,
         sale_report_blueprint,
         gift_item_blueprint,
-        buyer_blueprint,
     )
     from app import models as m
 
@@ -82,7 +81,6 @@ def create_app(environment="development"):
     app.register_blueprint(location_blueprint)
     app.register_blueprint(sale_report_blueprint)
     app.register_blueprint(gift_item_blueprint)
-    app.register_blueprint(buyer_blueprint)
 
     # Set up flask login.
     @login_manager.user_loader

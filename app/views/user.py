@@ -588,7 +588,13 @@ def set_item(user_unique_id: str, item_unque_id: str):
             "toast.html", message="Gift item not found", category="danger"
         )
 
-    if request.method == "POST":
+    dealer_gift_item = db.session.scalar(
+        sa.select(m.DealerGiftItem)
+        .where(m.DealerGiftItem.dealer_id == user.id)
+        .where(m.DealerGiftItem.gift_item_id == gift_item.id)
+    )
+
+    if request.method == "POST" and not dealer_gift_item:
         user_gift_item = m.DealerGiftItem(
             dealer_id=user.id,
             gift_item_id=gift_item.id,
@@ -598,21 +604,11 @@ def set_item(user_unique_id: str, item_unque_id: str):
         user_gift_item.save()
         log(log.INFO, "Gift item added to user: [%s]", user)
 
-    if request.method == "DELETE":
-        user_gift_item = db.session.scalar(
-            sa.select(m.DealerGiftItem)
-            .where(m.DealerGiftItem.dealer_id == user.id)
-            .where(m.DealerGiftItem.gift_item_id == gift_item.id)
-        )
-        if not user_gift_item:
-            log(log.ERROR, "Not found user gift item")
-            return render_template(
-                "toast.html", message="User gift item not found", category="danger"
-            )
+    if request.method == "DELETE" and dealer_gift_item:
         db.session.delete(user_gift_item)
         try:
             db.session.commit()
-        except SQLAlchemyError as e:
+        except SQLAlchemyError:
             db.session.rollback()
             log(log.ERROR, "Integrity error: [%s]", gift_item.id)
             return render_template(
