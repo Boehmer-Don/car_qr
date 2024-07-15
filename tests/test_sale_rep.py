@@ -10,6 +10,12 @@ def test_sale_reports(populate: FlaskClient):
     login(populate, email="test_user_17@gmail.com", password="123456")
     sale_rep = db.session.get(m.SaleReport, 1)
     gift_item = db.session.get(m.GiftItem, 1)
+    user_gift_item = m.DealerGiftItem(
+        dealer_id=sale_rep.label.user_id,
+        gift_item_id=gift_item.id,
+        price=gift_item.price,
+        description=gift_item.description,
+    ).save()
     assert sale_rep
     assert gift_item
     res = populate.get("/sale-reports", follow_redirects=True)
@@ -22,14 +28,14 @@ def test_sale_reports(populate: FlaskClient):
 
     form_data = {
         "sale_rep_unique_id": sale_rep.unique_id,
-        "phone": "1234567890",
+        "phone": "123-456-7890",
         "first_name": "test",
         "last_name": "user",
         "password": "123456",
         "password_confirmation": "123456",
         "email": "b@b.com",
         "gift_boxes": json.dumps(
-            [{"giftItemId": gift_item.id, "qty": 1, "totalPrice": 1}]
+            [{"dealerGiftItemId": user_gift_item.id, "qty": 1, "totalPrice": 1}]
         ),
     }
     assert not sale_rep.gift_boxes
@@ -74,7 +80,7 @@ def test_sale_reports(populate: FlaskClient):
     form_data = {
         "unique_id": sale_rep.buyer.unique_id,
         "sale_rep_unique_id": sale_rep.unique_id,
-        "phone": "1234567890",
+        "phone": "123-456-7890",
         "first_name": "test",
         "last_name": "user",
         "email": "b2@b.com",

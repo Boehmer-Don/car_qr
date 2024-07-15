@@ -8,6 +8,7 @@ from tests.utils import set_user
 test_seller = {
     "first_name": "Test seller",
     "last_name": "Test seller",
+    "phone": "123-456-7890",
     "email": "seller@gmail.com",
     "password": "seller",
     "password_confirmation": "seller",
