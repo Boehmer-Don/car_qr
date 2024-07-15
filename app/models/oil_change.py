@@ -37,6 +37,10 @@ class OilChange(db.Model, ModelMixin):
     sale_rep: orm.Mapped["SaleReport"] = orm.relationship(back_populates="oil_changes")
 
     @property
+    def is_expired(self) -> bool:
+        return datetime.today().date() > self.date.date() and not self.is_done
+
+    @property
     def is_not_done(self) -> bool:
         return (
             not self.is_done and datetime.today().date() >= self.date.date()

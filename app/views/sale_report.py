@@ -75,6 +75,44 @@ def get_all_panding_oil():
     )
 
 
+@sale_report.route("/expired-oil", methods=["GET"])
+@login_required
+@role_required([m.UsersRole.seller])
+def get_all_expired_oil():
+    log(log.INFO, "Get all expired oil")
+
+    query = (
+        sa.select(m.SaleReport)
+        .join(m.SaleReport.oil_changes)
+        .where(
+            m.SaleReport.seller_id == current_user.id,
+            m.OilChange.date < datetime.now(),
+        )
+        .order_by(m.SaleReport.created_at.desc())
+    )
+    count_query = (
+        sa.select(sa.func.count())
+        .join(m.SaleReport.oil_changes)
+        .where(
+            m.SaleReport.seller_id == current_user.id,
+            m.OilChange.date < datetime.now(),
+        )
+        .select_from(m.SaleReport)
+    )
+
+    pagination = create_pagination(total=db.session.scalar(count_query))
+
+    return render_template(
+        "sale_report/sale_reports_expired_oil.html",
+        sale_reports=db.session.execute(
+            query.offset((pagination.page - 1) * pagination.per_page).limit(
+                pagination.per_page
+            )
+        ).scalars(),
+        page=pagination,
+    )
+
+
 @sale_report.route("/<sale_rep_unique_id>/gift-box-modal", methods=["GET"])
 @login_required
 @role_required([m.UsersRole.seller])
@@ -298,6 +336,7 @@ def set_oil_change_modal():
 
     sale_report.is_notfy_by_email = form.is_notfy_by_email.data
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
+    sale_report.description = form.description.data
 
     db.session.commit()
     flash("Oil change data added successfully", "success")
@@ -397,6 +436,8 @@ def edit():
     sale_report.is_notfy_by_email = form.is_notfy_by_email.data
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
 
+    sale_report.description = form.description.data
+
     sale_report.buyer.first_name = form.first_name.data
     sale_report.buyer.last_name = form.last_name.data
     sale_report.buyer.email = form.email.data
@@ -407,3 +448,28 @@ def edit():
     db.session.commit()
     flash("Sale report updated successfully", "success")
     return redirect(url_for("sale_report.get_all_panding_oil"))
+
+
+@sale_report.route("/<sale_rep_unique_id>/buyer", methods=["GET"])
+@login_required
+@role_required([m.UsersRole.seller])
+def buyer_modal_info(sale_rep_unique_id):
+    sale_report = db.session.scalar(
+        sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_rep_unique_id)
+    )
+
+    if (
+        not sale_report
+        or sale_report.seller_id != current_user.id
+        or not sale_report.buyer
+    ):
+        log(
+            log.ERROR,
+            "Sale report not found [%s], or not owned by current user",
+            sale_rep_unique_id,
+        )
+        return render_template(
+            "toast.html", message="Sale report not found", category="danger"
+        )
+
+    return render_template("sale_report/buyer_info.html", buyer=sale_report.buyer)
