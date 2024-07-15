@@ -97,19 +97,16 @@ def gift_boxs_modal(sale_rep_unique_id: str):
     form = f.GiftBoxForm()
     form.sale_rep_unique_id.data = sale_rep_unique_id
 
-    gift_boxs = db.session.scalars(sa.select(m.GiftItem)).all()
-    defualt_amount = (
-        db.session.scalar(
-            sa.select(m.GiftItem.price).where(m.GiftItem._is_default.is_(True))
+    dealer_gift_boxes = db.session.scalars(
+        sa.select(m.DealerGiftItem).where(
+            m.DealerGiftItem.dealer_id == sale_report.label.user_id
         )
-        or 0
-    )
+    ).all()
 
     return render_template(
         "sale_report/gift_box_modal.html",
-        gift_boxs=gift_boxs,
+        gift_boxs=dealer_gift_boxes,
         sale_report=sale_report,
-        defualt_amount=defualt_amount,
         form=form,
     )
 
@@ -157,7 +154,7 @@ def set_gift_boxes():
 
     total_amount = sum(box.total_price for box in gift_boxes)
 
-    if total_amount > sale_report.available_amount:
+    if round(total_amount, 1) > round(sale_report.available_amount, 1):
         log(
             log.ERROR,
             "Gift boxes total amount [%s] is greater than available amount [%s]",
@@ -168,17 +165,16 @@ def set_gift_boxes():
         return redirect(url_for("sale_report.get_all"))
 
     for box in gift_boxes:
-        gift_item = db.session.get(m.GiftItem, box.gift_item_id)
+        gift_item = db.session.get(m.DealerGiftItem, box.dealer_gift_item_id)
         if not gift_item:
-            log(log.ERROR, "Gift item not found [%s]", box.gift_item_id)
-            flash(f"Gift item not found [{box.gift_item_id}]", "danger")
+            log(log.ERROR, "Dealer gift item not found [%s]", box.dealer_gift_item_id)
+            flash(f"Dealer gift item not found [{box.dealer_gift_item_id}]", "danger")
             return redirect(url_for("sale_report.get_all"))
 
         db.session.add(
             m.GiftBox(
                 sale_result_id=sale_report.id,
-                gift_item_id=box.gift_item_id,
-                description=gift_item.description,
+                dealer_gift_item_id=box.dealer_gift_item_id,
                 qty=box.qty,
                 total_price=box.total_price,
             )

@@ -2,13 +2,12 @@ from wtforms import StringField, HiddenField, BooleanField
 from wtforms.fields import TelField
 from wtforms.validators import DataRequired
 
-from .seller import SellerForm, EditSellerFrom
+from .seller import SellerForm as UserForm, EditSellerFrom as EditUserForm
 from .base import BaseForm
 
 
-class GiftBoxForm(SellerForm):
+class GiftBoxForm(UserForm):
     sale_rep_unique_id = HiddenField("sale_rep_unique_id", validators=[DataRequired()])
-    phone = TelField("phone", validators=[DataRequired()])
     gift_boxes = StringField("gift_boxes", validators=[DataRequired()])
 
 
@@ -20,7 +19,7 @@ class OilChangeForm(BaseForm):
     is_notfy_by_phone = BooleanField("is_notfy_by_phone", default=False)
 
 
-class EditSaleRepForm(EditSellerFrom):
+class EditSaleRepForm(EditUserForm):
     sale_rep_unique_id = HiddenField("sale_rep_unique_id", validators=[DataRequired()])
     phone = TelField("phone", validators=[DataRequired()])
     first_oil_change = StringField("first_oil_change")

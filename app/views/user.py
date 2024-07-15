@@ -14,6 +14,8 @@ from flask import (
 )
 from flask_login import login_required, current_user
 from flask_mail import Message
+
+from sqlalchemy.exc import SQLAlchemyError
 import sqlalchemy as sa
 
 from flask import current_app as app
@@ -608,7 +610,19 @@ def set_item(user_unique_id: str, item_unque_id: str):
                 "toast.html", message="User gift item not found", category="danger"
             )
         db.session.delete(user_gift_item)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            log(log.ERROR, "Integrity error: [%s]", gift_item.id)
+            return render_template(
+                "user/user_gift_item.html",
+                item=gift_item,
+                user=user,
+                message="You can't delete the gift item because it refers to on the gift boxes",
+                category="danger",
+            )
+
         log(log.INFO, "Gift item deleted from user: [%s]", user)
 
     return render_template("user/user_gift_item.html", item=gift_item, user=user)

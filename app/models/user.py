@@ -93,7 +93,7 @@ class User(db.Model, UserMixin, ModelMixin):
     sellers: orm.Mapped[list["User"]] = orm.relationship(order_by=created_at.desc())
 
     gift_items: orm.Mapped[list["DealerGiftItem"]] = orm.relationship(
-        back_populates="dealer"
+        back_populates="dealer", order_by="DealerGiftItem.created_at.desc()"
     )
 
     @hybrid_property

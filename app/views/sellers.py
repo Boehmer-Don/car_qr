@@ -87,6 +87,7 @@ def create():
         first_name=form.first_name.data,
         last_name=form.last_name.data,
         email=form.email.data,
+        phone=form.phone.data,
         role=m.UsersRole.seller,
         _seller_id=current_user.id,
         password=form.password.data,
@@ -135,6 +136,7 @@ def edit():
     user.last_name = form.last_name.data
     user.email = form.email.data
     user.activated = form.activated.data
+    user.phone = form.phone.data
     if form.new_password.data:
         user.password = form.new_password.data
 

@@ -3,6 +3,10 @@
         <div class="text-clip overflow-hidden w-20">
             {{ item.description }}
         </div>
+        {% if category and message %}
+        {% include "toast.html" %}
+        {% endif %}
+
     </th>
     <td class="px-6 py-4">
         {{ item.SKU }}
@@ -18,7 +22,7 @@
         {{ item.max_qty }}
     </td>
     <td class="py-4 flex flex-col justify-center items-center">
-        {% if request.method == 'DELETE' %}
+        {% if request.method == 'DELETE' and not category %}
         <button hx-post="{{ url_for('user.set_item', user_unique_id=user.unique_id, item_unque_id=item.unique_id) }}"
             hx-swap="outerHTML" hx-target="closest tr" hx-indicator="#htmx-spinner"
             class="h-8 w-20 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Add</button>
@@ -29,4 +33,5 @@
         {% endif %}
 
     </td>
+
 </tr>

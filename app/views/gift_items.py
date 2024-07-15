@@ -5,7 +5,7 @@ from flask import (
     redirect,
     url_for,
 )
-from flask_login import login_required
+from flask_login import login_required, current_user
 import sqlalchemy as sa
 
 from app.controllers import create_pagination, role_required
@@ -29,6 +29,34 @@ def get_all():
     return render_template(
         "gift_item/gift_items.html",
         gift_items=db.session.execute(
+            query.offset((pagination.page - 1) * pagination.per_page).limit(
+                pagination.per_page
+            )
+        ).scalars(),
+        page=pagination,
+    )
+
+
+@gift_item.route("/dealer", methods=["GET"])
+@login_required
+@role_required([m.UsersRole.dealer])
+def get_all_dealer():
+    log(log.INFO, "Getting all gift items")
+    query = (
+        sa.select(m.DealerGiftItem)
+        .where(m.DealerGiftItem.dealer_id == current_user.id)
+        .order_by(m.DealerGiftItem.created_at.desc())
+    )
+    count_query = (
+        sa.select(sa.func.count())
+        .where(m.DealerGiftItem.dealer_id == current_user.id)
+        .select_from(m.DealerGiftItem)
+    )
+
+    pagination = create_pagination(total=db.session.scalar(count_query))
+    return render_template(
+        "gift_item/dealer_gift_items.html",
+        dealer_gift_items=db.session.execute(
             query.offset((pagination.page - 1) * pagination.per_page).limit(
                 pagination.per_page
             )

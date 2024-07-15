@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, TypeAdapter
 
 
 class GiftBox(BaseModel):
-    gift_item_id: int = Field(..., alias="giftItemId")
+    dealer_gift_item_id: int = Field(..., alias="dealerGiftItemId")
     total_price: float = Field(..., alias="totalPrice")
     qty: int
 

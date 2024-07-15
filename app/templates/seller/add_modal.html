@@ -21,13 +21,22 @@
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                     placeholder="Enter last name" required />
             </div>
-            <div class="col-span-4">
+            <div class="col-span-2">
                 <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
                     Email
                 </label>
                 <input type="email" name="email" autocomplete="off" minlength="1" maxlength="64" autofocus
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                     placeholder="Enter email" required />
+            </div>
+            <div class="col-span-2">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Phone
+                </label>
+                <input id="phone-input" type="tel" name="phone" autocomplete="off" minlength="1" maxlength="64"
+                    autofocus
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="000-000-0000" required />
             </div>
             <div class="col-span-2">
                 <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
@@ -53,4 +62,5 @@
             </button>
         </form>
     </div>
+    <script src="{{ url_for('static', filename='js/controllers/phone.js') }}" type="text/javascript" defer></script>
 </div>

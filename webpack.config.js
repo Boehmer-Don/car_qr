@@ -128,6 +128,18 @@ const controllerConfig = [
   }
 ];
 
+const controllerPhone =  {
+    entry: {
+      main: './src/controllers/phone.ts',
+    },
+    output: {
+      path: path.resolve(__dirname, './app/static'),
+      filename: 'js/controllers/phone.js', // <--- Will be compiled to this single file
+    },
+}
+ 
+
+
 const giftBoxModal =  {
     entry: {
       main: './src/gift_box_modal.ts',
@@ -153,6 +165,7 @@ const configs = [
   usersSearchResult,
   passwordConfig,
   giftBoxModal,
+  controllerPhone,
   ...controllerConfig
 ].map(conf => merge(defaultConfig, conf));
 

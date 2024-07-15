@@ -1,9 +1,9 @@
 <div tabindex="-1" id="modal-user-gift-items" hx-get="{{ url_for('main.no_content') }}" hx-trigger="click"
     hx-swap="delete" hx-target="#modal-user-gift-items" hx-indicator="#htmx-spinner"
-    class="fixed bg-opacity-80 bg-gray-600 top-0 left-0 right-0 z-50 items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full justify-end items-end flex">
-    <div class="rounded-lg relative w-5/6 h-5/6 bg-white" onclick="event.stopPropagation();">
-        <div class="rounded-lg p-2">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+    class="fixed bg-opacity-80 bg-gray-600 top-0 left-0 right-0 z-50 items-center justify-center w-full p-4 overflow-x-hidden  md:inset-0 h-full max-h-full justify-end items-end flex">
+    <div class="rounded-lg relative w-5/6 h-5/6 overflow-y-scroll bg-white p-2" onclick="event.stopPropagation();">
+        <div class="h-full rounded-lg p-2 ">
+            <table class="w-full h-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-fixed">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">

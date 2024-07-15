@@ -37,7 +37,7 @@ class GiftItemForm(BaseForm):
     price = DecimalField(
         "Price",
         validators=[DataRequired()],
-        render_kw={"min": 1, "placeholder": "Enter gift item price"},
+        render_kw={"min": 0.1, "placeholder": "Enter gift item price"},
     )
     min_qty = IntegerField(
         "min_qty",
