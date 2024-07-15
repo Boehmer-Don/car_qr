@@ -49,6 +49,10 @@ def test_sale_reports(populate: FlaskClient):
     assert sale_rep.buyer
     assert sale_rep.gift_boxes
 
+    res = populate.get(f"/sale-reports/{sale_rep.unique_id}/buyer")
+    assert res.status_code == 200
+    assert sale_rep.buyer.email in res.data.decode()
+
     res = populate.get(f"/sale-reports/{sale_rep.unique_id}/oil-change-modal")
     assert res.status_code == 200
     assert "Set oil change data" in res.data.decode()
