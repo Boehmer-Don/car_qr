@@ -20,6 +20,7 @@ class GiftItem(db.Model, ModelMixin):
         default=datetime.utcnow,
     )
 
+    SKU: orm.Mapped[str] = orm.mapped_column(sa.String(64), nullable=False, unique=True)
     description: orm.Mapped[str] = orm.mapped_column(sa.String(264))
     price: orm.Mapped[float] = orm.mapped_column(sa.Float)
     min_qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)
@@ -33,13 +34,6 @@ class GiftItem(db.Model, ModelMixin):
 
     @is_default.setter  # type: ignore
     def is_default(self, value):
-        if value:
-            items = db.session.scalars(
-                sa.select(self.__class__).where(self.__class__._is_default.is_(True))
-            ).all()
-
-            for item in items:
-                item.is_default = False
         self._is_default = value
 
     def __repr__(self):

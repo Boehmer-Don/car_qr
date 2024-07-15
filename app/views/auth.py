@@ -278,12 +278,27 @@ def payment(user_unique_id: str):
         user.postal_code = form.postal_code.data
         user.plan = form.plan.data
         user.phone = form.phone.data
+
+        user_gift_items = db.session.scalars(
+            sa.select(m.GiftItem).where(m.GiftItem._is_default.is_(True))
+        )
+        for gift_item in user_gift_items:
+            db.session.add(
+                m.DealerGiftItem(
+                    dealer_id=user.id,
+                    gift_item_id=gift_item.id,
+                    description=gift_item.description,
+                    price=gift_item.price,
+                )
+            )
+
         user.save()
 
         # get users stripe plan
         product = db.session.scalar(
             m.StripeProduct.select().where(m.StripeProduct.name == user.plan.value)
         )
+
         if not product:
             log(log.ERROR, "Stripe product not found: [%s]", user.plan.value)
             # TODO handle error

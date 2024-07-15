@@ -1,0 +1,72 @@
+<div tabindex="-1" id="modal-user-gift-items" hx-get="{{ url_for('main.no_content') }}" hx-trigger="click"
+    hx-swap="delete" hx-target="#modal-user-gift-items" hx-indicator="#htmx-spinner"
+    class="fixed bg-opacity-80 bg-gray-600 top-0 left-0 right-0 z-50 items-center justify-center w-full p-4 overflow-x-hidden  md:inset-0 h-full max-h-full justify-end items-end flex">
+    <div class="rounded-lg relative w-5/6 h-5/6 overflow-y-scroll bg-white p-2" onclick="event.stopPropagation();">
+        <div class="h-full rounded-lg p-2 ">
+            <table class="w-full h-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-fixed">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Description
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            SKU
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Price
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Min Qty
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Max Qty
+                        </th>
+                        <th scope="col" class="px-6 py-3 flex justify-center ">
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in gift_items %}
+                    <tr
+                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <div class="text-clip overflow-hidden w-20">
+                                {{ item.description }}
+                            </div>
+                        </th>
+                        <td class="px-6 py-4">
+                            {{ item.SKU }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ item.price }}
+                        </td>
+
+                        <td class="px-6 py-4">
+                            {{ item.min_qty }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ item.max_qty }}
+                        </td>
+                        <td class="py-4 flex flex-col justify-center items-center">
+                            {% if item.id not in user_gift_items_ids %}
+                            <button
+                                hx-post="{{ url_for('user.set_item', user_unique_id=user.unique_id, item_unque_id=item.unique_id) }}"
+                                hx-swap="outerHTML" hx-target="closest tr" hx-indicator="#htmx-spinner"
+                                class="h-8 w-20 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Add</button>
+                            {% else %}
+                            <button
+                                hx-delete="{{ url_for('user.set_item', user_unique_id=user.unique_id, item_unque_id=item.unique_id) }}"
+                                hx-swap="outerHTML" hx-target="closest tr" hx-indicator="#htmx-spinner"
+                                class="h-8 w-20 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Delete</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    {% include 'spinner.html' %}
+</div>

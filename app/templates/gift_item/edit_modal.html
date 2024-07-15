@@ -18,6 +18,13 @@
                 {{ form.description(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none
                 bg-inherit dark:text-white") }}
             </div>
+            <div class="col-span-6">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    SKU
+                </label>
+                {{ form.SKU(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none
+                bg-inherit dark:text-white") }}
+            </div>
             <div class="col-span-3">
                 <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
                     Price
@@ -25,21 +32,14 @@
                 {{ form.price(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
                 dark:text-white")}}
             </div>
-            <div class="col-span-3 flex justify-center items-center">
-                <div class="h-full flex flex-col justify-between items-center gap-2">
-                    <div class="h-full flex gap-2 items-center justify-center">
-                        <input {{ "checked disabled" if form.is_default.data }} type="checkbox" name="is_default"
+            <div class="col-span-3 w-full flex justify-center items-center">
+                <div class="h-full w-full flex flex-col justify-between items-center gap-2">
+                    <div
+                        class="h-full w-full  flex gap-2 items-center justify-center border-0 border-b-2 border-gray-400">
+                        <input {{ "checked" if form.is_default.data }} type="checkbox" name="is_default"
                             class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                         <label for="green-checkbox"
                             class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Default</label>
-                    </div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400 border-0 border-b-2 border-gray-400">
-                        Default gift can be just one,
-                        {% if form.is_default.data %}
-                        you can't unmark this as default
-                        {% else %}
-                        if you set this as default, the previous default will be unmarked
-                        {% endif %}
                     </div>
                 </div>
             </div>

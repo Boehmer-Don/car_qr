@@ -25,7 +25,7 @@ function giftModalState() {
         if (value > maxQty) {
             return
         }
-        if (parseFloat(input.value) === 0) {
+        if (parseFloat(input.value) === 0 && minQty !== 0) {
             newValue = minQty
             newAmount = parseFloat(giftBoxAmount.innerText) + price * minQty
         } else {
@@ -36,13 +36,10 @@ function giftModalState() {
         if (newAmount > parseFloat(allowAmount.innerText)) {
             return
         }
-        input.value = value.toString()
-        giftBoxAmount.innerText = newAmount.toString()
+        input.value = newValue.toString()
+        giftBoxAmount.innerText = newAmount.toFixed(1).toString()
         
     
-        if (!card.style.backgroundColor || card.style.backgroundColor === 'white') {
-            card.style.backgroundColor = '#c7d2fe'
-        }
     }
 
     // click minus button
@@ -64,7 +61,7 @@ function giftModalState() {
             return
         }
         input.value = value.toString()
-        giftBoxAmount.innerText = (parseFloat(giftBoxAmount.innerText) - price).toString()
+        giftBoxAmount.innerText = (parseFloat(giftBoxAmount.innerText) - price).toFixed(1).toString()
     }
 
     // submit form
@@ -80,7 +77,7 @@ function giftModalState() {
             const qty = parseFloat(box.value || '0')
             const totalPrice = parseFloat(box.getAttribute('price' || '0')) * qty
             return {
-                giftItemId: id,
+                dealerGiftItemId: id,
                 totalPrice:  totalPrice,
                 qty: qty
             }

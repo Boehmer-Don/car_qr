@@ -11,6 +11,7 @@ test_gift_box = {
     "min_qty": 1,
     "max_qty": 10,
     "is_default": True,
+    "SKU": "SKU",
 }
 
 

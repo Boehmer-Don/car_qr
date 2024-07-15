@@ -156,6 +156,7 @@ def populate(client: FlaskClient, test_labels_data: dict):
 
     m.GiftItem(
         description="Gift Item 1",
+        SKU="SKU1",
         price=2,
         min_qty=1,
         max_qty=10,

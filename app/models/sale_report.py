@@ -78,7 +78,7 @@ class SaleReport(db.Model, ModelMixin):
 
     @property
     def available_amount(self):
-        return round(self.label.price_sold * 0.001)
+        return round(self.label.price_sold * 0.001, 2)
 
     def __repr__(self):
         return f"<{self.id}: at {self.created_at}>"

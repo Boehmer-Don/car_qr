@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 
 from wtforms import PasswordField, StringField, ValidationError, BooleanField
-from wtforms.validators import DataRequired, Length, EqualTo, Optional, Email
+from wtforms.validators import DataRequired, Length, EqualTo, Optional, Email, Regexp
 
 from app import models as m, db
 from .base import BaseForm
@@ -11,6 +11,16 @@ class BaseSellerForm(BaseForm):
     first_name = StringField("first_name", validators=[DataRequired(), Length(0, 64)])
     last_name = StringField("last_name", validators=[DataRequired(), Length(0, 64)])
     email = StringField("email", validators=[DataRequired(), Length(0, 255), Email()])
+    phone = StringField(
+        "Phone Number",
+        validators=[
+            DataRequired(message="Phone number is required."),
+            Regexp(
+                r"^\d{0,3}-\d{0,3}-\d{0,4}$",
+                message="Invalid phone number format. Use 10 digits.",
+            ),
+        ],
+    )
 
 
 class SellerForm(BaseSellerForm):

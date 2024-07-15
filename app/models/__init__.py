@@ -15,6 +15,7 @@ from .label_view import LabelView
 from .label_location import LabelLocation
 from .sale_report import SaleReport
 from .gift_item import GiftItem
+from .dealer_gift_item import DealerGiftItem
 from .gift_box import GiftBox
 from .oil_change import OilChange
 from .utils import generate_uuid

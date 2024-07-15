@@ -29,45 +29,50 @@
                         </div>
                         <div class="flex justify-end">
                             <div class="col-span-4">
-                                <span class="font-medium">Amount:</span> <span id="gift-box-amount">{{ defualt_amount
-                                    }}</span>
+                                <span class="font-medium">Amount:</span> <span id="gift-box-amount">0</span>
                             </div>
                         </div>
                     </div>
-                    <div class="h-[20rem] flex flex-col gap-2 overflow-y-scroll">
-                        {% for box in gift_boxs %}
-                        <div style="background-color: {{ '#c7d2fe' if box.is_default }};"
-                            class="bg-white hover:bg-gray-100 box-item flex gap-2 block m-1 p-6  border border-gray-200 rounded-lg shadow">
-                            <div class="w-3/5">
-                                <div class="flex gap-2"> <span class="block font-medium text-gray-900">Price:</span>
-                                    {{ box.price }}</div>
-                                <div class="break-words ">
-                                    {{ box.description }}
-                                </div>
-                            </div>
-                            <div class="w-2/5">
-                                <label for="quantity-input" class="block mb-2 text-sm font-medium text-gray-900">
-                                    Quantity</label>
-                                <div class="relative flex items-center w-full">
-                                    <button type="button"
-                                        class="minus-gift-box-item dark:text-white font-bold bg-gray-100 flex justify-between items-center dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
-                                        -
-                                    </button>
-                                    <input name="gift_box" type="number" value="{{ '1' if box.is_default else '0'  }}"
-                                        min-qty="{{ box.min_qty }}" price="{{ box.price }}" max-qty="{{ box.max_qty }}"
-                                        class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                                        placeholder="999" readonly box-item-id="{{ box.id }}" />
-                                    <button type="button"
-                                        class="plus-gift-box-item dark:text-white font-bold flex justify-between items-center bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
-                                        +
-                                    </button>
-                                </div>
-                                <div class="flex justify-between mt-2">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">Min: {{ box.min_qty }}</div>
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">Max: {{ box.max_qty }}</div>
-                                </div>
-                            </div>
+                    <div
+                        class="w-full flex gap-2 items-center justify-between text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <div class="flex justify-center items-center p-2 w-1/5">Price</div>
+                        <div class="flex justify-center items-center p-2 w-1/5">Description</div>
+                        <div class="flex justify-center items-center p-2 w-1/5">Min qty</div>
+                        <div class="flex justify-center items-center p-2 w-1/5">Max qty</div>
+                        <div class="flex justify-center items-center p-2 w-1/5">Count</div>
+                    </div>
+                    <div class="w-full h-[20rem] flex flex-col gap-2 overflow-y-scroll">
 
+                        {% for box in gift_boxs %}
+                        <div
+                            class="flex gap-2 items-center justify-between odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                            <div class="flex justify-center items-center gap-2 w-1/5">
+                                {{ box.price }}</div>
+                            <div class="flex justify-center items-center break-words w-1/5">
+                                {{ box.description }}
+                            </div>
+                            <div
+                                class="flex justify-center items-center w-1/5 text-sm text-gray-500 dark:text-gray-400">
+                                {{
+                                box.origin_item.min_qty }}</div>
+                            <div
+                                class="flex justify-center items-center w-1/5 text-sm text-gray-500 dark:text-gray-400">
+                                {{
+                                box.origin_item.max_qty }}</div>
+                            <div class="w-1/5 relative flex items-center">
+                                <button type="button"
+                                    class="minus-gift-box-item dark:text-white font-bold bg-gray-100 flex justify-between items-center dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                    -
+                                </button>
+                                <input name="gift_box" type="number" value="0" min-qty="{{ box.origin_item.min_qty }}"
+                                    price="{{ box.price }}" max-qty="{{ box.origin_item.max_qty }}"
+                                    class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                    placeholder="999" readonly box-item-id="{{ box.id }}" />
+                                <button type="button"
+                                    class="plus-gift-box-item dark:text-white font-bold flex justify-between items-center bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                    +
+                                </button>
+                            </div>
                         </div>
                         {% endfor %}
                     </div>
@@ -107,7 +112,8 @@
                     <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
                         Phone
                     </label>
-                    <input type="tel" name="phone" autocomplete="off" minlength="1" maxlength="64" autofocus
+                    <input id="phone-input" type="tel" name="phone" autocomplete="off" minlength="1" maxlength="64"
+                        autofocus
                         class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                         placeholder="000-000-0000" required />
                 </div>
@@ -137,4 +143,5 @@
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/gift_box_modal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/controllers/phone.js') }}" type="text/javascript" defer></script>
 </div>
