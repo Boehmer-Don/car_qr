@@ -150,7 +150,7 @@ def get_sell_car_label_modal(label_unique_id: str):
 
     sellers = db.session.scalars(
         sa.select(m.User).where(
-            m.User.seller_id == current_user.id,
+            m.User.creator_id == current_user.id,
             m.User.role == m.UsersRole.seller,
             m.User.activated.is_(True),
         )
@@ -188,7 +188,7 @@ def sell_car_label():
             m.User.unique_id == form.seller_unique_id.data,
             m.User.role == m.UsersRole.seller,
             m.User.activated.is_(True),
-            m.User._seller_id == current_user.id,
+            m.User._creator_id == current_user.id,
         )
     )
     if not seller:

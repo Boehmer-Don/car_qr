@@ -69,7 +69,7 @@ def test_login_as_seller(client: FlaskClient):
         email="seller123@gmail.com",
         password="seller",
         role=m.UsersRole.seller,
-        seller_id=user.id,
+        creator_id=user.id,
         activated=True,
     ).save()
     res = client.post(

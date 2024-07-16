@@ -34,7 +34,7 @@ def get_user_sellers():
     stmt = sa.and_(
         m.User.deleted.is_(False),
         m.User.role == "seller",
-        m.User._seller_id == current_user.id,
+        m.User.creator_id == current_user.id,
     )
     query = sa.select(m.User).where(stmt).order_by(m.User.id)
     count_query = sa.select(sa.func.count()).where(stmt).select_from(m.User)
@@ -89,7 +89,7 @@ def create():
         email=form.email.data,
         phone=form.phone.data,
         role=m.UsersRole.seller,
-        _seller_id=current_user.id,
+        creator_id=current_user.id,
         password=form.password.data,
         activated=True,
     )
@@ -105,7 +105,7 @@ def create():
 def get_edit_modal(unique_id: str):
     user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id))
 
-    if not user or user.seller_id != current_user.id:
+    if not user or user.creator_id != current_user.id:
         log(log.ERROR, "Seller not found [%s]", unique_id)
         return render_template(
             "toast.html", message="Seller not found", category="danger"
@@ -157,7 +157,7 @@ def login_as_seller():
     seller = db.session.scalar(
         sa.select(m.User).where(m.User.unique_id == form.unique_id.data)
     )
-    if not seller or seller.seller_id != current_user.id:
+    if not seller or seller.creator_id != current_user.id:
         log(log.ERROR, "Seller not found [%s]", form.unique_id.data)
         flash("Seller not found", "danger")
         return redirect(url_for("user.seller.get_user_sellers"))

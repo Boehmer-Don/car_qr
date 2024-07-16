@@ -2,20 +2,20 @@ const eyeClosedIcon = '<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-h
 const eyeOpenedIcon = '<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/><path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>'
 
 function togglePassword() {
-    const togglePassword = document.querySelector("#togglePassword");
-    const password = document.querySelector("#password");
+    const togglePasswords = document.querySelectorAll(".toggle-password");
 
-    togglePassword.addEventListener("click", function () {
+    togglePasswords.forEach((el) => el.addEventListener("click", function () {
+        const password = this.previousElementSibling;
         const type = password.getAttribute("type") === "password" ? "text" : "password";
         password.setAttribute("type", type);
-        togglePassword.innerHTML = type === "password" ? eyeClosedIcon : eyeOpenedIcon;
-    });
+        el.innerHTML = type === "password" ? eyeClosedIcon : eyeOpenedIcon;
+    }));
 }
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    togglePassword();
-});
+
+togglePassword();
+
 
 
 

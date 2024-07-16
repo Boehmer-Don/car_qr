@@ -283,7 +283,7 @@ def test_sell_car_label(populate: FlaskClient):
     assert seller
     assert label
 
-    seller.seller_id = dealer.id  # type: ignore
+    seller.creator_id = dealer.id  # type: ignore
     db.session.commit()
 
     res = populate.get(f"labels/sell/{label.unique_id}")

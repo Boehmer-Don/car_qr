@@ -28,6 +28,8 @@ class UsersRole(enum.Enum):
     dealer = "dealer"
     seller = "seller"
     buyer = "buyer"
+    service = "service"
+    picker = "picker"
 
 
 class User(db.Model, UserMixin, ModelMixin):
@@ -35,7 +37,7 @@ class User(db.Model, UserMixin, ModelMixin):
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
 
-    _seller_id: orm.Mapped[int | None] = orm.mapped_column(
+    _creator_id: orm.Mapped[int | None] = orm.mapped_column(
         sa.ForeignKey("users.id"),
     )
 
@@ -97,15 +99,17 @@ class User(db.Model, UserMixin, ModelMixin):
     )
 
     @hybrid_property
-    def seller_id(self):
-        return self._seller_id
+    def creator_id(self):
+        return self._creator_id
 
-    @seller_id.setter
-    def seller_id(self, value):
+    @creator_id.setter
+    def creator_id(self, value):
         user = db.session.scalar(sa.select(User).where(User.id == value))
-        if not user or user.role != UsersRole.dealer:
-            raise ValueError("Only dealer can be assigned as seller")
-        self._seller_id = value
+        if not user or user.role not in (UsersRole.dealer, UsersRole.admin):
+            raise ValueError("Only dealer and admin can be assigned as creator")
+        if self.role == UsersRole.seller and user.role != UsersRole.dealer:
+            raise ValueError("Only dealer can be assigned as creator for seller")
+        self._creator_id = value
 
     @property
     def full_name(self):
