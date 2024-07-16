@@ -22,8 +22,10 @@ from flask import current_app as app
 from app.controllers import create_pagination, update_stripe_customer
 from app import models as m, db, mail
 from app import forms as f
+from app import schema as s
 from app.controllers.user import role_required
 from app.logger import log
+from .utils import get_canada_provinces, get_us_states
 
 from .sellers import seller
 
@@ -622,3 +624,18 @@ def set_item(user_unique_id: str, item_unque_id: str):
         log(log.INFO, "Gift item deleted from user: [%s]", user)
 
     return render_template("user/user_gift_item.html", item=gift_item, user=user)
+
+
+@bp.route(
+    "/select-region",
+    methods=["GET"],
+)
+@login_required
+@role_required([m.UsersRole.admin, m.UsersRole.dealer])
+def select_province():
+    country = request.args.get("country", type=str)
+    provinces = get_canada_provinces()
+    if country == s.Country.US.value:
+        provinces = get_us_states()
+
+    return render_template("user/provinces.html", provinces=provinces)

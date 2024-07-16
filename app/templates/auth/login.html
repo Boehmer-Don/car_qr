@@ -30,12 +30,12 @@
             <div class="relative">
               <!-- prettier-ignore -->
               {{form.password(
-              id="password", class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              class="password-input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
               dark:text-white"
               )
               }}
 
-              <div class="absolute top-0 end-0 p-2 cursor-pointer" id="togglePassword">
+              <div class="toggle-password absolute top-0 end-0 p-2 cursor-pointer">
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                   width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -70,5 +70,5 @@
 <!-- prettier-ignore -->
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
-<script src="{{ url_for('static', filename='js/password.js') }}" type="text/javascript" defer></script>
+<script src="{{ url_for('static', filename='js/controllers/password.js') }}" type="text/javascript" defer></script>
 {% endblock %}

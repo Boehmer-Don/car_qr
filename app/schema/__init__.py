@@ -1,6 +1,6 @@
 # flake8: noqa F401
 from .pagination import Pagination
-from .user import User
+from .user import User, Region, Regions, Country
 from .label import Label
 from .stripe import StripeUpdateCustomer
 from .report import QueryModelLabelsGraphView, QueryModelLocationsGraphView

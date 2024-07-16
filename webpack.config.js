@@ -108,11 +108,11 @@ const usersSearchResult = {
 
 const passwordConfig = {
   entry: {
-    main: './src/password.ts',
+    main: './src/controllers/password.ts',
   },
   output: {
     path: path.resolve(__dirname, './app/static'),
-    filename: 'js/password.js', // <--- Will be compiled to this single file
+    filename: 'js/controllers/password.js', // <--- Will be compiled to this single file
   },
 };
 
