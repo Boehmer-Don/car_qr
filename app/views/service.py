@@ -74,6 +74,7 @@ def add_modal():
 def add():
     form = f.ServiceForm()
     if not form.validate_on_submit():
+        log(log.INFO, f"Invalid form data [{form.format_errors}]")
         flash(f"Invalid form data [{form.format_errors}]", "danger")
         return redirect(url_for("service.get_all"))
 
