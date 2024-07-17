@@ -8,10 +8,6 @@ from .base import BaseForm
 class GiftBoxForm(UserForm):
     sale_rep_unique_id = HiddenField("sale_rep_unique_id", validators=[DataRequired()])
     gift_boxes = StringField("gift_boxes", validators=[DataRequired()])
-
-
-class OilChangeForm(BaseForm):
-    sale_rep_unique_id = HiddenField("sale_rep_unique_id", validators=[DataRequired()])
     first_oil_change = StringField("first_oil_change", validators=[DataRequired()])
     second_oil_change = StringField("second_oil_change", validators=[DataRequired()])
     description = TextAreaField("description", default="")
