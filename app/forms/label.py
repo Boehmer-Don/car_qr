@@ -40,6 +40,8 @@ class LabelUpdateForm(LabelForm):
 class SoldLabelForm(FlaskForm):
     label_unique_id = HiddenField("Label Unique ID", validators=[DataRequired()])
     seller_unique_id = StringField("Seller Unique ID", validators=[DataRequired()])
+    pickup_date = StringField("Pickup Date", validators=[DataRequired()])
+    pickup_time = StringField("Pickup Time", validators=[DataRequired()])
     price_sold = DecimalField(
         "Price Sold",
         validators=[DataRequired()],

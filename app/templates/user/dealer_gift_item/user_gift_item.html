@@ -1,0 +1,41 @@
+<tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+        <div class="text-clip overflow-hidden w-20">
+            {{ item.description }}
+        </div>
+        {% if category and message %}
+        {% include "toast.html" %}
+        {% endif %}
+
+    </th>
+    <td class="px-6 py-4">
+        {{ item.price }}
+    </td>
+
+    <td class="px-6 py-4">
+        {{ item.min_qty }}
+    </td>
+    <td class="px-6 py-4">
+        {{ item.max_qty }}
+    </td>
+    <td class="py-4 flex gap-2 justify-center items-center">
+        {% if request.method == 'DELETE' and not category %}
+        <button
+            hx-post="{{ url_for('user.gift_item.add_dealer_gift_item',  user_unique_id=user.unique_id, gift_item_unque_id=item.unique_id) }}"
+            hx-swap="afterend" hx-target="#dealer-gift-items" hx-indicator="#htmx-spinner"
+            hx-on::after-request="this.closest('tr').remove()"
+            class="h-8 w-20 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Add</button>
+        {% elif request.method == 'POST' %}
+        <button hx-get="{{ url_for('user.gift_item.edit_dealer_gift_item', dealer_item_unque_id=item.unique_id) }}"
+            hx-swap="outerHTML" hx-target="closest tr" hx-indicator="#htmx-spinner"
+            class="h-8 w-20 bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Edit</button>
+        <button
+            hx-delete="{{ url_for('user.gift_item.dealer_gift_item', user_unique_id=user.unique_id, dealer_item_unque_id=item.unique_id) }}"
+            hx-swap="afterend" hx-target="#available-to-add" hx-indicator="#htmx-spinner"
+            hx-on::after-request="this.closest('tr').remove()"
+            class="h-8 w-20 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Remove</button>
+        {% endif %}
+
+    </td>
+
+</tr>

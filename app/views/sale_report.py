@@ -18,11 +18,9 @@ from app import models as m, db
 from app.schema import ad_gift_boxes
 from app import forms as f
 from app.logger import log
+from .utils import DATE_FORMAT
 
 sale_report = Blueprint("sale_report", __name__, url_prefix="/sale-reports")
-
-
-DATE_FORMAT = "%m/%d/%Y"
 
 
 @sale_report.route("/", methods=["GET"])

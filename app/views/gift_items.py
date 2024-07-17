@@ -93,9 +93,29 @@ def add():
         min_qty=form.min_qty.data,
         max_qty=form.max_qty.data,
         is_default=form.is_default.data,
+        is_available=form.make_available.data,
     )
     db.session.add(gift_item)
     db.session.commit()
+
+    if form.apply_to_all.data:
+        dealers = db.session.scalars(
+            sa.select(m.User).where(
+                m.User.role == m.UsersRole.dealer, m.User.deleted.is_(False)
+            )
+        )
+
+        for dealer in dealers:
+            dealer_gift_item = m.DealerGiftItem(
+                gift_item_id=gift_item.id,
+                dealer_id=dealer.id,
+                price=gift_item.price,
+                description=gift_item.description,
+                min_qty=gift_item.min_qty,
+                max_qty=gift_item.max_qty,
+            )
+            db.session.add(dealer_gift_item)
+        db.session.commit()
     flash("Gift Item added successfully", "success")
     return redirect(url_for("gift_item.get_all"))
 
@@ -122,6 +142,7 @@ def edit_modal(unique_id: str):
     form.min_qty.data = item.min_qty
     form.max_qty.data = item.max_qty
     form.is_default.data = item.is_default
+    form.make_available.data = item.is_available
     return render_template("gift_item/edit_modal.html", form=form)
 
 
@@ -155,6 +176,7 @@ def edit():
     item.SKU = form.SKU.data
     item.max_qty = form.max_qty.data
     item.is_default = form.is_default.data
+    item.is_available = form.make_available.data
     db.session.commit()
     flash("Gift Item updated successfully", "success")
     return redirect(url_for("gift_item.get_all"))

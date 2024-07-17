@@ -28,6 +28,7 @@ from app.controllers.user import role_required
 from app.logger import log
 from app.controllers.date_convert import date_convert
 from app.controllers.graphs import create_graph, create_bar_graph
+from .utils import DATE_FORMAT
 
 
 dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
@@ -196,9 +197,19 @@ def sell_car_label():
         flash("Failed to find seller", "danger")
         return redirect(redirect_url)
 
+    try:
+        pickup_date = datetime.strptime(
+            f"{form.pickup_date.data} {form.pickup_time.data}", DATE_FORMAT + " %H:%M"
+        )
+    except ValueError as e:
+        log(log.ERROR, "Failed to create sale report: [%s]", e)
+        flash("Datetime data is not valid", "danger")
+        return redirect(redirect_url)
+
     m.SaleReport(
         label_id=label.id,
         seller_id=seller.id,
+        pickup_date=pickup_date,
     ).save()
 
     label.status = m.LabelStatus.archived

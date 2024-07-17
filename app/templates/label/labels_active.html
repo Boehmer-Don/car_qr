@@ -152,7 +152,7 @@
         </a>
         <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer"
           hx-get="{{ url_for('labels.get_sell_car_label_modal', label_unique_id=label.unique_id) }}" hx-target="body"
-          hx-swap="beforeend" hx-indicator="#htmx-spinner">
+          hx-swap="beforeend" hx-indicator="#htmx-spinner" hx-on::after-request="initFlowbite();">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -2 32 32" stroke-width="2.5"
             stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round"

@@ -280,7 +280,7 @@ def payment(user_unique_id: str):
         user.phone = form.phone.data
 
         user_gift_items = db.session.scalars(
-            sa.select(m.GiftItem).where(m.GiftItem._is_default.is_(True))
+            sa.select(m.GiftItem).where(m.GiftItem.is_default.is_(True))
         )
         for gift_item in user_gift_items:
             db.session.add(

@@ -50,6 +50,8 @@ class GiftItemForm(BaseForm):
         render_kw={"min": 1, "placeholder": "Enter max qty"},
     )
     is_default = BooleanField("is_default", default=True)
+    apply_to_all = BooleanField("is_default", default=False)
+    make_available = BooleanField("is_default", default=False)
 
     def validate_SKU(self, field):
         query = sa.select(m.GiftItem).where(m.GiftItem.SKU == field.data)

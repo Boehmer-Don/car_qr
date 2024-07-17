@@ -15,6 +15,8 @@ def test_sale_reports(populate: FlaskClient):
         gift_item_id=gift_item.id,
         price=gift_item.price,
         description=gift_item.description,
+        min_qty=1,
+        max_qty=3,
     ).save()
     assert sale_rep
     assert gift_item

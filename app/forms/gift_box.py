@@ -2,7 +2,6 @@ from wtforms import StringField, HiddenField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired
 
 from .seller import SellerForm as UserForm, EditSellerFrom as EditUserForm
-from .base import BaseForm
 
 
 class GiftBoxForm(UserForm):
