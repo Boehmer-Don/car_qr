@@ -38,6 +38,8 @@ class SaleReport(db.Model, ModelMixin):
         default=datetime.utcnow,
     )
 
+    pickup_date: orm.Mapped[datetime] = orm.mapped_column(sa.DateTime)
+
     is_notfy_by_email: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
     is_notfy_by_phone: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
     description: orm.Mapped[str] = orm.mapped_column(sa.String(264), default="")
@@ -71,11 +73,11 @@ class SaleReport(db.Model, ModelMixin):
 
     @property
     def sold_date(self):
-        return self.created_at.strftime("%Y-%m-%d")
+        return self.pickup_date.strftime("%Y-%m-%d")
 
     @property
     def sold_time(self):
-        return self.created_at.strftime("%H:%M:%S")
+        return self.pickup_date.strftime("%H:%M:%S")
 
     @property
     def available_amount(self):

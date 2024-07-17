@@ -147,6 +147,7 @@ def populate(client: FlaskClient, test_labels_data: dict):
             m.SaleReport(
                 seller_id=seller.id,
                 label_id=label.id,
+                pickup_date=datetime.now(),
             ).save()
 
         for _ in range(randint(1, 6)):
@@ -161,6 +162,7 @@ def populate(client: FlaskClient, test_labels_data: dict):
         min_qty=1,
         max_qty=10,
         is_default=True,
+        is_available=True,
     ).save()
 
     yield client

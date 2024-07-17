@@ -35,6 +35,8 @@ class DealerGiftItem(db.Model, ModelMixin):
 
     description: orm.Mapped[str] = orm.mapped_column(sa.String(264))
     price: orm.Mapped[float] = orm.mapped_column(sa.Float)
+    min_qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)
+    max_qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)
 
     dealer: orm.Mapped["User"] = orm.relationship("User", back_populates="gift_items")
     origin_item: orm.Mapped["GiftItem"] = orm.relationship()

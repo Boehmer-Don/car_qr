@@ -15,6 +15,8 @@ def test_sale_reports(populate: FlaskClient):
         gift_item_id=gift_item.id,
         price=gift_item.price,
         description=gift_item.description,
+        min_qty=1,
+        max_qty=3,
     ).save()
     assert sale_rep
     assert gift_item
@@ -37,6 +39,9 @@ def test_sale_reports(populate: FlaskClient):
         "gift_boxes": json.dumps(
             [{"dealerGiftItemId": user_gift_item.id, "qty": 1, "totalPrice": 1}]
         ),
+        "first_oil_change": "01/01/2021",
+        "second_oil_change": "01/28/2021",
+        "is_notfy_by_email": True,
     }
     assert not sale_rep.gift_boxes
     assert not sale_rep.buyer
@@ -52,24 +57,6 @@ def test_sale_reports(populate: FlaskClient):
     res = populate.get(f"/sale-reports/{sale_rep.unique_id}/buyer")
     assert res.status_code == 200
     assert sale_rep.buyer.email in res.data.decode()
-
-    res = populate.get(f"/sale-reports/{sale_rep.unique_id}/oil-change-modal")
-    assert res.status_code == 200
-    assert "Set oil change data" in res.data.decode()
-
-    form_data = {
-        "sale_rep_unique_id": sale_rep.unique_id,
-        "first_oil_change": "01/01/2021",
-        "second_oil_change": "01/28/2021",
-        "is_notfy_by_email": True,
-    }
-    res = populate.post(
-        "/sale-reports/oil-change-modal",
-        follow_redirects=True,
-        data=form_data,
-    )
-    assert res.status_code == 200
-    assert "Oil change data added" in res.data.decode()
 
     res = res = populate.get("/sale-reports/panding-oil")
     assert res.status_code == 200

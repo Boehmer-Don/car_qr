@@ -3,6 +3,8 @@ import json
 
 from app import schema as s
 
+DATE_FORMAT = "%m/%d/%Y"
+
 
 def get_canada_provinces() -> list[s.Region]:
     with open("tests/db/canada_provinces.json", "r") as provinces_file:

@@ -15,7 +15,6 @@ from flask import (
 from flask_login import login_required, current_user
 from flask_mail import Message
 
-from sqlalchemy.exc import SQLAlchemyError
 import sqlalchemy as sa
 
 from flask import current_app as app
@@ -28,10 +27,11 @@ from app.logger import log
 from .utils import get_canada_provinces, get_us_states
 
 from .sellers import seller
-
+from .dealer_gift_items import bp as dealer_gift_items_bp
 
 bp = Blueprint("user", __name__, url_prefix="/user")
 bp.register_blueprint(seller)
+bp.register_blueprint(dealer_gift_items_bp)
 
 
 @bp.route("/", methods=["GET"])
@@ -539,91 +539,6 @@ def new_admin():
     flash("New admin created!", "success")
     user.save()
     return redirect(url_for("user.get_admins"))
-
-
-@bp.route("/<unique_id>/gift-items-modal", methods=["GET"])
-@login_required
-@role_required([m.UsersRole.admin])
-def gift_items_modal(unique_id: str):
-    """htmx"""
-
-    user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id))
-    if not user:
-        log(log.ERROR, "Not found user by id : [%s]", unique_id)
-        return render_template(
-            "toast.html", message="User not found", category="danger"
-        )
-
-    user_gift_items_ids = tuple(item.gift_item_id for item in user.gift_items)
-
-    gift_items = db.session.scalars(m.GiftItem.select()).all()
-    return render_template(
-        "user/gift_items_modal.html",
-        gift_items=gift_items,
-        user_gift_items_ids=user_gift_items_ids,
-        user=user,
-    )
-
-
-@bp.route(
-    "/<user_unique_id>/gift-items/<item_unque_id>/add",
-    methods=["POST", "DELETE"],
-)
-@login_required
-@role_required([m.UsersRole.admin])
-def set_item(user_unique_id: str, item_unque_id: str):
-
-    user = db.session.scalar(
-        sa.select(m.User).where(m.User.unique_id == user_unique_id)
-    )
-    if not user:
-        log(log.ERROR, "Not found user by id : [%s]", user_unique_id)
-        return render_template(
-            "toast.html", message="User not found", category="danger"
-        )
-    gift_item = db.session.scalar(
-        sa.select(m.GiftItem).where(m.GiftItem.unique_id == item_unque_id)
-    )
-    if not gift_item:
-        log(log.ERROR, "Not found gift item by id : [%s]", item_unque_id)
-        return render_template(
-            "toast.html", message="Gift item not found", category="danger"
-        )
-
-    dealer_gift_item = db.session.scalar(
-        sa.select(m.DealerGiftItem)
-        .where(m.DealerGiftItem.dealer_id == user.id)
-        .where(m.DealerGiftItem.gift_item_id == gift_item.id)
-    )
-
-    if request.method == "POST" and not dealer_gift_item:
-        user_gift_item = m.DealerGiftItem(
-            dealer_id=user.id,
-            gift_item_id=gift_item.id,
-            description=gift_item.description,
-            price=gift_item.price,
-        )
-        user_gift_item.save()
-        log(log.INFO, "Gift item added to user: [%s]", user)
-
-    if request.method == "DELETE" and dealer_gift_item:
-        db.session.delete(user_gift_item)
-        try:
-            db.session.commit()
-        except SQLAlchemyError:
-            db.session.rollback()
-            log(log.ERROR, "Integrity error: [%s]", gift_item.id)
-            return render_template(
-                "user/user_gift_item.html",
-                item=gift_item,
-                user=user,
-                message="You can't delete the gift item because it refers to on the gift boxes",
-                category="danger",
-            )
-
-        log(log.INFO, "Gift item deleted from user: [%s]", user)
-
-    return render_template("user/user_gift_item.html", item=gift_item, user=user)
 
 
 @bp.route(

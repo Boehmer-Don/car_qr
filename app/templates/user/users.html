@@ -78,7 +78,7 @@
             </svg>
             <!-- Edit user -->
           </button>
-          <button type="button" hx-get="{{ url_for('user.gift_items_modal', unique_id=user.unique_id) }}"
+          <button type="button" hx-get="{{ url_for('user.gift_item.gift_items_modal', unique_id=user.unique_id) }}"
             hx-trigger="click" hx-swap="beforeend" hx-target="body" hx-indicator="#htmx-spinner"
             class="inline-flex items-center px-1 md:px-3 py-1 md:py-2 text-sm font-medium text-center text-gray-700 rounded-lg hover:bg-gray-100 hover:text-blue-500 focus:ring-4 focus:ring-blue-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800 dark:text-white">
             <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20"

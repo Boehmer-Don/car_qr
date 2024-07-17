@@ -289,7 +289,7 @@ def test_sell_car_label(populate: FlaskClient):
     res = populate.get(f"labels/sell/{label.unique_id}")
     assert res
     assert res.status_code == 200
-    assert "Sell the car label" in res.data.decode()
+    assert "Sale Details" in res.data.decode()
 
     response = populate.post(
         "labels/sell",
@@ -297,6 +297,8 @@ def test_sell_car_label(populate: FlaskClient):
             label_unique_id=label.unique_id,
             seller_unique_id=seller.unique_id,
             price_sold=10000,
+            pickup_date="12/12/2021",
+            pickup_time="12:00",
         ),
         follow_redirects=True,
     )
