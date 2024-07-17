@@ -29,16 +29,14 @@ export function graphSwitchers() {
     btnGetLabelViews.classList.remove('hidden');
     btnGetLabelLocations.classList.add('hidden');
   });
-  inputDatepickerElement.addEventListener('click', () => {
-    // remove useless buttons Today
-    const todayButtons: NodeList = document.querySelectorAll('.today-btn');
-    Array.from(todayButtons).forEach(function (element) {
-      element.parentElement.classList.add('justify-center');
-      element.parentNode.removeChild(element);
-    });
-  });
+  // inputDatepickerElement.addEventListener('click', () => {
+  //   // remove useless buttons Today
+  //   const todayButtons: NodeList = document.querySelectorAll('.today-btn');
+  //   Array.from(todayButtons).forEach(function (element) {
+  //     element.parentElement.classList.add('justify-center');
+  //     element.parentNode.removeChild(element);
+  //   });
+  // });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  graphSwitchers();
-});
+graphSwitchers();
