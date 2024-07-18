@@ -30,8 +30,7 @@
       <li class="my-1 pl-1 flex items-center justify-between">
         <p>{{ current_user.first_name }} {{ current_user.last_name }}</p>
 
-        {% if current_user.is_authenticated and current_user.role and current_user.role.value ==
-        "dealer" %}
+        {% if current_user.role and current_user.role.value == "dealer" %}
         <a href="{{url_for('labels.new_label_payment', user_unique_id=current_user.unique_id)}}"
           class="relative md:hidden">
           <button id="cart" type="button"
@@ -49,7 +48,7 @@
         {% endif %}
       </li>
 
-      {% if current_user.is_authenticated and current_user.plan.value == "Advanced Plan" %}
+      {% if current_user.plan.value == "Advanced Plan" %}
       <div class="relative flex justify-center my-2">
         {% if current_user.logo %}
         <img src="{{get_user_logo()}}" class="hidden md:flex max-w-full rounded-lg" alt="user_logo">
@@ -67,7 +66,7 @@
       </div>
       {% endif %}
 
-      {% endif %} {% if current_user.role and current_user.role.value == "admin" %}
+      {% if current_user.role and current_user.role.value == "admin" %}
       <li>
         <a href="{{ url_for('user.get_all') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -312,7 +311,9 @@
           <span class="flex-1 ml-3 whitespace-nowrap">Log Out</span>
         </a>
       </li>
+      {% endif %}
     </ul>
+
   </div>
 </aside>
 

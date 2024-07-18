@@ -220,7 +220,7 @@ def confirm_oil_change():
         sa.select(m.OilChange).where(
             m.OilChange.sale_rep_id == label.sale_report.id,
             m.OilChange.is_done.is_(False),
-            m.OilChange.date >= sa.func.current_date(),
+            m.OilChange.date <= sa.func.current_date(),
         )
     )
     if not oil_change:

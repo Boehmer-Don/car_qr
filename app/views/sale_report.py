@@ -55,7 +55,9 @@ def get_all_panding_oil():
     log(log.INFO, "Get all panding oil")
     stmt = sa.and_(
         m.SaleReport.seller_id == current_user.id,
-        sa.exists().where(m.OilChange.sale_rep_id == m.SaleReport.id),
+        sa.exists().where(
+            m.OilChange.sale_rep_id == m.SaleReport.id, m.OilChange.is_done.is_(False)
+        ),
     )
     query = sa.select(m.SaleReport).where(stmt).order_by(m.SaleReport.created_at.desc())
     count_query = sa.select(sa.func.count()).where(stmt).select_from(m.SaleReport)

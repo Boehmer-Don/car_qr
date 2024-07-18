@@ -71,7 +71,6 @@ class EditServiceForm(BaseServiceForm):
     new_password = PasswordField(
         "Password",
         [
-            DataRequired(),
             EqualTo("new_password_confirmation", message="Passwords must match"),
         ],
         render_kw={"placeholder": "Password"},
