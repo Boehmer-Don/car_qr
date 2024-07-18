@@ -278,6 +278,10 @@
                 <a href="{{ url_for('sale_report.get_all') }}"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                   role="menuitem">Dashboard</a>
+                {% elif current_user.role.value == "service" %}
+                <a href="{{ url_for('service.records') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                  role="menuitem">Dashboard</a>
                 {% else %}
                 <a href="{{ url_for('labels.get_active_labels', user_unique_id=current_user.unique_id) }}"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"

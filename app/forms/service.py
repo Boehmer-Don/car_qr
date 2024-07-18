@@ -1,4 +1,5 @@
 from wtforms import (
+    HiddenField,
     StringField,
     PasswordField,
     ValidationError,
@@ -51,6 +52,7 @@ class BaseServiceForm(BaseForm):
 
 
 class ServiceForm(BaseServiceForm):
+
     password = PasswordField(
         "Password",
         [
@@ -62,3 +64,24 @@ class ServiceForm(BaseServiceForm):
     password_confirmation = PasswordField(
         "Repeat Password", render_kw={"placeholder": "Repeat Password"}
     )
+
+
+class EditServiceForm(BaseServiceForm):
+    service_unique_id = HiddenField("Service ID", validators=[DataRequired()])
+    new_password = PasswordField(
+        "Password",
+        [
+            EqualTo("new_password_confirmation", message="Passwords must match"),
+        ],
+        render_kw={"placeholder": "Password"},
+    )
+    new_password_confirmation = PasswordField(
+        "Repeat Password", render_kw={"placeholder": "Repeat Password"}
+    )
+
+    def validate_email(form, field):
+        query = User.select().where(
+            User.email == field.data, User.unique_id != form.service_unique_id.data
+        )
+        if db.session.scalar(query) is not None:
+            raise ValidationError("This email is already registered.")

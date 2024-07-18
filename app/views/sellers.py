@@ -103,7 +103,11 @@ def create():
 @login_required
 @role_required([m.UsersRole.dealer])
 def get_edit_modal(unique_id: str):
-    user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id))
+    user = db.session.scalar(
+        sa.select(m.User).where(
+            m.User.unique_id == unique_id, m.User.role == m.UsersRole.seller
+        )
+    )
 
     if not user or user.creator_id != current_user.id:
         log(log.ERROR, "Seller not found [%s]", unique_id)
@@ -124,7 +128,9 @@ def edit():
         flash(f"Invalid form data [{form.format_errors}]", "danger")
         return redirect(url_for("user.seller.get_user_sellers"))
     user = db.session.scalar(
-        sa.select(m.User).where(m.User.unique_id == form.unique_id.data)
+        sa.select(m.User).where(
+            m.User.unique_id == form.unique_id.data, m.User.role == m.UsersRole.seller
+        )
     )
 
     if not user:
@@ -155,7 +161,9 @@ def login_as_seller():
         flash(f"Invalid form data [{form.format_errors}]", "danger")
         return redirect(url_for("user.seller.get_user_sellers"))
     seller = db.session.scalar(
-        sa.select(m.User).where(m.User.unique_id == form.unique_id.data)
+        sa.select(m.User).where(
+            m.User.unique_id == form.unique_id.data, m.User.role == m.UsersRole.seller
+        )
     )
     if not seller or seller.creator_id != current_user.id:
         log(log.ERROR, "Seller not found [%s]", form.unique_id.data)

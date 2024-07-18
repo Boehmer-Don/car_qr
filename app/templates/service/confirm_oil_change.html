@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block links %}
+
+{% endblock %} {% block content %}
+
+<div class="h-64 w-full pt-4">
+    <div class="w-full h-full p-4 flex justify-center items-center">
+        <form class="h-full flex justify-center items-center" action="{{ url_for('service.confirm_oil_change') }}"
+            method="POST">
+            <button type="submit"
+                class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                Confirm</button>
+        </form>
+
+    </div>
+    </button>
+</div>
+
+
+<!-- prettier-ignore -->
+{% endblock %}
+<!-- prettier-ignore -->
+{% block scripts %}
+{% endblock %}

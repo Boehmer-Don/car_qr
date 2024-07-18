@@ -21,4 +21,4 @@ from .seller import SellerForm, EditSellerFrom, LoginAsSellerForm
 from .gift_item import GiftItemForm, EditGiftItemForm
 from .gift_box import GiftBoxForm, EditSaleRepForm
 from .oil_change import OilChangeDoneForm
-from .service import ServiceForm
+from .service import ServiceForm, EditServiceForm
