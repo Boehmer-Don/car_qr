@@ -1,6 +1,6 @@
 # flake8: noqa E712
 
-from datetime import datetime
+from datetime import datetime, date
 
 from pydantic import ValidationError
 from flask import (
@@ -86,8 +86,9 @@ def get_all_expired_oil():
         .join(m.SaleReport.oil_changes)
         .where(
             m.SaleReport.seller_id == current_user.id,
-            m.OilChange.date < datetime.now(),
+            sa.func.DATE(m.OilChange.date) == date.today(),
         )
+        .distinct()
         .order_by(m.SaleReport.created_at.desc())
     )
     count_query = (
@@ -97,6 +98,7 @@ def get_all_expired_oil():
             m.SaleReport.seller_id == current_user.id,
             m.OilChange.date < datetime.now(),
         )
+        .distinct()
         .select_from(m.SaleReport)
     )
 
