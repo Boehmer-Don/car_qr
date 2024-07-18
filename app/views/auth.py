@@ -63,6 +63,8 @@ def register():
 def login():
     log(log.INFO, "Login page requested. Request method: [%s]", request.method)
     form: f.LoginForm = f.LoginForm(request.form)
+    if request.method == "GET":
+        return render_template("auth/login.html", form=form)
     if not form.validate_on_submit():
         log(log.WARNING, "Form submitted error: [%s]", form.errors)
         flash("The given data was invalid.", "danger")
@@ -119,6 +121,9 @@ def login():
                 "service.confirm_oil_change",
             )
         )
+    elif current_user.role == m.UsersRole.picker:
+        log(log.INFO, "Redirecting to picker")
+        return redirect(url_for("picker.gift_boxes"))
     return redirect(url_for("user.account", user_unique_id=user.unique_id))
 
 

@@ -86,7 +86,7 @@ def get_all_expired_oil():
         .join(m.SaleReport.oil_changes)
         .where(
             m.SaleReport.seller_id == current_user.id,
-            sa.func.DATE(m.OilChange.date) == date.today(),
+            sa.func.DATE(m.OilChange.date) <= date.today(),
         )
         .distinct()
         .order_by(m.SaleReport.created_at.desc())
