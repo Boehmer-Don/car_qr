@@ -113,7 +113,7 @@ def test_login(client: FlaskClient):
     res = client.post("/services/add", data=test_data, follow_redirects=True)
     assert res.status_code == 200
     logout(client)
-    res = login(client, email=test_data["email"], password=test_data["password"])
+    res = login(client, email=test_data["email"], password="test")
     assert res.status_code == 200
 
     res = client.get("/services/records")
