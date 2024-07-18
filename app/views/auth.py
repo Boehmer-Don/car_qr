@@ -99,6 +99,20 @@ def login():
         elif current_user.role == m.UsersRole.seller:
             log(log.INFO, "Redirecting to sale reports.")
             return redirect(url_for("sale_report.get_all"))
+
+        elif current_user.role == m.UsersRole.service:
+            sticker_id = session.get("sticker_id")
+            log(log.INFO, "Redirecting to service")
+            if not sticker_id:
+                log(log.INFO, "No sticker ID in session.")
+                return redirect(url_for("service.records"))
+
+            return redirect(
+                url_for(
+                    "service.confirm_oil_change",
+                    sticker_id=session.get("sticker_id"),
+                )
+            )
         return redirect(url_for("user.account", user_unique_id=user.unique_id))
 
     elif form.is_submitted():

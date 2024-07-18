@@ -2,11 +2,12 @@ from flask import (
     current_app as app,
     render_template,
     redirect,
+    session,
     url_for,
     Blueprint,
     flash,
 )
-from flask_login import current_user
+from flask_login import current_user, logout_user
 from flask_mail import Message, Mail
 from app import models as m, db
 from app.logger import log
@@ -43,8 +44,11 @@ def redirect_to_outer_url(sticker_id: str):
     log(log.INFO, "views after: [%s]", label.views)
 
     if label.oil_not_changed:
-        log(log.INFO, "Label has report Label: [%s]", label)
-        return redirect(url_for("buyer.login", sticker_id=sticker_id))
+        log(log.INFO, "Label oil_not_changed: [%s]", label)
+        logout_user()
+        session.clear()
+        session["sticker_id"] = sticker_id
+        return redirect(url_for("auth.login"))
 
     if label.gift:
         log(log.INFO, "Redirecting to gift page. Label: [%s]", label)
