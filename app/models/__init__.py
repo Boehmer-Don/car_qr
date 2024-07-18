@@ -18,4 +18,5 @@ from .gift_item import GiftItem
 from .dealer_gift_item import DealerGiftItem
 from .gift_box import GiftBox
 from .oil_change import OilChange
+from .serivce_record import ServiceRecord
 from .utils import generate_uuid

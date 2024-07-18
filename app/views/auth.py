@@ -110,7 +110,6 @@ def login():
             return redirect(
                 url_for(
                     "service.confirm_oil_change",
-                    sticker_id=session.get("sticker_id"),
                 )
             )
         return redirect(url_for("user.account", user_unique_id=user.unique_id))

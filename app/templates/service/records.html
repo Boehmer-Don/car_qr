@@ -8,7 +8,7 @@
         <h1 class="text-2xl md:text-4xl font-bold px-5 dark:text-white">
             Records
         </h1>
-        <button type="button" hx-trigger="click" hx-swap="beforeend" hx-target="body" hx-indicator="#htmx-spinner"
+        <button type="button"
             class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
             Add record</button>
     </div>
@@ -19,19 +19,29 @@
                 <th scope="col" class="px-6 py-3">
                     Name
                 </th>
+                <th scope="col" class="px-6 py-3">
+                    Created at
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    File
+                </th>
             </tr>
         </thead>
         <tbody>
-            {% for user in [] %}
+            {% for record in records %}
             <tr
                 class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                 <!-- this a name of service  -->
                 <td class="px-6 py-4">
-                    {{ user.name_of_dealership }}
+                    {{ record.name }}
                 </td>
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
 
-                    {{ user.email }}
+                    {{ record.created_at.strftime("%H:%M:%S") }}
+                </th>
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+
+                    -
                 </th>
             </tr>
             {% endfor %}

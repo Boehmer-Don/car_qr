@@ -1,4 +1,6 @@
 # flake8: noqa F401
+
+from datetime import date
 from flask import (
     Blueprint,
     render_template,
@@ -186,11 +188,25 @@ def edit():
 def records():
     log(log.INFO, "Getting all records")
 
-    pagination = create_pagination(total=0)
+    query = sa.select(m.ServiceRecord).where(
+        m.ServiceRecord.service_id == current_user.id
+    )
+
+    count_query = (
+        sa.select(sa.func.count())
+        .where(m.ServiceRecord.service_id == current_user.id)
+        .select_from(m.ServiceRecord)
+    )
+
+    pagination = create_pagination(total=db.session.scalar(count_query))
 
     return render_template(
         "service/records.html",
-        services=[],
+        records=db.session.execute(
+            query.offset((pagination.page - 1) * pagination.per_page).limit(
+                pagination.per_page
+            )
+        ).scalars(),
         page=pagination,
     )
 
@@ -220,7 +236,7 @@ def confirm_oil_change():
         sa.select(m.OilChange).where(
             m.OilChange.sale_rep_id == label.sale_report.id,
             m.OilChange.is_done.is_(False),
-            m.OilChange.date <= sa.func.current_date(),
+            sa.func.DATE(m.OilChange.date) <= date.today(),
         )
     )
     if not oil_change:
@@ -229,13 +245,23 @@ def confirm_oil_change():
         flash("Oil change record not found", "danger")
         return redirect(url_for("service.records"))
 
-    if request.method == "POST":
-        oil_change.is_done = True
-        session.pop("sticker_id", default=None)
-        db.session.commit()
-        flash("Oil change confirmed", "success")
-        return redirect(url_for("service.records"))
+    if request.method == "GET":
+        return render_template(
+            "service/confirm_oil_change.html",
+        )
 
-    return render_template(
-        "service/confirm_oil_change.html",
+    log(log.INFO, "Confirming oil change")
+    oil_change.is_done = True
+    session.pop("sticker_id", default=None)
+
+    record = m.ServiceRecord(
+        service_id=current_user.id,
+        label_id=label.id,
+        oil_change_id=oil_change.id,
+        name="Oil Change",
     )
+
+    db.session.add(record)
+    db.session.commit()
+    flash("Oil change confirmed", "success")
+    return redirect(url_for("service.records"))

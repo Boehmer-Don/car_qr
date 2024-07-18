@@ -140,11 +140,12 @@ def test_confirm_oil_change(populate: FlaskClient):
 
     res = login(populate, email=service.email, password="123456")
     assert res.status_code == 200
-    assert "Confirm" in res.data.decode()
-
+    assert b"Confirm" in res.data
+    assert not db.session.scalars(sa.select(m.ServiceRecord)).all()
     res = populate.post(
         "/services/confirm_oil_change",
         follow_redirects=True,
     )
     assert res.status_code == 200
     assert oil_change.is_done
+    assert db.session.scalars(sa.select(m.ServiceRecord)).all()
