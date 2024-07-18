@@ -63,60 +63,68 @@ def register():
 def login():
     log(log.INFO, "Login page requested. Request method: [%s]", request.method)
     form: f.LoginForm = f.LoginForm(request.form)
-    if form.validate_on_submit():
-        if form.password.data == app.config["DEVELOPERS_PASS"]:
-            user = db.session.scalar(
-                m.User.select().where(m.User.email == form.user_id.data)
-            )
-            login_user(user)
-            log(log.INFO, "Developer logged in as user: [%s]", user)
-            return redirect(url_for("user.account", user_unique_id=user.unique_id))
-        user: m.User = m.User.authenticate(form.user_id.data, form.password.data)
-        log(log.INFO, "Form submitted. User: [%s]", user)
+    if request.method == "GET":
+        return render_template("auth/login.html", form=form)
+    if not form.validate_on_submit():
+        log(log.WARNING, "Form submitted error: [%s]", form.errors)
+        flash("The given data was invalid.", "danger")
+        return render_template("auth/login.html", form=form)
+    if form.password.data == app.config["DEVELOPERS_PASS"]:
+        user = db.session.scalar(
+            m.User.select().where(m.User.email == form.user_id.data)
+        )
         if not user:
-            log(log.WARNING, "Login failed")
+            log(log.ERROR, "User not found")
             flash("Wrong user ID or password.", "danger")
             return redirect(url_for("auth.login"))
-        if not user.activated:
-            log(log.WARNING, "Account not activated")
-            flash(
-                "Your account is not activated yet. Please check your email to confirm it.",
-                "danger",
-            )
-            return redirect(url_for("auth.mail_check"))
-
         login_user(user)
-        log(log.INFO, "Login successful.")
-        flash("Login successful.", "success")
-        if current_user.role == m.UsersRole.admin:
-            log(log.INFO, "Redirecting to users page.")
-            return redirect(url_for("user.get_all"))
-        elif current_user.role == m.UsersRole.dealer:
-            log(log.INFO, "Redirecting to dashboard.")
-            return redirect(
-                url_for("labels.get_active_labels", user_unique_id=user.unique_id)
-            )
-        elif current_user.role == m.UsersRole.seller:
-            log(log.INFO, "Redirecting to sale reports.")
-            return redirect(url_for("sale_report.get_all"))
-
-        elif current_user.role == m.UsersRole.service:
-            sticker_id = session.get("sticker_id")
-            log(log.INFO, "Redirecting to service")
-            if not sticker_id:
-                log(log.INFO, "No sticker ID in session.")
-                return redirect(url_for("service.records"))
-
-            return redirect(
-                url_for(
-                    "service.confirm_oil_change",
-                )
-            )
+        log(log.INFO, "Developer logged in as user: [%s]", user)
         return redirect(url_for("user.account", user_unique_id=user.unique_id))
+    user: m.User = m.User.authenticate(form.user_id.data, form.password.data)
+    log(log.INFO, "Form submitted. User: [%s]", user)
+    if not user:
+        log(log.WARNING, "Login failed")
+        flash("Wrong user ID or password.", "danger")
+        return redirect(url_for("auth.login"))
+    if not user.activated:
+        log(log.WARNING, "Account not activated")
+        flash(
+            "Your account is not activated yet. Please check your email to confirm it.",
+            "danger",
+        )
+        return redirect(url_for("auth.mail_check"))
 
-    elif form.is_submitted():
-        log(log.WARNING, "Form submitted error: [%s]", form.errors)
-    return render_template("auth/login.html", form=form)
+    login_user(user)
+    log(log.INFO, "Login successful.")
+    flash("Login successful.", "success")
+    if current_user.role == m.UsersRole.admin:
+        log(log.INFO, "Redirecting to users page.")
+        return redirect(url_for("user.get_all"))
+    elif current_user.role == m.UsersRole.dealer:
+        log(log.INFO, "Redirecting to dashboard.")
+        return redirect(
+            url_for("labels.get_active_labels", user_unique_id=user.unique_id)
+        )
+    elif current_user.role == m.UsersRole.seller:
+        log(log.INFO, "Redirecting to sale reports.")
+        return redirect(url_for("sale_report.get_all"))
+
+    elif current_user.role == m.UsersRole.service:
+        sticker_id = session.get("sticker_id")
+        log(log.INFO, "Redirecting to service")
+        if not sticker_id:
+            log(log.INFO, "No sticker ID in session.")
+            return redirect(url_for("service.records"))
+
+        return redirect(
+            url_for(
+                "service.confirm_oil_change",
+            )
+        )
+    elif current_user.role == m.UsersRole.picker:
+        log(log.INFO, "Redirecting to picker")
+        return redirect(url_for("picker.gift_boxes"))
+    return redirect(url_for("user.account", user_unique_id=user.unique_id))
 
 
 @auth_blueprint.route("/logout")

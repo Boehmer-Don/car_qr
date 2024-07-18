@@ -8,6 +8,7 @@ from app.database import db
 from .utils import ModelMixin, generate_uuid
 
 if TYPE_CHECKING:
+    from .dealer_gift_item import DealerGiftItem
     from .sale_report import SaleReport
 
 
@@ -34,6 +35,7 @@ class GiftBox(db.Model, ModelMixin):
     total_price: orm.Mapped[float] = orm.mapped_column(sa.Float)
     qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)
 
+    dealer_gift_item: orm.Mapped["DealerGiftItem"] = orm.relationship()
     sale_rep: orm.Mapped["SaleReport"] = orm.relationship(back_populates="gift_boxes")
 
     def __repr__(self):
