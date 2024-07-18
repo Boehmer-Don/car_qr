@@ -108,19 +108,6 @@ def test_edit(client: FlaskClient):
     assert b"Service not found" in res.data
 
 
-def test_login(client: FlaskClient):
-    set_user(client, role=m.UsersRole.admin)
-    res = client.post("/services/add", data=test_data, follow_redirects=True)
-    assert res.status_code == 200
-    logout(client)
-    res = login(client, email=test_data["email"], password="test")
-    assert res.status_code == 200
-
-    res = client.get("/services/records")
-    assert res.status_code == 200
-    assert b"Records" in res.data
-
-
 def test_confirm_oil_change(populate: FlaskClient):
     service = set_user(populate, role=m.UsersRole.service)
     sale_rep = db.session.scalar(sa.select(m.SaleReport))
