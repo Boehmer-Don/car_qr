@@ -5,7 +5,7 @@ import sqlalchemy as sa
 from app import models as m
 from app.database import db
 
-from tests.utils import set_user, logout, login
+from tests.utils import set_user, login
 
 # generate test data do user service role
 test_data = {
