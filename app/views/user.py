@@ -243,7 +243,7 @@ def activation():
     log(log.INFO, "User set [%s] for account.", current_user.activated)
     if current_user.activated:
         return redirect(url_for("user.account", user_unique_id=current_user.unique_id))
-    # TODO mabye redirect to login page
+
     return redirect(url_for("auth.logout"))
 
 

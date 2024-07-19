@@ -12,7 +12,10 @@ from flask import (
 )
 from flask_login import login_required, current_user
 import sqlalchemy as sa
+from flask import current_app as app
+from flask_mail import Message, Mail
 
+from app import mail
 from app.controllers import create_pagination, role_required
 from app import models as m, db
 from app.schema import ad_gift_boxes
@@ -32,8 +35,15 @@ def get_all():
         m.SaleReport.seller_id == current_user.id,
         sa.not_(sa.exists().where(m.OilChange.sale_rep_id == m.SaleReport.id)),
     )
-    query = sa.select(m.SaleReport).where(stmt).order_by(m.SaleReport.created_at.desc())
-    count_query = sa.select(sa.func.count()).where(stmt).select_from(m.SaleReport)
+    query = (
+        sa.select(m.SaleReport)
+        .where(stmt)
+        .distinct()
+        .order_by(m.SaleReport.created_at.desc())
+    )
+    count_query = (
+        sa.select(sa.func.count()).where(stmt).distinct().select_from(m.SaleReport)
+    )
 
     pagination = create_pagination(total=db.session.scalar(count_query))
 
@@ -53,14 +63,26 @@ def get_all():
 @role_required([m.UsersRole.seller])
 def get_all_panding_oil():
     log(log.INFO, "Get all panding oil")
-    stmt = sa.and_(
-        m.SaleReport.seller_id == current_user.id,
-        sa.exists().where(
-            m.OilChange.sale_rep_id == m.SaleReport.id, m.OilChange.is_done.is_(False)
-        ),
+    query = (
+        sa.select(m.SaleReport)
+        .join(m.SaleReport.oil_changes)
+        .where(
+            m.SaleReport.seller_id == current_user.id,
+            m.OilChange.is_done.is_(False),
+        )
+        .group_by(m.SaleReport.id)
+        .order_by(m.SaleReport.created_at.desc())
     )
-    query = sa.select(m.SaleReport).where(stmt).order_by(m.SaleReport.created_at.desc())
-    count_query = sa.select(sa.func.count()).where(stmt).select_from(m.SaleReport)
+    count_query = (
+        sa.select(sa.func.count())
+        .join(m.SaleReport.oil_changes)
+        .where(
+            m.SaleReport.seller_id == current_user.id,
+            m.OilChange.is_done.is_(False),
+        )
+        .group_by(m.SaleReport.id)
+        .select_from(m.SaleReport)
+    )
 
     pagination = create_pagination(total=db.session.scalar(count_query))
 
@@ -223,21 +245,21 @@ def set_gift_boxes():
         flash("Gift boxes total amount is greater than available amount", "danger")
         return redirect(url_for("sale_report.get_all"))
 
+    new_gift_boxes = []
     for box in gift_boxes:
         gift_item = db.session.get(m.DealerGiftItem, box.dealer_gift_item_id)
         if not gift_item:
             log(log.ERROR, "Dealer gift item not found [%s]", box.dealer_gift_item_id)
             flash(f"Dealer gift item not found [{box.dealer_gift_item_id}]", "danger")
             return redirect(url_for("sale_report.get_all"))
-
-        db.session.add(
-            m.GiftBox(
-                sale_result_id=sale_report.id,
-                dealer_gift_item_id=box.dealer_gift_item_id,
-                qty=box.qty,
-                total_price=box.total_price,
-            )
+        gift_box = m.GiftBox(
+            sale_result_id=sale_report.id,
+            dealer_gift_item_id=box.dealer_gift_item_id,
+            qty=box.qty,
+            total_price=round(box.total_price, 2),
         )
+        db.session.add(gift_box)
+        new_gift_boxes.append(gift_box)
 
     db.session.add(m.OilChange(sale_rep_id=sale_report.id, date=first_oil_change))
     db.session.add(
@@ -264,11 +286,29 @@ def set_gift_boxes():
     sale_report.buyer = bouyer
 
     db.session.commit()
-
     flash("Gift boxes added successfully", "success")
-    return redirect(
-        url_for("sale_report.get_all", sale_rep_unique_id=sale_report.unique_id)
+
+    dealer = db.session.get(m.User, sale_report.seller.creator_id)
+
+    if not dealer:
+        log(log.ERROR, "Dealer not found [%s]", sale_report.seller.creator_id)
+        return redirect(url_for("sale_report.get_all"))
+
+    msg = Message(
+        subject="Gift Box Notifications",
+        sender=app.config["MAIL_DEFAULT_SENDER"],
+        recipients=[dealer.email],
     )
+
+    msg.html = render_template(
+        "email/gift_box_notifications.html",
+        user=dealer,
+        new_gift_boxes=new_gift_boxes,
+        sale_report=sale_report,
+    )
+    mail.send(msg)
+
+    return redirect(url_for("sale_report.get_all"))
 
 
 @sale_report.route("/<sale_rep_unique_id>/edit-modal", methods=["GET"])
@@ -401,3 +441,6 @@ def buyer_modal_info(sale_rep_unique_id):
         )
 
     return render_template("sale_report/buyer_info.html", buyer=sale_report.buyer)
+
+
+# TODO Features The system will then use the preferred contact defined by customer to remind them of their oil change 1 week before & the day before. If it is the home phone, it will send the sales rep an email asking them to call. Once both dates pass, it is removed from this page & archived for now
