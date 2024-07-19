@@ -73,6 +73,7 @@ def get_active_labels():
         m.LabelLocation.select().where(m.LabelLocation.user_id == current_user.id)
     ).all()
 
+
     return render_template(
         "label/labels_active.html",
         labels=labels,

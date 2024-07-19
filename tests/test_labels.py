@@ -275,7 +275,11 @@ def test_assign_generic_labels(runner: FlaskClient, populate: FlaskClient):
 
 
 def test_sell_car_label(populate: FlaskClient):
-    label: m.Label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
+    label: m.Label = db.session.scalar(
+        m.Label.select().where(m.Label.status == m.LabelStatus.active)
+    )
+    db.session.delete(label.sale_report)
+    db.session.commit()
     dealer = set_user(populate, role=m.UsersRole.dealer)
     seller = db.session.scalar(
         sa.select(m.User).where(m.User.role == m.UsersRole.seller)
