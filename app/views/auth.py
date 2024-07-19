@@ -322,7 +322,8 @@ def payment(user_unique_id: str):
 
         if not product:
             log(log.ERROR, "Stripe product not found: [%s]", user.plan.value)
-            # TODO handle error
+            flash("Problem with purchase, try later", "danger")
+            return redirect(url_for("main.index"))
 
         # create stripe customer
         stripe_user = create_stripe_customer(user)

@@ -24,6 +24,7 @@ from app.controllers import (
 )
 from app import models as m, db
 from app import forms as f
+from app import mail
 from app.controllers.user import role_required
 from app.logger import log
 from app.controllers.date_convert import date_convert
@@ -71,6 +72,7 @@ def get_active_labels():
     label_locations = db.session.scalars(
         m.LabelLocation.select().where(m.LabelLocation.user_id == current_user.id)
     ).all()
+
 
     return render_template(
         "label/labels_active.html",
@@ -179,8 +181,12 @@ def sell_car_label():
     label = db.session.scalar(
         sa.select(m.Label).where(m.Label.unique_id == form.label_unique_id.data)
     )
-    if not label:
-        log(log.ERROR, "Failed to find label : [%s]", form.label_unique_id.data)
+    if not label or label.sale_report:
+        log(
+            log.ERROR,
+            "Failed to find label or label has sale : [%s]",
+            form.label_unique_id.data,
+        )
         flash("Failed to find label", "danger")
         return redirect(redirect_url)
 
@@ -217,6 +223,23 @@ def sell_car_label():
     label.date_deactivated = datetime.utcnow()
     label.save()
     log(log.INFO, "Sold label : [%s]", form.label_unique_id.data)
+
+    msg = Message(
+        subject="The new car is sold",
+        sender=app.config["MAIL_DEFAULT_SENDER"],
+        recipients=[seller.email],
+    )
+    url = url_for(
+        "auth.login",
+        _external=True,
+    )
+
+    msg.html = render_template(
+        "email/card_sold_notify.html",
+        user=seller,
+        url=url,
+    )
+    mail.send(msg)
 
     return redirect(redirect_url)
 

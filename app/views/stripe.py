@@ -251,7 +251,8 @@ def subscription():
         )
         if not product:
             log(log.ERROR, "Stripe product not found: [%s]", form.selected_plan.data)
-            # TODO return
+            flash("Something went wrong. Please try again later.", "danger")
+            return redirect(url_for("stripe.subscription"))
 
         log(log.INFO, "Pay plan is chosen to change. User: [%s]", current_user)
 

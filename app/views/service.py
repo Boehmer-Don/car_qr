@@ -12,10 +12,11 @@ from flask import (
 )
 import sqlalchemy as sa
 from flask_login import login_required, current_user
-from app.controllers import (
-    role_required,
-)
+from app.controllers import role_required
 from app import models as m, db
+from app import mail
+from flask_mail import Message
+from flask import current_app as app
 from app import forms as f
 from app import schema as s
 from app.controllers.pagination import create_pagination
@@ -264,4 +265,25 @@ def confirm_oil_change():
     db.session.add(record)
     db.session.commit()
     flash("Oil change confirmed", "success")
+
+    sale_rep = oil_change.sale_rep
+    seller = sale_rep.seller
+    buyer = sale_rep.buyer
+    label = sale_rep.label
+
+    msg = Message(
+        subject="Oil Change Confirmation",
+        sender=app.config["MAIL_DEFAULT_SENDER"],
+        recipients=[seller.email],
+    )
+    msg.html = render_template(
+        "email/did_oil_change.html",
+        user=seller,
+        buyer=buyer,
+        label=label,
+        service_name=current_user.name_of_dealership.title(),
+        created_at=record.created_at,
+    )
+    mail.send(msg)
+
     return redirect(url_for("service.records"))

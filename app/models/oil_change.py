@@ -47,4 +47,4 @@ class OilChange(db.Model, ModelMixin):
         )  # wecan't change the oil in the past
 
     def __repr__(self):
-        return f"<{self.id}:{self.created_at}"
+        return f"<{self.id}: date: {self.date}"
