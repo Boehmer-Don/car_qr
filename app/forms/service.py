@@ -5,7 +5,7 @@ from wtforms import (
     ValidationError,
     SelectField,
 )
-from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp
+from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp, Optional
 
 from app.models import User
 from app import schema as s
@@ -20,6 +20,12 @@ class BaseServiceForm(BaseForm):
         render_kw={"placeholder": "Enter your email"},
     )
     name = StringField("Name", validators=[DataRequired(), Length(0, 64)])
+    first_name = StringField(
+        "First Name", validators=[Optional(), Length(0, 64)], default=""
+    )
+    last_name = StringField(
+        "Last Name", validators=[Optional(), Length(0, 64)], default=""
+    )
     phone = StringField(
         "Phone Number",
         validators=[

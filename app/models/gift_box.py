@@ -19,8 +19,8 @@ class GiftBox(db.Model, ModelMixin):
     sale_result_id: orm.Mapped[int] = orm.mapped_column(
         sa.ForeignKey("sale_reports.id")
     )
-    dealer_gift_item_id: orm.Mapped[int] = orm.mapped_column(
-        sa.ForeignKey("dealer_gift_items.id")
+    dealer_gift_item_id: orm.Mapped[int | None] = orm.mapped_column(
+        sa.ForeignKey("dealer_gift_items.id", ondelete="SET NULL")
     )
 
     unique_id: orm.Mapped[str] = orm.mapped_column(
@@ -31,9 +31,12 @@ class GiftBox(db.Model, ModelMixin):
         sa.DateTime,
         default=datetime.utcnow,
     )
-
+    description: orm.Mapped[str] = orm.mapped_column(sa.String(512))
+    _sku: orm.Mapped[str] = orm.mapped_column(sa.String(255))
+    price: orm.Mapped[float] = orm.mapped_column(sa.Float)
     total_price: orm.Mapped[float] = orm.mapped_column(sa.Float)
     qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)
+    is_completed: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
 
     dealer_gift_item: orm.Mapped["DealerGiftItem"] = orm.relationship()
     sale_rep: orm.Mapped["SaleReport"] = orm.relationship(back_populates="gift_boxes")

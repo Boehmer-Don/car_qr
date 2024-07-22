@@ -36,6 +36,25 @@
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
                     placeholder="Enter address" required />
             </div>
+            {% if current_user.role.value == 'admin' %}
+            <div class="col-span-6">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    First Name
+                </label>
+                <input type="text" name="first_name" autocomplete="off"
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="Enter first name" required />
+            </div>
+            <div class="col-span-6">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Last Name
+                </label>
+                <input type="text" name="last_name" autocomplete="off"
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="Enter last name" required />
+            </div>
+            {% endif %}
+
             <div class="col-span-6">
                 <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
                     Email

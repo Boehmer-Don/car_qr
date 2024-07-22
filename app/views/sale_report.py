@@ -255,6 +255,9 @@ def set_gift_boxes():
         gift_box = m.GiftBox(
             sale_result_id=sale_report.id,
             dealer_gift_item_id=box.dealer_gift_item_id,
+            price=gift_item.origin_item.price,
+            description=gift_item.origin_item.description,
+            _sku=gift_item.origin_item.SKU,
             qty=box.qty,
             total_price=round(box.total_price, 2),
         )
@@ -271,7 +274,6 @@ def set_gift_boxes():
 
     sale_report.is_notfy_by_email = form.is_notfy_by_email.data
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
-    sale_report.description = form.description.data
 
     bouyer = m.User(
         first_name=form.first_name.data,
@@ -288,25 +290,33 @@ def set_gift_boxes():
     db.session.commit()
     flash("Gift boxes added successfully", "success")
 
-    dealer = db.session.get(m.User, sale_report.seller.creator_id)
+    gift_box_users = db.session.scalars(
+        sa.select(m.User).where(
+            m.User.role == m.UsersRole.picker,
+            m.User.deleted.is_(False),
+            m.User._creator_id == sale_report.seller.creator_id,
+        )
+    ).all()
 
-    if not dealer:
-        log(log.ERROR, "Dealer not found [%s]", sale_report.seller.creator_id)
+    if not gift_box_users:
+        log(log.ERROR, "Dealers not found [%s]", sale_report.seller.creator_id)
         return redirect(url_for("sale_report.get_all"))
 
-    msg = Message(
-        subject="Gift Box Notifications",
-        sender=app.config["MAIL_DEFAULT_SENDER"],
-        recipients=[dealer.email],
-    )
+    # TODO can take time
+    for dealer in gift_box_users:
+        msg = Message(
+            subject="Gift Box Notifications",
+            sender=app.config["MAIL_DEFAULT_SENDER"],
+            recipients=[dealer.email],
+        )
 
-    msg.html = render_template(
-        "email/gift_box_notifications.html",
-        user=dealer,
-        new_gift_boxes=new_gift_boxes,
-        sale_report=sale_report,
-    )
-    mail.send(msg)
+        msg.html = render_template(
+            "email/gift_box_notifications.html",
+            user=dealer,
+            new_gift_boxes=new_gift_boxes,
+            sale_report=sale_report,
+        )
+        mail.send(msg)
 
     return redirect(url_for("sale_report.get_all"))
 

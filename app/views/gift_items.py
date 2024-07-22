@@ -109,8 +109,6 @@ def add():
             dealer_gift_item = m.DealerGiftItem(
                 gift_item_id=gift_item.id,
                 dealer_id=dealer.id,
-                price=gift_item.price,
-                description=gift_item.description,
                 min_qty=gift_item.min_qty,
                 max_qty=gift_item.max_qty,
             )

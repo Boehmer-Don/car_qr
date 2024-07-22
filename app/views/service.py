@@ -84,7 +84,9 @@ def add():
         flash(f"Invalid form data [{form.format_errors}]", "danger")
         return redirect(url_for("service.get_all"))
 
-    m.User(
+    user = m.User(
+        first_name=form.first_name.data,
+        last_name=form.last_name.data,
         email=form.email.data,
         name_of_dealership=form.name.data,
         phone=form.phone.data,
@@ -98,6 +100,23 @@ def add():
         creator_id=current_user.id,
         password=form.password.data,
     ).save()
+    msg = Message(
+        subject="Invitation to Auto QR Code",
+        sender=app.config["MAIL_DEFAULT_SENDER"],
+        recipients=[user.email],
+    )
+    url = url_for(
+        "auth.login",
+        _external=True,
+    )
+
+    msg.html = render_template(
+        "email/service_invite.html",
+        user=user,
+        url=url,
+        password=form.password.data,
+    )
+    mail.send(msg)
 
     return redirect(url_for("service.get_all"))
 
@@ -126,6 +145,8 @@ def edit_modal(service_unique_id: str):
     if service.country == s.Country.US.name:
         form.province.choices = get_us_states()
 
+    form.first_name.data = service.first_name
+    form.last_name.data = service.last_name
     form.service_unique_id.data = service.unique_id
     form.name.data = service.name_of_dealership
     form.email.data = service.email
@@ -166,6 +187,8 @@ def edit():
         flash("Service not found", "danger")
         return redirect(url_for("service.get_all"))
 
+    service.first_name = form.first_name.data
+    service.last_name = form.last_name.data
     service.name_of_dealership = form.name.data
     service.email = form.email.data
     service.phone = form.phone.data
