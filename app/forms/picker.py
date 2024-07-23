@@ -4,7 +4,7 @@ from wtforms import (
     PasswordField,
     ValidationError,
 )
-from wtforms.validators import DataRequired, Email, EqualTo, Regexp
+from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 from app.models import User
 from app import db
@@ -17,15 +17,9 @@ class BasePickerForm(BaseForm):
         validators=[DataRequired(), Email()],
         render_kw={"placeholder": "Enter your email"},
     )
-    phone = StringField(
+    name = StringField(
         "Phone Number",
-        validators=[
-            DataRequired(message="Phone number is required."),
-            Regexp(
-                r"^\d{0,3}-\d{0,3}-\d{0,4}$",
-                message="Invalid phone number format. Use 10 digits.",
-            ),
-        ],
+        validators=[DataRequired(message="Phone number is required."), Length(1, 64)],
     )
 
     def validate_email(form, field):
@@ -68,3 +62,7 @@ class EditPickerForm(BasePickerForm):
         )
         if db.session.scalar(query) is not None:
             raise ValidationError("This email is already registered.")
+
+
+class CompleteAllBoex(BaseForm):
+    sale_report_unique_id = HiddenField("Sale Report ID", validators=[DataRequired()])

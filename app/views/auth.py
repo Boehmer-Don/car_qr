@@ -123,7 +123,7 @@ def login():
         )
     elif current_user.role == m.UsersRole.picker:
         log(log.INFO, "Redirecting to picker")
-        return redirect(url_for("picker.gift_boxes"))
+        return redirect(url_for("picker.sale_reports"))
     return redirect(url_for("user.account", user_unique_id=user.unique_id))
 
 

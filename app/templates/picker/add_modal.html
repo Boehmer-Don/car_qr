@@ -30,11 +30,11 @@
             </div>
             <div class="col-span-6">
                 <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
-                    Phone
+                    Name
                 </label>
-                <input id="phone-input" type="tel" name="phone" autocomplete="off" minlength="1" maxlength="64"
+                <input type="type" name="name" autocomplete="off" minlength="1" maxlength="255"
                     class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="000-000-0000" required />
+                    placeholder="Enter name" required />
             </div>
             <div class="col-span-6">
                 <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
@@ -80,6 +80,5 @@
             </button>
         </form>
     </div>
-    <script src="{{ url_for('static', filename='js/controllers/phone.js') }}" type="text/javascript" defer></script>
     <script src="{{ url_for('static', filename='js/controllers/password.js') }}" type="text/javascript" defer></script>
 </div>
