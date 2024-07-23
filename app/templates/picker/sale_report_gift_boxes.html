@@ -1,0 +1,70 @@
+<div tabindex="-1" id="modal-sale-rep-gift-boxes"
+    class="fixed bg-opacity-80 bg-gray-600 top-0 left-0 right-0 z-50 items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full justify-end items-end flex">
+    <div class="rounded-lg flex flex-col relative w-4/5 h-4/5 bg-white p-4" onclick="event.stopPropagation();">
+        <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Gift boxes</h3>
+            <button type="button" hx-get="{{ url_for('main.no_content') }}" hx-trigger="click" hx-swap="delete"
+                hx-target="#modal-sale-rep-gift-boxes" hx-indicator="#htmx-spinner"
+                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="h-full overflow-y-auto">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Price
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            SKU
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Total price
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Qty
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for box in gift_boxes %}
+                    <tr
+                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                        <!-- this a name of service  -->
+
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+
+                            {{ box.price }}
+                        </th>
+                        <td class="px-6 py-4">
+                            {{ box._sku }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ box.total_price }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ box.qty }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if not sale_report.gift_boxes_completed %}
+        <form method="POST" action="{{ url_for('picker.sale_reports_gift_boxes_complete') }}"
+            class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+            {{ form.hidden_tag() }}
+            {{ form.sale_report_unique_id }}
+            <button type="submit"
+                class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                Complete all</button>
+        </form>
+        {% endif %}
+    </div>
+</div>

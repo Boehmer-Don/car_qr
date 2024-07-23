@@ -9,7 +9,7 @@ from tests.utils import set_user
 # generate test data do user service role
 test_data = {
     "email": "service@email.com",
-    "phone": "111-111-1111",
+    "name": "test",
     "password": "test",
     "password_confirmation": "test",
 }
@@ -73,7 +73,7 @@ def test_edit(client: FlaskClient):
     res = client.get(f"/pickers/{picker.unique_id}/edit-modal")
     assert res.status_code == 200
     assert b"Edit gift box user" in res.data
-    assert picker.phone in res.data.decode()
+    assert picker.first_name in res.data.decode()
     assert picker.email in res.data.decode()
 
     del test_data["password"]
@@ -89,3 +89,42 @@ def test_edit(client: FlaskClient):
     res = client.post("/pickers/edit", data=test_data, follow_redirects=True)
     assert res.status_code == 200
     assert picker.email == new_email
+
+
+def test_gift_boxes(populate: FlaskClient):
+    set_user(populate, role=m.UsersRole.picker)
+
+    sale_report = db.session.get(m.SaleReport, 1)
+    assert sale_report
+    box = m.GiftBox(
+        sale_result_id=sale_report.id,
+        description="test",
+        price=10,
+        _sku="test",
+        qty=1,
+        total_price=10,
+    )
+    db.session.add(box)
+    db.session.commit()
+
+    res = populate.get("/pickers/sale-reports")
+    assert res.status_code == 200
+    assert sale_report.unique_id in res.data.decode()
+
+    res = populate.get(f"/pickers/{sale_report.unique_id}/gift-boxes")
+    assert res.status_code == 200
+    assert box._sku in res.data.decode()
+
+    res = populate.post(
+        "/pickers/gift-boxes",
+        data={"sale_report_unique_id": sale_report.unique_id},
+        follow_redirects=True,
+    )
+    assert res.status_code == 200
+    assert box.is_completed
+
+    assert sale_report.gift_boxes_completed
+
+    res = populate.get("/pickers/sale-reports-history")
+    assert res.status_code == 200
+    assert sale_report.unique_id in res.data.decode()

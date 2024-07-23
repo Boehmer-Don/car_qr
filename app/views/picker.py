@@ -49,40 +49,145 @@ def get_all():
     )
 
 
-@picker.route("/gift_boxes", methods=["GET"])
+@picker.route("/sale-reports", methods=["GET"])
 @login_required
 @role_required([m.UsersRole.picker])
-def gift_boxes():
-    log(log.INFO, "Getting all gift_boxes")
-
-    where_stmt = sa.and_(
-        m.DealerGiftItem.dealer_id == current_user.creator_id,
-    )
+def sale_reports():
+    log(log.INFO, "Getting all sale reports for picker")
 
     query = (
-        sa.select(m.GiftBox)
-        .join(m.DealerGiftItem)
-        .where(where_stmt)
-        .order_by(m.GiftBox.created_at.desc())
+        sa.select(m.SaleReport)
+        .join(m.SaleReport.seller)
+        .join(m.SaleReport.gift_boxes)
+        .where(
+            m.SaleReport.seller.has(m.User._creator_id == current_user._creator_id),
+            m.SaleReport.gift_boxes.any(m.GiftBox.is_completed.is_(False)),
+        )
+        .group_by(m.SaleReport.id)
+        .order_by(m.SaleReport.created_at.desc())
     )
     count_query = (
         sa.select(sa.func.count())
-        .join(m.DealerGiftItem)
-        .where(where_stmt)
-        .select_from(m.GiftBox)
+        .join(m.SaleReport.seller)
+        .join(m.SaleReport.gift_boxes)
+        .where(
+            m.SaleReport.seller.has(m.User._creator_id == current_user._creator_id),
+            m.SaleReport.gift_boxes.any(m.GiftBox.is_completed.is_(False)),
+        )
+        .group_by(m.SaleReport.id)
+        .select_from(m.SaleReport)
     )
 
-    pagination = create_pagination(total=db.session.scalar(count_query))
+    pagination = create_pagination(total=db.session.scalar(count_query) or 0)
 
     return render_template(
-        "picker/gift_boxes.html",
-        gift_boxes=db.session.execute(
+        "picker/sale_reports.html",
+        sale_reports=db.session.execute(
             query.offset((pagination.page - 1) * pagination.per_page).limit(
                 pagination.per_page
             )
         ).scalars(),
         page=pagination,
     )
+
+
+@picker.route("/sale-reports-history", methods=["GET"])
+@login_required
+@role_required([m.UsersRole.picker])
+def sale_reports_history():
+    log(log.INFO, "Getting all sale reports history for picker")
+
+    query = (
+        sa.select(m.SaleReport)
+        .join(m.SaleReport.seller)
+        .join(m.SaleReport.gift_boxes)
+        .where(
+            m.SaleReport.seller.has(m.User._creator_id == current_user._creator_id),
+            m.SaleReport.gift_boxes.any(m.GiftBox.is_completed.is_(True)),
+        )
+        .group_by(m.SaleReport.id)
+        .order_by(m.SaleReport.created_at.desc())
+    )
+    count_query = (
+        sa.select(sa.func.count())
+        .join(m.SaleReport.seller)
+        .join(m.SaleReport.gift_boxes)
+        .where(
+            m.SaleReport.seller.has(m.User._creator_id == current_user._creator_id),
+            m.SaleReport.gift_boxes.any(m.GiftBox.is_completed.is_(True)),
+        )
+        .group_by(m.SaleReport.id)
+        .select_from(m.SaleReport)
+    )
+
+    pagination = create_pagination(total=db.session.scalar(count_query) or 0)
+
+    return render_template(
+        "picker/sale_reports_history.html",
+        sale_reports=db.session.execute(
+            query.offset((pagination.page - 1) * pagination.per_page).limit(
+                pagination.per_page
+            )
+        ).scalars(),
+        page=pagination,
+    )
+
+
+@picker.route("/<sale_report_unique_id>/gift-boxes", methods=["GET"])
+@login_required
+@role_required([m.UsersRole.picker])
+def sale_reports_gift_boxes(sale_report_unique_id: str):
+    """htmx"""
+    log(log.INFO, f"Getting all gift boxes for sale report [{sale_report_unique_id}]")
+
+    sale_report = db.session.scalar(
+        sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_report_unique_id)
+    )
+
+    if not sale_report or not sale_report.gift_boxes:
+        log(log.INFO, f"Sale report not found [{sale_report_unique_id}]")
+        return render_template(
+            "toast.html", message="Sale report not found", toast_type="danger"
+        )
+
+    form = f.CompleteAllBoex()
+    form.sale_report_unique_id.data = sale_report.unique_id
+
+    return render_template(
+        "picker/sale_report_gift_boxes.html",
+        sale_report=sale_report,
+        gift_boxes=sale_report.gift_boxes,
+        form=form,
+    )
+
+
+@picker.route("/gift-boxes", methods=["POST"])
+@login_required
+@role_required([m.UsersRole.picker])
+def sale_reports_gift_boxes_complete():
+    form = f.CompleteAllBoex()
+    if not form.validate_on_submit():
+        log(log.INFO, f"Invalid form data [{form.format_errors}]")
+        flash(f"Invalid form data [{form.format_errors}]", "danger")
+        return redirect(url_for("picker.sale_reports"))
+    sale_report = db.session.scalar(
+        sa.select(m.SaleReport).where(
+            m.SaleReport.unique_id == form.sale_report_unique_id.data
+        )
+    )
+
+    if not sale_report or not sale_report.gift_boxes:
+        log(log.INFO, f"Sale report not found [{form.sale_report_unique_id.data}]")
+        flash(f"Invalid form data [{form.format_errors}]", "danger")
+        return redirect(url_for("picker.sale_reports"))
+
+    if not sale_report.gift_boxes_completed:
+        for gift_box in sale_report.gift_boxes:
+            gift_box.is_completed = True
+        db.session.commit()
+        flash("All gift boxes are completed", "success")
+
+    return redirect(url_for("picker.sale_reports"))
 
 
 @picker.route("/add-modal", methods=["GET"])
@@ -110,7 +215,7 @@ def add():
 
     m.User(
         email=form.email.data,
-        phone=form.phone.data,
+        first_name=form.name.data,
         role=m.UsersRole.picker,
         activated=True,
         creator_id=current_user.id,
@@ -141,7 +246,7 @@ def edit_modal(picker_unique_id: str):
     form = f.EditPickerForm()
     form.picker_unique_id.data = picker.unique_id
     form.email.data = picker.email
-    form.phone.data = picker.phone
+    form.name.data = picker.first_name
 
     return render_template(
         "picker/edit_modal.html",
@@ -176,7 +281,7 @@ def edit():
         return redirect(url_for("picker.get_all"))
 
     picker.email = form.email.data
-    picker.phone = form.phone.data
+    picker.first_name = form.name.data
 
     if form.new_password.data:
         picker.password = form.new_password.data

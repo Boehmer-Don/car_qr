@@ -32,11 +32,10 @@
             </div>
             <div class="col-span-6">
                 <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
-                    Phone
+                    Name
                 </label>
-                <input id="phone-input" type="tel" name="phone" autocomplete="off" minlength="1" maxlength="64"
-                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
-                    placeholder="000-000-0000" value="{{ picker.phone }}" required />
+                {{ form.name(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white") }}
             </div>
             <div class="col-span-6">
                 <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">

@@ -59,6 +59,10 @@ class SaleReport(db.Model, ModelMixin):
         back_populates="sale_rep", order_by="OilChange.id.asc()"
     )
 
+    @property
+    def gift_boxes_completed(self) -> bool:
+        return all(gift_box.is_completed for gift_box in self.gift_boxes)
+
     @hybrid_property
     def with_gift_boxes(self) -> bool:
         return bool(self.gift_boxes)
