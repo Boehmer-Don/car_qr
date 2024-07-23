@@ -30,7 +30,7 @@ def test_dealer_gift_items(populate: FlaskClient):
 
     res = populate.get(f"/user/gift-items/{dealer_gift_item.unique_id}/edit")
     assert res.status_code == 200
-    assert dealer_gift_item.description in res.data.decode()
+    assert dealer_gift_item.origin_item.description in res.data.decode()
 
     res = populate.post(
         f"/user/gift-items/{dealer_gift_item.unique_id}/edit",

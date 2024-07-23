@@ -414,8 +414,6 @@ def edit():
     sale_report.is_notfy_by_email = form.is_notfy_by_email.data
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
 
-    sale_report.description = form.description.data
-
     sale_report.buyer.first_name = form.first_name.data
     sale_report.buyer.last_name = form.last_name.data
     sale_report.buyer.email = form.email.data

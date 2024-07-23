@@ -1,3 +1,5 @@
+import io
+from pathlib import Path
 from flask.testing import FlaskClient
 from datetime import datetime
 
@@ -5,7 +7,7 @@ import sqlalchemy as sa
 from app import models as m
 from app.database import db
 
-from tests.utils import set_user, login
+from tests.utils import set_user
 
 # generate test data do user service role
 test_data = {
@@ -108,8 +110,12 @@ def test_edit(client: FlaskClient):
     assert b"Service not found" in res.data
 
 
-def test_confirm_oil_change(populate: FlaskClient):
-    service = set_user(populate, role=m.UsersRole.service)
+def test_confirm_oil_change(populate: FlaskClient, mocker):
+    mocker.patch("app.views.service.save_file", return_value="test.jpg")
+
+    buyer = set_user(populate, role=m.UsersRole.buyer, is_login=False)
+    set_user(populate, role=m.UsersRole.service)
+
     sale_rep = db.session.scalar(sa.select(m.SaleReport))
     assert sale_rep
     oil_change = m.OilChange(
@@ -117,22 +123,35 @@ def test_confirm_oil_change(populate: FlaskClient):
         date=datetime.today().date(),
     )
     db.session.add(oil_change)
+    sale_rep.buyer_id = buyer.id
     db.session.commit()
 
     assert not oil_change.is_done
-    assert sale_rep.label.sticker_id
 
-    res = populate.get(f"/l/{sale_rep.label.sticker_id}", follow_redirects=True)
+    res = populate.get(
+        f"/services/add-records-search?q={oil_change.sale_rep.label.sticker_id}"
+    )
     assert res.status_code == 200
+    assert oil_change.sale_rep.unique_id in res.data.decode()
 
-    res = login(populate, email=service.email, password="123456")
+    res = populate.get(f"/services/{oil_change.sale_rep.unique_id}/add-record")
     assert res.status_code == 200
     assert b"Confirm" in res.data
     assert not db.session.scalars(sa.select(m.ServiceRecord)).all()
+
+    test_file = "test.pdf"
+    test_file_path = Path("tests") / "data" / test_file
+
+    with open(test_file_path, "rb") as f:
+        file = (io.BytesIO(f.read()), test_file)
+
     res = populate.post(
-        "/services/confirm_oil_change",
+        f"/services/{oil_change.sale_rep.unique_id}/add-record",
+        data={"file": file},
         follow_redirects=True,
     )
     assert res.status_code == 200
-    assert oil_change.is_done
     assert db.session.scalars(sa.select(m.ServiceRecord)).all()
+
+    res = populate.get("/services/records")
+    assert res.status_code == 200

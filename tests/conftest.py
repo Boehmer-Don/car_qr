@@ -12,9 +12,7 @@ from tests.db import populate as db_populate, add_labels
 
 
 @pytest.fixture()
-def app(monkeypatch, mocker):
-
-    # mocker.patch.object(Mail, "send", return_value=True)
+def app(monkeypatch):
 
     def mock_create_subscription_checkout_session(
         user: m.User, subscription_product: m.StripeProduct

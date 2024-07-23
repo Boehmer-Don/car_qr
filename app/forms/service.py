@@ -4,6 +4,7 @@ from wtforms import (
     PasswordField,
     ValidationError,
     SelectField,
+    FileField,
 )
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp, Optional
 
@@ -91,3 +92,7 @@ class EditServiceForm(BaseServiceForm):
         )
         if db.session.scalar(query) is not None:
             raise ValidationError("This email is already registered.")
+
+
+class ServiceRecordForm(BaseForm):
+    file = FileField("File Name", validators=[DataRequired()])

@@ -1,13 +1,11 @@
 # flake8: noqa F401
 
-from datetime import date
 from flask import (
     Blueprint,
     render_template,
     flash,
     redirect,
     url_for,
-    session,
     request,
 )
 import sqlalchemy as sa
@@ -20,6 +18,7 @@ from flask import current_app as app
 from app import forms as f
 from app import schema as s
 from app.controllers.pagination import create_pagination
+from app.controllers.save_file import save_file
 from app.logger import log
 
 from .utils import get_canada_provinces, get_us_states
@@ -212,8 +211,10 @@ def edit():
 def records():
     log(log.INFO, "Getting all records")
 
-    query = sa.select(m.ServiceRecord).where(
-        m.ServiceRecord.service_id == current_user.id
+    query = (
+        sa.select(m.ServiceRecord)
+        .where(m.ServiceRecord.service_id == current_user.id)
+        .order_by(m.ServiceRecord.created_at.desc())
     )
 
     count_query = (
@@ -235,54 +236,106 @@ def records():
     )
 
 
-@service.route("/confirm_oil_change", methods=["GET", "POST"])
+@service.route("/add-records-search", methods=["GET"])
 @login_required
 @role_required([m.UsersRole.service])
-def confirm_oil_change():
-    sticker_id = session.get("sticker_id")
-    log(log.INFO, "Approved oil change [%s]", sticker_id)
-    if not sticker_id:
-        log(log.INFO, "Sticker ID not found [%s]", sticker_id)
-        session.pop("sticker_id", default=None)
-        flash("Car not found", "danger")
-        return redirect(url_for("service.records"))
+def add_record_search():
+    q = request.args.get("q", type=str, default="")
 
-    label = db.session.scalar(
-        sa.select(m.Label).where(m.Label.sticker_id == sticker_id)
+    sale_reports = []
+    if q:
+        sale_reports = db.session.scalars(
+            sa.select(m.SaleReport)
+            .join(m.SaleReport.buyer)
+            .join(m.SaleReport.label)
+            .join(m.SaleReport.oil_changes)
+            .where(
+                sa.or_(
+                    m.SaleReport.buyer.has(m.User.first_name.ilike(f"%{q}%")),
+                    m.SaleReport.buyer.has(m.User.last_name.ilike(f"%{q}%")),
+                    m.SaleReport.label.has(m.Label.name.ilike(f"%{q}%")),
+                    m.SaleReport.label.has(m.Label.sticker_id.ilike(f"%{q}%")),
+                ),
+                m.SaleReport.oil_changes.any(m.OilChange.is_done.is_(False)),
+            )
+            .distinct()
+        )
+
+    return render_template("service/add_records.html", sale_reports=sale_reports, q=q)
+
+
+@service.route("/<sale_report_unique_id>/add-record", methods=["GET", "POST"])
+@login_required
+@role_required([m.UsersRole.service])
+def add_record(sale_report_unique_id: str):
+    """htmx"""
+    log(
+        log.INFO,
+        "Approved oil change sale_report_unique_id: [%s]",
+        sale_report_unique_id,
     )
-    if not label or not label.oil_not_changed:
-        log(log.INFO, "Label not found")
-        session.pop("sticker_id", default=None)
-        flash("Car not found", "danger")
-        return redirect(url_for("service.records"))
+    form = f.ServiceRecordForm()
+    if not sale_report_unique_id:
+        log(log.INFO, "Sale_report_unique_id ID not found [%s]", sale_report_unique_id)
+        return render_template(
+            "toast.html", message="Car not found", toast_type="danger"
+        )
+
+    sale_rep = db.session.scalar(
+        sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_report_unique_id)
+    )
+    if not sale_rep:
+        log(log.INFO, "Sale_report not found [%s]", sale_report_unique_id)
+        return render_template(
+            "toast.html", message="Oil changes already done", toast_type="danger"
+        )
 
     oil_change = db.session.scalar(
         sa.select(m.OilChange).where(
-            m.OilChange.sale_rep_id == label.sale_report.id,
+            m.OilChange.sale_rep_id == sale_rep.id,
             m.OilChange.is_done.is_(False),
-            sa.func.DATE(m.OilChange.date) <= date.today(),
+            # sa.func.DATE(m.OilChange.date) <= date.today(),
         )
     )
     if not oil_change:
-        log(log.INFO, "Oil change not found")
-        session.pop("sticker_id", default=None)
-        flash("Oil change record not found", "danger")
-        return redirect(url_for("service.records"))
+        log(log.INFO, "Oil changes already done [%s]", sale_report_unique_id)
+        return render_template(
+            "toast.html", message="Oil changes already done", toast_type="danger"
+        )
 
     if request.method == "GET":
         return render_template(
-            "service/confirm_oil_change.html",
+            "service/add_record_modal.html",
+            form=form,
+            sale_report_unique_id=sale_report_unique_id,
         )
+
+    if not form.validate_on_submit():
+        log(log.INFO, f"Invalid form data [{form.format_errors}]")
+        flash(f"Invalid form data [{form.format_errors}]", "danger")
+        return redirect(url_for("services.add_record_search"))
+
+    uload_file = form.file.data
+
+    try:
+        file_path = save_file(file=uload_file)
+    except (PermissionError, ValueError) as e:
+        log(log.ERROR, "Can't save file . Error: [%s]", e)
+        flash("Can't save file some problems.", "danger")
+        return redirect(url_for("service.add_record_search"))
 
     log(log.INFO, "Confirming oil change")
     oil_change.is_done = True
-    session.pop("sticker_id", default=None)
+
+    BASE_URL: str = app.config["BASE_URL"]
+    file_url = BASE_URL + str(file_path)
 
     record = m.ServiceRecord(
         service_id=current_user.id,
-        label_id=label.id,
+        label_id=sale_rep.label.id,
         oil_change_id=oil_change.id,
         name="Oil Change",
+        file_url=file_url,
     )
 
     db.session.add(record)
@@ -309,4 +362,4 @@ def confirm_oil_change():
     )
     mail.send(msg)
 
-    return redirect(url_for("service.records"))
+    return redirect(url_for("service.add_record_search"))
