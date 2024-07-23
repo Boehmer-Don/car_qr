@@ -20,7 +20,7 @@ class BaseServiceForm(BaseForm):
         validators=[DataRequired(), Email()],
         render_kw={"placeholder": "Enter your email"},
     )
-    name = StringField("Name", validators=[DataRequired(), Length(0, 64)])
+    service_name = StringField("Name", validators=[DataRequired(), Length(0, 64)])
     first_name = StringField(
         "First Name", validators=[Optional(), Length(0, 64)], default=""
     )

@@ -11,7 +11,7 @@ from tests.utils import set_user
 
 # generate test data do user service role
 test_data = {
-    "name": "test",
+    "service_name": "test",
     "email": "service@email.com",
     "password": "test",
     "password_confirmation": "test",
@@ -93,7 +93,7 @@ def test_edit(client: FlaskClient):
 
     new_name = "new_name"
     new_email = "new_email@gmail.com"
-    test_data["name"] = new_name
+    test_data["service_name"] = new_name
     test_data["email"] = new_email
 
     test_data["service_unique_id"] = service.unique_id

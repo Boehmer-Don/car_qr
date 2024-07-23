@@ -87,7 +87,7 @@ def add():
         first_name=form.first_name.data,
         last_name=form.last_name.data,
         email=form.email.data,
-        name_of_dealership=form.name.data,
+        name_of_dealership=form.service_name.data,
         phone=form.phone.data,
         address_of_dealership=form.address.data,
         country=form.country.data,
@@ -147,7 +147,7 @@ def edit_modal(service_unique_id: str):
     form.first_name.data = service.first_name
     form.last_name.data = service.last_name
     form.service_unique_id.data = service.unique_id
-    form.name.data = service.name_of_dealership
+    form.service_name.data = service.name_of_dealership
     form.email.data = service.email
     form.phone.data = service.phone
     form.address.data = service.address_of_dealership
@@ -188,7 +188,7 @@ def edit():
 
     service.first_name = form.first_name.data
     service.last_name = form.last_name.data
-    service.name_of_dealership = form.name.data
+    service.name_of_dealership = form.service_name.data
     service.email = form.email.data
     service.phone = form.phone.data
     service.address_of_dealership = form.address.data
