@@ -42,9 +42,9 @@
                         <div
                             class="cart-item flex gap-2 items-center justify-between odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                             <div class="flex justify-center items-center gap-2 w-1/5">
-                                ${{ box.price }}</div>
+                                ${{ box.origin_item.price }}</div>
                             <div class="flex justify-center items-center break-words w-1/5">
-                                {{ box.description }}
+                                {{ box.origin_item.description }}
                             </div>
                             <div
                                 class="flex justify-center items-center w-1/5 text-sm text-gray-500 dark:text-gray-400">
@@ -55,8 +55,8 @@
                                     class="minus-gift-box-item dark:text-white font-bold bg-gray-100 flex justify-between items-center dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                                     -
                                 </button>
-                                <input name="gift_box" type="number" value="0" price="{{ box.price }}"
-                                    max-qty="{{ box.origin_item.max_qty }}"
+                                <input name="gift_box" type="number" value="0" price="{{ box.origin_item.price }}"
+                                    max-qty="{{ box.max_qty }}"
                                     class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                                     placeholder="999" readonly box-item-id="{{ box.id }}" />
                                 <button type="button"
@@ -204,14 +204,6 @@
                         <label for="checked-checkbox"
                             class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Notify by
                             phone</label>
-                    </div>
-                    <div class="col-span-4 flex flex-col gap-2">
-                        <label for="description"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Text
-                            message</label>
-                        <textarea rows="2" name="description"
-                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Write your message here..."></textarea>
                     </div>
                 </div>
 

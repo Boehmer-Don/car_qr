@@ -146,8 +146,6 @@ def add_dealer_gift_item(user_unique_id: str, gift_item_unque_id: str):
     user_gift_item = m.DealerGiftItem(
         dealer_id=user.id,
         gift_item_id=gift_item.id,
-        description=gift_item.description,
-        price=gift_item.price,
         min_qty=gift_item.min_qty,
         max_qty=gift_item.max_qty,
     )

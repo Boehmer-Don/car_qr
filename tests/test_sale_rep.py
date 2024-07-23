@@ -13,8 +13,6 @@ def test_sale_reports(populate: FlaskClient):
     user_gift_item = m.DealerGiftItem(
         dealer_id=sale_rep.label.user_id,
         gift_item_id=gift_item.id,
-        price=gift_item.price,
-        description=gift_item.description,
         min_qty=1,
         max_qty=3,
     ).save()
