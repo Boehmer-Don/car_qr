@@ -315,10 +315,10 @@ def add_record(sale_report_unique_id: str):
         flash(f"Invalid form data [{form.format_errors}]", "danger")
         return redirect(url_for("services.add_record_search"))
 
-    uload_file = form.file.data
+    upload_file = form.file.data
 
     try:
-        file_path = save_file(file=uload_file)
+        file_path = save_file(file=upload_file)
     except (PermissionError, ValueError) as e:
         log(log.ERROR, "Can't save file . Error: [%s]", e)
         flash("Can't save file some problems.", "danger")

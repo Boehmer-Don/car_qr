@@ -9,3 +9,5 @@
 
 - Duo factoring auth
 - Cookies agree
+
+# TODO upload file Permission denied: 'app/static/uploads/eff5a4c4-4611-47cd-b88a-45e883551934_test.pdf

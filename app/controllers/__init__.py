@@ -1,5 +1,5 @@
 # flake8: noqa F401
-from .pagination import create_pagination
+from .pagination import create_pagination, get_query_params_from_headers
 from .jinja_globals import form_hidden_tag
 from .stripe import (
     create_stripe_customer,

@@ -4,12 +4,25 @@
 {% endblock %} {% block content %}
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg pt-4">
-    <div class="w-full p-4 flex justify-between">
+    <div class="w-full p-4 flex gap-5">
         <h1 class="text-2xl md:text-4xl font-bold px-5 dark:text-white">
             Sales
         </h1>
+        <div class="inline-flex rounded-md shadow-sm" role="group">
+            <a href="{{ url_for('sale_report.get_all_expired_oil', q='all' ) }}"
+                class="{{ 'bg-gray-700 text-white' if sort_status.value == 'all' }} px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 rounded-s-lg  focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-700 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
+                All
+            </a>
+            <a href="{{ url_for('sale_report.get_all_expired_oil', q='done' ) }}"
+                class="{{ 'bg-gray-700 text-white' if sort_status.value == 'done' }}   px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border-t border-b border-gray-900   focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-700 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
+                Done
+            </a>
+            <a href="{{ url_for('sale_report.get_all_expired_oil', q='expired' ) }}"
+                class="{{ 'bg-gray-700 text-white' if sort_status.value == 'expired' }} px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 rounded-e-lg   focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-700 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
+                Expired
+            </a>
+        </div>
     </div>
-    </button>
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -50,7 +63,7 @@
         <tbody>
             {% for sale in sale_reports %}
             <tr
-                class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                class="odd:bg-white odd:dark:bg-gray-700 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {{ sale.label.name }}
                 </th>

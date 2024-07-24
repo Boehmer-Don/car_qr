@@ -1,3 +1,5 @@
+from urllib.parse import urlparse, parse_qs
+
 from flask import request
 from flask import current_app as app
 from app import schema as s
@@ -34,3 +36,16 @@ def create_pagination(total: int, page_size: int = 0) -> s.Pagination:
         skip=(page - 1) * page_size,
         pages_for_links=pages_for_links,
     )
+
+
+def get_query_params_from_headers():
+    """create query params dict from request headers
+
+    Returns:
+        {query_name: str, query_value: str}
+    """
+    referer_url = request.headers.get("Referer")
+    parsed_url = urlparse(referer_url)
+    parsed_query_params = parse_qs(parsed_url.query)
+    query_params = {key: value[0] for key, value in parsed_query_params.items()}
+    return query_params
