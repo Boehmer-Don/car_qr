@@ -7,7 +7,8 @@ from werkzeug.exceptions import HTTPException
 from flask_migrate import Migrate
 from flask_mail import Mail
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+
+# from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from app.logger import log
 from .database import db
 
