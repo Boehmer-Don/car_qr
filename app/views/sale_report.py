@@ -3,25 +3,21 @@
 from datetime import datetime, date
 
 from pydantic import ValidationError
-from flask import (
-    Blueprint,
-    render_template,
-    flash,
-    redirect,
-    url_for,
-)
+from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 import sqlalchemy as sa
 from flask import current_app as app
-from flask_mail import Message, Mail
+from flask_mail import Message
 
 from app import mail
 from app.controllers import create_pagination, role_required
 from app import models as m, db
+from app import schema as s
 from app.schema import ad_gift_boxes
 from app import forms as f
 from app.logger import log
 from .utils import DATE_FORMAT
+
 
 sale_report = Blueprint("sale_report", __name__, url_prefix="/sale-reports")
 
@@ -103,23 +99,38 @@ def get_all_panding_oil():
 def get_all_expired_oil():
     log(log.INFO, "Get all expired oil")
 
+    sort_status = request.args.get(
+        "q", type=s.SaleReportSort, default=s.SaleReportSort.all
+    )
+
+    where_stmt = sa.and_(
+        m.SaleReport.seller_id == current_user.id,
+        m.SaleReport.oil_changes.any(sa.func.DATE(m.OilChange.date) < date.today()),
+    )
+
+    if sort_status == s.SaleReportSort.done:
+        where_stmt = sa.and_(
+            m.SaleReport.seller_id == current_user.id,
+            m.SaleReport.oil_changes.any(m.OilChange.is_done.is_(True)),
+        )
+    elif sort_status == s.SaleReportSort.expired:
+        where_stmt = sa.and_(
+            m.SaleReport.seller_id == current_user.id,
+            m.SaleReport.oil_changes.any(sa.func.DATE(m.OilChange.date) < date.today()),
+            m.SaleReport.oil_changes.any(m.OilChange.is_done.is_(False)),
+        )
+
     query = (
         sa.select(m.SaleReport)
         .join(m.SaleReport.oil_changes)
-        .where(
-            m.SaleReport.seller_id == current_user.id,
-            sa.func.DATE(m.OilChange.date) <= date.today(),
-        )
+        .where(where_stmt)
         .distinct()
         .order_by(m.SaleReport.created_at.desc())
     )
     count_query = (
         sa.select(sa.func.count())
         .join(m.SaleReport.oil_changes)
-        .where(
-            m.SaleReport.seller_id == current_user.id,
-            m.OilChange.date < datetime.now(),
-        )
+        .where(where_stmt)
         .distinct()
         .select_from(m.SaleReport)
     )
@@ -134,6 +145,7 @@ def get_all_expired_oil():
             )
         ).scalars(),
         page=pagination,
+        sort_status=sort_status,
     )
 
 
