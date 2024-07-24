@@ -55,23 +55,24 @@ def create_app(environment="development"):
     login_manager.init_app(app)
     mail.init_app(app)
     CurrentConfig.ONLINE_HOST = "/static/js/"
-    if not app.config["TESTING"]:
-        JOB_STORES = {
-            "default": SQLAlchemyJobStore(url=configuration.ALCHEMICAL_DATABASE_URL)
-        }
-        scheduler.configure(jobstores=JOB_STORES)
-        scheduler.start()
-        job = scheduler.get_job("subscriptions_expiration_notifier")
-        if not job:
-            scheduler.add_job(
-                id="subscriptions_expiration_notifier",
-                func=subscriptions_expiration_notifier,
-                trigger="cron",
-                hour=configuration.SUBSCRIPTIONS_EXPIRATION_CHECK_HOUR,
-                minute=0,
-                second=0,
-                replace_existing=True,
-            )
+    # TODO
+    # if not app.config["TESTING"]:
+    #     JOB_STORES = {
+    #         "default": SQLAlchemyJobStore(url=configuration.ALCHEMICAL_DATABASE_URL)
+    #     }
+    #     scheduler.configure(jobstores=JOB_STORES)
+    #     scheduler.start()
+    #     job = scheduler.get_job("subscriptions_expiration_notifier")
+    #     if not job:
+    #         scheduler.add_job(
+    #             id="subscriptions_expiration_notifier",
+    #             func=subscriptions_expiration_notifier,
+    #             trigger="cron",
+    #             hour=configuration.SUBSCRIPTIONS_EXPIRATION_CHECK_HOUR,
+    #             minute=0,
+    #             second=0,
+    #             replace_existing=True,
+    #         )
 
     # Register blueprints.
     app.register_blueprint(auth_blueprint)
