@@ -279,7 +279,8 @@
                                                                                                                                                                                                                                                                                                               margin: 0;
                                                                                                                                                                                                                                                                                                             "
                                                     align="left">
-                                                    {{ notfy_text }}
+                                                    Here is your weekly inventory report
+
                                                 </td>
 
                                               </tr>
@@ -308,7 +309,8 @@
                                                                                                                                                                                                                                                                                                                                                       margin: 0;
                                                                                                                                                                                                                                                                                                                                                     "
                                                     align="left">
-                                                    Please use one of our service advisers
+                                                    We need to replenish to top up inventory for the following
+                                                    dealerships:
                                                 </td>
                                               </tr>
                                             </tbody>
@@ -322,16 +324,7 @@
                                                               background-color: rgba(0, 0, 0, 0.043);
                                                               font-size: 12px;
                                                             ">
-                                                  Name
-                                                </th>
-
-                                                <th style="
-                                                              padding: 5px;
-                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                              background-color: rgba(0, 0, 0, 0.043);
-                                                              font-size: 12px;
-                                                            ">
-                                                  Country
+                                                  Dealer name
                                                 </th>
                                                 <th
                                                   style="
@@ -340,7 +333,7 @@
                                                                                                                                                               background-color: rgba(0, 0, 0, 0.043);
                                                                                                                                                               font-size: 12px;
                                                                                                                                                             ">
-                                                  Province
+                                                  SKU
                                                 </th>
                                                 <th style="
                                                               padding: 5px;
@@ -348,7 +341,7 @@
                                                               background-color: rgba(0, 0, 0, 0.043);
                                                               font-size: 12px;
                                                             ">
-                                                  City
+                                                  Total qty ordered
                                                 </th>
                                                 <th style="
                                                                                                               padding: 5px;
@@ -356,7 +349,7 @@
                                                                                                               background-color: rgba(0, 0, 0, 0.043);
                                                                                                               font-size: 12px;
                                                                                                             ">
-                                                  Address
+                                                  Min
                                                 </th>
                                                 <th
                                                   style="
@@ -365,20 +358,29 @@
                                                                                                                                                               background-color: rgba(0, 0, 0, 0.043);
                                                                                                                                                               font-size: 12px;
                                                                                                                                                             ">
-                                                  Postal Code
+                                                  Max
                                                 </th>
 
+                                                <th
+                                                  style="
+                                                                                                                                                                                                              padding: 5px;
+                                                                                                                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
+                                                                                                                                                                                                              background-color: rgba(0, 0, 0, 0.043);
+                                                                                                                                                                                                              font-size: 12px;
+                                                                                                                                                                                                            ">
+                                                  Replenish
+                                                </th>
                                               </tr>
                                             </thead>
                                             <tbody>
-                                              {% for service in services %}
+                                              {% for gift_item, total_quantity in dealer_gift_items_data %}
                                               <tr>
                                                 <td style="
                                                               padding: 5px;
                                                               border: 0.5px solid rgba(0, 0, 0, 0.107);
                                                               font-size: 12px;
                                                             ">
-                                                  {{ service.name_of_dealership }}
+                                                  {{ gift_item.dealer.name_of_dealership }}
                                                 </td>
 
                                                 <td style="
@@ -387,7 +389,7 @@
                                                               font-size: 12px;
                                                               word-break: break-all;
                                                             ">
-                                                  {{ service.country }}
+                                                  {{ gift_item.origin_item.SKU }}
                                                 </td>
                                                 <td style="
                                                                                                               padding: 5px;
@@ -395,7 +397,7 @@
                                                                                                               font-size: 12px;
                                                                                                               word-break: break-all;
                                                                                                             ">
-                                                  {{ service.province }}
+                                                  {{ total_quantity }}
                                                 </td>
                                                 <td style="
                                                               padding: 5px;
@@ -403,7 +405,7 @@
                                                               font-size: 12px;
                                                               word-break: break-all;
                                                             ">
-                                                  {{ service.city }}
+                                                  {{ gift_item.min_qty }}
                                                 </td>
                                                 <td style="
                                                                                                               padding: 5px;
@@ -411,7 +413,7 @@
                                                                                                               font-size: 12px;
                                                                                                               word-break: break-all;
                                                                                                             ">
-                                                  {{ service.address_of_dealership }}
+                                                  {{ gift_item.max_qty }}
                                                 </td>
                                                 <td
                                                   style="
@@ -420,7 +422,7 @@
                                                                                                                                                               font-size: 12px;
                                                                                                                                                               word-break: break-all;
                                                                                                                                                             ">
-                                                  {{ service.postal_code }}
+                                                  {{ total_quantity - gift_item.min_qty }}
                                                 </td>
                                               </tr>
                                               {% endfor %}

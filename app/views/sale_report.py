@@ -315,16 +315,16 @@ def set_gift_boxes():
         return redirect(url_for("sale_report.get_all"))
 
     # TODO can take time
-    for dealer in gift_box_users:
+    for user in gift_box_users:
         msg = Message(
             subject="Gift Box Notifications",
             sender=app.config["MAIL_DEFAULT_SENDER"],
-            recipients=[dealer.email],
+            recipients=[user.email],
         )
 
         msg.html = render_template(
             "email/gift_box_notifications.html",
-            user=dealer,
+            user=user,
             new_gift_boxes=new_gift_boxes,
             sale_report=sale_report,
         )

@@ -8,10 +8,10 @@ from app.logger import log
 
 
 def notify_about_oil_change():
-    log(log.INFO, "Oil change notification started")
     today = datetime.now().date()
-    before_1_days = today - timedelta(days=1)
-    before_7_days = today - timedelta(days=7)
+    log(log.INFO, "Notify about oil change started [%s]", today)
+    before_1_days = today + timedelta(days=1)
+    before_7_days = today + timedelta(days=7)
     oil_changes = db.session.scalars(
         sa.select(m.OilChange)
         .where(m.OilChange.is_done.is_(False))
@@ -27,7 +27,6 @@ def notify_about_oil_change():
     admin_ids = db.session.scalars(
         sa.select(m.User.id).where(m.User.role == m.UsersRole.admin)
     ).all()
-
     for oil_change in oil_changes:
         sale_rep = oil_change.sale_rep
         buyer = sale_rep.buyer
@@ -45,7 +44,9 @@ def notify_about_oil_change():
         elif oil_change.date.date() == before_7_days:
             notfy_text = f"Oil change is due in a week for {sale_rep.label.name}."
 
-        # TODO  set auto
+        if not notfy_text:
+            log(log.INFO, "Notfy text not found [%s]", oil_change.id)
+            continue
 
         services = db.session.scalars(
             sa.select(m.User).where(
@@ -62,11 +63,9 @@ def notify_about_oil_change():
 
         msg.html = render_template(
             "email/notify_about_oil_change.html",
-            notfy_text=sale_rep.description or notfy_text,
+            notfy_text=notfy_text,
             user=buyer,
             services=services,
         )
 
         mail.send(msg)
-
-    return oil_changes
