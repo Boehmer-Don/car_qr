@@ -10,10 +10,9 @@ from .stripe import (
     update_stripe_customer,
 )
 
-from .subscriptions_expiration_check import check_subscriptions
 from .car_options import create_models
 from .graphs import create_graph, create_bar_graph, create_location_graph
 from .user import role_required
 from .date_convert import date_convert
-from .notify_about_oil_change import notify_about_oil_change
 from .save_file import save_file
+from .scheduler import set_scheduler

@@ -144,9 +144,25 @@ def init(app: Flask):
 
     @app.cli.command()
     def subscriptions_check():
-        from app.controllers import check_subscriptions
+        from app.controllers.subscriptions_expiration_check import check_subscriptions
 
         check_subscriptions()
+
+    @app.cli.command()
+    def weekly_inventory_report():
+        from app.controllers.weekly_inventory_report import weekly_inventory_report
+
+        weekly_inventory_report()
+
+    @app.cli.command()
+    def notify_oil_change():
+        from app.controllers.notify_about_oil_change import notify_about_oil_change
+
+        notify_about_oil_change()
+
+    @app.cli.command()
+    def base_url():
+        print(app.config["BASE_URL"])
 
     @app.cli.command()
     def models_list():

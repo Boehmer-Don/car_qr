@@ -53,22 +53,20 @@ class RegistrationForm(FlaskForm):
 
 
 class RegistrationStep2Form(FlaskForm):
-    first_name = StringField("First Name", validators=[DataRequired(), Length(0, 255)])
-    last_name = StringField("Last Name", validators=[DataRequired(), Length(0, 255)])
+    first_name = StringField("First Name", validators=[DataRequired(), Length(0, 64)])
+    last_name = StringField("Last Name", validators=[DataRequired(), Length(0, 64)])
     name_of_dealership = StringField(
-        "Name of Dealership", validators=[DataRequired(), Length(0, 255)]
+        "Name of Dealership", validators=[DataRequired(), Length(0, 64)]
     )
     address_of_dealership = StringField(
-        "Address of Dealership", validators=[DataRequired(), Length(0, 255)]
+        "Address of Dealership", validators=[DataRequired(), Length(0, 64)]
     )
-    country = StringField("Country", validators=[DataRequired(), Length(0, 255)])
-    province = StringField("Province", validators=[DataRequired(), Length(0, 255)])
-    city = StringField("City", validators=[DataRequired(), Length(0, 255)])
-    postal_code = StringField(
-        "Postal Code", validators=[DataRequired(), Length(0, 255)]
-    )
-    phone = StringField("Phone", validators=[DataRequired(), Length(0, 255)])
-    gift = StringField("Gift", validators=[Optional(), Length(0, 255)])
+    country = StringField("Country", validators=[DataRequired(), Length(0, 64)])
+    province = StringField("Province", validators=[DataRequired(), Length(0, 64)])
+    city = StringField("City", validators=[DataRequired(), Length(0, 64)])
+    postal_code = StringField("Postal Code", validators=[DataRequired(), Length(0, 64)])
+    phone = StringField("Phone", validators=[DataRequired(), Length(0, 14)])
+    gift = StringField("Gift", validators=[Optional(), Length(0, 128)])
 
     submit = SubmitField("Register")
 
@@ -116,17 +114,19 @@ class PaymentForm(FlaskForm):
     )
 
     # Contact
-    first_name = StringField("First Name", validators=[Optional()])
-    last_name = StringField("Last Name", validators=[Optional()])
-    name_of_dealership = StringField("Name of Dealership", validators=[Optional()])
-    address_of_dealership = StringField(
-        "Address of Dealership", validators=[Optional()]
+    first_name = StringField("First Name", validators=[Optional(), Length(0, 64)])
+    last_name = StringField("Last Name", validators=[Optional(), Length(0, 64)])
+    name_of_dealership = StringField(
+        "Name of Dealership", validators=[Optional(), Length(0, 64)]
     )
-    country = StringField("Country", validators=[Optional()])
-    province = StringField("Province", validators=[Optional()])
-    city = StringField("City", validators=[Optional()])
-    postal_code = StringField("Postal Code", validators=[Optional()])
-    phone = StringField("Phone", validators=[Optional()])
+    address_of_dealership = StringField(
+        "Address of Dealership", validators=[Optional(), Length(0, 64)]
+    )
+    country = StringField("Country", validators=[Optional(), Length(0, 64)])
+    province = StringField("Province", validators=[Optional(), Length(0, 64)])
+    city = StringField("City", validators=[Optional(), Length(0, 64)])
+    postal_code = StringField("Postal Code", validators=[Optional(), Length(0, 64)])
+    phone = StringField("Phone", validators=[Optional(), Length(0, 14)])
     gift_enabled = BooleanField("Enable Gift")
     gift = StringField("Gift", validators=[Optional(), Length(0, 255)])
     extra_emails = StringField("Extra Emails", validators=[Optional(), Length(0, 1024)])

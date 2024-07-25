@@ -1,5 +1,4 @@
 import os
-import subprocess
 from flask import Flask, render_template
 from flask_login import LoginManager
 from pyecharts.globals import CurrentConfig
@@ -12,15 +11,12 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from app.logger import log
 from .database import db
 
+TIME_ZONE: str = "EST"
+
 login_manager = LoginManager()
 migration = Migrate()
 mail = Mail()
-scheduler = BackgroundScheduler()
-
-
-def subscriptions_expiration_notifier():
-    flask_proc = subprocess.Popen(["flask", "subscriptions-check"])
-    flask_proc.communicate()
+scheduler = BackgroundScheduler(timezone=TIME_ZONE)
 
 
 def create_app(environment="development"):
@@ -56,24 +52,6 @@ def create_app(environment="development"):
     login_manager.init_app(app)
     mail.init_app(app)
     CurrentConfig.ONLINE_HOST = "/static/js/"
-    # TODO
-    # if not app.config["TESTING"]:
-    #     JOB_STORES = {
-    #         "default": SQLAlchemyJobStore(url=configuration.ALCHEMICAL_DATABASE_URL)
-    #     }
-    #     scheduler.configure(jobstores=JOB_STORES)
-    #     scheduler.start()
-    #     job = scheduler.get_job("subscriptions_expiration_notifier")
-    #     if not job:
-    #         scheduler.add_job(
-    #             id="subscriptions_expiration_notifier",
-    #             func=subscriptions_expiration_notifier,
-    #             trigger="cron",
-    #             hour=configuration.SUBSCRIPTIONS_EXPIRATION_CHECK_HOUR,
-    #             minute=0,
-    #             second=0,
-    #             replace_existing=True,
-    #         )
 
     # Register blueprints.
     app.register_blueprint(auth_blueprint)
@@ -125,5 +103,10 @@ def create_app(environment="development"):
     app.jinja_env.globals["gift_logo"] = gift_logo
     app.jinja_env.globals["years"] = years
     app.jinja_env.globals["get_gift_url"] = get_gift_url
+
+    if not app.config["TESTING"]:
+        from app.controllers.scheduler import set_scheduler
+
+        set_scheduler(scheduler, app)
 
     return app

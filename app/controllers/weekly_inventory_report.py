@@ -1,13 +1,16 @@
 from datetime import datetime, timedelta
 import sqlalchemy as sa
 from flask import render_template, current_app as app
+
 from flask_mail import Message
 from app import models as m, db
 from app import mail
+from app.logger import log
 
 
 def weekly_inventory_report():
     today = datetime.now().date()
+    log(log.INFO, "Weekly inventory report started [%s]", today)
     before_7_days = today - timedelta(days=7)
     total_quantity = sa.func.sum(m.GiftBox.qty).label("total_quantity")
 
@@ -28,6 +31,7 @@ def weekly_inventory_report():
             m.User.role == m.UsersRole.admin, m.User.deleted.is_(False)
         )
     ).all()
+
     for admin in admins:
         msg = Message(
             subject="Weekly inventory report",

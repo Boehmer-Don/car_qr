@@ -308,6 +308,8 @@ def payment(user_unique_id: str):
                 m.DealerGiftItem(
                     dealer_id=user.id,
                     gift_item_id=gift_item.id,
+                    min_qty=gift_item.min_qty,
+                    max_qty=gift_item.max_qty,
                 )
             )
 
