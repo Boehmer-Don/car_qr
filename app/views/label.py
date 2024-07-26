@@ -39,6 +39,7 @@ dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
 @login_required
 @role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_active_labels():
+
     where = sa.and_(
         m.Label.status == m.LabelStatus.active, m.Label.user_id == current_user.id
     )
@@ -72,7 +73,6 @@ def get_active_labels():
     label_locations = db.session.scalars(
         m.LabelLocation.select().where(m.LabelLocation.user_id == current_user.id)
     ).all()
-
 
     return render_template(
         "label/labels_active.html",

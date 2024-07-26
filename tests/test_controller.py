@@ -10,6 +10,9 @@ from .utils import set_user
 
 from app.controllers.notify_about_oil_change import notify_about_oil_change
 from app.controllers.weekly_inventory_report import weekly_inventory_report
+from app.controllers.weekly_dealer_gift_box_invoices import (
+    weekly_dealer_gift_box_invoices,
+)
 
 
 @pytest.mark.skip(reason="This test only for debugging")
@@ -63,19 +66,23 @@ def test_notify_about_oil_change(
 
 
 @pytest.mark.skip(reason="This test only for debugging")
-def test_weekly_inventory_report(populate: FlaskClient):
-    today = datetime.now().date()
+def test_weekly_notify(stripe_invoice_moke: FlaskClient):
+    today = datetime.now()
     gift_item = db.session.get(m.GiftItem, 1)
+    dealer = db.session.scalar(
+        sa.select(m.User).where(m.User.role == m.UsersRole.dealer)
+    )
+    dealer.stripe_customer_id = "123"
 
     dealer_gift_item_one = m.DealerGiftItem(
-        dealer_id=1,
+        dealer_id=dealer.id,
         gift_item_id=1,
         min_qty=20,
         max_qty=50,
     )
 
     dealer_gift_item_two = m.DealerGiftItem(
-        dealer_id=1,
+        dealer_id=dealer.id,
         gift_item_id=1,
         min_qty=3,
         max_qty=25,
@@ -94,6 +101,7 @@ def test_weekly_inventory_report(populate: FlaskClient):
             price=gift_item.price,
             _sku=gift_item.SKU,
             description=gift_item.description,
+            dealer_id=dealer.id,
         )
         db.session.add(gift_box_one)
         gift_box_two = m.GiftBox(
@@ -105,8 +113,11 @@ def test_weekly_inventory_report(populate: FlaskClient):
             price=gift_item.price,
             _sku=gift_item.SKU,
             description=gift_item.description,
+            dealer_id=dealer.id,
         )
         db.session.add(gift_box_two)
     db.session.commit()
 
     assert weekly_inventory_report() is None
+
+    assert weekly_dealer_gift_box_invoices() is None

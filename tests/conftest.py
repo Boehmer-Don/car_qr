@@ -167,3 +167,38 @@ def populate(client: FlaskClient, test_labels_data: dict):
     ).save()
 
     yield client
+
+
+class InvoiceMock:
+
+    @property
+    def hosted_invoice_url(self):
+        return "https://invoice.com"
+
+    @property
+    def id(self):
+        return "invoice_id"
+
+
+@pytest.fixture()
+def stripe_invoice_moke(populate: Flask, mocker):
+
+    invoice = InvoiceMock()
+
+    mocker.patch(
+        "stripe.Invoice.create",
+        return_value=invoice,
+    )
+    mocker.patch("stripe.InvoiceItem.create", return_value=None)
+    mocker.patch(
+        "stripe.Invoice.finalize_invoice",
+        return_value=invoice,
+    )
+    mocker.patch(
+        "stripe.Invoice.modify",
+        return_value=invoice,
+    )
+    mocker.patch("stripe.Invoice.send_invoice", return_value=None)
+    # mocker.patch.object(stripe.Invoice, "__new__", return_value=invoice_mock)
+
+    yield populate

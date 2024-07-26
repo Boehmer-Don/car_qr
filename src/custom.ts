@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('#basic_radio');
   const advancedPlanButton: HTMLInputElement =
     document.querySelector('#advanced_radio');
-
+  console.log(basic_plan, advanced_plan);
   const planChosen: HTMLDivElement = document.querySelector('#plan_chosen');
   if (planChosen) {
     const planChosenData = planChosen.dataset.plan;

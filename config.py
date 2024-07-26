@@ -28,6 +28,7 @@ class BaseConfig(BaseSettings, ABC):
     SECRET_KEY: str
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
     WTF_CSRF_ENABLED: bool = False
+    TIMEZONE: str = "EST"
 
     # Mail config
     MAIL_SERVER: str

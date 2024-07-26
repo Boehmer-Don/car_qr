@@ -11,6 +11,7 @@ from flask import (
     url_for,
     jsonify,
 )
+import sqlalchemy as sa
 from flask import current_app as app
 from flask_mail import Message
 from flask_login import current_user, login_user
@@ -42,6 +43,43 @@ def webhook():
 
     log(log.INFO, "Stripe received event: %s", event["type"])
     match event["type"]:
+        case "invoice.paid":
+            log(log.INFO, "INVOICE PAID EVENT\n")
+            response = event["data"]["object"]
+            gifts_invoice_id = response.metadata.get("gifts_invoice_id")
+            gifts_invoice = db.session.scalar(
+                sa.select(m.GiftsInvoice).where(m.GiftsInvoice.id == gifts_invoice_id)
+            )
+            if not gifts_invoice:
+                log(log.ERROR, "Gifts invoice [%s] not found", gifts_invoice_id)
+                return jsonify(success=False), 404
+            gifts_invoice.is_paid = True
+            db.session.commit()
+
+        case "invoice.sent":
+            log(log.INFO, "INVOICE SENT EVENT\n")
+            response = event["data"]["object"]
+            gifts_invoice_id = response.metadata.get("gifts_invoice_id")
+            gifts_invoice = db.session.scalar(
+                sa.select(m.GiftsInvoice).where(m.GiftsInvoice.id == gifts_invoice_id)
+            )
+            if not gifts_invoice:
+                log(log.ERROR, "Gifts invoice [%s] not found", gifts_invoice_id)
+                return jsonify(success=False), 404
+            user = gifts_invoice.dealer
+            msg = Message(
+                subject="Gift box invoice",
+                sender=app.config["MAIL_DEFAULT_SENDER"],
+                recipients=[user.email],
+            )
+
+            msg.html = render_template(
+                "email/gift_boxex_invocies.html",
+                user=user,
+                url=gifts_invoice.hosted_invoice_url,
+            )
+            mail.send(msg)
+
         case "customer.subscription.created":
             log(log.INFO, "CREATING SUBSCRIPTION EVENT\n")
             response = event["data"]["object"]
@@ -164,6 +202,9 @@ def webhook():
             user = db.session.scalar(
                 m.User.select().where(m.User.stripe_customer_id == response.customer)
             )
+            if not user:
+                log(log.ERROR, "User [%s] not found", response.customer)
+                return jsonify(success=False), 404
             label_unique_ids = response.metadata.get("labels_unique_ids")
             log(
                 log.INFO,
@@ -173,11 +214,18 @@ def webhook():
             label_unique_ids_list = (
                 label_unique_ids.split(",") if label_unique_ids else []
             )
+            if not label_unique_ids_list:
+                log(log.ERROR, "Labels not found in metadata")
+                return jsonify(success=True)
+
             labels_queryset = []
             for label_id in label_unique_ids_list:
                 label: m.Label = db.session.scalar(
                     m.Label.select().where(m.Label.unique_id == label_id)
                 )
+                if not label:
+                    log(log.ERROR, "Label [%s] not found", label_id)
+                    continue
                 label.date_activated = datetime.now()
                 label.status = m.LabelStatus.active
                 label.save()

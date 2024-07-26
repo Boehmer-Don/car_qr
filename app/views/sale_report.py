@@ -272,6 +272,7 @@ def set_gift_boxes():
             _sku=gift_item.origin_item.SKU,
             qty=box.qty,
             total_price=round(box.total_price, 2),
+            dealer_id=gift_item.dealer_id,
         )
         db.session.add(gift_box)
         new_gift_boxes.append(gift_box)
