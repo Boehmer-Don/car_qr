@@ -19,6 +19,11 @@ def notify_weekly_inventory_report():
     flask_proc.communicate()
 
 
+def notify_weekly_gift_box_invoices():
+    flask_proc = subprocess.Popen(["flask", "weekly-gift-box-invoices"])
+    flask_proc.communicate()
+
+
 def set_scheduler(scheduler: BackgroundScheduler, app: Flask):
 
     JOB_STORES = {
@@ -55,6 +60,17 @@ def set_scheduler(scheduler: BackgroundScheduler, app: Flask):
         day_of_week=6,
         hour=17,
         minute=0,
+        second=0,
+        replace_existing=True,
+    )
+
+    scheduler.add_job(
+        id="notify_weekly_gift_box_invoices",
+        func=notify_weekly_gift_box_invoices,
+        trigger="cron",
+        day_of_week=6,
+        hour=17,
+        minute=30,
         second=0,
         replace_existing=True,
     )

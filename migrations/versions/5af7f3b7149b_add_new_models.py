@@ -1,8 +1,8 @@
 """add new models
 
-Revision ID: 5d5e81297444
+Revision ID: 5af7f3b7149b
 Revises: 6820846ae95a
-Create Date: 2024-07-22 13:56:36.936607
+Create Date: 2024-07-26 16:13:48.183714
 
 """
 
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = "5d5e81297444"
+revision = "5af7f3b7149b"
 down_revision = "6820846ae95a"
 branch_labels = None
 depends_on = None
@@ -64,6 +64,19 @@ def upgrade():
         sa.PrimaryKeyConstraint("id", name=op.f("pk_dealer_gift_items")),
     )
     op.create_table(
+        "gifts_invoices",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("dealer_id", sa.Integer(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("stripe_invoice_id", sa.String(length=64), nullable=False),
+        sa.Column("hosted_invoice_url", sa.String(length=512), nullable=False),
+        sa.Column("is_paid", sa.Boolean(), nullable=False),
+        sa.ForeignKeyConstraint(
+            ["dealer_id"], ["users.id"], name=op.f("fk_gifts_invoices_dealer_id_users")
+        ),
+        sa.PrimaryKeyConstraint("id", name=op.f("pk_gifts_invoices")),
+    )
+    op.create_table(
         "sale_reports",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("unique_id", sa.String(length=36), nullable=False),
@@ -91,6 +104,7 @@ def upgrade():
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("sale_result_id", sa.Integer(), nullable=False),
         sa.Column("dealer_gift_item_id", sa.Integer(), nullable=True),
+        sa.Column("dealer_id", sa.Integer(), nullable=False),
         sa.Column("unique_id", sa.String(length=36), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("description", sa.String(length=512), nullable=False),
@@ -104,6 +118,9 @@ def upgrade():
             ["dealer_gift_items.id"],
             name=op.f("fk_gift_boxes_dealer_gift_item_id_dealer_gift_items"),
             ondelete="SET NULL",
+        ),
+        sa.ForeignKeyConstraint(
+            ["dealer_id"], ["users.id"], name=op.f("fk_gift_boxes_dealer_id_users")
         ),
         sa.ForeignKeyConstraint(
             ["sale_result_id"],
@@ -176,6 +193,7 @@ def downgrade():
     op.drop_table("oil_changes")
     op.drop_table("gift_boxes")
     op.drop_table("sale_reports")
+    op.drop_table("gifts_invoices")
     op.drop_table("dealer_gift_items")
     op.drop_table("gift_items")
     # ### end Alembic commands ###

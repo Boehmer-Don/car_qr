@@ -42,6 +42,7 @@ def create_app(environment="development"):
     # Set app config.
     env = os.environ.get("APP_ENV", environment)
     configuration = config(env)
+    os.environ["TZ"] = configuration.TIMEZONE
     app.config.from_object(configuration)
     configuration.configure(app)
     log(log.INFO, "Configuration: [%s]", configuration.ENV)

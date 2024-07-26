@@ -161,6 +161,14 @@ def init(app: Flask):
         notify_about_oil_change()
 
     @app.cli.command()
+    def weekly_gift_box_invoices():
+        from app.controllers.weekly_dealer_gift_box_invoices import (
+            weekly_dealer_gift_box_invoices,
+        )
+
+        weekly_dealer_gift_box_invoices()
+
+    @app.cli.command()
     def base_url():
         print(app.config["BASE_URL"])
 

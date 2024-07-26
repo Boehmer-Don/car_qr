@@ -103,6 +103,7 @@ def test_gift_boxes(populate: FlaskClient):
         _sku="test",
         qty=1,
         total_price=10,
+        dealer_id=1,
     )
     db.session.add(box)
     db.session.commit()

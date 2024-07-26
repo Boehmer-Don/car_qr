@@ -60,6 +60,10 @@ class SaleReport(db.Model, ModelMixin):
     )
 
     @property
+    def total_boxes_price(self) -> float:
+        return sum(gift_box.total_price for gift_box in self.gift_boxes)
+
+    @property
     def gift_boxes_completed(self) -> bool:
         return all(gift_box.is_completed for gift_box in self.gift_boxes)
 

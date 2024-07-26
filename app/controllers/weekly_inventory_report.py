@@ -19,6 +19,7 @@ def weekly_inventory_report():
         .join(m.GiftBox, m.DealerGiftItem.id == m.GiftBox.dealer_gift_item_id)
         .where(
             before_7_days < sa.func.DATE(m.GiftBox.created_at),
+            sa.func.DATE(m.GiftBox.created_at) < today,
             m.GiftBox.dealer_gift_item_id.isnot(None),
         )
         .group_by(m.DealerGiftItem.id)

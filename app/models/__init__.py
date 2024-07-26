@@ -20,3 +20,4 @@ from .gift_box import GiftBox
 from .oil_change import OilChange
 from .serivce_record import ServiceRecord
 from .utils import generate_uuid
+from .gifts_invoice import GiftsInvoice
