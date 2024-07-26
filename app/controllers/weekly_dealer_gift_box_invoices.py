@@ -2,9 +2,11 @@ from datetime import datetime, timedelta
 import stripe
 import sqlalchemy as sa
 
-
+from flask import render_template, current_app as app
 from app import models as m, db
 from app.logger import log
+from flask_mail import Message
+from app import mail
 
 
 def weekly_dealer_gift_box_invoices():
@@ -70,3 +72,15 @@ def weekly_dealer_gift_box_invoices():
         )
         stripe.Invoice.send_invoice(invoice.id)
         log(log.INFO, "invoice sent to dealer [%s]", dealer.email)
+        msg = Message(
+            subject="Gift box invoice",
+            sender=app.config["MAIL_DEFAULT_SENDER"],
+            recipients=[dealer.email],
+        )
+
+        msg.html = render_template(
+            "email/gift_boxex_invocies.html",
+            user=dealer,
+            url=gifts_invoice.hosted_invoice_url,
+        )
+        mail.send(msg)

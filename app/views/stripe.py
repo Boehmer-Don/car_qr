@@ -60,25 +60,7 @@ def webhook():
             log(log.INFO, "INVOICE SENT EVENT\n")
             response = event["data"]["object"]
             gifts_invoice_id = response.metadata.get("gifts_invoice_id")
-            gifts_invoice = db.session.scalar(
-                sa.select(m.GiftsInvoice).where(m.GiftsInvoice.id == gifts_invoice_id)
-            )
-            if not gifts_invoice:
-                log(log.ERROR, "Gifts invoice [%s] not found", gifts_invoice_id)
-                return jsonify(success=False), 404
-            user = gifts_invoice.dealer
-            msg = Message(
-                subject="Gift box invoice",
-                sender=app.config["MAIL_DEFAULT_SENDER"],
-                recipients=[user.email],
-            )
-
-            msg.html = render_template(
-                "email/gift_boxex_invocies.html",
-                user=user,
-                url=gifts_invoice.hosted_invoice_url,
-            )
-            mail.send(msg)
+            log(log.INFO, "GET gifts invoice id: [%s]", gifts_invoice_id)
 
         case "customer.subscription.created":
             log(log.INFO, "CREATING SUBSCRIPTION EVENT\n")
