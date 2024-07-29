@@ -47,14 +47,7 @@ def webhook():
             log(log.INFO, "INVOICE PAID EVENT\n")
             response = event["data"]["object"]
             gifts_invoice_id = response.metadata.get("gifts_invoice_id")
-            gifts_invoice = db.session.scalar(
-                sa.select(m.GiftsInvoice).where(m.GiftsInvoice.id == gifts_invoice_id)
-            )
-            if not gifts_invoice:
-                log(log.ERROR, "Gifts invoice [%s] not found", gifts_invoice_id)
-                return jsonify(success=False), 404
-            gifts_invoice.is_paid = True
-            db.session.commit()
+            log(log.INFO, "GET gifts invoice id: [%s]", gifts_invoice_id)
 
         case "invoice.sent":
             log(log.INFO, "INVOICE SENT EVENT\n")
@@ -196,6 +189,15 @@ def webhook():
             label_unique_ids_list = (
                 label_unique_ids.split(",") if label_unique_ids else []
             )
+            gifts_invoice_id = response.metadata.get("gifts_invoice_id")
+            gifts_invoice = db.session.scalar(
+                sa.select(m.GiftsInvoice).where(m.GiftsInvoice.id == gifts_invoice_id)
+            )
+            if gifts_invoice:
+                log(log.INFO, "Gifts invoice [%s] updated", gifts_invoice_id)
+                gifts_invoice.is_paid = True
+                db.session.commit()
+
             if not label_unique_ids_list:
                 log(log.ERROR, "Labels not found in metadata")
                 return jsonify(success=True)

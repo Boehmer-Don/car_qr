@@ -35,6 +35,7 @@ class DealerGiftItem(db.Model, ModelMixin):
 
     min_qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)
     max_qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)
+    is_deleted: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
 
     dealer: orm.Mapped["User"] = orm.relationship("User", back_populates="gift_items")
     origin_item: orm.Mapped["GiftItem"] = orm.relationship()

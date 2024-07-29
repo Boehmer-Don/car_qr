@@ -21,3 +21,4 @@ from .oil_change import OilChange
 from .serivce_record import ServiceRecord
 from .utils import generate_uuid
 from .gifts_invoice import GiftsInvoice
+from .dealer_gift_item_replenishment import DealerGiftIteRreplenishment

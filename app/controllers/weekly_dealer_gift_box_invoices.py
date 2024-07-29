@@ -47,7 +47,7 @@ def weekly_dealer_gift_box_invoices():
             customer=dealer.stripe_customer_id,
             collection_method="send_invoice",
             pending_invoice_items_behavior="exclude",
-            days_until_due=7,
+            days_until_due=60,  # 60 days
         )
 
         for car in cars:

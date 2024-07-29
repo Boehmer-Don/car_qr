@@ -6,7 +6,6 @@ from flask import (
 )
 from flask_login import login_required
 
-from sqlalchemy.exc import SQLAlchemyError
 import sqlalchemy as sa
 
 from app import models as m, db
@@ -32,7 +31,10 @@ def gift_items_modal(unique_id: str):
     user_gift_items_ids = tuple(item.gift_item_id for item in user.gift_items)
 
     dealer_gift_items = db.session.scalars(
-        sa.select(m.DealerGiftItem).where(m.DealerGiftItem.dealer_id == user.id)
+        sa.select(m.DealerGiftItem).where(
+            m.DealerGiftItem.dealer_id == user.id,
+            m.DealerGiftItem.is_deleted.is_(False),
+        )
     ).all()
 
     avaleble_gift_items = db.session.scalars(
@@ -68,7 +70,8 @@ def dealer_gift_item(user_unique_id: str, dealer_item_unque_id: str):
         )
     dealer_gift_item = db.session.scalar(
         sa.select(m.DealerGiftItem).where(
-            m.DealerGiftItem.unique_id == dealer_item_unque_id
+            m.DealerGiftItem.unique_id == dealer_item_unque_id,
+            m.DealerGiftItem.is_deleted.is_(False),
         )
     )
     if not dealer_gift_item or dealer_gift_item.dealer_id != user.id:
@@ -78,20 +81,8 @@ def dealer_gift_item(user_unique_id: str, dealer_item_unque_id: str):
         )
 
     gift_item = dealer_gift_item.origin_item
-    db.session.delete(dealer_gift_item)
-    try:
-        db.session.commit()
-    except SQLAlchemyError:
-        db.session.rollback()
-        log(log.ERROR, "Integrity error: [%s]", dealer_gift_item.id)
-        return render_template(
-            "user/dealer_gift_item/user_gift_item.html",
-            item=dealer_gift_item,
-            user=user,
-            message="You can't delete the gift item because it refers to on the gift boxes",
-            category="danger",
-        )
-
+    dealer_gift_item.is_deleted = True
+    db.session.commit()
     log(log.INFO, "Gift item deleted from user: [%s]", user)
 
     if gift_item.is_available:
@@ -130,9 +121,11 @@ def add_dealer_gift_item(user_unique_id: str, gift_item_unque_id: str):
         )
 
     dealer_gift_item = db.session.scalar(
-        sa.select(m.DealerGiftItem)
-        .where(m.DealerGiftItem.dealer_id == user.id)
-        .where(m.DealerGiftItem.gift_item_id == gift_item.id)
+        sa.select(m.DealerGiftItem).where(
+            m.DealerGiftItem.dealer_id == user.id,
+            m.DealerGiftItem.gift_item_id == gift_item.id,
+            m.DealerGiftItem.is_deleted.is_(False),
+        )
     )
 
     if dealer_gift_item:
@@ -167,7 +160,8 @@ def edit_dealer_gift_item(dealer_item_unque_id: str):
     """htmx"""
     dealer_gift_item = db.session.scalar(
         sa.select(m.DealerGiftItem).where(
-            m.DealerGiftItem.unique_id == dealer_item_unque_id
+            m.DealerGiftItem.unique_id == dealer_item_unque_id,
+            m.DealerGiftItem.is_deleted.is_(False),
         )
     )
     if not dealer_gift_item:
@@ -193,7 +187,8 @@ def save_dealer_gift_item(dealer_item_unque_id: str):
     """htmx"""
     dealer_gift_item = db.session.scalar(
         sa.select(m.DealerGiftItem).where(
-            m.DealerGiftItem.unique_id == dealer_item_unque_id
+            m.DealerGiftItem.unique_id == dealer_item_unque_id,
+            m.DealerGiftItem.is_deleted.is_(False),
         )
     )
     if not dealer_gift_item:

@@ -56,7 +56,7 @@ const countriesConfig = {
   },
 };
 
-const labelConfig = {
+const labelConfig = [{
   entry: {
     main: './src/label.ts',
   },
@@ -64,7 +64,14 @@ const labelConfig = {
     path: path.resolve(__dirname, './app/static'),
     filename: 'js/label.js', // <--- Will be compiled to this single file
   },
-};
+  entry: {
+    main: './src/label_generate.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/label_generate.js', // <--- Will be compiled to this single file
+  },
+}];
 
 const newLabelConfig = {
   entry: {
@@ -158,7 +165,6 @@ const configs = [
   userConfig,
   customConfig,
   logoUploadConfig,
-  labelConfig,
   newLabelConfig,
   reports,
   countriesConfig,
@@ -166,6 +172,7 @@ const configs = [
   passwordConfig,
   giftBoxModal,
   controllerPhone,
+  ...labelConfig,
   ...controllerConfig
 ].map(conf => merge(defaultConfig, conf));
 

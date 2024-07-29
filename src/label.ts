@@ -29,6 +29,7 @@ interface ILabel {
 
 const $modalElement: HTMLElement = document.querySelector('#labelDetailsModal');
 
+
 const addNewMakeModal: HTMLElement = document.querySelector('#addNewMakeModal');
 const addNewModelModal: HTMLElement =
   document.querySelector('#addNewModelModal');
@@ -311,30 +312,6 @@ modelSelectFields.forEach(modelSelectField =>
   }),
 );
 
-const decreaseStickersButton: HTMLButtonElement = document.querySelector(
-  '#decreaseStickersButton',
-);
-const increaseStickersButton: HTMLButtonElement = document.querySelector(
-  '#increaseStickersButton',
-);
-const stickersQuantityInput: HTMLInputElement = document.querySelector(
-  '#stickersQuantityInput',
-);
-
-if (decreaseStickersButton && increaseStickersButton) {
-  decreaseStickersButton.addEventListener('click', () => {
-    let quantity = parseInt(stickersQuantityInput.value);
-    if (quantity > 1) {
-      quantity -= 1;
-      stickersQuantityInput.value = quantity.toString();
-    }
-  });
-  increaseStickersButton.addEventListener('click', () => {
-    let quantity = parseInt(stickersQuantityInput.value);
-    quantity += 1;
-    stickersQuantityInput.value = quantity.toString();
-  });
-}
 
 const labelDeleteButtons: NodeListOf<HTMLDivElement> =
   document.querySelectorAll('.label-delete-button');
