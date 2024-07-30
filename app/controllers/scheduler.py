@@ -24,6 +24,11 @@ def notify_weekly_gift_box_invoices():
     flask_proc.communicate()
 
 
+def notify_missing_payment():
+    flask_proc = subprocess.Popen(["flask", "notify-missing-payment"])
+    flask_proc.communicate()
+
+
 def set_scheduler(scheduler: BackgroundScheduler, app: Flask):
 
     JOB_STORES = {
@@ -36,6 +41,15 @@ def set_scheduler(scheduler: BackgroundScheduler, app: Flask):
     scheduler.add_job(
         id="subscriptions_expiration_notifier",
         func=subscriptions_expiration_notifier,
+        trigger="cron",
+        hour=app.config["SUBSCRIPTIONS_EXPIRATION_CHECK_HOUR"],
+        minute=0,
+        second=0,
+        replace_existing=True,
+    )
+    scheduler.add_job(
+        id="notify_missing_payment",
+        func=notify_missing_payment,
         trigger="cron",
         hour=app.config["SUBSCRIPTIONS_EXPIRATION_CHECK_HOUR"],
         minute=0,
