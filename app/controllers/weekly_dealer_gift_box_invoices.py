@@ -43,11 +43,21 @@ def weekly_dealer_gift_box_invoices():
             log(log.ERROR, "dealer [%s] has no stripe customer id", dealer.email)
             continue
 
+        shipping = stripe.ShippingRate.create(
+            display_name="Shipping",
+            type="fixed_amount",
+            fixed_amount={
+                "amount": int(dealer.shipping_price * 100),
+                "currency": "cad",
+            },
+        )
+
         invoice = stripe.Invoice.create(
             customer=dealer.stripe_customer_id,
             collection_method="send_invoice",
             pending_invoice_items_behavior="exclude",
             days_until_due=60,  # 60 days
+            shipping_cost={"shipping_rate": shipping.id},
         )
 
         for car in cars:

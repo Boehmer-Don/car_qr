@@ -95,8 +95,10 @@ class User(db.Model, UserMixin, ModelMixin):
     sellers: orm.Mapped[list["User"]] = orm.relationship(order_by=created_at.desc())
 
     gift_items: orm.Mapped[list["DealerGiftItem"]] = orm.relationship(
-        back_populates="dealer", order_by="DealerGiftItem.created_at.desc()"
+        back_populates="dealer",
+        order_by="DealerGiftItem.created_at.desc()",
     )
+    shipping_price: orm.Mapped[float] = orm.mapped_column(sa.Float, default=0.0)
 
     @hybrid_property
     def creator_id(self):

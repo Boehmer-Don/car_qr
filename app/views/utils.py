@@ -19,8 +19,17 @@ def get_us_states() -> list[s.Region]:
     return s.Regions.validate_python(states_data)
 
 
-def get_current_week_range() -> tuple[datetime, datetime]:
+def get_current_week_range(week: str = "") -> tuple[datetime, datetime]:
     # Get the current date
+
+    if week:
+        year, week = map(int, week.split("-W"))
+        start_of_week = datetime.strptime(f"{year} {week} 1", "%G %V %u")
+
+        # Calculate the last day of the given week (Sunday)
+        end_of_week = start_of_week + timedelta(days=6)
+        return start_of_week, end_of_week
+
     today = datetime.today()
 
     # Calculate the start of the week (Monday)

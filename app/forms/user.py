@@ -5,6 +5,8 @@ from wtforms import (
     SubmitField,
     ValidationError,
     BooleanField,
+    DecimalField,
+    HiddenField,
 )
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
 
@@ -72,3 +74,12 @@ class ResendInviteForm(FlaskForm):
         [DataRequired(), Email(), Length(1, 255)],
         render_kw={"placeholder": "example@company.com"},
     )
+
+
+class ShippingPriceForm(FlaskForm):
+    price = DecimalField("Price", [DataRequired()], render_kw={"placeholder": "0.00"})
+    user_unique_id = HiddenField("user_unique_id", default="")
+
+    def validate_price(self, field):
+        if field.data < 0:
+            raise ValidationError("Price must be greater than 0.")

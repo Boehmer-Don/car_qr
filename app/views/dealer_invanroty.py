@@ -1,59 +1,76 @@
-import io
-import json
-from datetime import datetime
 from flask import (
     Blueprint,
-    abort,
     render_template,
     request,
-    flash,
-    redirect,
-    url_for,
-    Response,
 )
-from flask_login import login_required, current_user
-from flask_mail import Message
-
+from flask_login import login_required
 import sqlalchemy as sa
 
-from flask import current_app as app
-from app.controllers import create_pagination, update_stripe_customer
-from app import models as m, db, mail
-from app import forms as f
-from app import schema as s
+from app.controllers import create_pagination
+from app import models as m, db
 from app.controllers.user import role_required
 from app.logger import log
 from .utils import get_current_week_range
 
-from .sellers import seller
-from .dealer_gift_items import bp as dealer_gift_items_bp
 
 bp = Blueprint("invantory", __name__, url_prefix="/invantory")
 
 
+# TODO: need to discuss and add tests
 @bp.route("/dealers", methods=["GET"])
 @login_required
 @role_required([m.UsersRole.admin])
 def dealers():
-    start_date, end_date = get_current_week_range()
-    query = (
-        sa.select(
-            m.User,
-        )
-        .join(m.DealerGiftItem, m.DealerGiftItem.dealer_id == m.User.id)
-        .join(m.GiftItem, m.GiftItem.id == m.DealerGiftItem.gift_item_id)
-        .where(m.User.role == m.UsersRole.dealer)
+
+    q = request.args.get("q", default="")
+    week = request.args.get("week", default="")
+
+    where_stmt = sa.and_(
+        m.User.activated,
+        m.User.deleted.is_(False),
+        m.User.role == m.UsersRole.dealer,
     )
 
+    if q:
+        where_stmt = sa.and_(
+            where_stmt,
+            sa.or_(
+                sa.func.lower(m.User.first_name).ilike(f"%{q.lower()}%"),
+                sa.func.lower(m.User.last_name).ilike(f"%{q.lower()}%"),
+                sa.func.lower(m.User.email).ilike(f"%{q.lower()}%"),
+                sa.func.lower(m.User.name_of_dealership).ilike(f"%{q.lower()}%"),
+                sa.func.lower(m.User.address_of_dealership).ilike(f"%{q.lower()}%"),
+            ),
+        )
+
+    if week:
+        start_date, end_date = get_current_week_range(week)
+        where_stmt = sa.and_(
+            where_stmt,
+            start_date.date() < sa.func.DATE(m.GiftBox.created_at),
+            sa.func.DATE(m.GiftBox.created_at) < end_date.date(),
+        )
+
+    query = (
+        sa.select(m.User)
+        .outerjoin(m.GiftBox, m.GiftBox.dealer_id == m.User.id)
+        .where(
+            where_stmt,
+        )
+        .group_by(m.User.id)
+        .order_by(m.User.id)
+    )
     count_query = (
         sa.select(sa.func.count())
-        .join(m.DealerGiftItem, m.DealerGiftItem.dealer_id == m.User.id)
-        .join(m.GiftItem, m.GiftItem.id == m.DealerGiftItem.gift_item_id)
-        .where(m.User.role == m.UsersRole.dealer)
+        .outerjoin(m.GiftBox, m.GiftBox.dealer_id == m.User.id)
+        .where(
+            where_stmt,
+        )
+        .group_by(m.User.id)
         .select_from(m.User)
     )
 
-    pagination = create_pagination(total=db.session.scalar(count_query))
+    pagination = create_pagination(total=db.session.scalar(count_query) or 0)
 
     return render_template(
         "user/invantory/dealers.html",
@@ -63,6 +80,8 @@ def dealers():
             )
         ).scalars(),
         page=pagination,
+        q=q,
+        week=week,
     )
 
 
@@ -74,10 +93,45 @@ def view_orders(unique_id: str):
 
     dealer = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id))
     if not dealer:
+        log(log.ERROR, f"Dealer not found: {unique_id}")
         return render_template(
             "toast.html", message="Dealer not found", category="danger"
         )
+    week = request.args.get("week", default="")
+    start_date, end_date = get_current_week_range(week)
+
+    total_quantity = sa.func.sum(m.GiftBox.qty).label("total_quantity")
+
+    gift_boxes_data = db.session.execute(
+        sa.select(
+            m.GiftBox._sku,
+            total_quantity,
+            m.DealerGiftItem,
+        )
+        .join(m.DealerGiftItem, m.GiftBox.dealer_gift_item_id == m.DealerGiftItem.id)
+        .where(
+            start_date.date() < sa.func.DATE(m.GiftBox.created_at),
+            sa.func.DATE(m.GiftBox.created_at) < end_date.date(),
+            m.GiftBox.dealer_id == dealer.id,
+        )
+        .group_by(m.GiftBox._sku, m.DealerGiftItem.id, m.GiftBox.dealer_id)
+        .order_by(m.GiftBox.dealer_id.asc())
+    ).all()
+
+    gift_boxes_data = [
+        {
+            "sku": sku,
+            "total_quantity": total_quantity,
+            "delaer_gift_item": delaer_gift_item,
+            "is_enough": delaer_gift_item.max_qty - total_quantity
+            > delaer_gift_item.min_qty,
+        }
+        for sku, total_quantity, delaer_gift_item in gift_boxes_data
+    ]
 
     return render_template(
         "user/invantory/view_orders_modal.html",
+        gift_boxes_data=gift_boxes_data,
+        start_date=start_date,
+        end_date=end_date,
     )

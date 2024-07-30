@@ -105,7 +105,7 @@ def create_app(environment="development"):
     app.jinja_env.globals["years"] = years
     app.jinja_env.globals["get_gift_url"] = get_gift_url
 
-    if not app.config["TESTING"] or app.config["ENV"] != "development":
+    if not app.config["TESTING"]:
         from app.controllers.scheduler import set_scheduler
 
         set_scheduler(scheduler, app)

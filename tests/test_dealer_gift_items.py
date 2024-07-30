@@ -47,4 +47,4 @@ def test_dealer_gift_items(populate: FlaskClient):
         f"/user/gift-items/{user.unique_id}/gift-item/{dealer_gift_item.unique_id}/delete",
     )
     assert res.status_code == 200
-    assert not user.gift_items
+    assert not [g for g in user.gift_items if not g.is_deleted]

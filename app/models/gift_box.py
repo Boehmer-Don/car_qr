@@ -42,5 +42,9 @@ class GiftBox(db.Model, ModelMixin):
     dealer_gift_item: orm.Mapped["DealerGiftItem"] = orm.relationship()
     sale_rep: orm.Mapped["SaleReport"] = orm.relationship(back_populates="gift_boxes")
 
+    @property
+    def sku(self):
+        return self._sku
+
     def __repr__(self):
-        return f"<{self.id}:{self.created_at} SKU: {self._sku} > "
+        return f"<{self.id}:{self.created_at} SKU: {self.sku} > "

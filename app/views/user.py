@@ -250,6 +250,50 @@ def activation():
     return redirect(url_for("auth.logout"))
 
 
+@bp.route("/shipping-price", methods=["GET", "POST"])
+@login_required
+@role_required([m.UsersRole.admin])
+def shipping_price():
+    """htmx"""
+
+    form = f.ShippingPriceForm()
+    if request.method == "GET":
+        user_unique_id = request.args.get("user_unique_id", type=str, default="")
+        user = None
+        if user_unique_id:
+            user = db.session.scalar(
+                sa.select(m.User).where(m.User.unique_id == user_unique_id)
+            )
+
+        if user:
+            form.price.data = user.shipping_price
+            form.user_unique_id.data = user.unique_id
+
+        return render_template("user/shipping_price_modal.html", form=form, user=user)
+
+    if not form.validate_on_submit():
+        log(log.ERROR, "User save errors: [%s]", form.errors)
+        flash(f"{form.errors}", "danger")
+        return redirect(url_for("user.get_all"))
+
+    query = sa.select(m.User).where(
+        m.User.role == m.UsersRole.dealer,
+        m.User.activated,
+        m.User.deleted.is_(False),
+    )
+
+    if form.user_unique_id.data:
+        query = query.where(m.User.unique_id == form.user_unique_id.data)
+
+    users = db.session.scalars(query).all()
+
+    for user in users:
+        user.shipping_price = form.price.data
+    db.session.commit()
+    flash("Shipping price was successfully updated", "success")
+    return redirect(url_for("user.get_all"))
+
+
 @bp.route("/resend-invite", methods=["GET"])
 @login_required
 @role_required([m.UsersRole.admin])

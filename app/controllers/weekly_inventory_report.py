@@ -19,13 +19,19 @@ def weekly_inventory_report():
         .join(m.GiftBox, m.DealerGiftItem.id == m.GiftBox.dealer_gift_item_id)
         .where(
             before_7_days < sa.func.DATE(m.GiftBox.created_at),
-            sa.func.DATE(m.GiftBox.created_at) < today,
+            sa.func.DATE(m.GiftBox.created_at) <= today,
             m.GiftBox.dealer_gift_item_id.isnot(None),
         )
         .group_by(m.DealerGiftItem.id)
         .having(total_quantity > m.DealerGiftItem.min_qty)
         .order_by(m.DealerGiftItem.dealer_id.asc())
     ).all()
+
+    dealer_gift_items_data = [
+        data
+        for data in dealer_gift_items_data
+        if not (data[0].max_qty - data[1] > data[0].min_qty)
+    ]
 
     admins = db.session.scalars(
         sa.select(m.User).where(
