@@ -44,12 +44,18 @@ def get_all_dealer():
     log(log.INFO, "Getting all gift items")
     query = (
         sa.select(m.DealerGiftItem)
-        .where(m.DealerGiftItem.dealer_id == current_user.id)
+        .where(
+            m.DealerGiftItem.dealer_id == current_user.id,
+            m.DealerGiftItem.is_deleted.is_(False),
+        )
         .order_by(m.DealerGiftItem.created_at.desc())
     )
     count_query = (
         sa.select(sa.func.count())
-        .where(m.DealerGiftItem.dealer_id == current_user.id)
+        .where(
+            m.DealerGiftItem.dealer_id == current_user.id,
+            m.DealerGiftItem.is_deleted.is_(False),
+        )
         .select_from(m.DealerGiftItem)
     )
 

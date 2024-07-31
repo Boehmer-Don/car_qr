@@ -98,6 +98,7 @@ def test_gift_boxes(populate: FlaskClient):
     assert sale_report
     box = m.GiftBox(
         sale_result_id=sale_report.id,
+        dealer_gift_item_id=1,
         description="test",
         price=10,
         _sku="test",

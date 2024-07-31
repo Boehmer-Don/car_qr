@@ -8,7 +8,12 @@ from .auth import (
     SubscriptionPlanForm,
     PaymentForm,
 )
-from .user import UserForm, AdminForm, ResendInviteForm
+from .user import (
+    UserForm,
+    AdminForm,
+    ResendInviteForm,
+    ShippingPriceForm,
+)
 from .label import (
     LabelForm,
     LabelUpdateForm,

@@ -165,3 +165,38 @@ def test_activate(client: FlaskClient):
     # res = client.post("/user/activation", follow_redirects=True)
     # assert res.status_code == 200
     # assert "You were logged out." in res.data.decode()
+
+
+def test_shipping_price(populate: FlaskClient):
+    set_user(populate, role=m.UsersRole.admin)
+
+    res = populate.get("/user/shipping-price")
+    assert res.status_code == 200
+    assert "Shipping price" in res.data.decode()
+
+    res = populate.post(
+        "/user/shipping-price", data={"price": "10.0"}, follow_redirects=True
+    )
+    assert res.status_code == 200
+    assert "Shipping price was successfully updated" in res.data.decode()
+
+    dealers = db.session.scalars(
+        sa.select(m.User).where(m.User.role == m.UsersRole.dealer)
+    ).all()
+    for dealer in dealers:
+        assert dealer.shipping_price == 10.0
+
+    res = populate.get(f"/user/shipping-price?user_unique_id={dealers[0].unique_id}")
+    assert res.status_code == 200
+    assert "Shipping price" in res.data.decode()
+
+    res = populate.post(
+        "/user/shipping-price",
+        data={"price": "20.0", "user_unique_id": dealers[0].unique_id},
+        follow_redirects=True,
+    )
+    assert res.status_code == 200
+    assert "Shipping price was successfully updated" in res.data.decode()
+    assert dealers[0].shipping_price == 20.0
+    for dealer in dealers[1:]:
+        assert dealer.shipping_price == 10.0

@@ -6,6 +6,7 @@ import pytest
 
 from app import db
 from app import models as m
+from app.controllers.notify_missing_payment import notify_missing_payment
 from .utils import set_user
 
 from app.controllers.notify_about_oil_change import notify_about_oil_change
@@ -121,3 +122,25 @@ def test_weekly_notify(stripe_invoice_moke: FlaskClient):
     assert weekly_inventory_report() is None
 
     assert weekly_dealer_gift_box_invoices() is None
+
+
+@pytest.mark.skip(reason="This test only for debugging")
+def test_missing_payment(populate: FlaskClient):
+    today = datetime.now().date()
+    before_4_days = today - timedelta(days=4)
+
+    dealer = db.session.scalar(
+        sa.select(m.User).where(m.User.role == m.UsersRole.dealer)
+    )
+
+    invoice = m.GiftsInvoice(
+        dealer_id=dealer.id,
+        is_paid=False,
+        created_at=before_4_days,
+        stripe_invoice_id="123",
+        hosted_invoice_url="http://any.com",
+    )
+    db.session.add(invoice)
+    db.session.commit()
+
+    assert notify_missing_payment() is None

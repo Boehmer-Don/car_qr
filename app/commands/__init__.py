@@ -169,6 +169,14 @@ def init(app: Flask):
         weekly_dealer_gift_box_invoices()
 
     @app.cli.command()
+    def notify_missing_payment():
+        from app.controllers.notify_missing_payment import (
+            notify_missing_payment,
+        )
+
+        notify_missing_payment()
+
+    @app.cli.command()
     def base_url():
         print(app.config["BASE_URL"])
 

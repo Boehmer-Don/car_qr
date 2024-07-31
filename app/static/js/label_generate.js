@@ -1,0 +1,1 @@
+(()=>{var e=document.querySelector("#decreaseStickersButton"),t=document.querySelector("#increaseStickersButton"),n=document.querySelector("#stickersQuantityInput");e&&t&&n&&(e.addEventListener("click",(function(){var e=parseInt(n.value);e>1&&(e-=1,n.value=e.toString())})),t.addEventListener("click",(function(){var e=parseInt(n.value);e+=1,n.value=e.toString()})))})();

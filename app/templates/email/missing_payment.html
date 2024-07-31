@@ -279,8 +279,7 @@
                                                                                                                                                                                                                                                                                                               margin: 0;
                                                                                                                                                                                                                                                                                                             "
                                                     align="left">
-                                                    Your weekly inventory replenishment report is ready.
-
+                                                    List of users who missed their payments
                                                 </td>
 
                                               </tr>
@@ -298,30 +297,14 @@
                                                             ">
                                                   Dealer name
                                                 </th>
-                                                <th
-                                                  style="
-                                                                                                                                                              padding: 5px;
-                                                                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                                                                                                                              background-color: rgba(0, 0, 0, 0.043);
-                                                                                                                                                              font-size: 12px;
-                                                                                                                                                            ">
-                                                  SKU
-                                                </th>
+
                                                 <th style="
                                                               padding: 5px;
                                                               border: 0.5px solid rgba(0, 0, 0, 0.107);
                                                               background-color: rgba(0, 0, 0, 0.043);
                                                               font-size: 12px;
                                                             ">
-                                                  Total qty ordered
-                                                </th>
-                                                <th style="
-                                                                                                              padding: 5px;
-                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                                                                              background-color: rgba(0, 0, 0, 0.043);
-                                                                                                              font-size: 12px;
-                                                                                                            ">
-                                                  Min
+                                                  Created at
                                                 </th>
                                                 <th
                                                   style="
@@ -330,29 +313,19 @@
                                                                                                                                                               background-color: rgba(0, 0, 0, 0.043);
                                                                                                                                                               font-size: 12px;
                                                                                                                                                             ">
-                                                  Max
-                                                </th>
-
-                                                <th
-                                                  style="
-                                                                                                                                                                                                              padding: 5px;
-                                                                                                                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                                                                                                                                                                              background-color: rgba(0, 0, 0, 0.043);
-                                                                                                                                                                                                              font-size: 12px;
-                                                                                                                                                                                                            ">
-                                                  Replenish
+                                                  Invoice url
                                                 </th>
                                               </tr>
                                             </thead>
                                             <tbody>
-                                              {% for gift_item, total_quantity in dealer_gift_items_data %}
+                                              {% for invoice in missing_payments %}
                                               <tr>
                                                 <td style="
                                                               padding: 5px;
                                                               border: 0.5px solid rgba(0, 0, 0, 0.107);
                                                               font-size: 12px;
                                                             ">
-                                                  {{ gift_item.dealer.name_of_dealership }}
+                                                  {{ invoice.dealer.name_of_dealership }}
                                                 </td>
 
                                                 <td style="
@@ -361,7 +334,7 @@
                                                               font-size: 12px;
                                                               word-break: break-all;
                                                             ">
-                                                  {{ gift_item.origin_item.SKU }}
+                                                  {{ invoice.created_at.strftime("%H:%M:%S") }}
                                                 </td>
                                                 <td style="
                                                                                                               padding: 5px;
@@ -369,32 +342,7 @@
                                                                                                               font-size: 12px;
                                                                                                               word-break: break-all;
                                                                                                             ">
-                                                  {{ total_quantity }}
-                                                </td>
-                                                <td style="
-                                                              padding: 5px;
-                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                              font-size: 12px;
-                                                              word-break: break-all;
-                                                            ">
-                                                  {{ gift_item.min_qty }}
-                                                </td>
-                                                <td style="
-                                                                                                              padding: 5px;
-                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                                                                              font-size: 12px;
-                                                                                                              word-break: break-all;
-                                                                                                            ">
-                                                  {{ gift_item.max_qty }}
-                                                </td>
-                                                <td
-                                                  style="
-                                                                                                                                                              padding: 5px;
-                                                                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                                                                                                                              font-size: 12px;
-                                                                                                                                                              word-break: break-all;
-                                                                                                                                                            ">
-                                                  {{ total_quantity - gift_item.min_qty }}
+                                                  {{ invoice.hosted_invoice_url }}
                                                 </td>
                                               </tr>
                                               {% endfor %}

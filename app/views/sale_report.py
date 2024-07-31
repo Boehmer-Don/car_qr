@@ -173,7 +173,8 @@ def gift_boxs_modal(sale_rep_unique_id: str):
 
     dealer_gift_boxes = db.session.scalars(
         sa.select(m.DealerGiftItem).where(
-            m.DealerGiftItem.dealer_id == sale_report.label.user_id
+            m.DealerGiftItem.dealer_id == sale_report.label.user_id,
+            m.DealerGiftItem.is_deleted.is_(False),
         )
     ).all()
 
@@ -260,7 +261,7 @@ def set_gift_boxes():
     new_gift_boxes = []
     for box in gift_boxes:
         gift_item = db.session.get(m.DealerGiftItem, box.dealer_gift_item_id)
-        if not gift_item:
+        if not gift_item or gift_item.is_deleted:
             log(log.ERROR, "Dealer gift item not found [%s]", box.dealer_gift_item_id)
             flash(f"Dealer gift item not found [{box.dealer_gift_item_id}]", "danger")
             return redirect(url_for("sale_report.get_all"))

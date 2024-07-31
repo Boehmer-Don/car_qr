@@ -129,6 +129,7 @@ const spinner =  `<div tabindex="-1"
 window.addEventListener('submit', (event: Event) => {
   const target = event.target as HTMLFormElement;
   const method = target.method;
-  if (method.toLocaleLowerCase() === "get") return;
+  const sbmBtn = target.querySelector('button[type="submit"]') as HTMLButtonElement;
+  if (method.toLocaleLowerCase() === "get" || (sbmBtn && sbmBtn.hasAttribute('skipevent'))) return;
   document.body.insertAdjacentHTML('beforeend', spinner);
 });

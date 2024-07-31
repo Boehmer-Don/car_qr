@@ -186,6 +186,11 @@ def stripe_invoice_moke(populate: Flask, mocker):
     invoice = InvoiceMock()
 
     mocker.patch(
+        "stripe.ShippingRate.create",
+        return_value=invoice,
+    )
+
+    mocker.patch(
         "stripe.Invoice.create",
         return_value=invoice,
     )

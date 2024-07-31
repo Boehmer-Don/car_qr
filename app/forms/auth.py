@@ -77,7 +77,11 @@ class SubscriptionPlanForm(FlaskForm):
 
 
 class ForgotForm(FlaskForm):
-    email = StringField("Email Address", validators=[DataRequired(), Email()])
+    email = StringField(
+        "Email Address",
+        validators=[DataRequired(), Email()],
+        render_kw={"placeholder": "Enter your email"},
+    )
 
     def validate_email(self, email):
         query = User.select().where(User.email == email.data)

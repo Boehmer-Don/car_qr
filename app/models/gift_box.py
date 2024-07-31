@@ -1,5 +1,4 @@
-from typing import TYPE_CHECKING, Union
-
+from typing import TYPE_CHECKING
 from datetime import datetime
 import sqlalchemy as sa
 from sqlalchemy import orm
@@ -19,8 +18,8 @@ class GiftBox(db.Model, ModelMixin):
     sale_result_id: orm.Mapped[int] = orm.mapped_column(
         sa.ForeignKey("sale_reports.id")
     )
-    dealer_gift_item_id: orm.Mapped[int | None] = orm.mapped_column(
-        sa.ForeignKey("dealer_gift_items.id", ondelete="SET NULL")
+    dealer_gift_item_id: orm.Mapped[int] = orm.mapped_column(
+        sa.ForeignKey("dealer_gift_items.id")
     )
     # this field for a search query
     dealer_id: orm.Mapped[int] = orm.mapped_column(sa.ForeignKey("users.id"))
@@ -40,8 +39,12 @@ class GiftBox(db.Model, ModelMixin):
     qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)
     is_completed: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
 
-    dealer_gift_item: orm.Mapped[Union["DealerGiftItem", None]] = orm.relationship()
+    dealer_gift_item: orm.Mapped["DealerGiftItem"] = orm.relationship()
     sale_rep: orm.Mapped["SaleReport"] = orm.relationship(back_populates="gift_boxes")
 
+    @property
+    def sku(self):
+        return self._sku
+
     def __repr__(self):
-        return f"<{self.id}:{self.created_at} SKU: {self._sku} > "
+        return f"<{self.id}:{self.created_at} SKU: {self.sku} > "
