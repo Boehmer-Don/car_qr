@@ -207,20 +207,30 @@ def edit():
 
 @service.route("/records", methods=["GET"])
 @login_required
-@role_required([m.UsersRole.service])
+@role_required([m.UsersRole.service, m.UsersRole.buyer])
 def records():
     log(log.INFO, "Getting all records")
 
+    is_buyer = current_user.role == m.UsersRole.buyer
+    where_stmt = sa.and_(m.ServiceRecord.service_id == current_user.id)
+    if is_buyer:
+        oil_changes_ids = db.session.scalars(
+            sa.select(m.OilChange.id).where(
+                m.OilChange.sale_rep.has(m.SaleReport.buyer_id == current_user.id)
+            )
+        ).all()
+        where_stmt = sa.and_(
+            m.ServiceRecord.oil_change_id.in_(oil_changes_ids),
+        )
+
     query = (
         sa.select(m.ServiceRecord)
-        .where(m.ServiceRecord.service_id == current_user.id)
+        .where(where_stmt)
         .order_by(m.ServiceRecord.created_at.desc())
     )
 
     count_query = (
-        sa.select(sa.func.count())
-        .where(m.ServiceRecord.service_id == current_user.id)
-        .select_from(m.ServiceRecord)
+        sa.select(sa.func.count()).where(where_stmt).select_from(m.ServiceRecord)
     )
 
     pagination = create_pagination(total=db.session.scalar(count_query))
@@ -238,12 +248,15 @@ def records():
 
 @service.route("/add-records-search", methods=["GET"])
 @login_required
-@role_required([m.UsersRole.service])
+@role_required([m.UsersRole.service, m.UsersRole.buyer])
 def add_record_search():
     q = request.args.get("q", type=str, default="")
 
     sale_reports = []
-    if q:
+
+    is_buyer = current_user.role == m.UsersRole.buyer
+
+    if q and not is_buyer:
         sale_reports = db.session.scalars(
             sa.select(m.SaleReport)
             .join(m.SaleReport.buyer)
@@ -260,13 +273,23 @@ def add_record_search():
             )
             .distinct()
         )
+    if is_buyer:
+        sale_reports = db.session.scalars(
+            sa.select(m.SaleReport)
+            .join(m.SaleReport.label)
+            .join(m.SaleReport.oil_changes)
+            .where(
+                m.SaleReport.buyer_id == current_user.id,
+            )
+            .distinct()
+        )
 
     return render_template("service/add_records.html", sale_reports=sale_reports, q=q)
 
 
 @service.route("/<sale_report_unique_id>/add-record", methods=["GET", "POST"])
 @login_required
-@role_required([m.UsersRole.service])
+@role_required([m.UsersRole.service, m.UsersRole.buyer])
 def add_record(sale_report_unique_id: str):
     """htmx"""
     log(
