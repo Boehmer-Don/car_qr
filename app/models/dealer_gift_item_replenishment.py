@@ -19,6 +19,8 @@ class DealerGiftIteRreplenishment(db.Model, ModelMixin):
         sa.ForeignKey("dealer_gift_items.id")
     )
 
+    sku: orm.Mapped[str] = orm.mapped_column(sa.String(255))
+
     unique_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(36),
         default=generate_uuid,

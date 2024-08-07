@@ -10,13 +10,12 @@ from app.controllers import create_pagination
 from app import models as m, db
 from app.controllers.user import role_required
 from app.logger import log
-from .utils import get_current_week_range
+from app.models import get_week_range
 
 
 bp = Blueprint("invantory", __name__, url_prefix="/invantory")
 
 
-# TODO: need to discuss and add tests
 @bp.route("/dealers", methods=["GET"])
 @login_required
 @role_required([m.UsersRole.admin])
@@ -44,7 +43,7 @@ def dealers():
         )
 
     if week:
-        start_date, end_date = get_current_week_range(week)
+        start_date, end_date = get_week_range(week)
         where_stmt = sa.and_(
             where_stmt,
             start_date.date() < sa.func.DATE(m.GiftBox.created_at),
@@ -92,13 +91,16 @@ def view_orders(unique_id: str):
     """htmx"""
 
     dealer = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id))
+    need_replenishment = request.args.get(
+        "need_replenishment", type=bool, default=False
+    )
     if not dealer:
         log(log.ERROR, f"Dealer not found: {unique_id}")
         return render_template(
             "toast.html", message="Dealer not found", category="danger"
         )
     week = request.args.get("week", default="")
-    start_date, end_date = get_current_week_range(week)
+    start_date, end_date = get_week_range(week)
 
     total_quantity = sa.func.sum(m.GiftBox.qty).label("total_quantity")
 
@@ -134,4 +136,52 @@ def view_orders(unique_id: str):
         gift_boxes_data=gift_boxes_data,
         start_date=start_date,
         end_date=end_date,
+        need_replenishment=need_replenishment,
+        week=week,
+    )
+
+
+@bp.route("/mark_as_unreplenishment/<unique_id>/<sku>", methods=["POST"])
+@login_required
+@role_required([m.UsersRole.admin])
+def mark_as_unreplenishment(unique_id: str, sku: str):
+
+    week = request.args.get("week", default="")
+    delaer_gift_item = db.session.scalar(
+        sa.select(m.DealerGiftItem).where(m.DealerGiftItem.unique_id == unique_id)
+    )
+    # TODO not work properly
+    if not delaer_gift_item or delaer_gift_item.get_replenishment(week, sku):
+        log(log.ERROR, f"Dealer gift item not found: {unique_id}")
+        return render_template(
+            "toast.html", message="Dealer gift item not found", category="danger"
+        )
+
+    start_date, end_date = get_week_range(week)
+
+    gift_boxes_data = db.session.scalars(
+        sa.select(
+            m.GiftBox,
+        ).where(
+            start_date.date() < sa.func.DATE(m.GiftBox.created_at),
+            sa.func.DATE(m.GiftBox.created_at) < end_date.date(),
+            m.GiftBox._sku == sku,
+            m.GiftBox.dealer_gift_item_id == delaer_gift_item.id,
+        )
+    ).all()
+    total_qty = sum(gift_box.qty for gift_box in gift_boxes_data)
+
+    db.session.add(
+        m.DealerGiftIteRreplenishment(
+            sku=sku,
+            dealer_gift_item_id=delaer_gift_item.id,
+        )
+    )
+    db.session.commit()
+
+    return render_template(
+        "user/invantory/order.html",
+        delaer_gift_item=delaer_gift_item,
+        total_qty=total_qty,
+        sku=sku,
     )

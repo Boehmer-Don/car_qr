@@ -4,8 +4,10 @@ from datetime import datetime
 import sqlalchemy as sa
 from sqlalchemy import orm
 
+
 from app.database import db
-from .utils import ModelMixin, generate_uuid
+from .utils import ModelMixin, generate_uuid, get_week_range
+from .dealer_gift_item_replenishment import DealerGiftIteRreplenishment
 
 if TYPE_CHECKING:
     from .user import User
@@ -39,6 +41,19 @@ class DealerGiftItem(db.Model, ModelMixin):
 
     dealer: orm.Mapped["User"] = orm.relationship("User", back_populates="gift_items")
     origin_item: orm.Mapped["GiftItem"] = orm.relationship()
+
+    def get_replenishment(self, week, sku) -> DealerGiftIteRreplenishment:
+
+        start_date, end_date = get_week_range(week)
+
+        return db.session.scalar(
+            sa.select(DealerGiftIteRreplenishment).where(
+                DealerGiftIteRreplenishment.dealer_gift_item_id == self.id,
+                start_date.date()
+                < sa.func.DATE(DealerGiftIteRreplenishment.created_at),
+                sa.func.DATE(DealerGiftIteRreplenishment.created_at) < end_date.date(),
+            )
+        )
 
     def __repr__(self):
         return f"<User gift item {self.id}:{self.created_at}>"
