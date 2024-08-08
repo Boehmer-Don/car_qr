@@ -1,4 +1,4 @@
-<div tabindex="-1" id="modal-dealer-orders"
+<div tabindex="-1" id="modal-dealer-replenishments-orders"
     class="fixed bg-opacity-80 bg-gray-600 top-0 left-0 right-0 z-50 items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full justify-end items-end flex">
     <div class="rounded-lg relative w-4/5 bg-white p-4" onclick="event.stopPropagation();">
         <div class="flex justify-between items-center">
@@ -15,7 +15,7 @@
             </div>
 
             <button type="button" hx-get="{{ url_for('main.no_content') }}" hx-trigger="click" hx-swap="delete"
-                hx-target="#modal-dealer-orders" hx-indicator="#htmx-spinner"
+                hx-target="#modal-dealer-replenishments-orders" hx-indicator="#htmx-spinner"
                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg">
@@ -48,29 +48,65 @@
                                 Max
                             </div>
                         </th>
+                        <th scope="col" class="px-6 py-3">
+                            <div class="flex items-center">
+                                Action
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for sku, total_quantity, delaer_gift_item in gift_boxes_data %}
+                    {% for replenishment in replenishment_gift_boxes %}
 
                     <tr class="bg-white dark:bg-gray-800 border-b dark:border-gray-700">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ sku }}
+                            {{ replenishment.sku }}
                         </th>
                         <td class="px-6 py-4">
-                            {{ total_quantity }}
+                            {{ replenishment.total_quantity }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ delaer_gift_item.min_qty }}
+                            {{ replenishment.delaer_gift_item.min_qty }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ delaer_gift_item.max_qty }}
+                            {{ replenishment.delaer_gift_item.max_qty }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if replenishment.status == "mark_as_removed" %}
+                            <button hx-swap="outerHTML" hx-target="closest tr" hx-indicator="#htmx-spinner"
+                                hx-post="{{ url_for('user.invantory.mark_as_unreplenishment', unique_id=replenishment.delaer_gift_item.unique_id, week=week, sku=replenishment.sku) }}"
+                                class="h-8 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Mark
+                                as remove</button>
+
+                            {% elif replenishment.status == "removed" %}
+                            <span
+                                class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Removed</span>
+
+                            {% elif replenishment.status == "done" %}
+
+                            <span
+                                class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Done</span>
+                            {% endif %}
                         </td>
                     </tr>
-
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+        <div>
+            {% if is_all_replenished %}
+            <form method="POST" action="{{ url_for('user.invantory.replenish_all') }}">
+                {{ form.hidden_tag() }}
+                {{ form.week }}
+                {{ form.dealers_data }}
+                <div class="flex  mt-4">
+                    <button type="submit"
+                        class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">Replenish
+                        All</button>
+                </div>
+            </form>
+            {% endif %}
+
         </div>
 
     </div>

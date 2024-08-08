@@ -80,7 +80,7 @@
                         <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</div>
                     </div>
                     <div class="flex gap-6 cursor-pointer"
-                        hx-get="{{ url_for('user.invantory.view_orders', unique_id=user.unique_id, need_replenishment=True) }}"
+                        hx-get="{{ url_for('user.invantory.view_replenishment', unique_id=user.unique_id) }}"
                         hx-include="[name='week']" hx-trigger="click" hx-swap="beforeend" hx-target="body"
                         hx-indicator="#htmx-spinner">
                         <div
