@@ -6,8 +6,7 @@ from sqlalchemy import orm
 
 
 from app.database import db
-from .utils import ModelMixin, generate_uuid, get_week_range
-from .dealer_gift_item_replenishment import DealerGiftIteRreplenishment
+from .utils import ModelMixin, generate_uuid
 
 if TYPE_CHECKING:
     from .user import User

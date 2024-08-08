@@ -165,7 +165,7 @@ def view_replenishment(unique_id: str):
         if status == s.ReplenishmentStatus.mark_as_removed:
             gift_boxes_without_replenishment.append(item)
 
-    form.dealers_data.data = json.dumps(
+    form.dealers_gift_box_data.data = json.dumps(
         [box.model_dump() for box in gift_boxes_without_replenishment]
     )
     form.week.data = week
@@ -251,7 +251,7 @@ def replenish_all():
     week = form.week.data
     try:
         dealers_gift_box_data = s.adapter_re_gift_boxes.validate_json(
-            form.dealers_data.data
+            form.dealers_gift_box_data.data
         )
     except ValidationError as e:
         log(log.ERROR, f"Invalid dealers data: {e}")

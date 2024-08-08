@@ -28,13 +28,13 @@ from .utils import get_canada_provinces, get_us_states
 
 from .sellers import seller
 from .dealer_gift_items import bp as dealer_gift_items_bp
-from .dealer_invanroty import bp as dealer_invanroty_bp
+from .dealer_invantory import bp as dealer_invantory_bp
 
 
 bp = Blueprint("user", __name__, url_prefix="/user")
 bp.register_blueprint(seller)
 bp.register_blueprint(dealer_gift_items_bp)
-bp.register_blueprint(dealer_invanroty_bp)
+bp.register_blueprint(dealer_invantory_bp)
 
 
 @bp.route("/", methods=["GET"])

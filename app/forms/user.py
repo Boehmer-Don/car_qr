@@ -86,5 +86,7 @@ class ShippingPriceForm(FlaskForm):
 
 
 class ReplenishAllInventoryForm(FlaskForm):
-    dealers_data = HiddenField("dealer_data", default="", validators=[DataRequired()])
+    dealers_gift_box_data = HiddenField(
+        "dealer_data", default="", validators=[DataRequired()]
+    )
     week = HiddenField("week", default="")

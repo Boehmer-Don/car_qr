@@ -35,4 +35,4 @@ class DealerGiftIteRreplenishment(db.Model, ModelMixin):
     dealer_gift_item: orm.Mapped["DealerGiftItem"] = orm.relationship()
 
     def __repr__(self):
-        return f"<User gift item {self.id}:{self.created_at}>"
+        return f"<DealerGiftIteRreplenishment {self.id}:{self.created_at}>"
