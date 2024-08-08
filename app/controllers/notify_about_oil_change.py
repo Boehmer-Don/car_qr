@@ -24,11 +24,9 @@ def notify_about_oil_change():
         .distinct()
     ).all()
 
-    admin_ids = db.session.scalars(
-        sa.select(m.User.id).where(m.User.role == m.UsersRole.admin)
-    ).all()
     for oil_change in oil_changes:
         sale_rep = oil_change.sale_rep
+        delear = sale_rep.label.user
         buyer = sale_rep.buyer
         if not buyer.email or not sale_rep.is_notfy_by_email:
             log(
@@ -48,13 +46,6 @@ def notify_about_oil_change():
             log(log.INFO, "Notfy text not found [%s]", oil_change.id)
             continue
 
-        services = db.session.scalars(
-            sa.select(m.User).where(
-                m.User.role == m.UsersRole.service,
-                m.User._creator_id.in_(admin_ids + [sale_rep.seller._creator_id]),
-            )
-        ).all()
-
         msg = Message(
             subject="New Customer",
             sender=app.config["MAIL_DEFAULT_SENDER"],
@@ -65,7 +56,7 @@ def notify_about_oil_change():
             "email/notify_about_oil_change.html",
             notfy_text=notfy_text,
             user=buyer,
-            services=services,
+            delear=delear,
         )
 
         mail.send(msg)

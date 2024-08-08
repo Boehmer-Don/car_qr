@@ -319,7 +319,9 @@ def resend_invite():
     user = db.session.scalar(sa.select(m.User).where(m.User.email == form.email.data))
     if not user:
         log(log.ERROR, "Not found user by id. Creating a new user.")
-        user = m.User(email=form.email.data)
+        user = m.User(
+            email=form.email.data, shipping_price=app.config["SHIPPING_PRICE"]
+        )
         log(log.INFO, "User created: [%s]", user)
         user.save()
         flash("A new user created", "info")

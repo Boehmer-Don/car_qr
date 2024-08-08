@@ -26,6 +26,7 @@ def register():
         user = m.User(
             email=form.email.data,
             password=form.password.data,
+            shipping_price=app.config["SHIPPING_PRICE"],
         )
         log(log.INFO, "Form submitted. User: [%s]", user)
         user.save()
