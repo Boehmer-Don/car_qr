@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import sqlalchemy as sa
 from flask import render_template, current_app as app
 
