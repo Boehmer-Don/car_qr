@@ -28,13 +28,13 @@ from .utils import get_canada_provinces, get_us_states
 
 from .sellers import seller
 from .dealer_gift_items import bp as dealer_gift_items_bp
-from .dealer_invanroty import bp as dealer_invanroty_bp
+from .dealer_invantory import bp as dealer_invantory_bp
 
 
 bp = Blueprint("user", __name__, url_prefix="/user")
 bp.register_blueprint(seller)
 bp.register_blueprint(dealer_gift_items_bp)
-bp.register_blueprint(dealer_invanroty_bp)
+bp.register_blueprint(dealer_invantory_bp)
 
 
 @bp.route("/", methods=["GET"])
@@ -319,7 +319,9 @@ def resend_invite():
     user = db.session.scalar(sa.select(m.User).where(m.User.email == form.email.data))
     if not user:
         log(log.ERROR, "Not found user by id. Creating a new user.")
-        user = m.User(email=form.email.data)
+        user = m.User(
+            email=form.email.data, shipping_price=app.config["SHIPPING_PRICE"]
+        )
         log(log.INFO, "User created: [%s]", user)
         user.save()
         flash("A new user created", "info")

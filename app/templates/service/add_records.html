@@ -4,6 +4,7 @@
 {% endblock %} {% block content %}
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg pt-4">
+    {% if current_user.role.value == "service" %}
     <div class="w-full p-4 flex justify-between">
         <form class="w-full">
             <label for="default-search"
@@ -24,8 +25,8 @@
                     Search</button>
             </div>
         </form>
-
     </div>
+    {% endif %}
     {% if sale_reports %}
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

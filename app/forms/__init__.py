@@ -13,6 +13,7 @@ from .user import (
     AdminForm,
     ResendInviteForm,
     ShippingPriceForm,
+    ReplenishAllInventoryForm,
 )
 from .label import (
     LabelForm,

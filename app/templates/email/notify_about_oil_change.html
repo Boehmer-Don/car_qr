@@ -208,7 +208,7 @@
                                                 line-height: 33.6px;
                                                 margin: 0;
                                               " align="left">
-                                            Email notification from Auto QR Code!
+                                            Email notification from {{ delear.name_of_dealership }}
                                           </h1>
                                           <table class="s-2 w-full" role="presentation" border="0" cellpadding="0"
                                             cellspacing="0" style="width: 100%" width="100%">
@@ -285,147 +285,7 @@
                                               </tr>
                                             </tbody>
                                           </table>
-                                          <table class="hr" role="presentation" border="0" cellpadding="0"
-                                            cellspacing="0" style="width: 100%">
-                                            <tbody>
-                                              <tr>
-                                                <td style="
-                                                                                                line-height: 24px;
-                                                                                                font-size: 16px;
-                                                                                                height: 1px;
-                                                                                                width: 100%;
-                                                                                                margin: 4px 0;
-                                                                                              " align="left"
-                                                  width="100%">
-                                                  <h5 class="text-teal-700"
-                                                    style="
-                                                                                                                                                                                                                                                                                                                                                      padding-top: 0;
-                                                                                                                                                                                                                                                                                                                                                      padding-bottom: 0;
-                                                                                                                                                                                                                                                                                                                                                      font-weight: 600;
-                                                                                                                                                                                                                                                                                                                                                      vertical-align: baseline;
-                                                                                                                                                                                                                                                                                                                                                      font-size: 16px;
-                                                                                                                                                                                                                                                                                                                                                      line-height: 24px;
-                                                                                                                                                                                                                                                                                                                                                      margin: 0;
-                                                                                                                                                                                                                                                                                                                                                    "
-                                                    align="left">
-                                                    Please use one of our service advisers
-                                                </td>
-                                              </tr>
-                                            </tbody>
-                                          </table>
-                                          <table style="width: 100%">
-                                            <thead>
-                                              <tr>
-                                                <th style="
-                                                              padding: 5px;
-                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                              background-color: rgba(0, 0, 0, 0.043);
-                                                              font-size: 12px;
-                                                            ">
-                                                  Name
-                                                </th>
 
-                                                <th style="
-                                                              padding: 5px;
-                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                              background-color: rgba(0, 0, 0, 0.043);
-                                                              font-size: 12px;
-                                                            ">
-                                                  Country
-                                                </th>
-                                                <th
-                                                  style="
-                                                                                                                                                              padding: 5px;
-                                                                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                                                                                                                              background-color: rgba(0, 0, 0, 0.043);
-                                                                                                                                                              font-size: 12px;
-                                                                                                                                                            ">
-                                                  Province
-                                                </th>
-                                                <th style="
-                                                              padding: 5px;
-                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                              background-color: rgba(0, 0, 0, 0.043);
-                                                              font-size: 12px;
-                                                            ">
-                                                  City
-                                                </th>
-                                                <th style="
-                                                                                                              padding: 5px;
-                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                                                                              background-color: rgba(0, 0, 0, 0.043);
-                                                                                                              font-size: 12px;
-                                                                                                            ">
-                                                  Address
-                                                </th>
-                                                <th
-                                                  style="
-                                                                                                                                                              padding: 5px;
-                                                                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                                                                                                                              background-color: rgba(0, 0, 0, 0.043);
-                                                                                                                                                              font-size: 12px;
-                                                                                                                                                            ">
-                                                  Postal Code
-                                                </th>
-
-                                              </tr>
-                                            </thead>
-                                            <tbody>
-                                              {% for service in services %}
-                                              <tr>
-                                                <td style="
-                                                              padding: 5px;
-                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                              font-size: 12px;
-                                                            ">
-                                                  {{ service.name_of_dealership }}
-                                                </td>
-
-                                                <td style="
-                                                              padding: 5px;
-                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                              font-size: 12px;
-                                                              word-break: break-all;
-                                                            ">
-                                                  {{ service.country }}
-                                                </td>
-                                                <td style="
-                                                                                                              padding: 5px;
-                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                                                                              font-size: 12px;
-                                                                                                              word-break: break-all;
-                                                                                                            ">
-                                                  {{ service.province }}
-                                                </td>
-                                                <td style="
-                                                              padding: 5px;
-                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                              font-size: 12px;
-                                                              word-break: break-all;
-                                                            ">
-                                                  {{ service.city }}
-                                                </td>
-                                                <td style="
-                                                                                                              padding: 5px;
-                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                                                                              font-size: 12px;
-                                                                                                              word-break: break-all;
-                                                                                                            ">
-                                                  {{ service.address_of_dealership }}
-                                                </td>
-                                                <td
-                                                  style="
-                                                                                                                                                              padding: 5px;
-                                                                                                                                                              border: 0.5px solid rgba(0, 0, 0, 0.107);
-                                                                                                                                                              font-size: 12px;
-                                                                                                                                                              word-break: break-all;
-                                                                                                                                                            ">
-                                                  {{ service.postal_code }}
-                                                </td>
-                                              </tr>
-                                              {% endfor %}
-                                            </tbody>
-                                          </table>
                                           <table class="s-5 w-full" role="presentation" border="0" cellpadding="0"
                                             cellspacing="0" style="width: 100%" width="100%">
                                             <tbody>

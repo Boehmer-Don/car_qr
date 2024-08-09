@@ -327,7 +327,7 @@
         </a>
       </li>
       {% endif %}
-      {% if current_user.role.value == "service" %}
+      {% if current_user.role.value == "service" or current_user.role.value == "buyer" %}
       <li>
         <a href="{{ url_for('service.records') }}"
           class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">

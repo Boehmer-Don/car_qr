@@ -19,6 +19,8 @@ class DealerGiftIteRreplenishment(db.Model, ModelMixin):
         sa.ForeignKey("dealer_gift_items.id")
     )
 
+    sku: orm.Mapped[str] = orm.mapped_column(sa.String(255))
+
     unique_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(36),
         default=generate_uuid,
@@ -33,4 +35,4 @@ class DealerGiftIteRreplenishment(db.Model, ModelMixin):
     dealer_gift_item: orm.Mapped["DealerGiftItem"] = orm.relationship()
 
     def __repr__(self):
-        return f"<User gift item {self.id}:{self.created_at}>"
+        return f"<DealerGiftIteRreplenishment {self.id}:{self.created_at}>"

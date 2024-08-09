@@ -29,6 +29,7 @@ class BaseConfig(BaseSettings, ABC):
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
     WTF_CSRF_ENABLED: bool = False
     TIMEZONE: str = "EST"
+    SHIPPING_PRICE: float = 0.0
 
     # Mail config
     MAIL_SERVER: str

@@ -26,6 +26,7 @@ def register():
         user = m.User(
             email=form.email.data,
             password=form.password.data,
+            shipping_price=app.config["SHIPPING_PRICE"],
         )
         log(log.INFO, "Form submitted. User: [%s]", user)
         user.save()
@@ -109,18 +110,13 @@ def login():
         log(log.INFO, "Redirecting to sale reports.")
         return redirect(url_for("sale_report.get_all"))
 
-    elif current_user.role == m.UsersRole.service:
-        sticker_id = session.get("sticker_id")
-        log(log.INFO, "Redirecting to service")
-        if not sticker_id:
-            log(log.INFO, "No sticker ID in session.")
-            return redirect(url_for("service.records"))
+    elif (
+        current_user.role == m.UsersRole.service
+        or current_user.role == m.UsersRole.buyer
+    ):
+        log(log.INFO, "No sticker ID in session.")
+        return redirect(url_for("service.records"))
 
-        return redirect(
-            url_for(
-                "service.confirm_oil_change",
-            )
-        )
     elif current_user.role == m.UsersRole.picker:
         log(log.INFO, "Redirecting to picker")
         return redirect(url_for("picker.sale_reports"))

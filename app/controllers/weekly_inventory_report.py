@@ -48,7 +48,6 @@ def weekly_inventory_report():
 
         msg.html = render_template(
             "email/weekly_inventory_report.html",
-            dealer_gift_items_data=dealer_gift_items_data,
             user=admin,
         )
 

@@ -83,3 +83,10 @@ class ShippingPriceForm(FlaskForm):
     def validate_price(self, field):
         if field.data < 0:
             raise ValidationError("Price must be greater than 0.")
+
+
+class ReplenishAllInventoryForm(FlaskForm):
+    dealers_gift_box_data = HiddenField(
+        "dealer_data", default="", validators=[DataRequired()]
+    )
+    week = HiddenField("week", default="")

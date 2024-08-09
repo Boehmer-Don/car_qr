@@ -4,6 +4,7 @@ from datetime import datetime
 import sqlalchemy as sa
 from sqlalchemy import orm
 
+
 from app.database import db
 from .utils import ModelMixin, generate_uuid
 
@@ -41,4 +42,4 @@ class DealerGiftItem(db.Model, ModelMixin):
     origin_item: orm.Mapped["GiftItem"] = orm.relationship()
 
     def __repr__(self):
-        return f"<User gift item {self.id}:{self.created_at}>"
+        return f"<Delaer gift item {self.id}:{self.created_at}>"

@@ -36,7 +36,7 @@
                     placeholder="Search dealer..." />
             </div>
             <button type="submit"
-                class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
 
                 Search
             </button>
@@ -72,12 +72,20 @@
                 <td class="px-6 py-4">
                     {{ user.address_of_dealership }}
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 flex gap-4">
                     <div class="flex gap-6 cursor-pointer"
                         hx-get="{{ url_for('user.invantory.view_orders', unique_id=user.unique_id) }}"
                         hx-include="[name='week']" hx-trigger="click" hx-swap="beforeend" hx-target="body"
                         hx-indicator="#htmx-spinner">
                         <div class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</div>
+                    </div>
+                    <div class="flex gap-6 cursor-pointer"
+                        hx-get="{{ url_for('user.invantory.view_replenishment', unique_id=user.unique_id) }}"
+                        hx-include="[name='week']" hx-trigger="click" hx-swap="beforeend" hx-target="body"
+                        hx-indicator="#htmx-spinner">
+                        <div
+                            class="font-medium text-purple-600 dark:hover:text-purple-700 dark:focus:ring-purple-900 hover:underline">
+                            Replenishment</div>
                     </div>
                 </td>
             </tr>
