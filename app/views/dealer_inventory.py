@@ -19,11 +19,14 @@ from app import schema as s
 from app import forms as f
 from app.controllers import get_gift_boxes_data, get_replenishment
 from app.controllers.user import role_required
+from app.controllers.weekly_dealer_gift_box_invoices import (
+    weekly_dealer_gift_box_invoices,
+)
 from app.logger import log
 from app.models import get_week_range
 
 
-bp = Blueprint("invantory", __name__, url_prefix="/invantory")
+bp = Blueprint("inventory", __name__, url_prefix="/inventory")
 
 
 @bp.route("/dealers", methods=["GET"])
@@ -82,7 +85,7 @@ def dealers():
     pagination = create_pagination(total=db.session.scalar(count_query) or 0)
 
     return render_template(
-        "user/invantory/dealers.html",
+        "user/inventory/dealers.html",
         dealers=db.session.execute(
             query.offset((pagination.page - 1) * pagination.per_page).limit(
                 pagination.per_page
@@ -112,8 +115,9 @@ def view_orders(unique_id: str):
 
     gift_boxes_data = get_gift_boxes_data(start_date, end_date, dealer.id)
 
+    weekly_dealer_gift_box_invoices()
     return render_template(
-        "user/invantory/view_orders_modal.html",
+        "user/inventory/view_orders_modal.html",
         gift_boxes_data=gift_boxes_data,
         start_date=start_date,
         end_date=end_date,
@@ -172,7 +176,7 @@ def view_replenishment(unique_id: str):
     is_all_replenished = len(gift_boxes_without_replenishment) > 0
 
     return render_template(
-        "user/invantory/view_replenishments_modal.html",
+        "user/inventory/view_replenishments_modal.html",
         replenishment_gift_boxes=replenishment_gift_boxes,
         start_date=start_date,
         end_date=end_date,
@@ -230,7 +234,7 @@ def mark_as_unreplenishment(unique_id: str, sku: str):
     db.session.commit()
 
     return render_template(
-        "user/invantory/order.html",
+        "user/inventory/order.html",
         delaer_gift_item=delaer_gift_item,
         total_qty=total_qty,
         sku=sku,
@@ -246,7 +250,7 @@ def replenish_all():
 
         log(log.ERROR, "Invalid form data for replenish all")
         flash("Invalid form data", "danger")
-        return redirect(url_for("user.invantory.dealers"))
+        return redirect(url_for("user.inventory.dealers"))
 
     week = form.week.data
     try:
@@ -256,7 +260,7 @@ def replenish_all():
     except ValidationError as e:
         log(log.ERROR, f"Invalid dealers data: {e}")
         flash("Invalid dealers data", "danger")
-        return redirect(url_for("user.invantory.dealers"))
+        return redirect(url_for("user.inventory.dealers"))
 
     start_date, end_date = get_week_range(week)
 
@@ -272,7 +276,7 @@ def replenish_all():
                 f"Dealer gift item not found: {dealer_data.delaer_gift_item.unique_id}",
             )
             flash("Dealer gift item not found", "danger")
-            return redirect(url_for("user.invantory.dealers", week=week))
+            return redirect(url_for("user.inventory.dealers", week=week))
 
         if get_replenishment(
             start_date, end_date, dealer_data.sku, delear_gift_item.id
@@ -298,4 +302,4 @@ def replenish_all():
     db.session.commit()
     flash("Replenishment has done", "success")
 
-    return redirect(url_for("user.invantory.dealers", week=week))
+    return redirect(url_for("user.inventory.dealers", week=week))

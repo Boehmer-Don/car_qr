@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import stripe
 import sqlalchemy as sa
 
@@ -16,18 +16,20 @@ def weekly_dealer_gift_box_invoices():
         "weekly dealer gift box invoices started [%s]",
         today.strftime("%Y-%m-%d %H:%M:%S"),
     )
-    before_7_days = today - timedelta(days=7)
 
     dealers = db.session.scalars(
         sa.select(m.User).where(
             m.User.role == m.UsersRole.dealer, m.User.deleted.is_(False)
         )
     ).all()
+
+    start_date, end_date = m.get_week_range()
+
     for dealer in dealers:
         gift_boxes = db.session.scalars(
             sa.select(m.GiftBox).where(
-                before_7_days < m.GiftBox.created_at,
-                m.GiftBox.created_at <= today,
+                sa.func.DATE(m.GiftBox.created_at) <= end_date.date(),
+                start_date.date() < sa.func.DATE(m.GiftBox.created_at),
                 m.GiftBox.dealer_id == dealer.id,
             )
         ).all()

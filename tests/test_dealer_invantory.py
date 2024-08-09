@@ -7,7 +7,7 @@ from app import models as m, db
 from tests.utils import set_user
 
 
-def test_dealer_invantory(populate: FlaskClient):
+def test_dealer_inventory(populate: FlaskClient):
     set_user(populate, role=m.UsersRole.admin)
     delear = db.session.scalar(
         sa.select(m.User).where(m.User.role == m.UsersRole.dealer)
@@ -36,22 +36,22 @@ def test_dealer_invantory(populate: FlaskClient):
     db.session.add(gift_box)
     db.session.commit()
 
-    res = populate.get("/user/invantory/dealers")
+    res = populate.get("/user/inventory/dealers")
     assert res.status_code == 200
     assert "Dealers" in res.data.decode()
     assert delear.unique_id in res.data.decode()
 
-    res = populate.get(f"/user/invantory/dealers/{delear.unique_id}")
+    res = populate.get(f"/user/inventory/dealers/{delear.unique_id}")
     assert res.status_code == 200
     assert gift_box.sku in res.data.decode()
 
-    res = populate.get(f"/user/invantory/dealers/{delear.unique_id}/replenishment")
+    res = populate.get(f"/user/inventory/dealers/{delear.unique_id}/replenishment")
     assert res.status_code == 200
     assert gift_box.sku in res.data.decode()
     assert "mark_as_removed" in res.data.decode()
 
     res = populate.post(
-        f"/user/invantory/mark_as_unreplenishment/{dealer_gift_item.unique_id}/{gift_box.sku}"
+        f"/user/inventory/mark_as_unreplenishment/{dealer_gift_item.unique_id}/{gift_box.sku}"
     )
     assert res.status_code == 200
     assert b"Removed" in res.data
@@ -73,7 +73,7 @@ def test_dealer_invantory(populate: FlaskClient):
         ]
     )
     res = populate.post(
-        "/user/invantory/replenish_all",
+        "/user/inventory/replenish_all",
         data={"week": "", "dealers_gift_box_data": data},
         follow_redirects=True,
     )
