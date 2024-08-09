@@ -19,9 +19,7 @@ from app import schema as s
 from app import forms as f
 from app.controllers import get_gift_boxes_data, get_replenishment
 from app.controllers.user import role_required
-from app.controllers.weekly_dealer_gift_box_invoices import (
-    weekly_dealer_gift_box_invoices,
-)
+
 from app.logger import log
 from app.models import get_week_range
 
@@ -115,7 +113,6 @@ def view_orders(unique_id: str):
 
     gift_boxes_data = get_gift_boxes_data(start_date, end_date, dealer.id)
 
-    weekly_dealer_gift_box_invoices()
     return render_template(
         "user/inventory/view_orders_modal.html",
         gift_boxes_data=gift_boxes_data,
