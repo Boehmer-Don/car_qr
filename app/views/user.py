@@ -23,18 +23,19 @@ from app import models as m, db, mail
 from app import forms as f
 from app import schema as s
 from app.controllers.user import role_required
+
 from app.logger import log
 from .utils import get_canada_provinces, get_us_states
 
 from .sellers import seller
 from .dealer_gift_items import bp as dealer_gift_items_bp
-from .dealer_invantory import bp as dealer_invantory_bp
+from .dealer_inventory import bp as dealer_inventory_bp
 
 
 bp = Blueprint("user", __name__, url_prefix="/user")
 bp.register_blueprint(seller)
 bp.register_blueprint(dealer_gift_items_bp)
-bp.register_blueprint(dealer_invantory_bp)
+bp.register_blueprint(dealer_inventory_bp)
 
 
 @bp.route("/", methods=["GET"])

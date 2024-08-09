@@ -74,7 +74,7 @@
                         <td class="px-6 py-4">
                             {% if replenishment.status == "mark_as_removed" %}
                             <button hx-swap="outerHTML" hx-target="closest tr" hx-indicator="#htmx-spinner"
-                                hx-post="{{ url_for('user.invantory.mark_as_unreplenishment', unique_id=replenishment.delaer_gift_item.unique_id, week=week, sku=replenishment.sku) }}"
+                                hx-post="{{ url_for('user.inventory.mark_as_unreplenishment', unique_id=replenishment.delaer_gift_item.unique_id, week=week, sku=replenishment.sku) }}"
                                 class="h-8 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Mark
                                 as remove</button>
 
@@ -95,7 +95,7 @@
         </div>
         <div>
             {% if is_all_replenished %}
-            <form method="POST" action="{{ url_for('user.invantory.replenish_all') }}">
+            <form method="POST" action="{{ url_for('user.inventory.replenish_all') }}">
                 {{ form.hidden_tag() }}
                 {{ form.week }}
                 {{ form.dealers_gift_box_data }}
