@@ -212,11 +212,23 @@ def sell_car_label():
         flash("Datetime data is not valid", "danger")
         return redirect(redirect_url)
 
-    m.SaleReport(
+    sale_rep = m.SaleReport(
         label_id=label.id,
         seller_id=seller.id,
         pickup_date=pickup_date,
+        is_electric_car=form.is_electric_car.data,
     ).save()
+
+    first_oil_change = datetime.now() + timedelta(days=180)
+    second_oil_change = datetime.now() + timedelta(days=360)
+
+    db.session.add(m.OilChange(sale_rep_id=sale_rep.id, date=first_oil_change))
+    db.session.add(
+        m.OilChange(
+            sale_rep_id=sale_rep.id,
+            date=second_oil_change,
+        )
+    )
 
     label.status = m.LabelStatus.archived
     label.price_sold = form.price_sold.data

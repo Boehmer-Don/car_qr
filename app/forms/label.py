@@ -6,6 +6,7 @@ from wtforms import (
     IntegerField,
     FloatField,
     ValidationError,
+    BooleanField,
 )
 from wtforms.validators import DataRequired, Length
 
@@ -42,6 +43,7 @@ class SoldLabelForm(FlaskForm):
     seller_unique_id = StringField("Seller Unique ID", validators=[DataRequired()])
     pickup_date = StringField("Pickup Date", validators=[DataRequired()])
     pickup_time = StringField("Pickup Time", validators=[DataRequired()])
+    is_electric_car = BooleanField("Is Electric Car", default=False)
     price_sold = DecimalField(
         "Price Sold",
         validators=[DataRequired()],
