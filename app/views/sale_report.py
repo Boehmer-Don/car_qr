@@ -77,12 +77,13 @@ def get_all_panding_oil():
         .where(
             m.SaleReport.seller_id == current_user.id,
             m.OilChange.is_done.is_(False),
+            sa.exists().where(m.GiftBox.sale_result_id == m.SaleReport.id),
         )
         .group_by(m.SaleReport.id)
         .select_from(m.SaleReport)
     )
 
-    pagination = create_pagination(total=db.session.scalar(count_query))
+    pagination = create_pagination(total=db.session.scalar(count_query) or 0)
 
     return render_template(
         "sale_report/sale_reports_panding_oil.html",

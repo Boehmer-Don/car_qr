@@ -19,7 +19,7 @@ def get_gift_boxes_data(
         .join(m.DealerGiftItem, m.GiftBox.dealer_gift_item_id == m.DealerGiftItem.id)
         .where(
             sa.func.DATE(m.GiftBox.created_at) <= end_date.date(),
-            start_date.date() < sa.func.DATE(m.GiftBox.created_at),
+            start_date.date() <= sa.func.DATE(m.GiftBox.created_at),
             m.GiftBox.dealer_id == dealer_id,
         )
         .group_by(m.GiftBox._sku, m.DealerGiftItem.id, m.GiftBox.dealer_id)

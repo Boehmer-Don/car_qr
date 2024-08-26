@@ -29,7 +29,7 @@ def weekly_dealer_gift_box_invoices():
         gift_boxes = db.session.scalars(
             sa.select(m.GiftBox).where(
                 sa.func.DATE(m.GiftBox.created_at) <= end_date.date(),
-                start_date.date() < sa.func.DATE(m.GiftBox.created_at),
+                start_date.date() <= sa.func.DATE(m.GiftBox.created_at),
                 m.GiftBox.dealer_id == dealer.id,
             )
         ).all()
