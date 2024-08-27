@@ -104,10 +104,11 @@ def get_user():
     emails_query = (
         sa.select(m.User.email)
         .where(
+            m.User.role == m.UsersRole.dealer,
             m.User.first_name.ilike(f"%{email_input}%")
             | m.User.email.ilike(f"%{email_input}%")
             | m.User.last_name.ilike(f"%{email_input}%")
-            | m.User.name_of_dealership.ilike(f"%{email_input}%")
+            | m.User.name_of_dealership.ilike(f"%{email_input}%"),
         )
         .where(m.User.activated, m.User.deleted.is_(False))
     )

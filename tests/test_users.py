@@ -22,14 +22,8 @@ def test_list(populate: FlaskClient):
 
 # TODO
 def test_get_single_user(runner: FlaskClient, populate: FlaskClient):
-    # login(runner)
-    runner.invoke(args=["create-admin"])
     login(populate)
-    admin = db.session.scalar(
-        sa.select(m.User).where(m.User.email == app.config["ADMIN_EMAIL"])
-    )
-    assert admin
-    user = db.session.scalar(sa.select(m.User).where(m.User.activated.is_(True)))
+    user = db.session.scalar(sa.select(m.User).where(m.User.role == m.UsersRole.dealer))
     assert user
     response = populate.get(f"/user/search?email={user.email}")
     assert response.status_code == 200

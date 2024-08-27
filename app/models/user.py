@@ -97,6 +97,7 @@ class User(db.Model, UserMixin, ModelMixin):
     gift_items: orm.Mapped[list["DealerGiftItem"]] = orm.relationship(
         back_populates="dealer",
         order_by="DealerGiftItem.created_at.desc()",
+        primaryjoin="and_(User.id==DealerGiftItem.dealer_id, DealerGiftItem.is_deleted.is_(False))",
     )
     shipping_price: orm.Mapped[float] = orm.mapped_column(sa.Float, default=0.0)
 

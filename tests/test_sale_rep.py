@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import json
 
 from flask.testing import FlaskClient
@@ -37,8 +38,6 @@ def test_sale_reports(populate: FlaskClient):
         "gift_boxes": json.dumps(
             [{"dealerGiftItemId": user_gift_item.id, "qty": 1, "totalPrice": 1}]
         ),
-        "first_oil_change": "01/01/2021",
-        "second_oil_change": "01/28/2021",
         "is_notfy_by_email": True,
     }
     assert not sale_rep.gift_boxes
@@ -47,6 +46,19 @@ def test_sale_reports(populate: FlaskClient):
         "/sale-reports/set-gift-boxes", follow_redirects=True, data=form_data
     )
     assert res.status_code == 200
+    db.session.add(
+        m.OilChange(
+            sale_rep_id=sale_rep.id,
+            date=datetime.now() + timedelta(days=180),
+        )
+    )
+    db.session.add(
+        m.OilChange(
+            sale_rep_id=sale_rep.id,
+            date=datetime.now() + timedelta(days=360),
+        )
+    )
+    db.session.commit()
     assert "Gift boxes added" in res.data.decode()
 
     assert sale_rep.buyer
@@ -56,7 +68,7 @@ def test_sale_reports(populate: FlaskClient):
     assert res.status_code == 200
     assert sale_rep.buyer.email in res.data.decode()
 
-    res = res = populate.get("/sale-reports/panding-oil")
+    res = populate.get("/sale-reports/panding-oil")
     assert res.status_code == 200
     assert f"{sale_rep.unique_id}" in res.data.decode()
 
@@ -73,7 +85,6 @@ def test_sale_reports(populate: FlaskClient):
         "first_name": "test",
         "last_name": "user",
         "email": "b2@b.com",
-        "first_oil_change": "01/07/2021",
     }
     res = populate.post("/sale-reports/edit", follow_redirects=True, data=form_data)
     assert res.status_code == 200

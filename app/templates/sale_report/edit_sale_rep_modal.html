@@ -35,13 +35,12 @@
                         {% if sale_report.oil_changes[0].is_expired %}
                         <span
                             class="absolute top-[-1rem] right-0 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Expired</span>
-                        <input datepicker id="first_oil_change" type="text" name="first_oil_change" required
+                        <input readonly id="first_oil_change" type="text" name="first_oil_change" required
                             value="{{ sale_report.oil_changes[0].date.strftime('%m-%d-%Y') }}"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Select first oil change date">
                         {% else %}
-                        <input datepicker datepicker-min-date="{{ today }}" id="first_oil_change" type="text"
-                            name="first_oil_change" required
+                        <input readonly id="first_oil_change" type="text" name="first_oil_change" required
                             value="{{ sale_report.oil_changes[0].date.strftime('%m-%d-%Y') }}"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Select first oil change date">
@@ -69,13 +68,12 @@
                         {% if sale_report.oil_changes[1].is_expired %}
                         <span
                             class="absolute top-[-1rem] right-0 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Expired</span>
-                        <input datepicker id="second_oil_change" required name="second_oil_change" type="text"
+                        <input readonly id="second_oil_change" required name="second_oil_change" type="text"
                             value="{{ sale_report.oil_changes[1].date.strftime('%m-%d-%Y') }}"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Select second oil change date">
                         {% else %}
-                        <input datepicker datepicker-min-date="{{ today }}" id="second_oil_change" required
-                            name="second_oil_change" type="text"
+                        <input readonly id="second_oil_change" required name="second_oil_change" type="text"
                             value="{{ sale_report.oil_changes[1].date.strftime('%m-%d-%Y') }}"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Select second oil change date">

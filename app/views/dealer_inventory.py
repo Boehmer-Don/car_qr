@@ -57,8 +57,8 @@ def dealers():
         start_date, end_date = get_week_range(week)
         where_stmt = sa.and_(
             where_stmt,
-            start_date.date() < sa.func.DATE(m.GiftBox.created_at),
-            sa.func.DATE(m.GiftBox.created_at) < end_date.date(),
+            sa.func.DATE(m.GiftBox.created_at) <= end_date.date(),
+            start_date.date() <= sa.func.DATE(m.GiftBox.created_at),
         )
 
     query = (
@@ -210,7 +210,7 @@ def mark_as_unreplenishment(unique_id: str, sku: str):
             m.GiftBox,
         ).where(
             sa.func.DATE(m.GiftBox.created_at) <= end_date.date(),
-            start_date.date() < sa.func.DATE(m.GiftBox.created_at),
+            start_date.date() <= sa.func.DATE(m.GiftBox.created_at),
             m.GiftBox._sku == sku,
             m.GiftBox.dealer_gift_item_id == delaer_gift_item.id,
         )

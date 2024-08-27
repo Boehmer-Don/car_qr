@@ -42,6 +42,7 @@ class SaleReport(db.Model, ModelMixin):
 
     is_notfy_by_email: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
     is_notfy_by_phone: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
+    is_electric_car: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
     description: orm.Mapped[str] = orm.mapped_column(sa.String(264), default="")
 
     label: orm.Mapped["Label"] = orm.relationship(

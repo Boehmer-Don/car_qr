@@ -16,7 +16,8 @@ from app import schema as s
 from app.schema import ad_gift_boxes
 from app import forms as f
 from app.logger import log
-from .utils import DATE_FORMAT
+
+# from .utils import DATE_FORMAT
 
 
 sale_report = Blueprint("sale_report", __name__, url_prefix="/sale-reports")
@@ -29,7 +30,7 @@ def get_all():
     log(log.INFO, "Getting sale reports")
     stmt = sa.and_(
         m.SaleReport.seller_id == current_user.id,
-        sa.not_(sa.exists().where(m.OilChange.sale_rep_id == m.SaleReport.id)),
+        sa.not_(sa.exists().where(m.GiftBox.sale_result_id == m.SaleReport.id)),
     )
     query = (
         sa.select(m.SaleReport)
@@ -65,6 +66,7 @@ def get_all_panding_oil():
         .where(
             m.SaleReport.seller_id == current_user.id,
             m.OilChange.is_done.is_(False),
+            sa.exists().where(m.GiftBox.sale_result_id == m.SaleReport.id),
         )
         .group_by(m.SaleReport.id)
         .order_by(m.SaleReport.created_at.desc())
@@ -75,12 +77,13 @@ def get_all_panding_oil():
         .where(
             m.SaleReport.seller_id == current_user.id,
             m.OilChange.is_done.is_(False),
+            sa.exists().where(m.GiftBox.sale_result_id == m.SaleReport.id),
         )
         .group_by(m.SaleReport.id)
         .select_from(m.SaleReport)
     )
 
-    pagination = create_pagination(total=db.session.scalar(count_query))
+    pagination = create_pagination(total=db.session.scalar(count_query) or 0)
 
     return render_template(
         "sale_report/sale_reports_panding_oil.html",
@@ -235,16 +238,16 @@ def set_gift_boxes():
         flash("Notify by email or phone is not selected", "danger")
         return redirect(url_for("sale_report.get_all"))
 
-    try:
-        first_oil_change = datetime.strptime(form.first_oil_change.data, DATE_FORMAT)
-        second_oil_change = datetime.strptime(form.second_oil_change.data, DATE_FORMAT)
+    # try:
+    #     first_oil_change = datetime.strptime(form.first_oil_change.data, DATE_FORMAT)
+    #     second_oil_change = datetime.strptime(form.second_oil_change.data, DATE_FORMAT)
 
-        if first_oil_change.date() >= second_oil_change.date():
-            raise ValueError("First oil change date should be greater than second")
-    except ValueError as e:
-        log(log.ERROR, "Date validation failed [%s]", e)
-        flash(f"Date validation failed Error: {e}", "danger")
-        return redirect(url_for("sale_report.get_all"))
+    #     if first_oil_change.date() >= second_oil_change.date():
+    #         raise ValueError("First oil change date should be greater than second")
+    # except ValueError as e:
+    #     log(log.ERROR, "Date validation failed [%s]", e)
+    #     flash(f"Date validation failed Error: {e}", "danger")
+    #     return redirect(url_for("sale_report.get_all"))
 
     total_amount = sum(box.total_price for box in gift_boxes)
 
@@ -278,13 +281,13 @@ def set_gift_boxes():
         db.session.add(gift_box)
         new_gift_boxes.append(gift_box)
 
-    db.session.add(m.OilChange(sale_rep_id=sale_report.id, date=first_oil_change))
-    db.session.add(
-        m.OilChange(
-            sale_rep_id=sale_report.id,
-            date=second_oil_change,
-        )
-    )
+    # db.session.add(m.OilChange(sale_rep_id=sale_report.id, date=first_oil_change))
+    # db.session.add(
+    #     m.OilChange(
+    #         sale_rep_id=sale_report.id,
+    #         date=second_oil_change,
+    #     )
+    # )
 
     sale_report.is_notfy_by_email = form.is_notfy_by_email.data
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
@@ -407,23 +410,23 @@ def edit():
         flash("Sale report not found", "danger")
         return redirect(url_for("sale_report.get_all_panding_oil"))
 
-    first_oil_change = sale_report.oil_changes[0]
-    second_oil_change = sale_report.oil_changes[1]
-    try:
-        if form.first_oil_change.data:
-            first_oil_change.date = datetime.strptime(
-                form.first_oil_change.data, DATE_FORMAT
-            )
-        if form.second_oil_change.data:
-            second_oil_change.date = datetime.strptime(
-                form.second_oil_change.data, DATE_FORMAT
-            )
-        if first_oil_change.date.date() >= second_oil_change.date.date():
-            raise ValueError("First oil change date should be greater than second")
-    except ValueError as e:
-        log(log.ERROR, "Date validation failed [%s]", e)
-        flash(f"Date validation failed Error: {e}", "danger")
-        return redirect(url_for("sale_report.get_all_panding_oil"))
+    # first_oil_change = sale_report.oil_changes[0]
+    # second_oil_change = sale_report.oil_changes[1]
+    # try:
+    #     if form.first_oil_change.data:
+    #         first_oil_change.date = datetime.strptime(
+    #             form.first_oil_change.data, DATE_FORMAT
+    #         )
+    #     if form.second_oil_change.data:
+    #         second_oil_change.date = datetime.strptime(
+    #             form.second_oil_change.data, DATE_FORMAT
+    #         )
+    #     if first_oil_change.date.date() >= second_oil_change.date.date():
+    #         raise ValueError("First oil change date should be greater than second")
+    # except ValueError as e:
+    #     log(log.ERROR, "Date validation failed [%s]", e)
+    #     flash(f"Date validation failed Error: {e}", "danger")
+    #     return redirect(url_for("sale_report.get_all_panding_oil"))
 
     sale_report.is_notfy_by_email = form.is_notfy_by_email.data
     sale_report.is_notfy_by_phone = form.is_notfy_by_phone.data
