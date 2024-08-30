@@ -1,4 +1,3 @@
-import base64
 from datetime import datetime, timedelta
 from pathlib import Path
 from uuid import uuid4
