@@ -5,15 +5,19 @@ from wtforms import (
     ValidationError,
     BooleanField,
     HiddenField,
+    FileField,
 )
 from wtforms.validators import DataRequired, Length
 import sqlalchemy as sa
+import filetype
+
 from app import db
 from app import models as m
 from .base import BaseForm
 
 
 class GiftItemForm(BaseForm):
+
     description = StringField(
         "Description",
         validators=[DataRequired(), Length(0, 264)],
@@ -52,6 +56,7 @@ class GiftItemForm(BaseForm):
     is_default = BooleanField("is_default", default=True)
     apply_to_all = BooleanField("is_default", default=False)
     make_available = BooleanField("is_default", default=False)
+    image = FileField(render_kw={"accept": "image/*"})
 
     def validate_SKU(self, field):
         query = sa.select(m.GiftItem).where(m.GiftItem.SKU == field.data)
@@ -65,6 +70,13 @@ class GiftItemForm(BaseForm):
     def validate_min_qty(self, field):
         if field.data >= self.max_qty.data:
             raise ValidationError("Min qty must be less than max qty")
+
+    def validate_image(self, field):
+        if not field.data or field.data.content_type == "application/octet-stream":
+            return
+        is_file = filetype.guess(field.data)
+        if not is_file or not filetype.is_image(field.data):
+            raise ValidationError("File must be an image")
 
 
 class EditGiftItemForm(GiftItemForm):

@@ -8,7 +8,7 @@ from flask import (
 from flask_login import login_required, current_user
 import sqlalchemy as sa
 
-from app.controllers import create_pagination, role_required
+from app.controllers import create_pagination, role_required, save_file
 from app import models as m, db
 from app import forms as f
 from app.logger import log
@@ -92,6 +92,10 @@ def add():
         flash(f"Invalid data [{form.format_errors}]", "danger")
         return redirect(url_for("gift_item.get_all"))
 
+    image_path = m.DEFUALT_IMAGE_PATH
+    if form.image.data:
+        image_path = save_file(form.image.data, is_img=True)
+
     gift_item = m.GiftItem(
         description=form.description.data,
         SKU=form.SKU.data,
@@ -100,6 +104,7 @@ def add():
         max_qty=form.max_qty.data,
         is_default=form.is_default.data,
         is_available=form.make_available.data,
+        image_path=str(image_path),
     )
     db.session.add(gift_item)
     db.session.commit()
@@ -147,7 +152,7 @@ def edit_modal(unique_id: str):
     form.max_qty.data = item.max_qty
     form.is_default.data = item.is_default
     form.make_available.data = item.is_available
-    return render_template("gift_item/edit_modal.html", form=form)
+    return render_template("gift_item/edit_modal.html", form=form, item=item)
 
 
 @gift_item.route("/edit", methods=["POST"])
@@ -181,6 +186,9 @@ def edit():
     item.max_qty = form.max_qty.data
     item.is_default = form.is_default.data
     item.is_available = form.make_available.data
+    if form.image.data:
+        item.image_path = str(save_file(form.image.data, is_img=True))
+
     db.session.commit()
     flash("Gift Item updated successfully", "success")
     return redirect(url_for("gift_item.get_all"))

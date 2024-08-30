@@ -1,6 +1,10 @@
+import base64
 from datetime import datetime, timedelta
+from pathlib import Path
 from uuid import uuid4
 from app import db
+
+DEFUALT_IMAGE_PATH = Path("img/no_picture_default.png")
 
 
 class ModelMixin(object):
@@ -35,6 +39,3 @@ def get_week_range(week: str = "") -> tuple[datetime, datetime]:
     end_of_week = start_of_week + timedelta(days=6)
 
     return start_of_week, end_of_week
-
-
-# Add your own utility classes and functions here.
