@@ -15,14 +15,15 @@ BASE_FILE_PATH = Path(UPLOAD_FOLDER)
 MAX_FILE_SIZE = 1 * 1024 * 1024  # 1 MB limit
 
 
-def save_file(file: FileStorage) -> Path:
+def save_file(file: FileStorage, is_img: bool = False) -> Path:
     """Save file to disk and return the path and extension."""
     log(log.INFO, "Saving file.")
     kind = filetype.guess(file)
 
     if not kind:
         raise ValueError("Could not determine file type.")
-    if kind.extension not in ["pdf", "doc", "docx"]:
+
+    if not is_img and kind.extension not in ["pdf", "doc", "docx"]:
         raise ValueError("Invalid file type.")
 
     if file.content_length > MAX_FILE_SIZE:
@@ -40,4 +41,6 @@ def save_file(file: FileStorage) -> Path:
         read = file.read()
         f.write(read)
 
-    return Path("/static/uploads") / file_name
+    return (
+        Path("uploads") / file_name if is_img else Path("/static/uploads") / file_name
+    )

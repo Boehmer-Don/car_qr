@@ -39,7 +39,7 @@ def webhook():
             os.environ.get("ENDPOINT_SECRET"),
         )
     except Exception as e:
-        raise e
+        raise e  # TODO add https responss
 
     log(log.INFO, "Stripe received event: %s", event["type"])
     match event["type"]:

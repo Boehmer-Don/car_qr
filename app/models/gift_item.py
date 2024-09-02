@@ -3,7 +3,7 @@ import sqlalchemy as sa
 from sqlalchemy import orm
 
 from app.database import db
-from .utils import ModelMixin, generate_uuid
+from .utils import ModelMixin, generate_uuid, DEFUALT_IMAGE_PATH
 
 
 class GiftItem(db.Model, ModelMixin):
@@ -15,8 +15,10 @@ class GiftItem(db.Model, ModelMixin):
         default=generate_uuid,
     )
     created_at: orm.Mapped[datetime] = orm.mapped_column(
-        sa.DateTime,
-        default=datetime.utcnow,
+        sa.DateTime, default=datetime.utcnow
+    )
+    image_path: orm.Mapped[str] = orm.mapped_column(
+        sa.String(512), default=str(DEFUALT_IMAGE_PATH)
     )
 
     SKU: orm.Mapped[str] = orm.mapped_column(sa.String(64), nullable=False, unique=True)
