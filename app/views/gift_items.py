@@ -41,7 +41,7 @@ def get_all():
 @login_required
 @role_required([m.UsersRole.dealer])
 def get_all_dealer():
-    log(log.INFO, "Getting all gift items")
+    log(log.INFO, "Getting all gift items for dealer")
     query = (
         sa.select(m.DealerGiftItem)
         .where(
