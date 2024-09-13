@@ -31,9 +31,7 @@
   <!-- prettier-ignore -->
   {% block links %}
   {% endblock %}
-  <script src="https://unpkg.com/htmx.org@1.9.9"
-    integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
-    crossorigin="anonymous"></script>
+  <script src="{{ url_for('static', filename='js/lib/htmx.min.js') }}"></script>
 </head>
 
 <body class="bg-white dark:bg-gray-800">
@@ -108,6 +106,7 @@
   </div>
   {% include 'footer.html' %}
   {% endblock %}
+  {% include 'spinner.html' %}
   <!-- scripts -->
 
 

@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 from flask import (
     Blueprint,
+    abort,
     render_template,
     request,
     flash,
@@ -13,23 +14,34 @@ from flask import (
 )
 from flask_login import login_required, current_user
 from flask_mail import Message
+
 import sqlalchemy as sa
 
 from flask import current_app as app
 from app.controllers import create_pagination, update_stripe_customer
 from app import models as m, db, mail
 from app import forms as f
+from app import schema as s
+from app.controllers.user import role_required
+
 from app.logger import log
+from .utils import get_canada_provinces, get_us_states
+
+from .sellers import seller
+from .dealer_gift_items import bp as dealer_gift_items_bp
+from .dealer_inventory import bp as dealer_inventory_bp
 
 
 bp = Blueprint("user", __name__, url_prefix="/user")
+bp.register_blueprint(seller)
+bp.register_blueprint(dealer_gift_items_bp)
+bp.register_blueprint(dealer_inventory_bp)
 
 
 @bp.route("/", methods=["GET"])
 @login_required
+@role_required([m.UsersRole.admin])
 def get_all():
-    if current_user.role != m.UsersRole.admin:
-        return redirect(url_for("main.index"))
     q = request.args.get("q", type=str, default=None)
     query = (
         m.User.select()
@@ -92,10 +104,11 @@ def get_user():
     emails_query = (
         sa.select(m.User.email)
         .where(
+            m.User.role == m.UsersRole.dealer,
             m.User.first_name.ilike(f"%{email_input}%")
             | m.User.email.ilike(f"%{email_input}%")
             | m.User.last_name.ilike(f"%{email_input}%")
-            | m.User.name_of_dealership.ilike(f"%{email_input}%")
+            | m.User.name_of_dealership.ilike(f"%{email_input}%"),
         )
         .where(m.User.activated, m.User.deleted.is_(False))
     )
@@ -105,6 +118,7 @@ def get_user():
 
 @bp.route("/admins", methods=["GET"])
 @login_required
+@role_required([m.UsersRole.admin])
 def get_admins():
     if current_user.role != m.UsersRole.admin:
         return redirect(url_for("main.index"))
@@ -157,30 +171,50 @@ def get_admins():
     )
 
 
+@bp.route("/<unique_id>/edit_modal", methods=["GET"])
+@login_required
+@role_required([m.UsersRole.admin])
+def edit_modal(unique_id: str):
+    """htmx"""
+    user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id))
+    if not user:
+        log(log.ERROR, "Not found user by id : [%s]", unique_id)
+        return render_template(
+            "toast.html", message="User not found", toast_type="danger"
+        )
+    form: f.UserForm = f.UserForm()
+
+    return render_template("user/edit_modal.html", form=form, user=user)
+
+
 @bp.route("/save", methods=["POST"])
 @login_required
 def save():
     form: f.UserForm = f.UserForm()
-    if form.validate_on_submit():
-        query = m.User.select().where(m.User.id == int(form.user_id.data))
-        user: m.User | None = db.session.scalar(query)
-        if not user:
-            log(log.ERROR, "Not found user by id : [%s]", form.user_id.data)
-            flash("Failed to find user", "danger")
-        user.first_name = form.first_name.data
-        user.last_name = form.last_name.data
-        user.email = form.email.data
-        if form.password.data.strip("*\n "):
-            user.password = form.password.data
-        user.save()
-        if form.next_url.data:
-            return redirect(form.next_url.data)
-        return redirect(url_for("user.get_all"))
-
-    else:
+    if not form.validate_on_submit():
         log(log.ERROR, "User save errors: [%s]", form.errors)
         flash(f"{form.errors}", "danger")
         return redirect(url_for("user.get_all"))
+    user = db.session.scalar(
+        sa.select(m.User).where(m.User.id == int(form.user_id.data))
+    )
+    if not user:
+        log(log.ERROR, "Not found user by id : [%s]", form.user_id.data)
+        flash("Failed to find user", "danger")
+        return redirect(url_for("user.get_all"))
+
+    user.first_name = form.first_name.data
+    user.last_name = form.last_name.data
+    user.email = form.email.data
+    if form.password.data and form.password.data.strip("*\n "):
+        user.password = form.password.data
+    user.save()
+    if form.next_url.data:
+        return redirect(form.next_url.data)
+
+    if user.role == m.UsersRole.admin:
+        return redirect(url_for("user.get_admins"))
+    return redirect(url_for("user.get_all"))
 
 
 @bp.route("/delete/<int:id>", methods=["DELETE"])
@@ -201,47 +235,119 @@ def delete(id: int):
     return "ok", 200
 
 
-@bp.route("/resend-invite", methods=["POST"])
+@bp.route("/activation", methods=["POST"])
 @login_required
-def resend_invite():
-    form: f.ResendInviteForm = f.ResendInviteForm()
-    if form.validate_on_submit():
-        query = m.User.select().where(m.User.email == form.email.data)
-        user: m.User | None = db.session.scalar(query)
-        if not user:
-            log(log.ERROR, "Not found user by id. Creating a new user.")
-            user = m.User(email=form.email.data)
-            log(log.INFO, "User created: [%s]", user)
-            user.save()
-            flash("A new user created", "info")
+def activation():
+    log(log.INFO, "User activation request")
+    if current_user.role != m.UsersRole.seller:
+        log(log.ERROR, "User [%s] is not a seller", current_user)
+        return abort(403)
+    current_user.activated = not current_user.activated
+    db.session.commit()
 
-        log(log.INFO, "Sending an invite for user: [%s]", user)
-        msg = Message(
-            subject="New password",
-            sender=app.config["MAIL_DEFAULT_SENDER"],
-            recipients=[user.email],
-        )
-        url = url_for(
-            "auth.activate",
-            reset_password_uid=user.unique_id,
-            _external=True,
-        )
-        msg.html = render_template(
-            "email/confirm_invite.htm",
-            user=user,
-            url=url,
-        )
-        mail.send(msg)
-        flash("Your invite has been successfully sent!", "success")
-        log(log.INFO, "Invite is resend for user: [%s]", user)
-        if form.next_url.data:
-            return redirect(form.next_url.data)
-        return redirect(url_for("user.get_all"))
+    log(log.INFO, "User set [%s] for account.", current_user.activated)
+    if current_user.activated:
+        return redirect(url_for("user.account", user_unique_id=current_user.unique_id))
 
-    else:
+    return redirect(url_for("auth.logout"))
+
+
+@bp.route("/shipping-price", methods=["GET", "POST"])
+@login_required
+@role_required([m.UsersRole.admin])
+def shipping_price():
+    """htmx"""
+
+    form = f.ShippingPriceForm()
+    if request.method == "GET":
+        user_unique_id = request.args.get("user_unique_id", type=str, default="")
+        user = None
+        if user_unique_id:
+            user = db.session.scalar(
+                sa.select(m.User).where(m.User.unique_id == user_unique_id)
+            )
+
+        if user:
+            form.price.data = user.shipping_price
+            form.user_unique_id.data = user.unique_id
+
+        return render_template("user/shipping_price_modal.html", form=form, user=user)
+
+    if not form.validate_on_submit():
         log(log.ERROR, "User save errors: [%s]", form.errors)
         flash(f"{form.errors}", "danger")
         return redirect(url_for("user.get_all"))
+
+    query = sa.select(m.User).where(
+        m.User.role == m.UsersRole.dealer,
+        m.User.activated,
+        m.User.deleted.is_(False),
+    )
+
+    if form.user_unique_id.data:
+        query = query.where(m.User.unique_id == form.user_unique_id.data)
+
+    users = db.session.scalars(query).all()
+
+    for user in users:
+        user.shipping_price = form.price.data
+    db.session.commit()
+    flash("Shipping price was successfully updated", "success")
+    return redirect(url_for("user.get_all"))
+
+
+@bp.route("/resend-invite", methods=["GET"])
+@login_required
+@role_required([m.UsersRole.admin])
+def resend_invite_modal():
+    """htmx"""
+    user_email = request.args.get("user_email", type=str, default=None)
+    form: f.ResendInviteForm = f.ResendInviteForm()
+    if user_email:
+        form.email.data = user_email
+    return render_template("user/resend_invite_modal.html", form=form)
+
+
+@bp.route("/resend-invite", methods=["POST"])
+@login_required
+@role_required([m.UsersRole.admin])
+def resend_invite():
+    form: f.ResendInviteForm = f.ResendInviteForm()
+    if not form.validate_on_submit():
+        log(log.ERROR, "User save errors: [%s]", form.errors)
+        flash(f"{form.errors}", "danger")
+        return redirect(url_for("user.get_all"))
+
+    user = db.session.scalar(sa.select(m.User).where(m.User.email == form.email.data))
+    if not user:
+        log(log.ERROR, "Not found user by id. Creating a new user.")
+        user = m.User(
+            email=form.email.data, shipping_price=app.config["SHIPPING_PRICE"]
+        )
+        log(log.INFO, "User created: [%s]", user)
+        user.save()
+        flash("A new user created", "info")
+
+    log(log.INFO, "Sending an invite for user: [%s]", user)
+    msg = Message(
+        subject="New password",
+        sender=app.config["MAIL_DEFAULT_SENDER"],
+        recipients=[user.email],
+    )
+    url = url_for(
+        "auth.activate",
+        reset_password_uid=user.unique_id,
+        _external=True,
+    )
+    msg.html = render_template(
+        "email/confirm_invite.htm",
+        user=user,
+        url=url,
+    )
+    mail.send(msg)
+    flash("Your invite has been successfully sent!", "success")
+    log(log.INFO, "Invite is resend for user: [%s]", user)
+    return redirect(url_for("user.get_all"))
 
 
 @bp.route("/account/<user_unique_id>", methods=["GET", "POST"])
@@ -460,25 +566,42 @@ def get_logo(user_unique_id: str):
 
 @bp.route("/new_admin", methods=["GET", "POST"])
 @login_required
+@role_required([m.UsersRole.admin])
 def new_admin():
-    if not current_user.role == m.UsersRole.admin:
-        log(log.INFO, "Access denied. User is not admin")
-        return redirect(url_for("main.index"))
-
     form: f.AdminForm = f.AdminForm()
-    if form.validate_on_submit():
-        user = m.User(
-            role=m.UsersRole.admin,
-            email=form.email.data,
-            phone=form.phone.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            password=form.password.data,
-            activated=True,
-        )
-        log(log.INFO, "Form submitted. New admin: [%s]", user)
-        flash("New admin created!", "success")
-        user.save()
-        return redirect(url_for("user.get_admins"))
+    if request.method == "GET":
+        return render_template("user/new_admin.html", form=form)
 
-    return render_template("user/new_admin.html", form=form)
+    if not form.validate_on_submit():
+        log(log.ERROR, "Form validation error: [%s]", form.errors)
+        flash(f"{form.errors}", "danger")
+        return render_template("user/new_admin.html", form=form)
+
+    user = m.User(
+        role=m.UsersRole.admin,
+        email=form.email.data,
+        phone=form.phone.data,
+        first_name=form.first_name.data,
+        last_name=form.last_name.data,
+        password=form.password.data,
+        activated=True,
+    )
+    log(log.INFO, "Form submitted. New admin: [%s]", user)
+    flash("New admin created!", "success")
+    user.save()
+    return redirect(url_for("user.get_admins"))
+
+
+@bp.route(
+    "/select-region",
+    methods=["GET"],
+)
+@login_required
+@role_required([m.UsersRole.admin, m.UsersRole.dealer])
+def select_province():
+    country = request.args.get("country", type=str)
+    provinces = get_canada_provinces()
+    if country == s.Country.US.value:
+        provinces = get_us_states()
+
+    return render_template("user/provinces.html", provinces=provinces)

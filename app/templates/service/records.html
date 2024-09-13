@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block links %}
+
+{% endblock %} {% block content %}
+
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg pt-4">
+    <div class="w-full p-4 flex justify-between">
+        <h1 class="text-2xl md:text-4xl font-bold px-5 dark:text-white">
+            Records
+        </h1>
+    </div>
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Name
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Created at
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    File
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr
+                class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                <!-- this a name of service  -->
+                <td class="px-6 py-4">
+                    {{ record.name }}
+                </td>
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+
+                    {{ record.created_at.strftime("%Y-%m-%d/%H:%M:%S") }}
+                </th>
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+
+                    <a href="{{ record.file_url }}" target="_blank" class="flex items-center p-2 rounded-lg text-white">
+                        <!-- prettier-ignore -->
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 10V4a1 1 0 0 0-1-1H9.914a1 1 0 0 0-.707.293L5.293 7.207A1 1 0 0 0 5 7.914V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 3v4a1 1 0 0 1-1 1H5m5 6h9m0 0-2-2m2 2-2 2" />
+                        </svg>
+                    </a>
+                </th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if page.pages > 1 %}
+    <div class="container content-center mt-3 mb-8 flex bg-white dark:bg-gray-800">
+        <nav aria-label="Page navigation example" class="mx-auto">
+            <ul class="inline-flex items-center -space-x-px">
+                <li>
+                    <!-- prettier-ignore -->
+                    <a href="{{ url_for('service.records') }}?page=1&q={{page.query}}"
+                        class="block px-3 py-2 rounded-md mx-1 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <span class="sr-only">First</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd"
+                                d="M15.79 14.77a.75.75 0 01-1.06.02l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 111.04 1.08L11.832 10l3.938 3.71a.75.75 0 01.02 1.06zm-6 0a.75.75 0 01-1.06.02l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 111.04 1.08L5.832 10l3.938 3.71a.75.75 0 01.02 1.06z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </li>
+                <li>
+                    <!-- prettier-ignore -->
+                    <a href="{{ url_for('service.records') }}?page={{page.page-1 if page.page > 1 else 1}}&q={{page.query}}"
+                        class="block px-3 py-2 ml-0 rounded-md mx-1 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <span class="sr-only">Previous</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd"
+                                d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </li>
+
+                <!-- old pagination page links -->
+                <div class="hidden">
+                    <!-- prettier-ignore -->
+                    {% for p in page.pages_for_links %}
+                    <li>
+                        <!-- prettier-ignore -->
+                        {% if p == page.page %}
+                        <!-- prettier-ignore -->
+                        <a href="{{ url_for('service.records') }}?page={{p}}&q={{page.query}}" aria-current="page"
+                            class="z-10 px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-indigo-50 hover:bg-indigo-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">{{p}}</a>
+                        {% else %}
+                        <!-- prettier-ignore -->
+                        <a href="{{ url_for('service.records') }}?page={{p}}&q={{page.query}}"
+                            class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{p}}</a>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </div>
+                <!-- old pagination page links -->
+
+                <!-- new pagination page links -->
+                <div
+                    class="cursor-pointer z-10 px-5 py-2 rounded-md mx-3 leading-tight text-gray-500 font-medium border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                    {{page.page}} of {{ page.pages }}
+                </div>
+                <!-- new pagination page links -->
+
+                <li>
+                    <!-- prettier-ignore -->
+                    <a href="{{ url_for('service.records') }}?page={{page.page+1 if page.page < page.pages else page.pages}}&q={{page.query}}"
+                        class="block px-3 py-2 rounded-md mx-1 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <!-- prettier-ignore -->
+                        <span class="sr-only">Next</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd"
+                                d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </li>
+                <li>
+                    <!-- prettier-ignore -->
+                    <a href="{{ url_for('service.records') }}?page={{page.pages}}&q={{page.query}}"
+                        class="block px-3 py-2 rounded-md leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <span class="sr-only">Last</span>
+                        <!-- prettier-ignore -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd"
+                                d="M10.21 14.77a.75.75 0 01.02-1.06L14.168 10 10.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                                clip-rule="evenodd" />
+                            <path fill-rule="evenodd"
+                                d="M4.21 14.77a.75.75 0 01.02-1.06L8.168 10 4.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+
+<!-- prettier-ignore -->
+{% endblock %}
+<!-- prettier-ignore -->
+{% block scripts %}
+{% endblock %}

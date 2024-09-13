@@ -20,6 +20,11 @@ def index():
     return redirect(url_for("main.landing"))
 
 
+@main_blueprint.route("/no-content")
+def no_content():
+    return "", 200
+
+
 @main_blueprint.route("/l/<sticker_id>")
 def redirect_to_outer_url(sticker_id: str):
     log(log.INFO, "Current user: [%s]", current_user)
@@ -36,6 +41,13 @@ def redirect_to_outer_url(sticker_id: str):
     db.session.add(view)
     db.session.commit()
     log(log.INFO, "views after: [%s]", label.views)
+
+    # if label.oil_not_changed:
+    #     log(log.INFO, "Label oil_not_changed: [%s]", label)
+    #     logout_user()
+    #     session.clear()
+    #     session["sticker_id"] = sticker_id
+    #     return redirect(url_for("auth.login"))
 
     if label.gift:
         log(log.INFO, "Redirecting to gift page. Label: [%s]", label)
