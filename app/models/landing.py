@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Email
+from flask_wtf.recaptcha import RecaptchaField
 
 
 class LandingForm(FlaskForm):
@@ -8,3 +9,4 @@ class LandingForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     message = StringField("Message", validators=[DataRequired()])
     submit = SubmitField("Submit")
+    recaptcha = RecaptchaField()
