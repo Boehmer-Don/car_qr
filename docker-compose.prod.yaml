@@ -34,25 +34,20 @@ services:
 
     links:
       - db
+    restart: always
     volumes:
       - ./backup:/backup
     environment:
       # scheduler
-      SCHEDULE_DAY: ${SCHEDULE_DAY:-3}
-      POSTGRES_DATABASE: db
+      SCHEDULE_HOUR: ${SCHEDULE_HOUR:-0}
+      SCHEDULE_MINUTE: ${SCHEDULE_MINUTE:-0}
+      SCHEDULE_SECOND: ${SCHEDULE_SECOND:-0}
       POSTGRES_HOST: db
+      POSTGRES_DATABASE: db
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-passwd}
       POSTGRES_EXTRA_OPTS: '--schema=public --blobs'
-      DAYS_HISTORY: 7
-      S3_REGION: ${S3_REGION:-**None**}
-      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-**None**}
-      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-**None**}
-      S3_BUCKET: ${S3_BUCKET:-**None**}
-      S3_PREFIX: ${S3_PREFIX:-**None**}
-      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-**None**}
-      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-**None**}
-      AWS_DEFAULT_REGION: ${S3_REGION:-**None**}
+      DAYS_HISTORY: 30
 networks:
   default:
     name: qr_network

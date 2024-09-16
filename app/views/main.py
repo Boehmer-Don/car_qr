@@ -5,11 +5,13 @@ from flask import (
     url_for,
     Blueprint,
     flash,
+    request,
 )
 from flask_login import current_user
 from flask_mail import Message, Mail
 from app import models as m, db
 from app.logger import log
+from app.controllers import validate_recaptcha
 
 
 main_blueprint = Blueprint("main", __name__)
@@ -54,26 +56,39 @@ def landing():
             return redirect(
                 url_for("user.account", user_unique_id=current_user.unique_id)
             )
-    mail = Mail()
+
     form = m.LandingForm()
-    if form.validate_on_submit():
-        msg = Message(
-            subject="New Customer",
-            sender=app.config["MAIL_DEFAULT_SENDER"],
-            recipients=[app.config.get("ADMIN_EMAIL")],
+    if request.method == "GET":
+        return render_template(
+            "landing.html",
+            form=form,
+            RE_SITE_KEY=app.config["RECAPTCHA_PUBLIC_KEY"],
         )
 
-        msg.html = render_template(
-            "email/new_customer.htm",
-            name=form.name.data,
-            email=form.email.data,
-            message=form.message.data,
-        )
-        mail.send(msg)
-
-        flash("Your credentials are sent to admin", "success")
-        return redirect(url_for("main.landing"))
-    elif form.is_submitted():
+    if not form.validate_on_submit():
         log(log.WARNING, "Form submitted error: [%s]", form.errors)
-        flash("The given data was invalid.", "danger")
-    return render_template("landing.html", form=form)
+        flash("Form submitted error.")
+        return redirect(url_for("main.landing"))
+
+    if not validate_recaptcha():
+        log(log.WARNING, "Recaptcha validation failed.")
+        flash("Recaptcha validation failed.")
+        return redirect(url_for("main.landing"))
+
+    mail = Mail()
+    msg = Message(
+        subject="New Customer",
+        sender=app.config["MAIL_DEFAULT_SENDER"],
+        recipients=[app.config.get("ADMIN_EMAIL")],
+    )
+
+    msg.html = render_template(
+        "email/new_customer.htm",
+        name=form.name.data,
+        email=form.email.data,
+        message=form.message.data,
+    )
+    mail.send(msg)
+    flash("Thank you for your message. We will get back to you soon.")
+
+    return redirect(url_for("main.landing"))

@@ -13,3 +13,4 @@ from .stripe import (
 from .subscriptions_expiration_check import check_subscriptions
 from .car_options import create_models
 from .graphs import create_graph, create_bar_graph, create_location_graph
+from .recaptcha import validate_recaptcha
