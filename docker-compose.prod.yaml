@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 services:
   db:
     image: postgres:14
@@ -14,7 +14,7 @@ services:
       PGUSER: ${POSTGRES_USER:-postgres}
 
   app:
-    image: simple2b/car-qr-label:0.3.94
+    image: simple2b/car-qr-label:0.3.101
     restart: always
     command: sh ./start_server.sh
     environment:
@@ -24,11 +24,11 @@ services:
     depends_on:
       - db
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`autoqrcode.com`)"
-      - "traefik.http.routers.app.tls=true"
-      - "traefik.http.routers.app.tls.certresolver=myresolver"
-      - "traefik.http.services.app.loadbalancer.server.port=8000"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.app.rule=Host(`autoqrcode.com`)'
+      - 'traefik.http.routers.app.tls=true'
+      - 'traefik.http.routers.app.tls.certresolver=myresolver'
+      - 'traefik.http.services.app.loadbalancer.server.port=8000'
   backup:
     image: simple2b/pg-backup:1.0
 
@@ -43,7 +43,7 @@ services:
       POSTGRES_HOST: db
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-passwd}
-      POSTGRES_EXTRA_OPTS: "--schema=public --blobs"
+      POSTGRES_EXTRA_OPTS: '--schema=public --blobs'
       DAYS_HISTORY: 7
       S3_REGION: ${S3_REGION:-**None**}
       S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-**None**}

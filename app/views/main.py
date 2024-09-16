@@ -76,4 +76,4 @@ def landing():
     elif form.is_submitted():
         log(log.WARNING, "Form submitted error: [%s]", form.errors)
         flash("The given data was invalid.", "danger")
-    return render_template("landing.html")
+    return render_template("landing.html", form=form)
