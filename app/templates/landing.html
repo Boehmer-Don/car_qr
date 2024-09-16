@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing</title>
-
+    <script src="https://www.google.com/recaptcha/api.js"></script>
     <link rel="stylesheet" href="https://anijs.github.io/lib/anicollection/anicollection.css">
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
     <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
@@ -581,16 +581,17 @@
             </div>
 
             <div class="flex justify-center">
-                <form action="#" method="post" class="w-10/12 md:w-1/2">
+                <form action="{{ url_for('main.landing') }}" method="post" class="w-10/12 md:w-1/2">
+                    {{ form.hidden_tag() }}
                     <div class="doubled_inputs mt-3">
                         <div class="short_input_container short_input_container_left">
-                            <input name="name"
+                            <input name="name" type="text"
                                 class="w-full m-1 p-5 rounded-lg bg-indigo-50 border-0 placeholder:text-gray-400"
                                 type="text" placeholder="Name">
                         </div>
 
                         <div class="short_input_container short_input_container_right">
-                            <input name="email"
+                            <input name="email" type="email"
                                 class="w-full m-1 p-5 rounded-lg bg-indigo-50 border-0 placeholder:text-gray-400"
                                 type="text" placeholder="Email">
                         </div>
@@ -601,9 +602,12 @@
 
 
                     <div class="container">
-                        <button class="w-full mt-5 ml-1 bg-indigo-500 text-white font-semibold py-5 px-3 rounded-lg">
+                        <button type="submit" class="w-full mt-5 ml-1 bg-indigo-500 text-white font-semibold py-5 px-3 rounded-lg">
                             Send a Message
                         </button>
+                    </div>
+                    <div class="flex justify-center items-start m-4" >
+                        {{ form.recaptcha }}
                     </div>
                 </form>
             </div>
