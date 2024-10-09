@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+<!-- prettier-ignore -->
+{% block body %}
+
+<!-- component -->
+<div class="dark:bg-gray-900 h-screen pt-20">
+  <section>
+    <div class="w-full lg:w-1/2 mx-auto pt-6">
+      <!-- prettier-ignore -->
+      <div class="w-full lg:max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
+        <!-- prettier-ignore -->
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center">Something went wrong!</h3>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white text-center">Please make sure that your credentials
+          are correct</h2>
+
+        <!-- prettier-ignore -->
+        <a href="{{ url_for('user.account', user_unique_id=current_user.unique_id) }}"
+          class="flex align-middle justify-center">
+          <button type="button"
+            class="w-full mx-auto px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+            Checkout my dashboard >
+          </button>
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+<!-- prettier-ignore -->
+{% block scripts %}
+{% endblock %}

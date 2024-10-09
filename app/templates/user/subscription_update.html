@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block links %}
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<div class="dark:bg-gray-900">
+  <section>
+    <div class="w-full h-full md:w-4/5 lg:w-2/3 px-1 md:px-4 py-6 mx-auto">
+      <div class="flex justify-center">
+        <!-- prettier-ignore -->
+        <div class="w-full lg:max-w-xl p-1 md:p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            Subscription
+          </h1>
+
+          <div id="plan_chosen" {% if current_user.plan %} data-plan="{{ current_user.plan.value }}" {% else %}
+            data-plan="None" {% endif %}>
+          </div>
+
+          {% include 'user/subscription_update_form.html' %}
+
+          <form action="{{ url_for('stripe.portal')}}" method="get">
+            {{ form_hidden_tag() }}
+            <div class="w-full flex justify-center">
+              <button type="submit"
+                class="w-full md:w-60 mx-auto mb-8 md:mt-3 px-5 py-2 text-base font-medium text-red-700 border border-red-700 rounded-lg hover:bg-red-700 hover:text-white focus:ring-4 focus:ring-blue-300 sm:w-auto">
+                Billing & Payments
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- prettier-ignore -->
+{% endblock %}
+<!-- prettier-ignore -->
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/user.js') }}" type="text/javascript" defer></script>
+<script src="https://unpkg.com/htmx.org@1.9.5"></script>
+{% endblock %}

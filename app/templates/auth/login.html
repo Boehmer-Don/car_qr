@@ -8,52 +8,58 @@
 <!-- component -->
 <div class="dark:bg-gray-900 h-screen pt-20">
   <section>
-    <div class="w-full lg:w-4/12 px-4 mx-auto pt-6">
-      <div>
+    <div class="w-full lg:w-1/2 px-4 mx-auto pt-6">
+      <!-- prettier-ignore -->
+      <div class="w-full lg:max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
         <!-- prettier-ignore -->
-        <div class="w-full lg:max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
-          <!-- prettier-ignore -->
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Login</h2>
-          <!-- prettier-ignore -->
-          <form class="mt-8 space-y-6 from" role="form" action="{{ url_for('auth.login') }}" method="post">
-            {{ form.hidden_tag() }}
-            <div>
-              <!-- prettier-ignore -->
-              {{form.user_id.label(class='block mb-2 text-sm font-medium text-gray-900 dark:text-white')}}
-              {{form.user_id(
-              class="car_input"
-              )
-              }}
-            </div>
-            <div>
-              <!-- prettier-ignore -->
-              {{form.password.label(class='block mb-2 text-sm font-medium text-gray-900 dark:text-white')}}
-              {{form.password(
-              class="car_input"
-              )
-              }}
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Login</h2>
+        <!-- prettier-ignore -->
+        <form class="mt-8 space-y-6 from" role="form" action="{{ url_for('auth.login') }}" method="post">
+          {{ form.hidden_tag() }}
+          <div>
+            <!-- prettier-ignore -->
+            {{form.user_id.label(class='block mb-2 text-sm font-medium text-gray-900 dark:text-white')}}
+            {{form.user_id(
+            class="clean_email_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+            dark:text-white"
+            )
+            }}
+          </div>
+          <div class="relative">
+            <!-- prettier-ignore -->
+            {{form.password.label(class='block mb-2 text-sm font-medium text-gray-900 dark:text-white')}}
+            {{form.password(
+            id="password", class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+            dark:text-white"
+            )
+            }}
+
+            <div class="w-4 h-4 absolute" id="togglePassword" style="right: 1%; top: 43%;">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="dark:fill-white fill-black" viewBox="0 0 24 24"
+                stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+              </svg>
             </div>
 
-            <div class="flex items-start">
-              <!-- prettier-ignore -->
-              <a href="{{ url_for('auth.forgot_pass') }}"
-                class="ml-auto text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">Lost Password?</a>
-            </div>
-            <!-- prettier-ignore -->
+            <a href="{{url_for('auth.forgot_pass')}}">
+              <small class="ml-2 dark:text-white underline">Forgot your password?</small>
+            </a>
+          </div>
+
+          <!-- prettier-ignore -->
+          <div class="flex flex-col md:flex-row items-center">
             <button type="submit"
               class="w-full px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
-              Login
+              Login &rarr;
             </button>
+            <a class="text-sm font-medium text-gray-700 dark:text-white px-3" href="{{ url_for('auth.register') }}">
+              <u>Don't have an account? Sign up</u>
+            </a>
+          </div>
 
-            <!-- prettier-ignore -->
-            <div class="text-sm font-medium text-gray-900 dark:text-white">
-              Not registered yet?
-              <a class="text-blue-600 hover:underline dark:text-blue-500" href="{{ url_for('auth.register') }}">
-                Create an account
-              </a>
-            </div>
-          </form>
-        </div>
+          <!-- prettier-ignore -->
+        </form>
       </div>
     </div>
   </section>
@@ -61,4 +67,6 @@
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
+<script src="{{ url_for('static', filename='js/password.js') }}" type="text/javascript" defer></script>
 {% endblock %}

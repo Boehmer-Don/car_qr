@@ -1,0 +1,1 @@
+(()=>{var e=document.querySelector("#users-result"),s=document.querySelectorAll(".users-search-suggestion");e.classList.contains("hidden")&&e.classList.remove("hidden"),s.forEach((function(s){return s.addEventListener("click",(function(){document.querySelector("#table-search-users-input").value=s.innerHTML.trim(),e.classList.add("hidden")}))}))})();

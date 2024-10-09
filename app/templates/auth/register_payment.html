@@ -1,17 +1,26 @@
 {% extends "base.html" %}
+{% block links %}
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+{% endblock %}
 <!-- prettier-ignore -->
 {% block body %}
 
 <div class="dark:bg-gray-900 pt-20">
   <section>
-    <div class="w-full h-screen lg:w-4/12 px-4 mx-auto pt-6">
+    <div class="w-full h-full lg:w-1/2 px-4 mx-auto py-6">
       <div>
         <!-- prettier-ignore -->
         <div class="w-full lg:max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
+          <div class="flex w-full h-1 bg-gray-300 rounded-sm">
+            <div class="w-1/5 h-1 bg-indigo-700 rounded-l-sm"></div>
+            <div class="w-1/5 h-1 bg-indigo-700"></div>
+            <div class="w-1/5 h-1 bg-indigo-700"></div>
+            <div class="w-1/5 h-1 bg-indigo-700"></div>
+          </div>
           <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
             Sign Up
           </h2>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">
             Step 4: Review and subscribe
           </h1>
           <form class="mt-8 space-y-6 from" role="form"
@@ -22,8 +31,9 @@
               {{form.email.label(class='block mb-2 text-sm font-medium
               text-gray-900 dark:text-white')}}
               {{form.email(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit
-              focus:border-tranparent focus:ring-0'
+              class="clean_email_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              dark:text-white",
+              placeholder="your@email.com"
               )
               }}
 
@@ -31,58 +41,46 @@
               <small class="text-danger">{{error}}</small>
               {% endfor %}
             </div>
-            <div>
-              {{form.password.label(class='block mb-2 text-sm font-medium
-              text-gray-900 dark:text-white')}}
-              {{form.password(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit'
-              )
-              }}{% for error in form.errors.password %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
-            </div>
-            <div>
-              {{form.password_confirmation.label(class='block mb-2 text-sm
-              font-medium text-gray-900 dark:text-white')}}
-              {{form.password_confirmation(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit'
-              )
-              }}
-              {% for error in form.errors.password_confirmation %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
-            </div>
 
-            <div>
-              {{form.first_name.label(class='block mb-2 text-sm font-medium
-              text-gray-900 dark:text-white')}}
-              {{form.first_name(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit
-              focus:border-tranparent focus:ring-0'
-              )
-              }}
 
-              {% for error in form.errors.first_name %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
-            </div>
 
-            <div>
-              {{form.last_name.label(class='block mb-2 text-sm font-medium
-              text-gray-900 dark:text-white')}}
-              {{form.last_name(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit'
-              )
-              }}{% for error in form.errors.last_name %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
+            <div class="doubled_inputs">
+              <div class="short_input_container short_input_container_left">
+                {{form.first_name.label(class='block text-sm font-medium
+                text-gray-900 dark:text-white')}}
+                {{form.first_name(
+                class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white",
+                placeholder="John"
+                )
+                }}
+
+                {% for error in form.errors.first_name %}
+                <small class="text-danger">{{error}}</small>
+                {% endfor %}
+              </div>
+
+              <div class="short_input_container short_input_container_right">
+                {{form.last_name.label(class='block text-sm font-medium
+                text-gray-900 dark:text-white')}}
+                {{form.last_name(
+                class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white",
+                placeholder="Smith"
+                )
+                }}{% for error in form.errors.last_name %}
+                <small class="text-danger">{{error}}</small>
+                {% endfor %}
+              </div>
             </div>
 
             <div>
               {{form.name_of_dealership.label(class='block mb-2 text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.name_of_dealership(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit'
+              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              dark:text-white",
+              placeholder="John's Auto"
               )
               }}
               {% for error in form.errors.name_of_dealership %}
@@ -94,7 +92,9 @@
               {{form.address_of_dealership.label(class='block mb-2 text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.address_of_dealership(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit'
+              class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              dark:text-white",
+              placeholder="123 Main St."
               )
               }}
               {% for error in form.errors.address_of_dealership %}
@@ -102,95 +102,97 @@
               {% endfor %}
             </div>
 
-            <div>
-              {{form.country.label(class='block mb-2 text-sm
-              font-medium text-gray-900 dark:text-white')}}
-              {{form.country(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit'
-              )
-              }}
-              {% for error in form.errors.country %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
+            <div class="doubled_inputs">
+              <div class="short_input_container short_input_container_left">
+                <label for="country" class="block text-sm font-medium text-gray-900 dark:text-white">
+                  Country
+                </label>
+                <select name="country" required hx-get="{{ url_for('auth.get_provinces') }}" hx-trigger="change"
+                  hx-target="#province_select" class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                  dark:text-white">
+                  <option value="Canada" {% if user.country=='Canada' %}selected{% endif %}>Canada</option>
+                  <option value="US" {% if user.country=='US' %}selected{% endif %}>US</option>
+                </select>
+              </div>
+
+              <div class="short_input_container short_input_container_right">
+                <label for="province" class="block text-sm font-medium text-gray-900 dark:text-white">
+                  Province
+                </label>
+                <div id="province_select">
+                  {% include 'auth/provinces.html' %}
+                </div>
+              </div>
             </div>
 
-            <div>
-              {{form.province.label(class='block mb-2 text-sm
-              font-medium text-gray-900 dark:text-white')}}
-              {{form.province(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit'
-              )
-              }}
-              {% for error in form.errors.province %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
+            <div class="doubled_inputs">
+              <div class="short_input_container short_input_container_left">
+                {{form.city.label(class='block mb-2 text-sm
+                font-medium text-gray-900 dark:text-white')}}
+                {{form.city(
+                class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white",
+                placeholder="Toronto"
+                )
+                }}
+                {% for error in form.errors.city %}
+                <small class="text-danger">{{error}}</small>
+                {% endfor %}
+              </div>
+
+              <div class="short_input_container short_input_container_right">
+                {{form.postal_code.label(class='block mb-2 text-sm
+                font-medium text-gray-900 dark:text-white')}}
+                {{form.postal_code(
+                class="clean_number_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white",
+                placeholder="K0A"
+                )
+                }}
+                {% for error in form.errors.postal_code %}
+                <small class="text-danger">{{error}}</small>
+                {% endfor %}
+              </div>
             </div>
 
-            <div>
-              {{form.city.label(class='block mb-2 text-sm
-              font-medium text-gray-900 dark:text-white')}}
-              {{form.city(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit'
-              )
-              }}
-              {% for error in form.errors.city %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
-            </div>
+            <div class="doubled_inputs">
+              <div class="short_input_container short_input_container_left">
+                {{form.phone.label(class='block mb-2 text-sm
+                font-medium text-gray-900 dark:text-white')}}
+                {{form.phone(
+                class="clean_phone_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white"
+                )
+                }}
+                {% for error in form.errors.phone %}
+                <small class="text-danger">{{error}}</small>
+                {% endfor %}
+              </div>
 
-            <div>
-              {{form.postal_code.label(class='block mb-2 text-sm
-              font-medium text-gray-900 dark:text-white')}}
-              {{form.postal_code(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit'
-              )
-              }}
-              {% for error in form.errors.postal_code %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
-            </div>
-
-            <div>
-              {{form.phone.label(class='block mb-2 text-sm
-              font-medium text-gray-900 dark:text-white')}}
-              {{form.phone(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit'
-              )
-              }}
-              {% for error in form.errors.phone %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
-            </div>
-
-            <div>
-              {{form.plan.label(class='block mb-2 text-sm
-              font-medium text-gray-900 dark:text-white')}}
-              {{form.plan(
-              class='w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none opacity-50 bg-inherit'
-              )
-              }}
-              {% for error in form.errors.plan %}
-              <small class="text-danger">{{error}}</small>
-              {% endfor %}
+              <div class="short_input_container short_input_container_right">
+                {{form.plan.label(class='block mb-2 text-sm
+                font-medium text-gray-900 dark:text-white')}}
+                {{form.plan(
+                class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                )
+                }}
+                {% for error in form.errors.plan %}
+                <small class="text-danger">{{error}}</small>
+                {% endfor %}
+              </div>
             </div>
 
             <button type="submit"
               class="w-full px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
-              Next step >
+              Pay now >
             </button>
-            <div class="text-sm font-medium text-gray-900 dark:text-white">
-              Have an account?
-              <a class="text-indigo-600 hover:underline dark:text-indigo-500" href="{{ url_for('auth.login') }}">
-                Go to Login page
-              </a>
-            </div>
           </form>
         </div>
-      </div>
-    </div>
   </section>
 </div>
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
+<script src="https://unpkg.com/htmx.org@1.9.5"></script>
 {% endblock %}

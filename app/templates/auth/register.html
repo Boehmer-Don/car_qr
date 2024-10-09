@@ -7,10 +7,13 @@
 
 <div class="dark:bg-gray-900 pt-20">
   <section>
-    <div class="w-full h-screen lg:w-4/12 px-4 mx-auto pt-6">
+    <div class="w-full h-full lg:w-1/2 px-4 mx-auto py-6">
       <div>
         <!-- prettier-ignore -->
         <div class="w-full lg:max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg dark:bg-gray-800">
+          <div class="flex w-full h-1 bg-gray-300 rounded-sm">
+            <div class="w-1/5 h-1 bg-indigo-700 rounded-l-sm"></div>
+          </div>
           <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
             Sign Up
           </h2>
@@ -21,7 +24,9 @@
               {{form.email.label(class='block mb-2 text-sm font-medium
               text-gray-900 dark:text-white')}}
               {{form.email(
-              class="car_input"
+              class="clean_email_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+              dark:text-white
+              "
               )
               }}
 
@@ -33,7 +38,7 @@
               {{form.password.label(class='block mb-2 text-sm font-medium
               text-gray-900 dark:text-white')}}
               {{form.password(
-              class="car_input"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
               )
               }}{% for error in form.errors.password %}
               <small class="text-danger">{{error}}</small>
@@ -43,7 +48,7 @@
               {{form.password_confirmation.label(class='block mb-2 text-sm
               font-medium text-gray-900 dark:text-white')}}
               {{form.password_confirmation(
-              class="car_input"
+              class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
               )
               }}
               {% for error in form.errors.password_confirmation %}
@@ -69,4 +74,5 @@
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
 {% endblock %}

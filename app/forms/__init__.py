@@ -8,4 +8,7 @@ from .auth import (
     SubscriptionPlanForm,
     PaymentForm,
 )
-from .user import UserForm, NewUserForm
+from .user import UserForm, AdminForm, ResendInviteForm
+from .label import LabelForm, LabelUpdateForm, DeactivateLabelForm, LabelsAmountForm
+from .client import Client
+from .label_location import LabelLocationForm

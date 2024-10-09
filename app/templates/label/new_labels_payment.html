@@ -1,0 +1,308 @@
+{% extends 'base.html' %} {% block links %}
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+{% endblock %} {% block content %}
+<div class="relative overflow-x-auto shadow-md dark:bg-gray-800 mt-5 text-gray-800 dark:text-white">
+  <h1 class="sm:w-3/4 md:w-2/3 mx-auto text-3xl md:text-4xl text-center md:text-left font-bold mt-12 mb-10">
+    Register new labels
+  </h1>
+  <div
+    class="w-full sm:w-3/4 md:w-2/3 mx-auto dark:bg-gray-800 flex flex-col md:flex-row text-gray-700 dark:text-white">
+    <div class="w-full dark:bg-gray-800">
+      <div class="w-full flex text-xs text-white font-bold mb-2 px-1 py-3 md:p-3 bg-indigo-700 rounded-t-lg">
+        <p class="w-1/2 md:w-full pl-3 flex items-center justify-start">
+          Order Details
+        </p>
+        <p class="w-1/12 flex items-center justify-center"></p>
+        <p class="w-4/12 hidden md:flex items-center justify-center"></p>
+        <div class="w-1/12 px-2 hidden md:flex items-center justify-center hover:text-indigo-500 cursor-pointer">
+          Gift
+        </div>
+        <p class="w-2/12 hidden md:flex items-center justify-center">
+          Edit
+        </p>
+        <p class="w-1/12 flex items-center justify-center hover:text-indigo-500 cursor-pointer label-delete-button">
+        </p>
+      </div>
+
+      <form action="{{url_for('labels.new_label_payment', user_unique_id=user_unique_id)}}" method="POST"
+        class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+        {{ form_hidden_tag() }} {% for label in labels %}
+
+        <input type="hidden" name="edit" value="true">
+
+        <div class="w-full flex text-xs text-gray-600 dark:text-white font-bold px-1 py-3 md:p-3">
+          <p
+            class="new_label_details w-1/2 md:w-full pl-3 flex items-center justify-start hover:text-indigo-500 cursor-pointer">
+            Label {{ loop.index }} - {{ label.name }}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -3 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-3 h-3 ml-1">
+              <path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </p>
+          <p class="w-1/12 flex items-center justify-center"></p>
+          <p class="w-4/12 hidden md:flex items-center justify-center"></p>
+          <a href="{{ get_gift_url(label.sticker_id) }}" target="_blank"
+            class="w-1/12 px-2 hidden md:flex items-center justify-center hover:text-indigo-500 cursor-pointer"
+            data-target="{{label.json}}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-4 -2 32 32" stroke-width="2.5"
+              stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </a>
+          <div class="w-2/12 flex items-center justify-center relative">
+            <a href="{{url_for('labels.edit_cart_label', label_unique_id=label.unique_id)}}" class="label-edit-button">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                <path fill-rule="evenodd"
+                  d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </a>
+            <p class="cart-edit-hint hidden absolute -right-1 -top-3 border border-black bg-white">Edit</p>
+          </div>
+          <div
+            class="relative w-1/12 flex items-center justify-center hover:text-red-700 cursor-pointer label-delete-button"
+            data-target="{{label.json}}">
+            <a href="{{url_for('labels.delete_from_cart', label_unique_id=label.unique_id)}}"
+              onclick="return confirm('Are you sure?')">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                  d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </a>
+            <p class="cart-delete-hint hidden absolute -right-10 bottom-1 border border-red-500 bg-white">Delete</p>
+          </div>
+        </div>
+
+        <div class="hidden w-full bg-gray-100 dark:bg-gray-700">
+          <input type="hidden" name="user_id" id="new-label-{{ loop.index }}-user-id" value="{{current_user.id}}" />
+          <div class="p-6 space-y-6">
+            <div class="w-full px-1">
+              <div class="w-full flex justify-between">
+                <div class="w-full px-1">
+                  <label for="name" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Unique Label Identifier
+                  </label>
+                  <input type="text" name="sticker-number-{{ loop.index }}" id="label-{{ loop.index }}-sticker-number"
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="i.e. QR23456" disabled value="{{ label.sticker_id }}" />
+                </div>
+
+                <div class="w-full px-1">
+                  <label for="make" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Gift
+                  </label>
+                  <input type="text" name="gift-{{ loop.index }}" id="label-{{ loop.index }}-gift"
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    disabled value="{{ label.gift }}" />
+                </div>
+              </div>
+
+              <div class="w-full flex justify-between">
+                <div class="w-full px-1">
+                  <label for="name" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Label Name
+                  </label>
+                  <input type="text" name="name-{{ loop.index }}" id="label-{{ loop.index }}-name"
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="Label Name" disabled value="{{ label.name }}" />
+                </div>
+
+                <div class="w-full px-1">
+                  <label for="make" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Make
+                  </label>
+                  <input type="text" id="make-{{ loop.index }}" name="make-{{ loop.index }}" autocomplete="off"
+                    class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="i.e. Ford" disabled value="{{ label.make }}" />
+                  <div
+                    class="suggestion-container make-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-52 overflow-y-scroll z-10">
+                    {% for make in makes %}
+                    <p class="make-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+                      {{ make.name }}
+                    </p>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="w-full flex justify-between">
+                <div class="w-full px-1">
+                  <label for="model" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Vehicle Model
+                  </label>
+                  <input type="text" id="vehicle_model-{{ loop.index }}" name="vehicle_model-{{ loop.index }}"
+                    autocomplete="off"
+                    class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="i.e. Fiesta" disabled value="{{ label.vehicle_model }}" />
+                  <div
+                    class="suggestion-container model-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll z-10">
+                    {% for model in models %}
+                    <p class="model-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+                      {{ model.name }}
+                    </p>
+                    {% endfor %}
+                  </div>
+                </div>
+
+                <div class="w-full px-1">
+                  <label for="trim" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Trim
+                  </label>
+                  <input type="text" id="label-{{ loop.index }}-trim" name="trim-{{ loop.index }}" autocomplete="off"
+                    class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="i.e. Titanium" disabled value="{{label.trim}}" />
+                  <div
+                    class="suggestion-container trim-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll z-10">
+                    {% for trim in trims %}
+                    <p class="trim-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+                      {{ trim.name }}
+                    </p>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="w-full flex justify-between">
+
+
+                <div class="w-full px-1">
+                  <label for="year" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Year
+                  </label>
+                  <select id="label-{{ loop.index }}-year" name="year-{{ loop.index }}" disabled
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white">
+                    {% for year in years() %}
+                    {% if year == label.year %}
+                    <option value="{{ label.year }}" selected>{{ label.year }}</option>
+                    {% else %}
+                    <option value="{{ year }}">{{ year }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="w-full px-1">
+                  <label for="vtype" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Type Of Vehicle
+                  </label>
+                  <input type="text" id="label-{{ loop.index }}-trim" name="trim-{{ loop.index }}" autocomplete="off"
+                    class="clean_name_input w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="i.e. Hatchback" disabled value="{{label.type_of_vehicle}}" />
+                  <div
+                    class="suggestion-container type-container absolute hidden top-full left-0 w-full p-2 bg-white dark:bg-gray-700 max-h-48 overflow-y-scroll">
+                    {% for v_type in types %}
+                    <p class="type-suggestion cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-600">
+                      {{ v_type.name }}
+                    </p>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="w-full flex justify-between">
+                <div class="w-full px-1">
+                  <label for="mileage" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Mileage
+                  </label>
+                  <input type="text" name="mileage-{{ loop.index }}" id="label-{{ loop.index }}-mileage"
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="Mileage" disabled value="{{ price_format(label.mileage)}}" />
+                </div>
+
+                <div class="w-full px-1">
+                  <label for="color" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Color
+                  </label>
+                  <input type="text" name="color-{{ loop.index }}" id="label-{{ loop.index }}-color"
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="Color" disabled value="{{ label.color }}" />
+                </div>
+              </div>
+
+              <div class="w-full flex justify-between">
+                <div class="w-full px-1">
+                  <label for="price" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Price
+                  </label>
+                  <input type="text" name="price-{{ loop.index }}" id="label-{{ loop.index }}-price"
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="Price" disabled value="{{ price_format(label.price) }}" />
+                </div>
+
+                <div class="w-full px-1">
+                  <label for="url" class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                    URL
+                  </label>
+                  <input type="text" name="url-{{ loop.index }}" id="label-{{ loop.index }}-url"
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="URL" disabled value="{{ label.url }}" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        <button name="submit" type="submit"
+          class="hidden ml-2 my-2 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+          Edit labels' data >
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <form action="{{url_for('labels.new_label_payment', user_unique_id=user_unique_id)}}" method="post"
+    class="sm:w-3/4 md:w-2/3 mx-auto my-3 p-3 bg-indigo-200 dark:bg-indigo-100 rounded-lg">
+    {{ form_hidden_tag() }}
+
+    <input type="hidden" id="payment" name="payment" value="true">
+
+    <div class="w-full py-3 mb-5 border-b border-black text-black">
+      <p class="pb-3 font-bold text-black">Labels</p>
+      <p id="labels-quantity" class="hidden">{{ labels | length }}</p>
+      {% for label in labels %}
+      <div class="flex justify-between">
+        <p>Label {{ loop.index }} - {{ label.name }}</p>
+        <p>$20.00</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="w-full flex flex-col gap-4 py-3 mb-5 border-b border-black text-black">
+      <div class="pb-3 font-bold text-black">Order Summary</div>
+      <div class="flex justify-between">
+        <div>Tax</div>
+        <div>$0.00</div>
+      </div>
+    </div>
+
+    <div class="flex justify-between text-black">
+      <p class="mb-5 font-bold">Total</p>
+      <p id="total">${{ labels | length * 20.00 }}</p>
+    </div>
+
+    <div class="w-full flex justify-center">
+      <button type="submit"
+        class="w-full md:w-2/3 lg:w-60 text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 mb-3 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+        Pay Now
+      </button>
+    </div>
+  </form>
+
+  <div class="w-full mt-8 mb-5 flex justify-center">
+    <a href="{{url_for('labels.new_label_set_details', user_unique_id=user_unique_id, amount=1)}}">
+      <button type="submit"
+        class="w-full md:w-2/3 lg:w-60 text-red-700 border border-red-700 hover:bg-red-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 pt-2.5 pb-3 mb-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:text-white dark:focus:ring-blue-800">
+        Add another label >
+      </button>
+    </a>
+  </div>
+</div>
+
+{% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/label.js') }}" type="text/javascript" defer></script>
+{% endblock %}

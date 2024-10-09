@@ -4,7 +4,7 @@ from flask.testing import FlaskClient
 from app import mail
 from app import models as m
 from app import db
-from tests.utils import register, login, logout
+from tests.utils import register, login
 
 
 TEST_EMAIL = "denysburimov@gmail.com"
@@ -42,8 +42,6 @@ def test_auth_pages(client: FlaskClient):
 
 
 def test_register(client: FlaskClient):
-    # TEST_EMAIL = "sam@test.com"
-
     with mail.record_messages() as outbox:
         response = client.post(
             "/auth/register",
@@ -57,10 +55,7 @@ def test_register(client: FlaskClient):
 
         assert response
 
-        assert (
-            b"Registration successful. Checkout you email for confirmation!."
-            in response.data
-        )
+        assert b"Please check your email" in response.data
 
         assert "toast" in response.data.decode()
         assert "toast-success" in response.data.decode()
@@ -71,7 +66,7 @@ def test_register(client: FlaskClient):
 
         assert len(outbox) == 1
         letter: Message = outbox[0]
-        assert letter.subject == "New password"
+        assert letter.subject == "Email Verification"
         assert "Confirm registration" in letter.html
         assert user.unique_id in letter.html
         html: str = letter.html
@@ -103,6 +98,7 @@ def test_register(client: FlaskClient):
             follow_redirects=True,
         )
         assert response.status_code == 200
+
         response = client.post(
             f"/auth/payment/{user.unique_id}",
             data=dict(
@@ -118,9 +114,8 @@ def test_register(client: FlaskClient):
                 city=TEST_CITY_UPDATE,
                 postal_code=TEST_POSTAL_CODE_UPDATE,
                 phone=TEST_PHONE_UPDATE,
-                plan="basic",
+                plan=m.UsersPlan.basic.value,
             ),
-            follow_redirects=True,
         )
         assert response.status_code == 200
 
@@ -171,18 +166,39 @@ def test_forgot(client: FlaskClient):
         ),
         follow_redirects=True,
     )
-    assert b"Login successful." in response.data
+    assert b"My Account" in response.data
 
 
 def test_login_and_logout(client: FlaskClient):
     # Access to logout view before login should fail.
-    response = logout(client)
     register("sam@test.com")
     response = login(client, "sam@test.com")
     assert b"Login successful." in response.data
     # Incorrect login credentials should fail.
     response = login(client, "sam@test.com", "wrongpassword")
-    assert b"Wrong user ID or password." in response.data
+    assert b"Confirm Password" not in response.data
     # Correct credentials should login
     response = login(client, "sam@test.com")
-    assert b"Login successful." in response.data
+    assert b"Users" in response.data
+
+
+def test_upload_logo(client: FlaskClient):
+    TEST_FILENAME = "s2b_logo.png"
+
+    register(TEST_EMAIL)
+    user: m.User = db.session.scalar(m.User.select().where(m.User.email == TEST_EMAIL))
+    assert user
+    with open(f"tests/{TEST_FILENAME}", "rb") as file:
+        response = client.post(
+            f"/auth/logo-upload/{user.unique_id}", data={"file": file}
+        )
+
+    assert response.status_code == 200
+    user: m.User = db.session.scalar(m.User.select().where(m.User.email == TEST_EMAIL))
+    assert user.logo
+    assert user.logo[0].filename == TEST_FILENAME
+    assert user.logo[0].mimetype == "image/png"
+
+    with open(f"tests/{TEST_FILENAME}", "rb") as file:
+        content = file.read()
+        assert user.logo[0].file[:4] == content[:4]

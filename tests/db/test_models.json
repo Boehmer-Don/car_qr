@@ -1,0 +1,2035 @@
+[
+    {
+        "make": "Maruti",
+        "model": "Swift",
+        "trims": [
+            "LXi/LDi",
+            "VXi/VDi",
+            "ZXi/ZDi",
+            "ZXi+/ZDi+",
+            "AMT Variants",
+            "Special Editions"
+        ],
+        "vehicle_type": "Hatchback"
+    },
+    {
+        "make": "Toyota",
+        "model": "Land Cruiser",
+        "trims": [
+            "GX",
+            "GXR",
+            "VXR",
+            "VXS",
+            "Heritage Edition"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Honda",
+        "model": "Civic",
+        "trims": [
+            "LX",
+            "Sport",
+            "EX",
+            "EX-L",
+            "Touring",
+            "Si",
+            "Type R"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Tesla",
+        "model": "Model 3",
+        "trims": [
+            "Standard Range Plus",
+            "Long Range",
+            "Performance"
+        ],
+        "vehicle_type": "Electric"
+    },
+    {
+        "make": "Tesla",
+        "model": "Model S",
+        "trims": [
+            "Long Range",
+            "Plaid",
+            "Plaid+"
+        ],
+        "vehicle_type": "Electric"
+    },
+    {
+        "make": "Tesla",
+        "model": "Model X",
+        "trims": [
+            "Long Range",
+            "Plaid",
+            "Plaid+"
+        ],
+        "vehicle_type": "Electric"
+    },
+    {
+        "make": "Tesla",
+        "model": "Model Y",
+        "trims": [
+            "Standard Range",
+            "Long Range",
+            "Performance"
+        ],
+        "vehicle_type": "Electric"
+    },
+    {
+        "make": "Ford",
+        "model": "Fusion",
+        "trims": [
+            "S",
+            "SE",
+            "SEL",
+            "Titanium",
+            "Hybrid SE",
+            "Hybrid SEL",
+            "Hybrid Titanium",
+            "Energi SE",
+            "Energi Titanium"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Jeep",
+        "model": "Grand Cherokee",
+        "trims": [
+            "Laredo",
+            "Altitude",
+            "Limited",
+            "Overland",
+            "Summit",
+            "SRT",
+            "Trackhawk"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Jeep",
+        "model": "Wrangler",
+        "trims": [
+            "Sport",
+            "Sport S",
+            "Willys Sport",
+            "Islander",
+            "Sport Altitude",
+            "Willys",
+            "Freedom",
+            "Sahara",
+            "Rubicon",
+            "Sahara Altitude",
+            "Rubicon 392"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Jeep",
+        "model": "Cherokee",
+        "trims": [
+            "Latitude",
+            "Latitude Plus",
+            "Altitude",
+            "Limited",
+            "Trailhawk",
+            "High Altitude",
+            "Latitude Lux"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Jeep",
+        "model": "Compass",
+        "trims": [
+            "Sport",
+            "Latitude",
+            "Altitude",
+            "Limited",
+            "Trailhawk",
+            "80th Anniversary Edition",
+            "High Altitude"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Jeep",
+        "model": "Renegade",
+        "trims": [
+            "Sport",
+            "Latitude",
+            "Upland",
+            "Altitude",
+            "Limited",
+            "Trailhawk",
+            "80th Anniversary Edition",
+            "Island Edition"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Toyota",
+        "model": "Camry",
+        "trims": [
+            "LE",
+            "SE",
+            "SE Nightshade Edition",
+            "XLE",
+            "XSE",
+            "XSE V6",
+            "LE Hybrid",
+            "SE Hybrid",
+            "XLE Hybrid",
+            "XSE Hybrid",
+            "TRD"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Toyota",
+        "model": "Corolla",
+        "trims": [
+            "L",
+            "LE",
+            "LE Hybrid",
+            "SE",
+            "SE Nightshade Edition",
+            "SE Apex Edition",
+            "XLE",
+            "XSE",
+            "XSE Apex Edition",
+            "XSE Hybrid",
+            "SE Hatchback",
+            "XSE Hatchback"
+        ],
+        "vehicle_type": "Sedan/Hatchback"
+    },
+    {
+        "make": "Toyota",
+        "model": "RAV4",
+        "trims": [
+            "LE",
+            "XLE",
+            "XLE Premium",
+            "Adventure",
+            "XSE Hybrid",
+            "Limited",
+            "TRD Off-Road",
+            "Prime SE",
+            "Prime XSE"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Toyota",
+        "model": "Highlander",
+        "trims": [
+            "L",
+            "LE",
+            "XLE",
+            "XSE",
+            "Limited",
+            "Platinum",
+            "Hybrid LE",
+            "Hybrid XLE",
+            "Hybrid Limited",
+            "Hybrid Platinum"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Toyota",
+        "model": "Tacoma",
+        "trims": [
+            "SR",
+            "SR5",
+            "TRD Sport",
+            "TRD Off-Road",
+            "Limited",
+            "TRD Pro"
+        ],
+        "vehicle_type": "Truck"
+    },
+    {
+        "make": "Honda",
+        "model": "Odyssey",
+        "trims": [
+            "EX-L"
+        ],
+        "vehicle_type": "Minivan"
+    },
+    {
+        "make": "Honda",
+        "model": "Civic",
+        "trims": [
+            "LX",
+            "Sport",
+            "EX",
+            "EX-L",
+            "Touring",
+            "Si",
+            "Type R"
+        ],
+        "vehicle_type": "Sedan/Hatchback"
+    },
+    {
+        "make": "Honda",
+        "model": "Accord",
+        "trims": [
+            "LX",
+            "Sport",
+            "Sport Special Edition",
+            "EX",
+            "EX-L",
+            "Touring",
+            "Hybrid"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Honda",
+        "model": "CR-V",
+        "trims": [
+            "LX",
+            "EX",
+            "EX-L",
+            "Touring",
+            "Hybrid LX",
+            "Hybrid EX",
+            "Hybrid EX-L",
+            "Hybrid Touring"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Honda",
+        "model": "Pilot",
+        "trims": [
+            "LX",
+            "EX",
+            "EX-L",
+            "Touring",
+            "Elite",
+            "Black Edition"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Honda",
+        "model": "Fit",
+        "trims": [
+            "LX",
+            "Sport",
+            "EX",
+            "EX-L"
+        ],
+        "vehicle_type": "Hatchback"
+    },
+    {
+        "make": "Mazda",
+        "model": "CX-5",
+        "trims": [
+            "Sport",
+            "Touring",
+            "Carbon Edition",
+            "Grand Touring",
+            "Grand Touring Reserve",
+            "Signature"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Mazda",
+        "model": "Mazda3",
+        "trims": [
+            "Base",
+            "Select",
+            "Preferred",
+            "Premium"
+        ],
+        "vehicle_type": "Sedan/Hatchback"
+    },
+    {
+        "make": "Mazda",
+        "model": "Mazda6",
+        "trims": [
+            "Sport",
+            "Touring",
+            "Grand Touring",
+            "Grand Touring Reserve",
+            "Signature"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Mazda",
+        "model": "CX-3",
+        "trims": [
+            "Sport",
+            "Touring",
+            "Grand Touring"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Mazda",
+        "model": "CX-9",
+        "trims": [
+            "Sport",
+            "Touring",
+            "Carbon Edition",
+            "Grand Touring",
+            "Signature"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Mercedes-Benz",
+        "model": "C-Class",
+        "trims": [
+            "C 300",
+            "C 300 4MATIC",
+            "C 350e",
+            "AMG C 43",
+            "AMG C 63",
+            "AMG C 63 S"
+        ],
+        "vehicle_type": "Sedan/Coupe/Convertible"
+    },
+    {
+        "make": "Mercedes-Benz",
+        "model": "E-Class",
+        "trims": [
+            "E 350",
+            "E 350 4MATIC",
+            "E 450",
+            "AMG E 53",
+            "AMG E 63 S"
+        ],
+        "vehicle_type": "Sedan/Coupe/Convertible"
+    },
+    {
+        "make": "Mercedes-Benz",
+        "model": "S-Class",
+        "trims": [
+            "S 450",
+            "S 450 4MATIC",
+            "S 560",
+            "S 560 4MATIC",
+            "AMG S 63",
+            "AMG S 65"
+        ],
+        "vehicle_type": "Sedan/Coupe/Convertible"
+    },
+    {
+        "make": "Mercedes-Benz",
+        "model": "GLC",
+        "trims": [
+            "GLC 300",
+            "GLC 300 4MATIC",
+            "GLC 350e",
+            "AMG GLC 43",
+            "AMG GLC 63",
+            "AMG GLC 63 S"
+        ],
+        "vehicle_type": "SUV/Coupe"
+    },
+    {
+        "make": "Mercedes-Benz",
+        "model": "GLE",
+        "trims": [
+            "GLE 350",
+            "GLE 350 4MATIC",
+            "GLE 450 4MATIC",
+            "AMG GLE 53",
+            "AMG GLE 63",
+            "AMG GLE 63 S"
+        ],
+        "vehicle_type": "SUV/Coupe"
+    },
+    {
+        "make": "Chevrolet",
+        "model": "Silverado 1500",
+        "trims": [
+            "WT",
+            "Custom",
+            "LT",
+            "RST",
+            "LT Trail Boss",
+            "Custom Trail Boss",
+            "LTZ",
+            "High Country"
+        ],
+        "vehicle_type": "Truck"
+    },
+    {
+        "make": "Chevrolet",
+        "model": "Malibu",
+        "trims": [
+            "L",
+            "LS",
+            "RS",
+            "LT",
+            "Premier"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Chevrolet",
+        "model": "Cruze",
+        "trims": [
+            "L",
+            "LS",
+            "LT",
+            "Premier"
+        ],
+        "vehicle_type": "Sedan/Hatchback"
+    },
+    {
+        "make": "Chevrolet",
+        "model": "Equinox",
+        "trims": [
+            "L",
+            "LS",
+            "LT",
+            "Premier"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Chevrolet",
+        "model": "Traverse",
+        "trims": [
+            "L",
+            "LS",
+            "LT",
+            "RS",
+            "Premier",
+            "High Country"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Nissan",
+        "model": "Altima",
+        "trims": [
+            "S",
+            "SR",
+            "SV",
+            "SL",
+            "Platinum",
+            "SR VC-Turbo",
+            "Platinum VC-Turbo"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Nissan",
+        "model": "Sentra",
+        "trims": [
+            "S",
+            "SV",
+            "SR",
+            "SR Turbo",
+            "SL"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Nissan",
+        "model": "Rogue",
+        "trims": [
+            "S",
+            "SV",
+            "SL",
+            "Platinum"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Nissan",
+        "model": "Murano",
+        "trims": [
+            "S",
+            "SV",
+            "SL",
+            "Platinum"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Nissan",
+        "model": "Titan",
+        "trims": [
+            "S",
+            "SV",
+            "Pro-4X",
+            "SL",
+            "Platinum Reserve"
+        ],
+        "vehicle_type": "Truck"
+    },
+    {
+        "make": "Nissan",
+        "model": "Leaf",
+        "trims": [
+            "SV"
+        ],
+        "vehicle_type": "Electric"
+    },
+    {
+        "make": "BMW",
+        "model": "3 Series",
+        "trims": [
+            "330i",
+            "330i xDrive",
+            "M340i",
+            "M340i xDrive",
+            "330e",
+            "M3"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "BMW",
+        "model": "4 Series",
+        "trims": [
+            "430i"
+        ],
+        "vehicle_type": "Convertible"
+    },
+    {
+        "make": "BMW",
+        "model": "5 Series",
+        "trims": [
+            "530i",
+            "530i xDrive",
+            "540i",
+            "540i xDrive",
+            "M550i xDrive",
+            "530e",
+            "M5"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "BMW",
+        "model": "X3",
+        "trims": [
+            "sDrive30i",
+            "xDrive30i",
+            "M40i",
+            "X3 xDrive30e"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "BMW",
+        "model": "X5",
+        "trims": [
+            "sDrive40i",
+            "xDrive40i",
+            "xDrive45e",
+            "M50i",
+            "X5 M"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "BMW",
+        "model": "7 Series",
+        "trims": [
+            "740i",
+            "740i xDrive",
+            "745e xDrive",
+            "750i xDrive",
+            "M760i xDrive",
+            "Alpina B7"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Hyundai",
+        "model": "Elantra",
+        "trims": [
+            "SE",
+            "SEL",
+            "Value Edition",
+            "Eco",
+            "Limited",
+            "N Line",
+            "N"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Hyundai",
+        "model": "Sonata",
+        "trims": [
+            "SE",
+            "SEL",
+            "SEL Plus",
+            "Limited",
+            "N Line",
+            "N Line 19-inch Wheels"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Hyundai",
+        "model": "Sonata",
+        "trims": [
+            "SE",
+            "SEL",
+            "SEL Plus",
+            "Limited",
+            "N Line",
+            "N Line 19-inch Wheels"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Hyundai",
+        "model": "Tucson",
+        "trims": [
+            "SE",
+            "Value",
+            "SEL",
+            "Sport",
+            "Limited",
+            "Ultimate",
+            "N Line"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Hyundai",
+        "model": "Santa Fe",
+        "trims": [
+            "SE",
+            "SEL",
+            "SEL 2.0T",
+            "Limited",
+            "Limited 2.0T",
+            "Calligraphy"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Hyundai",
+        "model": "Palisade",
+        "trims": [
+            "SE",
+            "SEL",
+            "Limited",
+            "Calligraphy"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Hyundai",
+        "model": "Kona",
+        "trims": [
+            "SEL"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Ford",
+        "model": "F-150",
+        "trims": [
+            "XL",
+            "XLT",
+            "Lariat",
+            "King Ranch",
+            "Platinum"
+        ],
+        "vehicle_type": "Truck"
+    },
+    {
+        "make": "Jaguar",
+        "model": "F-Type",
+        "trims": [
+            "P300",
+            "R-Dynamic",
+            "R",
+            "SVR",
+            "First Edition"
+        ],
+        "vehicle_type": "Sports Car"
+    },
+    {
+        "make": "Acura",
+        "model": "ILX",
+        "trims": [
+            "Standard",
+            "Premium",
+            "Technology",
+            "A-Spec",
+            "Type S"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Acura",
+        "model": "MDX",
+        "trims": [
+            "Standard",
+            "Technology",
+            "A-Spec",
+            "Advance"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Acura",
+        "model": "RDX",
+        "trims": [
+            "Standard",
+            "Technology",
+            "A-Spec",
+            "Advance"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Acura",
+        "model": "TLX",
+        "trims": [
+            "Standard",
+            "Technology",
+            "A-Spec",
+            "Type S"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Acura",
+        "model": "NSX",
+        "trims": [
+            "Standard"
+        ],
+        "vehicle_type": "Sports Car"
+    },
+    {
+        "make": "Alfa Romeo",
+        "model": "Giulia",
+        "trims": [
+            "Sprint",
+            "Ti",
+            "Ti Sport",
+            "Veloce",
+            "Quadrifoglio"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Alfa Romeo",
+        "model": "Stelvio",
+        "trims": [
+            "Sprint",
+            "Ti",
+            "Ti Sport",
+            "Veloce",
+            "Quadrifoglio"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Alfa Romeo",
+        "model": "4C",
+        "trims": [
+            "Base",
+            "Spider"
+        ],
+        "vehicle_type": "Sports Car"
+    },
+    {
+        "make": "Audi",
+        "model": "A3",
+        "trims": [
+            "Premium",
+            "Premium Plus",
+            "Prestige",
+            "S3"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Audi",
+        "model": "A4",
+        "trims": [
+            "Premium",
+            "Premium Plus",
+            "Prestige",
+            "S4"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Audi",
+        "model": "Q3",
+        "trims": [
+            "Premium",
+            "Premium Plus",
+            "Prestige",
+            "RS Q3"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Audi",
+        "model": "Q5",
+        "trims": [
+            "Premium",
+            "Premium Plus",
+            "Prestige",
+            "SQ5"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Audi",
+        "model": "Q7",
+        "trims": [
+            "Premium",
+            "Premium Plus",
+            "Prestige",
+            "SQ7"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Audi",
+        "model": "Q8",
+        "trims": [
+            "Premium",
+            "Premium Plus",
+            "Prestige",
+            "SQ8"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Buick",
+        "model": "Encore",
+        "trims": [
+            "Preferred",
+            "Preferred II",
+            "Sport Touring",
+            "Essence",
+            "GX",
+            "Avenir"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Buick",
+        "model": "Envision",
+        "trims": [
+            "Preferred",
+            "Essence",
+            "Avenir"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Buick",
+        "model": "Enclave",
+        "trims": [
+            "Preferred",
+            "Essence",
+            "Premium",
+            "Avenir"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Buick",
+        "model": "Regal Sportback",
+        "trims": [
+            "Preferred",
+            "Preferred II",
+            "Essence",
+            "Avenir"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Buick",
+        "model": "Regal TourX",
+        "trims": [
+            "Preferred",
+            "Essence"
+        ],
+        "vehicle_type": "Wagon"
+    },
+    {
+        "make": "Cadillac",
+        "model": "CT4",
+        "trims": [
+            "Luxury",
+            "Premium Luxury",
+            "Sport",
+            "V-Series"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Cadillac",
+        "model": "CT5",
+        "trims": [
+            "Luxury",
+            "Premium Luxury",
+            "Sport",
+            "V-Series"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Cadillac",
+        "model": "XT4",
+        "trims": [
+            "Luxury",
+            "Premium Luxury",
+            "Sport"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Cadillac",
+        "model": "XT5",
+        "trims": [
+            "Luxury",
+            "Premium Luxury",
+            "Sport",
+            "Platinum"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Cadillac",
+        "model": "XT6",
+        "trims": [
+            "Luxury",
+            "Premium Luxury",
+            "Sport",
+            "Platinum"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Chrysler",
+        "model": "300",
+        "trims": [
+            "Touring",
+            "Touring L",
+            "300S",
+            "Limited",
+            "C"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Chrysler",
+        "model": "Pacifica",
+        "trims": [
+            "Touring",
+            "Touring L",
+            "Touring L Plus",
+            "Limited",
+            "Hybrid Touring",
+            "Hybrid Touring L",
+            "Hybrid Limited"
+        ],
+        "vehicle_type": "Minivan"
+    },
+    {
+        "make": "Chrysler",
+        "model": "Voyager",
+        "trims": [
+            "LX",
+            "LXi"
+        ],
+        "vehicle_type": "Minivan"
+    },
+    {
+        "make": "Dodge",
+        "model": "Charger",
+        "trims": [
+            "SXT",
+            "GT",
+            "R/T",
+            "Scat Pack",
+            "SRT Hellcat"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Dodge",
+        "model": "Challenger",
+        "trims": [
+            "SXT",
+            "GT",
+            "R/T",
+            "R/T Scat Pack",
+            "SRT Hellcat",
+            "SRT Hellcat Redeye"
+        ],
+        "vehicle_type": "Coupe"
+    },
+    {
+        "make": "Dodge",
+        "model": "Durango",
+        "trims": [
+            "SXT",
+            "GT",
+            "Citadel",
+            "R/T",
+            "SRT Hellcat"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Dodge",
+        "model": "Grand Caravan",
+        "trims": [
+            "SE",
+            "SE Plus",
+            "SXT"
+        ],
+        "vehicle_type": "Minivan"
+    },
+    {
+        "make": "Ford",
+        "model": "Focus",
+        "trims": [
+            "S",
+            "SE",
+            "SEL",
+            "Titanium",
+            "ST",
+            "RS",
+            "Electric"
+        ],
+        "vehicle_type": "Sedan/Hatchback"
+    },
+    {
+        "make": "Ford",
+        "model": "Escape",
+        "trims": [
+            "S",
+            "SE",
+            "SE Hybrid",
+            "SEL",
+            "SEL Hybrid",
+            "Titanium",
+            "Titanium Hybrid",
+            "SE Plug-In Hybrid",
+            "Titanium Plug-In Hybrid"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Ford",
+        "model": "Explorer",
+        "trims": [
+            "Base",
+            "XLT",
+            "Limited",
+            "ST",
+            "Platinum"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "GMC",
+        "model": "Acadia",
+        "trims": [
+            "SL",
+            "SLE",
+            "SLT",
+            "AT4",
+            "Denali"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "GMC",
+        "model": "Sierra 1500",
+        "trims": [
+            "Sierra",
+            "SLE",
+            "Elevation",
+            "SLT",
+            "AT4",
+            "Denali"
+        ],
+        "vehicle_type": "Truck"
+    },
+    {
+        "make": "GMC",
+        "model": "Canyon",
+        "trims": [
+            "Canyon",
+            "Elevation Standard",
+            "Elevation",
+            "AT4",
+            "Denali"
+        ],
+        "vehicle_type": "Truck"
+    },
+    {
+        "make": "GMC",
+        "model": "Terrain",
+        "trims": [
+            "SL",
+            "SLE",
+            "SLT",
+            "AT4",
+            "Denali"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "GMC",
+        "model": "Yukon",
+        "trims": [
+            "SLE",
+            "SLT",
+            "AT4",
+            "Denali"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "INFINITI",
+        "model": "Q50",
+        "trims": [
+            "Pure",
+            "Luxe",
+            "Sensory",
+            "Red Sport 400"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "INFINITI",
+        "model": "Q60",
+        "trims": [
+            "Pure",
+            "Luxe",
+            "Sensory",
+            "Red Sport 400"
+        ],
+        "vehicle_type": "Coupe"
+    },
+    {
+        "make": "INFINITI",
+        "model": "QX50",
+        "trims": [
+            "Pure",
+            "Luxe",
+            "Essential",
+            "Sensory",
+            "Autograph"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "INFINITI",
+        "model": "QX60",
+        "trims": [
+            "Pure",
+            "Luxe",
+            "Essential",
+            "Sensory",
+            "Autograph"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "INFINITI",
+        "model": "QX80",
+        "trims": [
+            "Luxe",
+            "Essential",
+            "Sensory",
+            "Autograph"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Jaguar",
+        "model": "XE",
+        "trims": [
+            "S",
+            "SE",
+            "R-Dynamic S",
+            "R-Dynamic SE",
+            "R-Dynamic HSE",
+            "SV Project 8"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Jaguar",
+        "model": "XF",
+        "trims": [
+            "P250 S",
+            "P250 SE",
+            "P300 SE",
+            "P300 HSE",
+            "P300 R-Dynamic SE",
+            "P300 R-Dynamic HSE",
+            "XF Sportbrake"
+        ],
+        "vehicle_type": "Sedan/Sportbrake"
+    },
+    {
+        "make": "Jaguar",
+        "model": "F-PACE",
+        "trims": [
+            "P250 S",
+            "P250 SE",
+            "P340 S",
+            "P340 SE",
+            "P400 S",
+            "P400 SE",
+            "P400 R-Dynamic S",
+            "P400 R-Dynamic SE",
+            "SVR"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Jaguar",
+        "model": "I-PACE",
+        "trims": [
+            "S",
+            "SE",
+            "HSE",
+            "First Edition"
+        ],
+        "vehicle_type": "Electric SUV"
+    },
+    {
+        "make": "Jaguar",
+        "model": "F-TYPE",
+        "trims": [
+            "P300",
+            "P380",
+            "R",
+            "R-Dynamic"
+        ],
+        "vehicle_type": "Sports Car"
+    },
+    {
+        "make": "Kia",
+        "model": "Forte",
+        "trims": [
+            "LX",
+            "LXS",
+            "GT-Line",
+            "EX",
+            "GT"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Kia",
+        "model": "Optima",
+        "trims": [
+            "LX",
+            "S",
+            "EX",
+            "SX"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Kia",
+        "model": "Sportage",
+        "trims": [
+            "LX",
+            "S",
+            "EX",
+            "SX Turbo"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Kia",
+        "model": "Sorento",
+        "trims": [
+            "LX",
+            "S",
+            "EX",
+            "SX",
+            "SX Prestige",
+            "SX Prestige X-Line"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Kia",
+        "model": "Telluride",
+        "trims": [
+            "LX",
+            "S",
+            "EX",
+            "SX",
+            "SX Prestige"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Kia",
+        "model": "Stinger",
+        "trims": [
+            "GT-Line",
+            "GT1",
+            "GT2"
+        ],
+        "vehicle_type": "Sports Sedan"
+    },
+    {
+        "make": "Land Rover",
+        "model": "Range Rover",
+        "trims": [
+            "Base",
+            "HSE",
+            "Supercharged",
+            "Autobiography",
+            "SVAutobiography"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Land Rover",
+        "model": "Range Rover Sport",
+        "trims": [
+            "SE",
+            "HSE",
+            "HST",
+            "Autobiography",
+            "SVR"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Land Rover",
+        "model": "Discovery",
+        "trims": [
+            "SE",
+            "HSE",
+            "HSE Luxury",
+            "Landmark Edition"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Land Rover",
+        "model": "Discovery Sport",
+        "trims": [
+            "SE",
+            "S",
+            "R-Dynamic S",
+            "R-Dynamic SE",
+            "R-Dynamic HSE"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Land Rover",
+        "model": "Defender",
+        "trims": [
+            "Base",
+            "S",
+            "SE",
+            "HSE",
+            "First Edition",
+            "X-Dynamic S",
+            "X-Dynamic SE",
+            "X-Dynamic HSE"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Lexus",
+        "model": "ES",
+        "trims": [
+            "ES 250 AWD",
+            "ES 350",
+            "ES 350 F SPORT",
+            "ES 350 Luxury",
+            "ES 350 Ultra Luxury",
+            "ES 300h",
+            "ES 300h Luxury",
+            "ES 300h Ultra Luxury"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Lexus",
+        "model": "RX",
+        "trims": [
+            "RX 350",
+            "RX 350 F SPORT",
+            "RX 350L",
+            "RX 450h",
+            "RX 450h F SPORT",
+            "RX 450hL"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Lexus",
+        "model": "NX",
+        "trims": [
+            "NX 300",
+            "NX 300 F SPORT",
+            "NX 300h",
+            "NX 300h F SPORT"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Lexus",
+        "model": "GX",
+        "trims": [
+            "GX 460",
+            "GX 460 Premium",
+            "GX 460 Luxury"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Lexus",
+        "model": "LX",
+        "trims": [
+            "LX 570",
+            "LX 570 Two-Row",
+            "LX 570 Luxury"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Lincoln",
+        "model": "Corsair",
+        "trims": [
+            "Standard",
+            "Reserve",
+            "Grand Touring"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Lincoln",
+        "model": "Nautilus",
+        "trims": [
+            "Standard",
+            "Reserve",
+            "Black Label"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Lincoln",
+        "model": "Aviator",
+        "trims": [
+            "Standard",
+            "Reserve",
+            "Grand Touring",
+            "Black Label"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Lincoln",
+        "model": "Navigator",
+        "trims": [
+            "Standard",
+            "Reserve",
+            "Black Label"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Lincoln",
+        "model": "Continental",
+        "trims": [
+            "Standard",
+            "Reserve",
+            "Black Label"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Maserati",
+        "model": "Ghibli",
+        "trims": [
+            "Base",
+            "S Q4 GranSport",
+            "S Q4 GranLusso",
+            "Trofeo"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Maserati",
+        "model": "Quattroporte",
+        "trims": [
+            "S Q4 GranSport",
+            "S Q4 GranLusso",
+            "Trofeo"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Maserati",
+        "model": "Levante",
+        "trims": [
+            "Base",
+            "S GranSport",
+            "S GranLusso",
+            "GTS",
+            "Trofeo"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Maserati",
+        "model": "GranTurismo",
+        "trims": [
+            "Sport",
+            "MC"
+        ],
+        "vehicle_type": "Sports Car"
+    },
+    {
+        "make": "Maserati",
+        "model": "GranCabrio",
+        "trims": [
+            "Sport",
+            "MC"
+        ],
+        "vehicle_type": "Convertible"
+    },
+    {
+        "make": "MINI",
+        "model": "Cooper",
+        "trims": [
+            "Hardtop",
+            "Convertible",
+            "Clubman",
+            "Countryman",
+            "John Cooper Works"
+        ],
+        "vehicle_type": "Hatchback/SUV"
+    },
+    {
+        "make": "MINI",
+        "model": "Cooper S",
+        "trims": [
+            "Hardtop",
+            "Convertible",
+            "Clubman",
+            "Countryman",
+            "John Cooper Works"
+        ],
+        "vehicle_type": "Hatchback/SUV"
+    },
+    {
+        "make": "MINI",
+        "model": "John Cooper Works",
+        "trims": [
+            "Hardtop",
+            "Convertible",
+            "Clubman",
+            "Countryman"
+        ],
+        "vehicle_type": "Performance Hatchback/SUV"
+    },
+    {
+        "make": "MINI",
+        "model": "Countryman",
+        "trims": [
+            "Cooper",
+            "Cooper S",
+            "Cooper SE",
+            "John Cooper Works"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Mitsubishi",
+        "model": "Outlander",
+        "trims": [
+            "ES",
+            "SE",
+            "SEL",
+            "SE Launch Edition",
+            "SE Convenience",
+            "SE Sun and Sound",
+            "SEL Launch Edition",
+            "SEL Sun and Sound",
+            "GT"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Mitsubishi",
+        "model": "Eclipse Cross",
+        "trims": [
+            "ES",
+            "LE",
+            "SE",
+            "SEL",
+            "SE S-AWC",
+            "SEL S-AWC"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Mitsubishi",
+        "model": "Outlander Sport",
+        "trims": [
+            "ES",
+            "LE",
+            "SE",
+            "SEL",
+            "BE",
+            "2.4 GT"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Mitsubishi",
+        "model": "Mirage",
+        "trims": [
+            "ES",
+            "LE",
+            "SE",
+            "Carbonite Edition"
+        ],
+        "vehicle_type": "Hatchback"
+    },
+    {
+        "make": "Porsche",
+        "model": "911",
+        "trims": [
+            "Carrera",
+            "Carrera S",
+            "Carrera 4",
+            "Carrera 4S",
+            "Targa 4",
+            "Targa 4S",
+            "Turbo",
+            "Turbo S",
+            "GT3",
+            "GT3 RS",
+            "GT2 RS"
+        ],
+        "vehicle_type": "Sports Car"
+    },
+    {
+        "make": "Porsche",
+        "model": "Cayenne",
+        "trims": [
+            "Base",
+            "S",
+            "GTS",
+            "Turbo",
+            "Turbo S E-Hybrid"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Porsche",
+        "model": "Panamera",
+        "trims": [
+            "Base",
+            "4",
+            "4 E-Hybrid",
+            "GTS",
+            "Turbo",
+            "Turbo S E-Hybrid",
+            "Sport Turismo"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Porsche",
+        "model": "Macan",
+        "trims": [
+            "Base",
+            "S",
+            "GTS",
+            "Turbo"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Porsche",
+        "model": "Cayman",
+        "trims": [
+            "Base",
+            "S",
+            "GTS",
+            "GT4",
+            "Spyder"
+        ],
+        "vehicle_type": "Sports Car"
+    },
+    {
+        "make": "RAM",
+        "model": "1500",
+        "trims": [
+            "Tradesman",
+            "Big Horn",
+            "Lone Star",
+            "Laramie",
+            "Rebel",
+            "Limited",
+            "TRX"
+        ],
+        "vehicle_type": "Truck"
+    },
+    {
+        "make": "RAM",
+        "model": "2500",
+        "trims": [
+            "Tradesman",
+            "Big Horn",
+            "Lone Star",
+            "Power Wagon",
+            "Laramie",
+            "Limited"
+        ],
+        "vehicle_type": "Truck"
+    },
+    {
+        "make": "RAM",
+        "model": "3500",
+        "trims": [
+            "Tradesman",
+            "Big Horn",
+            "Lone Star",
+            "Laramie",
+            "Limited"
+        ],
+        "vehicle_type": "Truck"
+    },
+    {
+        "make": "RAM",
+        "model": "4500/5500 Chassis Cab",
+        "trims": [
+            "Tradesman",
+            "SLT",
+            "Laramie",
+            "Limited"
+        ],
+        "vehicle_type": "Chassis Cab"
+    },
+    {
+        "make": "RAM",
+        "model": "ProMaster",
+        "trims": [
+            "1500",
+            "2500",
+            "3500"
+        ],
+        "vehicle_type": "Van"
+    },
+    {
+        "make": "Subaru",
+        "model": "Impreza",
+        "trims": [
+            "Base",
+            "Premium",
+            "Sport",
+            "Limited"
+        ],
+        "vehicle_type": "Sedan/Hatchback"
+    },
+    {
+        "make": "Subaru",
+        "model": "Legacy",
+        "trims": [
+            "Base",
+            "Premium",
+            "Sport",
+            "Limited",
+            "Touring XT"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Subaru",
+        "model": "Outback",
+        "trims": [
+            "Base",
+            "Premium",
+            "Limited",
+            "Touring",
+            "Onyx Edition XT",
+            "Limited XT",
+            "Touring XT"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Subaru",
+        "model": "Forester",
+        "trims": [
+            "Base",
+            "Premium",
+            "Sport",
+            "Limited",
+            "Touring"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Subaru",
+        "model": "Crosstrek",
+        "trims": [
+            "Base",
+            "Premium",
+            "Sport",
+            "Limited"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Volkswagen",
+        "model": "Jetta",
+        "trims": [
+            "S",
+            "SE",
+            "SEL",
+            "R-Line",
+            "GLI S",
+            "GLI Autobahn"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Volkswagen",
+        "model": "Passat",
+        "trims": [
+            "S",
+            "SE",
+            "R-Line",
+            "SEL"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Volkswagen",
+        "model": "Golf",
+        "trims": [
+            "S",
+            "SE",
+            "GTI S",
+            "GTI SE",
+            "GTI Autobahn",
+            "Golf R"
+        ],
+        "vehicle_type": "Hatchback"
+    },
+    {
+        "make": "Volkswagen",
+        "model": "Tiguan",
+        "trims": [
+            "S",
+            "SE",
+            "SEL",
+            "SEL Premium R-Line",
+            "SE R-Line Black"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Volkswagen",
+        "model": "Atlas",
+        "trims": [
+            "S",
+            "SE",
+            "SEL",
+            "SEL Premium"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Volvo",
+        "model": "S60",
+        "trims": [
+            "Momentum",
+            "Inscription",
+            "R-Design",
+            "Polestar Engineered"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Volvo",
+        "model": "S90",
+        "trims": [
+            "Momentum",
+            "Inscription",
+            "R-Design",
+            "Excellence"
+        ],
+        "vehicle_type": "Sedan"
+    },
+    {
+        "make": "Volvo",
+        "model": "V60",
+        "trims": [
+            "Momentum",
+            "Inscription",
+            "R-Design",
+            "Cross Country",
+            "Polestar Engineered"
+        ],
+        "vehicle_type": "Wagon"
+    },
+    {
+        "make": "Volvo",
+        "model": "XC40",
+        "trims": [
+            "Momentum",
+            "R-Design",
+            "Inscription",
+            "Recharge"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Volvo",
+        "model": "XC60",
+        "trims": [
+            "Momentum",
+            "R-Design",
+            "Inscription",
+            "Polestar Engineered"
+        ],
+        "vehicle_type": "SUV"
+    },
+    {
+        "make": "Volvo",
+        "model": "XC90",
+        "trims": [
+            "Momentum",
+            "R-Design",
+            "Inscription",
+            "Excellence",
+            "Recharge"
+        ],
+        "vehicle_type": "SUV"
+    }
+]

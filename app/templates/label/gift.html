@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block links %}
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+{% endblock %}
+<!-- prettier-ignore -->
+{% block body %}
+
+<!-- component -->
+<div class="flex justify-center mb-24">
+    <div class="w-full md:w-1/3 px-3">
+
+        {% if user.logo and gift_logo(request.url) %}
+        <div class="w-full flex justify-center mb-12">
+            <img src="{{gift_logo(request.url)}}" alt="{{dealership}}" class="mt-24">
+        </div>
+        {% else %}
+        <div>
+            <p class="mt-32 text-2xl text-center font-bold dark:text-white"></p>
+        </div>
+        {% endif %}
+
+        <p class="text-xl font-bold text-center dark:text-white">Thank you for choosing {{dealership}} </p>
+        <p class="mt-10 text-center dark:text-white">Before visiting the vehicles information, would you like provide us
+            with your
+            contact
+            information for a free
+            promotion?</p>
+
+        <div class="my-12 p-3 bg-indigo-700 text-white rounded-lg">
+            <p class="text-center text-sm">Promotion Available</p>
+            <p class="my-5 text-center text-4xl font-bold">{{gift}}</p>
+        </div>
+
+
+        <div class="flex flex-row items-center justify-around">
+            <a href="{{url_for('user.client_data', sticker_id=sticker_id)}}">
+                <button type="button"
+                    class="w-36 px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                    Check It Out!
+                </button>
+            </a>
+
+            <a href="{{label_url}}">
+                <small class="ml-2 dark:text-white underline">No thanks, view vehicle</small>
+            </a>
+        </div>
+    </div>
+</div>
+
+{% include 'footer_no_sidebar.html' %}
+{% endblock %}
+<!-- prettier-ignore -->
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
+{% endblock %}
