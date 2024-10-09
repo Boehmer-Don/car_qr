@@ -17,3 +17,4 @@ from .date_convert import date_convert
 from .save_file import save_file
 from .scheduler import set_scheduler
 from .dealer_inventory import get_gift_boxes_data, get_replenishment
+from .recaptcha import validate_recaptcha

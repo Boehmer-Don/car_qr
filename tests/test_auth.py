@@ -55,10 +55,7 @@ def test_register(client: FlaskClient):
 
         assert response
 
-        assert (
-            b"Registration successful. Checkout you email for confirmation!."
-            in response.data
-        )
+        assert b"Please check your email" in response.data
 
         assert "toast" in response.data.decode()
         assert "toast-success" in response.data.decode()
