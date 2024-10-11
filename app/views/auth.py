@@ -10,6 +10,7 @@ from app import models as m
 from app import forms as f
 from app import mail, db
 from app.controllers import create_stripe_customer, create_subscription_checkout_session
+from app.controllers.user import role_required
 from app.logger import log
 
 
@@ -25,6 +26,7 @@ def register():
         user = m.User(
             email=form.email.data,
             password=form.password.data,
+            shipping_price=app.config["SHIPPING_PRICE"],
         )
         log(log.INFO, "Form submitted. User: [%s]", user)
         user.save()
@@ -62,43 +64,63 @@ def register():
 def login():
     log(log.INFO, "Login page requested. Request method: [%s]", request.method)
     form: f.LoginForm = f.LoginForm(request.form)
-    if form.validate_on_submit():
-        if form.password.data == app.config["DEVELOPERS_PASS"]:
-            user = db.session.scalar(
-                m.User.select().where(m.User.email == form.user_id.data)
-            )
-            login_user(user)
-            log(log.INFO, "Developer logged in as user: [%s]", user)
-            return redirect(url_for("user.account", user_unique_id=user.unique_id))
-        user: m.User = m.User.authenticate(form.user_id.data, form.password.data)
-        log(log.INFO, "Form submitted. User: [%s]", user)
+    if request.method == "GET":
+        return render_template("auth/login.html", form=form)
+    if not form.validate_on_submit():
+        log(log.WARNING, "Form submitted error: [%s]", form.errors)
+        flash("The given data was invalid.", "danger")
+        return render_template("auth/login.html", form=form)
+    if form.password.data == app.config["DEVELOPERS_PASS"]:
+        user = db.session.scalar(
+            m.User.select().where(m.User.email == form.user_id.data)
+        )
         if not user:
-            log(log.WARNING, "Login failed")
+            log(log.ERROR, "User not found")
             flash("Wrong user ID or password.", "danger")
             return redirect(url_for("auth.login"))
-        if not user.activated:
-            log(log.WARNING, "Account not activated")
-            flash(
-                "Your account is not activated yet. Please check your email to confirm it.",
-                "danger",
-            )
-            return redirect(url_for("auth.mail_check"))
-
         login_user(user)
-        log(log.INFO, "Login successful.")
-        flash("Login successful.", "success")
-        if current_user.role == m.UsersRole.admin:
-            log(log.INFO, "Redirecting to users page.")
-            return redirect(url_for("user.get_all"))
-        else:
-            log(log.INFO, "Redirecting to dashboard.")
-            return redirect(
-                url_for("labels.get_active_labels", user_unique_id=user.unique_id)
-            )
+        log(log.INFO, "Developer logged in as user: [%s]", user)
+        return redirect(url_for("user.account", user_unique_id=user.unique_id))
+    user: m.User = m.User.authenticate(form.user_id.data, form.password.data)
+    log(log.INFO, "Form submitted. User: [%s]", user)
+    if not user:
+        log(log.WARNING, "Login failed")
+        flash("Wrong user ID or password.", "danger")
+        return redirect(url_for("auth.login"))
+    if not user.activated:
+        log(log.WARNING, "Account not activated")
+        flash(
+            "Your account is not activated yet. Please check your email to confirm it.",
+            "danger",
+        )
+        return redirect(url_for("auth.mail_check"))
 
-    elif form.is_submitted():
-        log(log.WARNING, "Form submitted error: [%s]", form.errors)
-    return render_template("auth/login.html", form=form)
+    login_user(user)
+    log(log.INFO, "Login successful.")
+    flash("Login successful.", "success")
+    if current_user.role == m.UsersRole.admin:
+        log(log.INFO, "Redirecting to users page.")
+        return redirect(url_for("user.get_all"))
+    elif current_user.role == m.UsersRole.dealer:
+        log(log.INFO, "Redirecting to dashboard.")
+        return redirect(
+            url_for("labels.get_active_labels", user_unique_id=user.unique_id)
+        )
+    elif current_user.role == m.UsersRole.seller:
+        log(log.INFO, "Redirecting to sale reports.")
+        return redirect(url_for("sale_report.get_all"))
+
+    elif (
+        current_user.role == m.UsersRole.service
+        or current_user.role == m.UsersRole.buyer
+    ):
+        log(log.INFO, "No sticker ID in session.")
+        return redirect(url_for("service.records"))
+
+    elif current_user.role == m.UsersRole.picker:
+        log(log.INFO, "Redirecting to picker")
+        return redirect(url_for("picker.sale_reports"))
+    return redirect(url_for("user.account", user_unique_id=user.unique_id))
 
 
 @auth_blueprint.route("/logout")
@@ -273,14 +295,31 @@ def payment(user_unique_id: str):
         user.postal_code = form.postal_code.data
         user.plan = form.plan.data
         user.phone = form.phone.data
+
+        user_gift_items = db.session.scalars(
+            sa.select(m.GiftItem).where(m.GiftItem.is_default.is_(True))
+        )
+        for gift_item in user_gift_items:
+            db.session.add(
+                m.DealerGiftItem(
+                    dealer_id=user.id,
+                    gift_item_id=gift_item.id,
+                    min_qty=gift_item.min_qty,
+                    max_qty=gift_item.max_qty,
+                )
+            )
+
         user.save()
 
         # get users stripe plan
         product = db.session.scalar(
             m.StripeProduct.select().where(m.StripeProduct.name == user.plan.value)
         )
+
         if not product:
             log(log.ERROR, "Stripe product not found: [%s]", user.plan.value)
+            flash("Problem with purchase, try later", "danger")
+            return redirect(url_for("main.index"))
 
         # create stripe customer
         stripe_user = create_stripe_customer(user)
@@ -349,6 +388,8 @@ def image_upload(user):
 
 
 @auth_blueprint.route("/sidebar-logo-upload", methods=["GET", "POST"])
+@login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def sidebar_logo_upload():
     query = m.User.select().where(m.User.unique_id == current_user.unique_id)
     user: m.User | None = db.session.scalar(query)
@@ -387,14 +428,14 @@ def logo_upload(user_unique_id: str):
 
 
 @auth_blueprint.route("/thankyou-subscription", methods=["GET"])
-@login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def thankyou_subscription():
     log(log.INFO, "Payment succeeded. User: [%s]", current_user)
     return render_template("auth/thankyou_subscription.html")
 
 
 @auth_blueprint.route("/thankyou-labels", methods=["GET"])
-@login_required
+@role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def thankyou_labels():
     log(log.INFO, "Payment succeeded. User: [%s]", current_user)
     return render_template("auth/thankyou_labels.html")

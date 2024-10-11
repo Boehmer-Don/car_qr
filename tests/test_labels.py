@@ -6,7 +6,7 @@ from click.testing import Result
 import sqlalchemy as sa
 
 from app import models as m, db
-from tests.utils import login, logout
+from tests.utils import login, set_user
 from .db import add_generic_labels
 
 
@@ -144,24 +144,6 @@ def test_label_edit(populate: FlaskClient):
     # assert label.type_of_vehicle == TEST_LABEL_TYPE
 
 
-def test_deactivate_label(populate: FlaskClient):
-    label: m.Label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
-    assert label
-    login(populate)
-    response = populate.post(
-        f"labels/deactivate",
-        data=dict(
-            unique_id=label.unique_id,
-        ),
-    )
-    assert response
-    assert response.status_code == 302
-
-    label = db.session.scalar(m.Label.select().where(m.Label.id == 1))
-    assert label.status == m.LabelStatus.archived
-    assert label.date_deactivated
-
-
 def test_add_new_labels(client: FlaskClient):
     TEST_LABELS_AMOUNT = 5
     login(client)
@@ -290,3 +272,46 @@ def test_assign_generic_labels(runner: FlaskClient, populate: FlaskClient):
     for label in db.session.scalars(m.Sticker.select()):
         assert label.user_id == admin.id
         assert label.pending == True
+
+
+def test_sell_car_label(populate: FlaskClient):
+    label: m.Label = db.session.scalar(
+        m.Label.select().where(m.Label.status == m.LabelStatus.active)
+    )
+    db.session.delete(label.sale_report)
+    db.session.commit()
+    dealer = set_user(populate, role=m.UsersRole.dealer)
+    seller = db.session.scalar(
+        sa.select(m.User).where(m.User.role == m.UsersRole.seller)
+    )
+    assert seller
+    assert label
+
+    seller.creator_id = dealer.id  # type: ignore
+    db.session.commit()
+
+    res = populate.get(f"labels/sell/{label.unique_id}")
+    assert res
+    assert res.status_code == 200
+    assert "Sale Details" in res.data.decode()
+
+    response = populate.post(
+        "labels/sell",
+        data=dict(
+            label_unique_id=label.unique_id,
+            seller_unique_id=seller.unique_id,
+            price_sold=10000,
+            pickup_date="12/12/2021",
+            pickup_time="12:00",
+        ),
+        follow_redirects=True,
+    )
+    assert response
+    assert response.status_code == 200
+    assert label.sticker_id not in response.data.decode()
+
+    assert label.status == m.LabelStatus.archived
+    assert label.date_deactivated
+    assert db.session.scalars(
+        sa.select(m.SaleReport).where(m.SaleReport.seller_id == seller.id)
+    ).all()

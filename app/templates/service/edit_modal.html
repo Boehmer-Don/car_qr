@@ -1,0 +1,159 @@
+<div tabindex="-1" id="modal-edit-service"
+    class="fixed bg-opacity-80 bg-gray-600 top-0 left-0 right-0 z-50 items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full justify-end items-end flex">
+    <div class="rounded-lg relative w-4/5 bg-white p-4" onclick="event.stopPropagation();">
+        <div class="flex justify-between items-center">
+            <h1 class="w-full text-2xl font-bold dark:text-white">
+                Edit service adviser
+            </h1>
+            <button type="button" hx-get="{{ url_for('main.no_content') }}" hx-trigger="click" hx-swap="delete"
+                hx-target="#modal-edit-service" hx-indicator="#htmx-spinner"
+                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+        <form class="p-8 grid grid-cols-12 gap-4 bg-white dark:bg-gray-800 rounded-lg p-1"
+            action="{{ url_for('service.edit') }}" method="POST">
+
+            {{ form.hidden_tag() }}
+            {{ form.service_unique_id }}
+            <div class="col-span-6">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Name
+                </label>
+                {{ form.service_name(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none
+                bg-inherit
+                dark:text-white") }}
+
+            </div>
+            <div class="col-span-6">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Address
+                </label>
+                {{ form.address(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white") }}
+            </div>
+            {% if current_user.role.value == 'admin' %}
+            <div class="col-span-6">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    First Name
+                </label>
+                {{ form.first_name(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white") }}
+            </div>
+            <div class="col-span-6">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Last Name
+                </label>
+                {{ form.last_name(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white") }}
+            </div>
+            {% endif %}
+
+            <div class="col-span-6">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Email
+                </label>
+                {{ form.email(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white") }}
+            </div>
+            <div class="col-span-6">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Phone
+                </label>
+                <input id="phone-input" type="tel" name="phone" autocomplete="off" minlength="1" maxlength="64"
+                    class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                    placeholder="000-000-0000" value="{{ service.phone }}" required />
+            </div>
+            <div class="col-span-6">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    New password
+                </label>
+                <div class="relative">
+                    <input type="password" name="new_password" autocomplete="off" minlength="1" maxlength="64" autofocus
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="**********" />
+                    <div class="toggle-password absolute top-0 end-0 p-2 cursor-pointer">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3.933 13.909A4.357 4.357 0 0 1 3 12c0-1 4-6 9-6m7.6 3.8A5.068 5.068 0 0 1 21 12c0 1-3 6-9 6-.314 0-.62-.014-.918-.04M5 19 19 5m-4 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-span-6">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Confirm new password
+                </label>
+                <div class="relative">
+                    <input type="password" name="new_password_confirmation" autocomplete="off" minlength="1"
+                        maxlength="64" autofocus
+                        class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+                        placeholder="**********" />
+                    <div class="toggle-password absolute top-0 end-0 p-2 cursor-pointer">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3.933 13.909A4.357 4.357 0 0 1 3 12c0-1 4-6 9-6m7.6 3.8A5.068 5.068 0 0 1 21 12c0 1-3 6-9 6-.314 0-.62-.014-.918-.04M5 19 19 5m-4 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-span-3">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Country
+                </label>
+                <select required name="country" hx-get="{{ url_for('user.select_province') }}" hx-trigger="change"
+                    hx-target="#province" hx-indicator="#htmx-spinner"
+                    class="block py-2 px-0 w-full text-sm bg-transparent border-0 border-b-2 border-gray-400 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-400 peer">
+                    <option {{ 'selected' if service.country=="Canada" }} value="Canada">Canada</option>
+                    <option {{ 'selected' if service.country=="US" }} value="US">United States</option>
+                </select>
+            </div>
+            <div class="col-span-3" id="province">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Province
+                </label>
+                <select required name="province"
+                    class="block py-2 px-0 w-full text-sm  bg-transparent border-0 border-b-2 border-gray-400 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-400 peer">
+                    {% for region in form.province.choices %}
+                    {% if service.province == region.name %}
+                    <option selected value="{{ region.name }}">{{ region.name }}</option>
+                    {% else %}
+                    <option value="{{ region.name }}">{{ region.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-span-3">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    City
+                </label>
+                {{ form.city(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit
+                dark:text-white") }}
+            </div>
+            <div class="col-span-3">
+                <label class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+                    Postal code
+                </label>
+                {{ form.postal_code(class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none
+                bg-inherit dark:text-white") }}
+            </div>
+
+            <button type="submit"
+                class="col-span-2 py-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+                Submit
+            </button>
+        </form>
+    </div>
+    <script src="{{ url_for('static', filename='js/controllers/phone.js') }}" type="text/javascript" defer></script>
+    <script src="{{ url_for('static', filename='js/controllers/password.js') }}" type="text/javascript" defer></script>
+    {% include "spinner.html" %}
+</div>

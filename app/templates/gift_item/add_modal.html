@@ -1,0 +1,136 @@
+<div
+  tabindex="-1"
+  id="modal-gift-item-add"
+  hx-get="{{ url_for('main.no_content') }}"
+  hx-trigger="click"
+  hx-swap="delete"
+  hx-target="#modal-gift-item-add"
+  hx-indicator="#htmx-spinner"
+  class="fixed bg-opacity-80 bg-gray-600 top-0 left-0 right-0 z-50 items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full justify-end items-end flex">
+  <div
+    class="rounded-lg relative w-2/5 bg-white"
+    onclick="event.stopPropagation();">
+    <form
+      class="p-8 grid grid-cols-6 gap-4 bg-white dark:bg-gray-800 rounded-lg p-1"
+      action="{{ url_for('gift_item.add') }}"
+      method="POST"
+      enctype="multipart/form-data">
+      <div class="col-span-6">
+        <h1 class="w-full text-2xl font-bold dark:text-white">Add Gift Item</h1>
+      </div>
+      {{ form.hidden_tag() }}
+      <div class="col-span-6">
+        <label
+          class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+          Description
+        </label>
+        <input
+          type="text"
+          name="description"
+          autocomplete="off"
+          minlength="1"
+          maxlength="255"
+          class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+          placeholder="Enter description"
+          required />
+      </div>
+      <div class="col-span-3">
+        <label
+          class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+          SKU
+        </label>
+        <input
+          type="text"
+          name="SKU"
+          autocomplete="off"
+          minlength="1"
+          maxlength="64"
+          class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+          placeholder="Enter sku"
+          required />
+      </div>
+      <div class="col-span-3">
+        <label
+          class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+          Price
+        </label>
+        <input
+          type="number"
+          name="price"
+          autocomplete="off"
+          step="0.01"
+          class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+          placeholder="Enter price"
+          required />
+      </div>
+      <div class="col-span-3">
+        <label
+          class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+          Min Qty
+        </label>
+        <input
+          type="number"
+          name="min_qty"
+          autocomplete="off"
+          min="1"
+          class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+          placeholder="Enter min qty"
+          required />
+      </div>
+      <div class="col-span-3">
+        <label
+          class="block my-4 text-sm font-medium text-gray-900 dark:text-white">
+          Max Qty
+        </label>
+        <input
+          type="number"
+          name="max_qty"
+          autocomplete="off"
+          min="1"
+          class="w-full p-2 text-sm border-0 border-b-2 border-gray-400 outline-none bg-inherit dark:text-white"
+          placeholder="Enter max qty"
+          required />
+      </div>
+      <div>{{ form.image }}</div>
+      <div class="col-span-6 flex items-center justify-between gap-4">
+        <input
+          type="checkbox"
+          name="is_default"
+          checked
+          class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+        <label
+          for="green-checkbox"
+          class="text-sm font-medium text-gray-900 dark:text-gray-300"
+          >Default</label
+        >
+
+        <input
+          type="checkbox"
+          name="apply_to_all"
+          checked
+          class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+        <label
+          for="green-checkbox"
+          class="text-sm font-medium text-gray-900 dark:text-gray-300"
+          >Apply to all</label
+        >
+
+        <input
+          type="checkbox"
+          name="make_available"
+          checked
+          class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+        <label
+          for="green-checkbox"
+          class="text-sm font-medium text-gray-900 dark:text-gray-300"
+          >Make available to add</label
+        >
+      </div>
+      <button
+        type="submit"
+        class="col-span-2 py-2 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+        Submit
+      </button>
+    </form>
+  </div>
+</div>

@@ -28,9 +28,8 @@ interface ILabel {
 }
 
 const $modalElement: HTMLElement = document.querySelector('#labelDetailsModal');
-const modalDeactivateLabel: HTMLElement = document.querySelector(
-  '#labelDeactivateModal',
-);
+
+
 const addNewMakeModal: HTMLElement = document.querySelector('#addNewMakeModal');
 const addNewModelModal: HTMLElement =
   document.querySelector('#addNewModelModal');
@@ -142,28 +141,10 @@ function getLabelDetails(label: ILabel) {
   labelDetailsModalWindow.show();
 }
 
-function deactivateLabel(label: ILabel) {
-  const labelInfo: HTMLInputElement = document.querySelector(
-    '#label-deactivate-info',
-  );
-  labelInfo.innerHTML = `${label.name} ${label.make} ${label.vehicle_model} ${label.year} - ${label.sticker_id}`;
-  const labelUniqueId: HTMLInputElement = document.querySelector(
-    '#label-deactivate-unique-id',
-  );
-  labelUniqueId.value = label.unique_id;
-  const nextUrl: HTMLInputElement = document.querySelector(
-    '#label-deactivate-next-url',
-  );
-  nextUrl.value = window.location.href;
-  labelDeactivateModalWindow.show();
-}
+
 
 const labelDetailsModalWindow: ModalInterface = new Modal(
   $modalElement,
-  modalOptions,
-);
-const labelDeactivateModalWindow: ModalInterface = new Modal(
-  modalDeactivateLabel,
   modalOptions,
 );
 
@@ -174,27 +155,13 @@ labels.forEach(e =>
   }),
 );
 
-const labelDeactivateButtons = document.querySelectorAll(
-  '.label-deactivate-button',
-);
 
-labelDeactivateButtons.forEach(e =>
-  e.addEventListener('click', () => {
-    deactivateLabel(JSON.parse(e.getAttribute('data-target')));
-  }),
-);
+
 
 const closeButton = document.querySelector('#modalCloseButton');
 if (closeButton) {
   closeButton.addEventListener('click', () => {
     labelDetailsModalWindow.hide();
-  });
-}
-
-const closeDeactivate = document.querySelector('#modalCloseDeactivate');
-if (closeDeactivate) {
-  closeDeactivate.addEventListener('click', () => {
-    labelDeactivateModalWindow.hide();
   });
 }
 
@@ -345,30 +312,6 @@ modelSelectFields.forEach(modelSelectField =>
   }),
 );
 
-const decreaseStickersButton: HTMLButtonElement = document.querySelector(
-  '#decreaseStickersButton',
-);
-const increaseStickersButton: HTMLButtonElement = document.querySelector(
-  '#increaseStickersButton',
-);
-const stickersQuantityInput: HTMLInputElement = document.querySelector(
-  '#stickersQuantityInput',
-);
-
-if (decreaseStickersButton && increaseStickersButton) {
-  decreaseStickersButton.addEventListener('click', () => {
-    let quantity = parseInt(stickersQuantityInput.value);
-    if (quantity > 1) {
-      quantity -= 1;
-      stickersQuantityInput.value = quantity.toString();
-    }
-  });
-  increaseStickersButton.addEventListener('click', () => {
-    let quantity = parseInt(stickersQuantityInput.value);
-    quantity += 1;
-    stickersQuantityInput.value = quantity.toString();
-  });
-}
 
 const labelDeleteButtons: NodeListOf<HTMLDivElement> =
   document.querySelectorAll('.label-delete-button');

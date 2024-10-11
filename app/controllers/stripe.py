@@ -49,7 +49,7 @@ def create_stripe_customer(user: m.User):
 def update_stripe_customer(user: m.User):
     """Create or update a Stripe customer for the user."""
     log(log.INFO, "update_stripe_customer for user: %s", user)
-    customer_data = s.StripeUpdateCustomer.parse_obj(
+    customer_data = s.StripeUpdateCustomer.model_validate(
         {
             "description": f"Car QR Code Dealer {user.email}",
             "email": user.email,
@@ -83,7 +83,7 @@ def update_stripe_customer(user: m.User):
             user.save()
         customer = stripe.Customer.modify(
             user.stripe_customer_id,
-            **customer_data.dict(exclude_unset=True),
+            **customer_data.model_dump(exclude_unset=True),
         )
         log(log.INFO, "Updated stripe customer: %s", customer)
         flash("Customer updated successfully", "success")

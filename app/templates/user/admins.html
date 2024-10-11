@@ -67,8 +67,9 @@
           <div class="w-8/12 flex items-center">{{ user.email }}</div>
         </a>
         <div class="w-3/12">
-          <button type="button" data-target="{{user.json}}"
-            class="user-edit-button inline-flex items-center px-1 md:px-3 py-1 md:py-2 text-sm font-medium text-center text-gray-700 rounded-lg hover:bg-gray-100 hover:text-blue-500 focus:ring-4 focus:ring-blue-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800 dark:text-white">
+          <button type="button" hx-get="{{ url_for('user.edit_modal', unique_id=user.unique_id) }}" hx-trigger="click"
+            hx-swap="beforeend" hx-target="body" hx-indicator="#htmx-spinner"
+            class="inline-flex items-center px-1 md:px-3 py-1 md:py-2 text-sm font-medium text-center text-gray-700 rounded-lg hover:bg-gray-100 hover:text-blue-500 focus:ring-4 focus:ring-blue-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800 dark:text-white">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
               <path fill-rule="evenodd"
@@ -78,7 +79,7 @@
             <!-- Edit user -->
           </button>
 
-          <button data-user-id={{ user.id }} type="button"
+          <button data-user-id="{{ user.id }}" type="button"
             class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-grey-600 rounded-lg text-gray-700 hover:text-red-500 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900 delete-user-btn dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-blue-800  dark:text-white">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd"
@@ -168,8 +169,6 @@
 
 <!-- Under pagination block -->
 
-{% include 'user/edit.html' %}
-{% include 'user/resend_invite.html' %}
 <!-- prettier-ignore -->
 {% endblock %}
 <!-- prettier-ignore -->

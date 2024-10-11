@@ -30,8 +30,7 @@
       <li class="my-1 pl-1 flex items-center justify-between">
         <p>{{ current_user.first_name }} {{ current_user.last_name }}</p>
 
-        {% if current_user.is_authenticated and current_user.role and current_user.role.value ==
-        "dealer" %}
+        {% if current_user.role and current_user.role.value == "dealer" %}
         <a href="{{url_for('labels.new_label_payment', user_unique_id=current_user.unique_id)}}"
           class="relative md:hidden">
           <button id="cart" type="button"
@@ -49,7 +48,7 @@
         {% endif %}
       </li>
 
-      {% if current_user.is_authenticated and current_user.plan.value == "Advanced Plan" %}
+      {% if current_user.plan.value == "Advanced Plan" %}
       <div class="relative flex justify-center my-2">
         {% if current_user.logo %}
         <img src="{{get_user_logo()}}" class="hidden md:flex max-w-full rounded-lg" alt="user_logo">
@@ -67,7 +66,7 @@
       </div>
       {% endif %}
 
-      {% endif %} {% if current_user.role and current_user.role.value == "admin" %}
+      {% if current_user.role and current_user.role.value == "admin" %}
       <li>
         <a href="{{ url_for('user.get_all') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -94,6 +93,42 @@
           </svg>
 
           <span class="flex-1 ml-3 whitespace-nowrap">Admins</span>
+        </a>
+      </li>
+      {% endif %}
+      {% if current_user.role and current_user.role.value == "seller" %}
+      <li>
+        <a href="{{ url_for('sale_report.get_all') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z" />
+          </svg>
+          <span class="ml-3">Pending Delivery</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('sale_report.get_all_panding_oil') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M11 9h6m-6 3h6m-6 3h6M6.996 9h.01m-.01 3h.01m-.01 3h.01M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
+          </svg>
+          <span class="ml-3">Pending Oil Change</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('sale_report.get_all_expired_oil') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+
+          <span class="ml-3">Expired oil change</span>
         </a>
       </li>
       {% endif %}
@@ -124,10 +159,72 @@
           <span class="ml-3">New label</span>
         </a>
       </li>
+      <li>
+        <a href="{{ url_for('user.seller.get_user_sellers') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+              d="M16 19h4a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-2m-2.236-4a3 3 0 1 0 0-4M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          </svg>
+
+          <span class="ml-3">Sellers</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('gift_item.get_all_dealer') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <!-- prettier-ignore -->
+          <svg class="w-6 6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+            height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"
+              d="M10 21v-9m3-4H7.5a2.5 2.5 0 1 1 0-5c1.5 0 2.875 1.25 3.875 2.5M14 21v-9m-9 0h14v8a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-8ZM4 8h16a1 1 0 0 1 1 1v3H3V9a1 1 0 0 1 1-1Zm12.155-5c-3 0-5.5 5-5.5 5h5.5a2.5 2.5 0 0 0 0-5Z" />
+          </svg>
+          <span class="ml-3">Gift items</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('picker.get_all') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <!-- prettier-ignore -->
+          <svg class="w-6 6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+            height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"
+              d="M10 21v-9m3-4H7.5a2.5 2.5 0 1 1 0-5c1.5 0 2.875 1.25 3.875 2.5M14 21v-9m-9 0h14v8a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-8ZM4 8h16a1 1 0 0 1 1 1v3H3V9a1 1 0 0 1 1-1Zm12.155-5c-3 0-5.5 5-5.5 5h5.5a2.5 2.5 0 0 0 0-5Z" />
+          </svg>
+          <span class="ml-3">Gift box users</span>
+        </a>
+      </li>
+      {% endif %}
+
+      {% if current_user.role.value == "picker" %}
+      <li>
+        <a href="{{ url_for('picker.sale_reports') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <!-- prettier-ignore -->
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z" />
+          </svg>
+          <span class="ml-3">Reports</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('picker.sale_reports_history') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <!-- prettier-ignore -->
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="white" stroke-linejoin="round" stroke-width="2"
+              d="M10 12v1h4v-1m4 7H6a1 1 0 0 1-1-1V9h14v9a1 1 0 0 1-1 1ZM4 5h16a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
+          </svg>
+          <span class="ml-3">History</span>
+        </a>
+      </li>
       {% endif %}
 
       <!-- prettier-ignore -->
-      {% if current_user.plan and current_user.plan.value == "Advanced Plan" %}
+      {% if current_user.plan.value == "Advanced Plan" %}
       <li>
         <a href="{{ url_for('report.dashboard') }}"
           class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
@@ -143,7 +240,7 @@
       </li>
       {% endif %}
 
-      {% if current_user.role and current_user.role.value == "admin" %}
+      {% if current_user.role.value == "admin" %}
       <li>
         <a href="{{ url_for('labels.get_active_labels') }}"
           class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
@@ -185,10 +282,86 @@
           <span class="ml-3">Generic labels</span>
         </a>
       </li>
+      <li>
+        <a href="{{ url_for('gift_item.get_all') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <!-- prettier-ignore -->
+          <svg class="w-6 6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+            height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"
+              d="M10 21v-9m3-4H7.5a2.5 2.5 0 1 1 0-5c1.5 0 2.875 1.25 3.875 2.5M14 21v-9m-9 0h14v8a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-8ZM4 8h16a1 1 0 0 1 1 1v3H3V9a1 1 0 0 1 1-1Zm12.155-5c-3 0-5.5 5-5.5 5h5.5a2.5 2.5 0 0 0 0-5Z" />
+          </svg>
+          <span class="ml-3">Gift items</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('user.inventory.dealers') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <!-- prettier-ignore -->
+          <div class="w-6 h-6">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"
+                d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z" />
+            </svg>
+          </div>
+
+
+          <span class="ml-3">Gift Box Inventory by Dealership</span>
+        </a>
+      </li>
+      {% endif %}
+      {% if current_user.role and current_user.role.value == "dealer" or current_user.role.value == "admin" %}
+      <li>
+        <a href="{{ url_for('service.get_all') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <!-- prettier-ignore -->
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="white" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.3"
+              d="M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          </svg>
+
+
+          <span class="ml-3">Service advisers</span>
+        </a>
+      </li>
+      {% endif %}
+      {% if current_user.role.value == "service" or current_user.role.value == "buyer" %}
+      <li>
+        <a href="{{ url_for('service.records') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <!-- prettier-ignore -->
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"
+              d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z" />
+          </svg>
+
+
+
+          <span class="ml-3">Records</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('service.add_record_search') }}"
+          class="flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
+          <!-- prettier-ignore -->
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"
+              d="M18 9V4a1 1 0 0 0-1-1H8.914a1 1 0 0 0-.707.293L4.293 7.207A1 1 0 0 0 4 7.914V20a1 1 0 0 0 1 1h4M9 3v4a1 1 0 0 1-1 1H4m11 6v4m-2-2h4m3 0a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z" />
+          </svg>
+          <span class="ml-3">Add record</span>
+        </a>
+      </li>
       {% endif %}
 
+
+
+
       <li>
-        {% if current_user.role and current_user.role.value == "dealer" %}
+        {% if current_user.role.value == "dealer" %}
         <a href="{{ url_for('stripe.subscription') }}"
           class="absolute absolute-bottom-32 left-3 w-40 flex items-center p-2 rounded-lg text-white hover:bg-gray-700">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="1.5"
@@ -221,7 +394,9 @@
           <span class="flex-1 ml-3 whitespace-nowrap">Log Out</span>
         </a>
       </li>
+      {% endif %}
     </ul>
+
   </div>
 </aside>
 

@@ -1,0 +1,1 @@
+(()=>{var t=document.querySelector("#phone-input");t&&t.addEventListener("input",(function(t){if(t.target.value){var e=t.target.value.replace(/\D/g,"").match(/(\d{0,3})(\d{0,3})(\d{0,4})/);t.target.value=e[1]+(e[2]?"-".concat(e[2]):"")+(e[3]?"-".concat(e[3]):"")+(e[4]?"-".concat(e[4]):"")}}))})();

@@ -16,6 +16,8 @@ services:
   app:
     image: simple2b/car-qr-label:0.4.9
     restart: always
+    volumes:
+      - ./uploads:/home/app/app/static/uploads
     command: sh ./start_server.sh
     environment:
       APP_ENV: production
@@ -54,3 +56,4 @@ networks:
 
 volumes:
   db_data:
+  uploads:

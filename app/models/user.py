@@ -1,7 +1,10 @@
+from typing import TYPE_CHECKING
+
 from datetime import datetime
 import enum
 from flask_login import UserMixin, AnonymousUserMixin
 import sqlalchemy as sa
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy import orm
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -9,6 +12,10 @@ from app.database import db
 from .utils import ModelMixin, generate_uuid
 from app.logger import log
 from .label_location import LabelLocation
+
+
+if TYPE_CHECKING:
+    from .dealer_gift_item import DealerGiftItem
 
 
 class UsersPlan(enum.Enum):
@@ -19,12 +26,21 @@ class UsersPlan(enum.Enum):
 class UsersRole(enum.Enum):
     admin = "admin"
     dealer = "dealer"
+    seller = "seller"
+    buyer = "buyer"
+    service = "service"
+    picker = "picker"
 
 
 class User(db.Model, UserMixin, ModelMixin):
     __tablename__ = "users"
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
+
+    _creator_id: orm.Mapped[int | None] = orm.mapped_column(
+        sa.ForeignKey("users.id"),
+    )
+
     role: orm.Mapped[UsersPlan] = orm.mapped_column(
         sa.Enum(UsersRole), default=UsersRole.dealer
     )
@@ -76,6 +92,32 @@ class User(db.Model, UserMixin, ModelMixin):
         back_populates="user"
     )
 
+    sellers: orm.Mapped[list["User"]] = orm.relationship(order_by=created_at.desc())
+
+    gift_items: orm.Mapped[list["DealerGiftItem"]] = orm.relationship(
+        back_populates="dealer",
+        order_by="DealerGiftItem.created_at.desc()",
+        primaryjoin="and_(User.id==DealerGiftItem.dealer_id, DealerGiftItem.is_deleted.is_(False))",
+    )
+    shipping_price: orm.Mapped[float] = orm.mapped_column(sa.Float, default=0.0)
+
+    @hybrid_property
+    def creator_id(self):
+        return self._creator_id
+
+    @creator_id.setter
+    def creator_id(self, value):
+        user = db.session.scalar(sa.select(User).where(User.id == value))
+        if not user or user.role not in (UsersRole.dealer, UsersRole.admin):
+            raise ValueError("Only dealer and admin can be assigned as creator")
+        if self.role == UsersRole.seller and user.role != UsersRole.dealer:
+            raise ValueError("Only dealer can be assigned as creator for seller")
+        self._creator_id = value
+
+    @property
+    def full_name(self):
+        return f"{self.first_name or ''} {self.last_name or ''}"
+
     @property
     def password(self):
         return self.password_hash
@@ -102,13 +144,6 @@ class User(db.Model, UserMixin, ModelMixin):
 
     def __repr__(self):
         return f"<{self.id}:{self.email}>"
-
-    @property
-    def json(self):
-        from app import schema as s
-
-        u = s.User.from_orm(self)
-        return u.json()
 
 
 class AnonymousUser(AnonymousUserMixin):

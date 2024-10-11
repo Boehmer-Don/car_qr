@@ -56,7 +56,7 @@ const countriesConfig = {
   },
 };
 
-const labelConfig = {
+const labelConfig = [{
   entry: {
     main: './src/label.ts',
   },
@@ -64,7 +64,14 @@ const labelConfig = {
     path: path.resolve(__dirname, './app/static'),
     filename: 'js/label.js', // <--- Will be compiled to this single file
   },
-};
+  entry: {
+    main: './src/label_generate.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/label_generate.js', // <--- Will be compiled to this single file
+  },
+}];
 
 const newLabelConfig = {
   entry: {
@@ -108,11 +115,11 @@ const usersSearchResult = {
 
 const passwordConfig = {
   entry: {
-    main: './src/password.ts',
+    main: './src/controllers/password.ts',
   },
   output: {
     path: path.resolve(__dirname, './app/static'),
-    filename: 'js/password.js', // <--- Will be compiled to this single file
+    filename: 'js/controllers/password.js', // <--- Will be compiled to this single file
   },
 };
 
@@ -128,18 +135,44 @@ const controllerConfig = [
   }
 ];
 
+const controllerPhone =  {
+    entry: {
+      main: './src/controllers/phone.ts',
+    },
+    output: {
+      path: path.resolve(__dirname, './app/static'),
+      filename: 'js/controllers/phone.js', // <--- Will be compiled to this single file
+    },
+}
+ 
+
+
+const giftBoxModal =  {
+    entry: {
+      main: './src/gift_box_modal.ts',
+    },
+    output: {
+      path: path.resolve(__dirname, './app/static'),
+      filename: 'js/gift_box_modal.js', // <--- Will be compiled to this single file
+    },
+  }
+
+
+
 
 const configs = [
   baseConfig,
   userConfig,
   customConfig,
   logoUploadConfig,
-  labelConfig,
   newLabelConfig,
   reports,
   countriesConfig,
   usersSearchResult,
   passwordConfig,
+  giftBoxModal,
+  controllerPhone,
+  ...labelConfig,
   ...controllerConfig
 ].map(conf => merge(defaultConfig, conf));
 

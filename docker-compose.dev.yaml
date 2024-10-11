@@ -17,8 +17,10 @@ services:
       - 127.0.0.1:${LOCAL_DB_PORT:-15430}:5432
 
   app:
-    image: simple2b/car-qr-label:0.4.7
+    image: simple2b/car-qr-label:latest
     restart: always
+    volumes:
+      - ./uploads:/home/app/app/static/uploads
     command: sh ./start_server.sh
     env_file:
       - .env
@@ -36,3 +38,4 @@ services:
 
 volumes:
   db_data:
+  uploads:

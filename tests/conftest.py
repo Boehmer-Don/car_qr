@@ -7,12 +7,13 @@ from random import randint
 
 from app import create_app, db
 from app import models as m
-from tests.utils import register
+from tests.utils import register, set_user
 from tests.db import populate as db_populate, add_labels
 
 
 @pytest.fixture()
 def app(monkeypatch):
+
     def mock_create_subscription_checkout_session(
         user: m.User, subscription_product: m.StripeProduct
     ):
@@ -118,7 +119,7 @@ def populate(client: FlaskClient, test_labels_data: dict):
             activated=True,
         ).save(False)
     db.session.commit()
-
+    seller = set_user(client=client, role=m.UsersRole.seller, is_login=False)
     for index, label in enumerate(test_labels_data):
         label_status = m.LabelStatus.active if index < 8 else m.LabelStatus.archived
         date_deactivated = None
@@ -141,9 +142,68 @@ def populate(client: FlaskClient, test_labels_data: dict):
             date_deactivated=date_deactivated,
         )
         label.save()
+
+        if label_status == m.LabelStatus.active:
+            label.price_sold = 10000
+            m.SaleReport(
+                seller_id=seller.id,
+                label_id=label.id,
+                pickup_date=datetime.now(),
+            ).save()
+
         for _ in range(randint(1, 6)):
             view = m.LabelView(label_id=label.id)
             view.created_at = datetime.now() + timedelta(days=randint(1, 30))
             view.save()
 
+    m.GiftItem(
+        description="Gift Item 1",
+        SKU="SKU1",
+        price=2,
+        min_qty=1,
+        max_qty=10,
+        is_default=True,
+        is_available=True,
+    ).save()
+
     yield client
+
+
+class InvoiceMock:
+
+    @property
+    def hosted_invoice_url(self):
+        return "https://invoice.com"
+
+    @property
+    def id(self):
+        return "invoice_id"
+
+
+@pytest.fixture()
+def stripe_invoice_moke(populate: Flask, mocker):
+
+    invoice = InvoiceMock()
+
+    mocker.patch(
+        "stripe.ShippingRate.create",
+        return_value=invoice,
+    )
+
+    mocker.patch(
+        "stripe.Invoice.create",
+        return_value=invoice,
+    )
+    mocker.patch("stripe.InvoiceItem.create", return_value=None)
+    mocker.patch(
+        "stripe.Invoice.finalize_invoice",
+        return_value=invoice,
+    )
+    mocker.patch(
+        "stripe.Invoice.modify",
+        return_value=invoice,
+    )
+    mocker.patch("stripe.Invoice.send_invoice", return_value=None)
+    # mocker.patch.object(stripe.Invoice, "__new__", return_value=invoice_mock)
+
+    yield populate

@@ -1,4 +1,11 @@
-from pydantic import BaseModel
+import enum
+
+from pydantic import BaseModel, ConfigDict, TypeAdapter
+
+
+class Country(enum.Enum):
+    Canada = "Canada"
+    US = "US"
 
 
 class User(BaseModel):
@@ -7,5 +14,12 @@ class User(BaseModel):
     first_name: str
     last_name: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
+
+
+class Region(BaseModel):
+    name: str
+    abbreviation: str
+
+
+Regions = TypeAdapter(list[Region])
