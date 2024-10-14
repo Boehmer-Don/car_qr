@@ -199,6 +199,7 @@ def mark_as_unreplenishment(unique_id: str, sku: str):
         )
 
     start_date, end_date = get_week_range(week)
+    # TODO validatetion does not work properly
     if get_replenishment(start_date, end_date, sku, delaer_gift_item.id):
         log(log.INFO, f"Replenishment already exists: {unique_id} {sku}")
         return render_template(

@@ -56,7 +56,7 @@ const countriesConfig = {
   },
 };
 
-const labelConfig = [{
+const labelConfig = {
   entry: {
     main: './src/label.ts',
   },
@@ -64,6 +64,9 @@ const labelConfig = [{
     path: path.resolve(__dirname, './app/static'),
     filename: 'js/label.js', // <--- Will be compiled to this single file
   },
+};
+
+const labelGenerateConfig = {
   entry: {
     main: './src/label_generate.ts',
   },
@@ -71,7 +74,7 @@ const labelConfig = [{
     path: path.resolve(__dirname, './app/static'),
     filename: 'js/label_generate.js', // <--- Will be compiled to this single file
   },
-}];
+}
 
 const newLabelConfig = {
   entry: {
@@ -123,7 +126,7 @@ const passwordConfig = {
   },
 };
 
-const controllerConfig = [
+const controllerConfig = 
   {
     entry: {
       main: './src/controllers/graph_view.ts',
@@ -132,8 +135,7 @@ const controllerConfig = [
       path: path.resolve(__dirname, './app/static'),
       filename: 'js/controllers/graph_view.js', // <--- Will be compiled to this single file
     },
-  }
-];
+  };
 
 const controllerPhone =  {
     entry: {
@@ -172,8 +174,9 @@ const configs = [
   passwordConfig,
   giftBoxModal,
   controllerPhone,
-  ...labelConfig,
-  ...controllerConfig
+  labelConfig,
+  labelGenerateConfig,
+  controllerConfig
 ].map(conf => merge(defaultConfig, conf));
 
 module.exports = configs;

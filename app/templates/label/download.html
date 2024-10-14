@@ -149,7 +149,7 @@
         </p>
         <a href="{{url_for('labels.generate', user_unique_id=sticker.user.unique_id)}}"
           class="w-1/2 md:w-3/12 hidden md:flex items-center justify-start hover:text-indigo-500 cursor-pointer">
-          <p id="label_details_button"
+          <p 
             class="w-full md:w-full flex items-center justify-start hover:text-indigo-500 cursor-pointer">
             {{ sticker.user.first_name }} {{ sticker.user.last_name }}
           </p>
@@ -176,5 +176,4 @@
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/label.js') }}" type="text/javascript" defer></script>
 {% endblock %}
