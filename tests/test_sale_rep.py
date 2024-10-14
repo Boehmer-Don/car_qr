@@ -75,7 +75,7 @@ def test_sale_reports(populate: FlaskClient):
     res = populate.get(f"/sale-reports/{sale_rep.unique_id}/edit-modal")
 
     assert res.status_code == 200
-    assert sale_rep.oil_changes[0].date.strftime("%m-%d-%Y") in res.data.decode()
+    assert sale_rep.oil_changes[0].date.strftime("%d-%m-%Y") in res.data.decode()
     assert "b@b.com" in res.data.decode()
 
     form_data = {

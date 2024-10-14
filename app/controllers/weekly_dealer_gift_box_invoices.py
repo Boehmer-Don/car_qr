@@ -39,6 +39,7 @@ def weekly_dealer_gift_box_invoices():
         total_price = sum(car.sale_report.total_boxes_price for car in cars)
         if total_price <= 0.5:
             log(log.ERROR, "Total price is to small for a invocies [%s]", dealer.email)
+            # TODO: can be price 0
             continue
 
         if not dealer.stripe_customer_id:
