@@ -1,3 +1,5 @@
+import enum
+
 import datetime
 from typing import List, Tuple
 
@@ -5,7 +7,15 @@ from pyecharts.charts import Line, Bar  # type: ignore
 from pyecharts import options as opts  # type: ignore
 from markupsafe import Markup
 
+
+class DayEvent(enum.Enum):
+    MORNING = "Morning (6am - 12pm)"
+    AFTERNOON = "Afternoon (12pm - 5pm)"
+    EVENING = "Evening (5pm - 12am)"
+
+
 DateTimeTuple = Tuple[int, datetime.datetime]
+
 WEEK_DAYS = [
     "Sunday",
     "Monday",
@@ -48,26 +58,26 @@ def create_graph(label_views_data: List[tuple[datetime.date, int]]) -> Markup:
 
 def create_bar_graph(view_data: List[DateTimeTuple], by_week: bool = False) -> Markup:
     period_dict = {  # type: ignore
-        "Morning": [],
-        "Afternoon": [],
-        "Evening": [],
+        DayEvent.MORNING.value: [],
+        DayEvent.AFTERNOON.value: [],
+        DayEvent.EVENING.value: [],
     }
     date_range = []
     if by_week:
-        period_dict["Morning"] = [0] * len(WEEK_DAYS)
-        period_dict["Afternoon"] = [0] * len(WEEK_DAYS)
-        period_dict["Evening"] = [0] * len(WEEK_DAYS)
+        period_dict[DayEvent.MORNING.value] = [0] * len(WEEK_DAYS)
+        period_dict[DayEvent.AFTERNOON.value] = [0] * len(WEEK_DAYS)
+        period_dict[DayEvent.EVENING.value] = [0] * len(WEEK_DAYS)
         for total, date in view_data:
             day = date.strftime("%A")
             hour = date.hour
             if day in WEEK_DAYS:
                 index = WEEK_DAYS.index(day)
                 if hour <= 12:
-                    period_dict["Morning"][index] += total
+                    period_dict[DayEvent.MORNING.value][index] += total
                 elif hour <= 17:
-                    period_dict["Afternoon"][index] += total
+                    period_dict[DayEvent.AFTERNOON.value][index] += total
                 else:
-                    period_dict["Evening"][index] += total
+                    period_dict[DayEvent.EVENING.value][index] += total
         date_range = WEEK_DAYS
 
     else:
@@ -76,31 +86,31 @@ def create_bar_graph(view_data: List[DateTimeTuple], by_week: bool = False) -> M
             hour = date.hour
             if day not in date_range:
                 date_range.append(day)
-                period_dict["Morning"].append(0)
-                period_dict["Afternoon"].append(0)
-                period_dict["Evening"].append(0)
+                period_dict[DayEvent.MORNING.value].append(0)
+                period_dict[DayEvent.AFTERNOON.value].append(0)
+                period_dict[DayEvent.EVENING.value].append(0)
             index = date_range.index(date.strftime("%Y-%m-%d"))
             if hour <= 12:
-                period_dict["Morning"][index] += total
+                period_dict[DayEvent.MORNING.value][index] += total
             elif hour <= 17:
-                period_dict["Afternoon"][index] += total
+                period_dict[DayEvent.AFTERNOON.value][index] += total
             else:
-                period_dict["Evening"][index] += total
+                period_dict[DayEvent.EVENING.value][index] += total
 
     bar = (
         Bar(init_opts=opts.InitOpts(width="100%", height="300px"))
         .add_xaxis(date_range)
         .add_yaxis(
-            "Morning",
-            period_dict["Morning"],
+            DayEvent.MORNING.value,
+            period_dict[DayEvent.MORNING.value],
         )
         .add_yaxis(
-            "Afternoon",
-            period_dict["Afternoon"],
+            DayEvent.AFTERNOON.value,
+            period_dict[DayEvent.AFTERNOON.value],
         )
         .add_yaxis(
-            "Evening",
-            period_dict["Evening"],
+            DayEvent.EVENING.value,
+            period_dict[DayEvent.EVENING.value],
         )
         .set_global_opts(
             yaxis_opts=opts.AxisOpts(name="Views"),

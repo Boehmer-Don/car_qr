@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   const filterMake: HTMLSelectElement = document.querySelector('#filter-make');
+  const filterStatus: HTMLSelectElement = document.querySelector('#filter-status');
   const filterModel: HTMLSelectElement =
     document.querySelector('#filter-model');
   const filterType: HTMLSelectElement =
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({makeSelected: filterMake.value}),
+      body: JSON.stringify({ makeSelected: filterMake.value }),
     })
       .then(response => response.json())
       .then(data => {
@@ -45,6 +46,18 @@ document.addEventListener('DOMContentLoaded', function () {
   filterTrim.addEventListener('change', () => {
     applyFiltersButton.click();
   });
+
+
+  if (filterStatus) {
+    filterStatus.addEventListener('change', () => {
+      applyFiltersButton.click();
+    });
+  } else {
+    console.error('Filter status select not found');
+  }
+
+
+
 
   const viewsOptions: Element = document.querySelector('#views_options');
   viewsOptions.addEventListener('change', () => {

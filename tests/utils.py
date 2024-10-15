@@ -44,6 +44,17 @@ def set_user(
     password = "123456"
     user.password = password
     user.save()
+
+    current_period_start = user.created_at.timestamp()
+    current_period_end = user.created_at.timestamp() + 31536000
+    m.Subscription(
+        stripe_subscription_id=f"sub_{user.id}",
+        user_id=user.id,
+        product_id=1,
+        current_period_start=current_period_start,
+        current_period_end=current_period_end,
+        is_active=True,
+    ).save()
     if is_login:
         client.post(
             "/auth/login",

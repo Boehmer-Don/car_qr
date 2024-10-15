@@ -280,7 +280,7 @@ def test_sell_car_label(populate: FlaskClient):
     )
     db.session.delete(label.sale_report)
     db.session.commit()
-    dealer = set_user(populate, role=m.UsersRole.dealer)
+    dealer = set_user(populate, role=m.UsersRole.dealer, is_login=True)
     seller = db.session.scalar(
         sa.select(m.User).where(m.User.role == m.UsersRole.seller)
     )
@@ -290,13 +290,13 @@ def test_sell_car_label(populate: FlaskClient):
     seller.creator_id = dealer.id  # type: ignore
     db.session.commit()
 
-    res = populate.get(f"labels/sell/{label.unique_id}")
+    res = populate.get(f"/labels/sell/{label.unique_id}")
     assert res
     assert res.status_code == 200
     assert "Sale Details" in res.data.decode()
 
     response = populate.post(
-        "labels/sell",
+        "/labels/sell",
         data=dict(
             label_unique_id=label.unique_id,
             seller_unique_id=seller.unique_id,

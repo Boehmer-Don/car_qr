@@ -18,6 +18,10 @@ def role_required(required_role: list[m.UsersRole]):
                 log(log.ERROR, "User is deleted or not activated")
                 return redirect(url_for("auth.logout"))
 
+            if current_user.is_subscription_expired:
+                log(log.ERROR, "User subscription is expired")
+                return redirect(url_for("auth.logout"))
+
             if current_user.role not in required_role:
                 log(
                     log.ERROR,

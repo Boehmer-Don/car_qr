@@ -16,6 +16,7 @@ from .label_location import LabelLocation
 
 if TYPE_CHECKING:
     from .dealer_gift_item import DealerGiftItem
+    from .subscription import Subscription
 
 
 class UsersPlan(enum.Enum):
@@ -91,6 +92,7 @@ class User(db.Model, UserMixin, ModelMixin):
     label_locations: orm.Mapped[list["LabelLocation"]] = orm.relationship(
         back_populates="user"
     )
+    shipping_price: orm.Mapped[float] = orm.mapped_column(sa.Float, default=0.0)
 
     sellers: orm.Mapped[list["User"]] = orm.relationship(order_by=created_at.desc())
 
@@ -99,7 +101,25 @@ class User(db.Model, UserMixin, ModelMixin):
         order_by="DealerGiftItem.created_at.desc()",
         primaryjoin="and_(User.id==DealerGiftItem.dealer_id, DealerGiftItem.is_deleted.is_(False))",
     )
-    shipping_price: orm.Mapped[float] = orm.mapped_column(sa.Float, default=0.0)
+    subscriptions: orm.Mapped[list["Subscription"]] = orm.relationship(
+        back_populates="user"
+    )
+
+    @property
+    def is_subscription_expired(self):
+        if self.role != UsersRole.dealer:
+            return False
+
+        if not self.subscriptions:
+            return True
+
+        # I don't know why the code is using the first subscription only
+        subscription = self.subscriptions[0]
+
+        return (
+            not subscription.is_active
+            or subscription.current_period_end < datetime.now().timestamp()
+        )
 
     @hybrid_property
     def creator_id(self):

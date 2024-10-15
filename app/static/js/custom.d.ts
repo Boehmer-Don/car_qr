@@ -1,3 +1,4 @@
+declare function toggleSubscription(): void;
 declare const cleanEmail: HTMLInputElement;
 declare const cleanNameInputs: NodeListOf<Element>;
 declare const cleanGiftInput: Element;

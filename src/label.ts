@@ -1,5 +1,5 @@
-import {Modal} from 'flowbite';
-import type {ModalOptions, ModalInterface} from 'flowbite';
+import { Modal } from 'flowbite';
+import type { ModalOptions, ModalInterface } from 'flowbite';
 
 interface LabelLocation {
   id: number;
@@ -30,11 +30,11 @@ interface ILabel {
 const $modalElement: HTMLElement = document.querySelector('#labelDetailsModal');
 
 
-const addNewMakeModal: HTMLElement = document.querySelector('#addNewMakeModal');
-const addNewModelModal: HTMLElement =
-  document.querySelector('#addNewModelModal');
-const addNewTrimModal: HTMLElement = document.querySelector('#addNewTrimModal');
-const addNewTypeModal: HTMLElement = document.querySelector('#addNewTypeModal');
+// const addNewMakeModal: HTMLElement = document.querySelector('#addNewMakeModal');
+// const addNewModelModal: HTMLElement =
+//   document.querySelector('#addNewModelModal');
+// const addNewTrimModal: HTMLElement = document.querySelector('#addNewTrimModal');
+// const addNewTypeModal: HTMLElement = document.querySelector('#addNewTypeModal');
 
 const modalOptions: ModalOptions = {
   placement: 'bottom-right',
@@ -42,9 +42,9 @@ const modalOptions: ModalOptions = {
   backdropClasses:
     'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
   closable: true,
-  onHide: () => {},
-  onShow: () => {},
-  onToggle: () => {},
+  onHide: () => { },
+  onShow: () => { },
+  onToggle: () => { },
 };
 
 function getLabelDetails(label: ILabel) {
@@ -140,8 +140,6 @@ function getLabelDetails(label: ILabel) {
   nextUrl.value = window.location.href;
   labelDetailsModalWindow.show();
 }
-
-
 
 const labelDetailsModalWindow: ModalInterface = new Modal(
   $modalElement,
@@ -240,7 +238,7 @@ makeSelectFields.forEach(makeSelectField =>
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({makeSelected: makeSelected}),
+        body: JSON.stringify({ makeSelected: makeSelected }),
       })
         .then(response => response.json())
         .then(data => {
@@ -281,7 +279,7 @@ modelSelectFields.forEach(modelSelectField =>
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({modelSelected: modelSelectField.value}),
+        body: JSON.stringify({ modelSelected: modelSelectField.value }),
       })
         .then(response => response.json())
         .then(data => {
