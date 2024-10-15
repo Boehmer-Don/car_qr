@@ -24,7 +24,7 @@ class Subscription(db.Model, ModelMixin):
     current_period_end: orm.Mapped[int] = orm.mapped_column(sa.Integer, nullable=False)
     is_active: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
 
-    user: orm.Mapped[User] = orm.relationship("User", backref="subscriptions")
+    user: orm.Mapped[User] = orm.relationship(back_populates="subscriptions")
 
     def __repr__(self):
         return f"<{self.id}: {self.stripe_subscription_id}>"

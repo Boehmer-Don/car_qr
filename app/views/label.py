@@ -83,23 +83,23 @@ def get_active_labels():
     )
 
 
-@dealer_blueprint.route("/<label_unique_id>/views", methods=["GET"])
-@login_required
-@role_required([m.UsersRole.dealer, m.UsersRole.admin])
-def get_label_graph_views(label_unique_id: str):
-    label_views_data_query = (
-        sa.select(
-            sa.func.date(m.LabelView.created_at).label("date"),
-            sa.func.count().label("total_views"),
-        )
-        .join(m.Label, m.Label.id == m.LabelView.label_id)
-        .where(m.Label.unique_id == label_unique_id)
-        .group_by(sa.func.date(m.LabelView.created_at))
-        .order_by(sa.func.date(m.LabelView.created_at))
-    )
-    label_views_data = db.session.execute(label_views_data_query).all()
-    labels_graph = create_graph(label_views_data)
-    return render_template("label/label_graph_views.html", labels_graph=labels_graph)
+# @dealer_blueprint.route("/<label_unique_id>/views", methods=["GET"])
+# @login_required
+# @role_required([m.UsersRole.dealer, m.UsersRole.admin])
+# def get_label_graph_views(label_unique_id: str):
+#     label_views_data_query = (
+#         sa.select(
+#             sa.func.date(m.LabelView.created_at).label("date"),
+#             sa.func.count().label("total_views"),
+#         )
+#         .join(m.Label, m.Label.id == m.LabelView.label_id)
+#         .where(m.Label.unique_id == label_unique_id)
+#         .group_by(sa.func.date(m.LabelView.created_at))
+#         .order_by(sa.func.date(m.LabelView.created_at))
+#     )
+#     label_views_data = db.session.execute(label_views_data_query).all()
+#     labels_graph = create_graph(label_views_data)
+#     return render_template("label/label_graph_views.html", labels_graph=labels_graph)
 
 
 @dealer_blueprint.route("/archived", methods=["GET"])
@@ -148,7 +148,7 @@ def get_archived_labels():
 @login_required
 @role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_sell_car_label_modal(label_unique_id: str):
-    form: f.SoldLabelForm() = f.SoldLabelForm()
+    form: f.SoldLabelForm = f.SoldLabelForm()
     form.label_unique_id.data = label_unique_id
 
     sellers = db.session.scalars(
@@ -681,8 +681,8 @@ def generate(user_unique_id: str):
 @login_required
 @role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def order(user_unique_id: str):
-    query = m.User.select().where(m.User.unique_id == user_unique_id)
-    user: m.User | None = db.session.scalar(query)
+    query = sa.select(m.User).where(m.User.unique_id == user_unique_id)
+    user = db.session.scalar(query)
 
     if not user:
         log(log.INFO, "User not found")

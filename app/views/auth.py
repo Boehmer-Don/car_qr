@@ -95,6 +95,11 @@ def login():
         )
         return redirect(url_for("auth.mail_check"))
 
+    if user.is_subscription_expired:
+        log(log.WARNING, "Subscription expired")
+        flash("Your subscription is expired. Please renew", "danger")
+        return redirect(url_for("auth.plan", user_unique_id=user.unique_id))
+
     login_user(user)
     log(log.INFO, "Login successful.")
     flash("Login successful.", "success")
@@ -300,6 +305,17 @@ def payment(user_unique_id: str):
             sa.select(m.GiftItem).where(m.GiftItem.is_default.is_(True))
         )
         for gift_item in user_gift_items:
+            if (
+                db.session.scalar(
+                    sa.select(m.DealerGiftItem).where(
+                        m.DealerGiftItem.dealer_id == user.id,
+                        m.DealerGiftItem.is_deleted.is_(False),
+                        m.DealerGiftItem.gift_item_id == gift_item.id,
+                    )
+                )
+                is not None
+            ):
+                continue
             db.session.add(
                 m.DealerGiftItem(
                     dealer_id=user.id,

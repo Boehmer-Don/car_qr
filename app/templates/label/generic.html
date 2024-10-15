@@ -23,14 +23,6 @@
             Archived 123
           </a>
         </li>
-        {% if current_user.plan.value == 'advanced' %}
-        <li class="mr-2 hidden">
-          <a href="{{ url_for('report.all') }}"
-            class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">
-            Reports
-          </a>
-        </li>
-        {% endif %}
       </ul>
     </div>
     {% endif %}

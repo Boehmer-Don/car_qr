@@ -8,7 +8,7 @@ poetry install
 
 2. Create '.env' file (simply copy file .env.sample):
 
-***You need to set stripe credentials***
+**_You need to set stripe credentials_**
 
 3. Run
 
@@ -25,10 +25,12 @@ to create an docker container
 ```bash
 flask db upgrade
 ```
+
 ```bash
 flask get-products # create stripe products
 flask create-admin # create admin
 flask db-populate # populate database
+flask create-models # add car models
 ```
 
 6. In main folder need install node_modules to work with tailwind, run
@@ -37,16 +39,17 @@ flask db-populate # populate database
 yarn install
 ```
 
-
 # Description:
 
 #### Main entities
+
 ##### User, Label, Subscriprion, Gift box, Gift item, Sale report, Service record
 
-##### user has several roles: (admin, dealer, seller, buyer, service, picker) 
+##### user has several roles: (admin, dealer, seller, buyer, service, picker)
 
 ### User(role: admin):
-invite, edit - dealer 
+
+invite, edit - dealer
 <br>
 add, edit - gift items
 <br>
@@ -73,19 +76,17 @@ create seller, login as seller
 see gift items
 
 ### User(role: seller):
+
 set gift box and create (buyer)
 <br>
 see sold cars
 
 ### User(role: buyer, service):
+
 set car oil change data (records)
 <br>
 see records
 
 ### User(role: picker):
+
 pick up gift boxes
-
-
-
-
-

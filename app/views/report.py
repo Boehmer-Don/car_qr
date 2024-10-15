@@ -39,6 +39,7 @@ report_blueprint = Blueprint("report", __name__, url_prefix="/report")
 @role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def dashboard():
     exclude = request.args.get("exclude")
+    status_filter = request.args.get("status_filter", default="", type=str)
     views_filter = request.args.get("views_filter")
     views_filter = views_filter if views_filter and views_filter != "None" else ""
     type_filter = request.args.get("type_filter")
@@ -124,6 +125,12 @@ def dashboard():
             sa.func.DATE(m.Label.date_received) == date_received
         )
 
+    if status_filter and status_filter != "All":
+        log(log.INFO, f"Filtering by status: {status_filter}")
+        status = m.LabelStatus(status_filter)
+        query = query.where(m.Label.status == status)
+        count_query = count_query.where(m.Label.status == status.name)
+
     if make_filter and make_filter != "All":
         log(log.INFO, f"Filtering by make: {make_filter}")
         query = query.where(m.Label.make == make_filter)
@@ -157,7 +164,7 @@ def dashboard():
         query = query.where(m.Label.price_sold <= price_sold_upper)
         count_query = count_query.where(m.Label.price_sold <= price_sold_upper)
 
-    query = query.order_by(m.Label.id.desc())
+    query = query.order_by(m.Label.date_received.desc())
 
     if views_options_filter in ["0-10", "10-50", "50-100", "100-1000", "1000-10000"]:
         total_views = sa.func.count(m.LabelView.id).label("total_views")
@@ -313,6 +320,8 @@ def dashboard():
         exclude=exclude,
         page=pagination,
         graph_view=graph,
+        status_filter=status_filter,
+        status_options=["All", "active", "archived"],
     )
 
 
@@ -480,19 +489,27 @@ def get_label_location_views_graph(query: s.QueryModelLocationsGraphView):
     start_date = query.start_date_graph
     end_date = query.end_date_graph
     status = query.status
-    by_week = False
+
+    by_week = True
+    where = sa.and_(
+        m.LabelLocation.user_id == current_user.id,
+    )
+
+    where_location_names = sa.and_(
+        m.LabelLocation.user_id == current_user.id,
+    )
+    if current_user.role == m.UsersRole.admin:
+        where_location_names = sa.and_(True)
+        where = sa.and_(True)
+
     if start_date and end_date:
+        by_week = False
         where = sa.and_(
-            m.LabelLocation.user_id == current_user.id,
+            where,
             sa.cast(m.LabelView.created_at, sa.Date).between(
                 start_date,
                 end_date,
             ),
-        )
-    else:
-        by_week = True
-        where = sa.and_(
-            m.LabelLocation.user_id == current_user.id,
         )
 
     location_query: sa.Select = (
@@ -513,9 +530,10 @@ def get_label_location_views_graph(query: s.QueryModelLocationsGraphView):
     ).order_by(m.LabelView.created_at.asc())
 
     result = db.session.execute(location_query).all()
+
     location_names = db.session.scalars(
         sa.select(m.LabelLocation.name)
-        .where(m.LabelLocation.user_id == current_user.id)
+        .where(where_location_names)
         .order_by(m.LabelLocation.name)
     ).all()
 

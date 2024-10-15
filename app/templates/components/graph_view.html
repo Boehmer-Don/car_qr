@@ -1,5 +1,5 @@
 {% macro graphView(labelStatus="") -%}
-<div>
+<div class="w-full">
 
     {% set graph_period= "[name='start_date_graph'], [name='end_date_graph']" %}
     <div class="inline-flex rounded-md p-4">
@@ -55,13 +55,13 @@
             <button type="button" id="button-get-label-locations"
                 hx-get="{{ url_for('report.get_label_location_views_graph', status=[labelStatus]) }}"
                 hx-include="{{ graph_period }}" hx-target="#graph-data-label-view" hx-trigger="click"
-                hx-on::after-request="resetInputDate()" hx-indicator="#htmx-spinner"
+                hx-on::after-request="resetInputDate()" hx-indicator="#htmx-spinner" 
                 class="hidden px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 See locations result
             </button>
         </div>
 
-        <div id="graph-data-label-view" class="w-full flex justify-center">
+        <div id="graph-data-label-view" >
             {{ graph_view }}
         </div>
     </div>
@@ -71,7 +71,6 @@
         defer></script>
     <script>
         function resetInputDate() {
-            console.log("reset input date");
             document.querySelector("[name='start_date_graph']").value = "";
             document.querySelector("[name='end_date_graph']").value = "";
         }

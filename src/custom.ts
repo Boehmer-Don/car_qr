@@ -1,12 +1,19 @@
-document.addEventListener('DOMContentLoaded', function () {
+
+function toggleSubscription() {
   const basic_plan: Element = document.querySelector('#basic_plan_card');
   const advanced_plan: Element = document.querySelector('#advanced_plan_card');
+  const planChosen: HTMLDivElement = document.querySelector('#plan_chosen');
   const basicPlanButton: HTMLInputElement =
     document.querySelector('#basic_radio');
   const advancedPlanButton: HTMLInputElement =
     document.querySelector('#advanced_radio');
   console.log(basic_plan, advanced_plan);
-  const planChosen: HTMLDivElement = document.querySelector('#plan_chosen');
+
+  if ([basic_plan, advanced_plan, planChosen, basicPlanButton, advancedPlanButton].includes(null)) {
+    console.error('One or more elements are missing : toggleSubscription()');
+    return;
+  }
+
   if (planChosen) {
     const planChosenData = planChosen.dataset.plan;
 
@@ -52,7 +59,14 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  toggleSubscription();
 });
+
+
+
 
 const cleanEmail: HTMLInputElement =
   document.querySelector('.clean_email_input');
@@ -174,7 +188,7 @@ const observer = new IntersectionObserver(
       }
     });
   },
-  {threshold: 0.5},
+  { threshold: 0.5 },
 ); // Adjust the threshold as needed
 
 // Start observing each reveal element
