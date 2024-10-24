@@ -13,7 +13,7 @@ class Sticker(db.Model, ModelMixin):
     code: orm.Mapped[str] = orm.mapped_column(sa.String(8), default="")
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
-        default=datetime.utcnow,
+        default=datetime.now,
     )
     pending: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=True)
     downloaded: orm.Mapped[bool] = orm.mapped_column(

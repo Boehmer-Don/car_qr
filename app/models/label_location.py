@@ -26,7 +26,7 @@ class LabelLocation(db.Model, ModelMixin):
     name: orm.Mapped[str] = orm.mapped_column(sa.String(64))
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
-        default=datetime.utcnow,
+        default=datetime.now,
     )
     labels: orm.Mapped[list["Label"]] = orm.relationship(back_populates="_location")
     user: orm.Mapped["User"] = orm.relationship(

@@ -47,7 +47,7 @@ class Label(db.Model, ModelMixin):
     price_sold: orm.Mapped[int] = orm.mapped_column(sa.Float, default=0, nullable=True)
     date_received: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
-        default=datetime.utcnow,
+        default=datetime.now,
         server_default=sa.func.now(),
     )
     date_activated: orm.Mapped[datetime] = orm.mapped_column(

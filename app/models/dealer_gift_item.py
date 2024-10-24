@@ -31,7 +31,7 @@ class DealerGiftItem(db.Model, ModelMixin):
     )
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
-        default=datetime.utcnow,
+        default=datetime.now,
     )
 
     min_qty: orm.Mapped[int] = orm.mapped_column(sa.Integer)

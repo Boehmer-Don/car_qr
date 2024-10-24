@@ -15,7 +15,7 @@ class Client(db.Model, ModelMixin):
     )
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
-        default=datetime.utcnow,
+        default=datetime.now,
     )
 
     first_name: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")

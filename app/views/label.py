@@ -232,7 +232,7 @@ def sell_car_label():
 
     label.status = m.LabelStatus.archived
     label.price_sold = form.price_sold.data
-    label.date_deactivated = datetime.utcnow()
+    label.date_deactivated = datetime.now()
     label.save()
     log(log.INFO, "Sold label : [%s]", form.label_unique_id.data)
 

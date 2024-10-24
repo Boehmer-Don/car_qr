@@ -57,7 +57,7 @@ class User(db.Model, UserMixin, ModelMixin):
     )
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
-        default=datetime.utcnow,
+        default=datetime.now,
     )
     unique_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(36),

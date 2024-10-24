@@ -15,7 +15,7 @@ class GiftItem(db.Model, ModelMixin):
         default=generate_uuid,
     )
     created_at: orm.Mapped[datetime] = orm.mapped_column(
-        sa.DateTime, default=datetime.utcnow
+        sa.DateTime, default=datetime.now
     )
     image_path: orm.Mapped[str] = orm.mapped_column(
         sa.String(512), default=str(DEFUALT_IMAGE_PATH)

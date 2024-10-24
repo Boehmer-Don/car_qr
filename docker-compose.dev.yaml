@@ -26,6 +26,7 @@ services:
       - .env
     environment:
       APP_ENV: production
+      TZ: 'America/Toronto'
     depends_on:
       - db
     ports:
