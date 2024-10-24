@@ -227,7 +227,7 @@ def delete(id: int):
         return "no user", 404
 
     user.deleted = True
-    user.email = f"{user.email}_{datetime.utcnow().isoformat()}"
+    user.email = f"{user.email}_{datetime.now().isoformat()}"
     user.save()
 
     log(log.INFO, "User [%s] is set to deleted.", user)
