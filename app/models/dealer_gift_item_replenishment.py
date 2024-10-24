@@ -27,7 +27,7 @@ class DealerGiftIteRreplenishment(db.Model, ModelMixin):
     )
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
-        default=datetime.utcnow,
+        default=datetime.now,
     )
 
     is_done: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)

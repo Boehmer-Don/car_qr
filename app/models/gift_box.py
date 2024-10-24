@@ -30,7 +30,7 @@ class GiftBox(db.Model, ModelMixin):
     )
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
-        default=datetime.utcnow,
+        default=datetime.now,
     )
     description: orm.Mapped[str] = orm.mapped_column(sa.String(512))
     _sku: orm.Mapped[str] = orm.mapped_column(sa.String(255))

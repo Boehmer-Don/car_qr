@@ -14,7 +14,7 @@ class StripeProductPrice(db.Model, ModelMixin):
     # type of price: one_time, recurring
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
-        default=datetime.utcnow,
+        default=datetime.now,
     )
     unit_amount: orm.Mapped[int] = orm.mapped_column(sa.Integer, default=1)
 
@@ -36,7 +36,7 @@ class StripeProduct(db.Model, ModelMixin):
     description: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
-        default=datetime.utcnow,
+        default=datetime.now,
     )
 
     price: orm.Mapped[StripeProductPrice] = orm.relationship(
