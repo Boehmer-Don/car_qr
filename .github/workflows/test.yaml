@@ -42,10 +42,17 @@ jobs:
         run: |
           poetry install --verbose
 
-      - name: Lint with flake8
+      - name: Check code style with ruff
         run: |
-          poetry run flake8 . --count --show-source --statistics
-          poetry run flake8 . --count --exit-zero --max-complexity=10 --statistics
+          poetry run ruff check .
+
+      - name: Check code formatting with ruff
+        run: |
+          poetry run ruff format --check .
+
+      - name: Type check with mypy
+        run: |
+          poetry run mypy .
 
       - name: Run pytest
         run: |
