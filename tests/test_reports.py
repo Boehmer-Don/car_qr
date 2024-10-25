@@ -1,12 +1,9 @@
 # flake8: noqa E712
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from flask import current_app as app
-from flask_login import current_user
 import sqlalchemy as sa
-from flask.testing import FlaskClient, FlaskCliRunner
-from click.testing import Result
+from flask.testing import FlaskClient
 from app import models as m, db
 from tests.utils import login
 

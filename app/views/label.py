@@ -1,36 +1,36 @@
-# flake8: noqa F401
-import secrets
-import string
 import csv
 import io
+import secrets
+import string
 from datetime import datetime, timedelta
 
+import sqlalchemy as sa
 from flask import (
     Blueprint,
-    render_template,
-    request,
     flash,
     redirect,
-    url_for,
+    render_template,
+    request,
     send_file,
+    url_for,
 )
-from flask_login import login_required, current_user
-from flask_mail import Message, Mail
-import sqlalchemy as sa
 from flask import current_app as app
+from flask_login import current_user, login_required
+from flask_mail import Mail, Message
+
+from app import db, mail
+from app import forms as f
+from app import models as m
 from app.controllers import (
     create_pagination,
     create_payment_subscription_checkout_session,
 )
-from app import models as m, db
-from app import forms as f
-from app import mail
+from app.controllers.date_convert import date_convert
+from app.controllers.graphs import create_bar_graph
 from app.controllers.user import role_required
 from app.logger import log
-from app.controllers.date_convert import date_convert
-from app.controllers.graphs import create_graph, create_bar_graph
-from .utils import DATE_FORMAT
 
+from .utils import DATE_FORMAT
 
 dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
 
@@ -925,7 +925,7 @@ def add_new_model():
     trim_name = trim.name.replace(" ", "%20")
     type_name = type_of_vehicle.name.replace(" ", "%20")
 
-    next_url = f"{next_url}?make_selected={make_name}&model_selected={model_name}&trim_selected={trim_name}&type_selected={type_name}&code_selected={code_selected}&gift_selected={gift_selected}&name_selected={name_selected}&year_selected={year_selected}&mileage_selected={mileage_selected}&color_selected={color_selected}&price_selected={price_selected}&url_selected={url_selected}"
+    next_url = f"{next_url}?make_selected={make_name}&model_selected={model_name}&trim_selected={trim_name}&type_selected={type_name}&code_selected={code_selected}&gift_selected={gift_selected}&name_selected={name_selected}&year_selected={year_selected}&mileage_selected={mileage_selected}&color_selected={color_selected}&price_selected={price_selected}&url_selected={url_selected}"  # noqa: E501
 
     return redirect(next_url)
 

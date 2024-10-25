@@ -1,7 +1,4 @@
 # flake8: noqa E712
-import io
-import json
-from datetime import datetime
 from flask import (
     Blueprint,
     render_template,
@@ -10,10 +7,8 @@ from flask import (
     redirect,
     session,
     url_for,
-    Response,
 )
 from flask_login import login_required, current_user, login_user, logout_user
-from flask_mail import Message
 import sqlalchemy as sa
 
 from app.controllers import create_pagination, role_required

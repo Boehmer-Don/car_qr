@@ -1,21 +1,19 @@
-# flake8: noqa E712
+from datetime import date, datetime
 
-from datetime import datetime, date
-
-from pydantic import ValidationError
-from flask import Blueprint, render_template, flash, redirect, url_for, request
-from flask_login import login_required, current_user
 import sqlalchemy as sa
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask import current_app as app
+from flask_login import current_user, login_required
 from flask_mail import Message
+from pydantic import ValidationError
 
-from app import mail
-from app.controllers import create_pagination, role_required
-from app import models as m, db
-from app import schema as s
-from app.schema import ad_gift_boxes
+from app import db, mail
 from app import forms as f
+from app import models as m
+from app import schema as s
+from app.controllers import create_pagination, role_required
 from app.logger import log
+from app.schema import ad_gift_boxes
 
 # from .utils import DATE_FORMAT
 
@@ -468,4 +466,4 @@ def buyer_modal_info(sale_rep_unique_id):
     return render_template("sale_report/buyer_info.html", buyer=sale_report.buyer)
 
 
-# TODO Features The system will then use the preferred contact defined by customer to remind them of their oil change 1 week before & the day before. If it is the home phone, it will send the sales rep an email asking them to call. Once both dates pass, it is removed from this page & archived for now
+# TODO Features The system will then use the preferred contact defined by customer to remind them of their oil change 1 week before & the day before. If it is the home phone, it will send the sales rep an email asking them to call. Once both dates pass, it is removed from this page & archived for now  # noqa: E501

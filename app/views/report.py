@@ -1,29 +1,19 @@
-# flake8: noqa F401
 import io
 import csv
-from datetime import datetime, timedelta, time
+from datetime import datetime
 from flask import (
     Blueprint,
     render_template,
     request,
-    flash,
-    redirect,
-    url_for,
     send_file,
 )
 from flask_pydantic import validate
 from flask_login import login_required, current_user
-from markupsafe import Markup
 import sqlalchemy as sa
-from flask import current_app as app
-
-from pyecharts import options as opts
-from pyecharts.charts import Bar
 
 
 from app.controllers import create_pagination
 from app import models as m, db
-from app import forms as f
 from app import schema as s
 from app.controllers.graphs import create_bar_graph, create_location_graph
 from app.controllers.user import role_required
@@ -235,7 +225,7 @@ def dashboard():
             .group_by(m.Label.vehicle_model)
         ).all()
     else:
-        log(log.INFO, f"Getting models for all makes")
+        log(log.INFO, "Getting models for all makes")
         models = db.session.scalars(
             sa.select(m.Label.vehicle_model)
             .where(m.Label.user_id == current_user.id)
@@ -243,7 +233,7 @@ def dashboard():
         ).all()
     now = datetime.now()
     if download == "true":
-        log(log.INFO, f"Downloading report")
+        log(log.INFO, "Downloading report")
         labels = db.session.scalars(query).all()
         with io.StringIO() as proxy:
             writer = csv.writer(proxy)
@@ -354,7 +344,7 @@ def get_label_views_datetime(unique_id: str):
 
     if download == "True":
         now = datetime.now()
-        log(log.INFO, f"Downloading label views")
+        log(log.INFO, "Downloading label views")
         with io.StringIO() as proxy:
             writer = csv.writer(proxy)
             row = [

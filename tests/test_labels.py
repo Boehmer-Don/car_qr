@@ -81,7 +81,7 @@ def test_label_add_new(populate: FlaskClient):
     )
     login(populate)
     response = populate.post(
-        f"labels/add_new_model",
+        "labels/add_new_model",
         data=TEST_DATA,
     )
     assert response
@@ -96,7 +96,7 @@ def test_label_add_new(populate: FlaskClient):
 
     login(populate)
     response = populate.post(
-        f"labels/add_new_model",
+        "labels/add_new_model",
         data=TEST_DATA,
     )
     assert response
@@ -113,7 +113,7 @@ def test_label_edit(populate: FlaskClient):
     assert label
     login(populate)
     response = populate.post(
-        f"labels/edit",
+        "labels/edit",
         data=dict(
             id=label.id,
             unique_id=label.unique_id,
@@ -271,7 +271,7 @@ def test_assign_generic_labels(runner: FlaskClient, populate: FlaskClient):
     )
     for label in db.session.scalars(m.Sticker.select()):
         assert label.user_id == admin.id
-        assert label.pending == True
+        assert label.pending is True
 
 
 def test_sell_car_label(populate: FlaskClient):
