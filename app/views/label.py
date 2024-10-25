@@ -39,10 +39,7 @@ dealer_blueprint = Blueprint("labels", __name__, url_prefix="/labels")
 @login_required
 @role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_active_labels():
-
-    where = sa.and_(
-        m.Label.status == m.LabelStatus.active, m.Label.user_id == current_user.id
-    )
+    where = sa.and_(m.Label.status == m.LabelStatus.active, m.Label.user_id == current_user.id)
 
     if current_user.role and current_user.role.value == "admin":
         where = sa.and_(m.Label.status == m.LabelStatus.active)
@@ -52,9 +49,7 @@ def get_active_labels():
 
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels: list[m.Label] = db.session.execute(
-        query.offset((pagination.page - 1) * pagination.per_page).limit(
-            pagination.per_page
-        )
+        query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
     ).scalars()
 
     view_query = (
@@ -106,9 +101,7 @@ def get_active_labels():
 @login_required
 @role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_archived_labels():
-    where = sa.and_(
-        m.Label.status == m.LabelStatus.archived, m.Label.user_id == current_user.id
-    )
+    where = sa.and_(m.Label.status == m.LabelStatus.archived, m.Label.user_id == current_user.id)
 
     if current_user.role and current_user.role.value == "admin":
         where = sa.and_(m.Label.status == m.LabelStatus.archived)
@@ -118,9 +111,7 @@ def get_archived_labels():
 
     pagination = create_pagination(total=db.session.scalar(count_query))
     labels: list[m.Label] = db.session.execute(
-        query.offset((pagination.page - 1) * pagination.per_page).limit(
-            pagination.per_page
-        )
+        query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
     ).scalars()
 
     view_query = (
@@ -159,9 +150,7 @@ def get_sell_car_label_modal(label_unique_id: str):
         )
     ).all()
 
-    return render_template(
-        "label/modal/sell_car_label.html", form=form, sellers=sellers
-    )
+    return render_template("label/modal/sell_car_label.html", form=form, sellers=sellers)
 
 
 @dealer_blueprint.route("/sell", methods=["POST"])
@@ -178,9 +167,7 @@ def sell_car_label():
         log(log.ERROR, "User save errors: [%s]", form.errors)
         flash(f"Failed to validate form: {form.errors}", "danger")
         return redirect(redirect_url)
-    label = db.session.scalar(
-        sa.select(m.Label).where(m.Label.unique_id == form.label_unique_id.data)
-    )
+    label = db.session.scalar(sa.select(m.Label).where(m.Label.unique_id == form.label_unique_id.data))
     if not label or label.sale_report:
         log(
             log.ERROR,
@@ -204,9 +191,7 @@ def sell_car_label():
         return redirect(redirect_url)
 
     try:
-        pickup_date = datetime.strptime(
-            f"{form.pickup_date.data} {form.pickup_time.data}", DATE_FORMAT + " %H:%M"
-        )
+        pickup_date = datetime.strptime(f"{form.pickup_date.data} {form.pickup_time.data}", DATE_FORMAT + " %H:%M")
     except ValueError as e:
         log(log.ERROR, "Failed to create sale report: [%s]", e)
         flash("Datetime data is not valid", "danger")
@@ -262,9 +247,7 @@ def sell_car_label():
 def label_details():
     form: f.LabelForm = f.LabelForm()
     if form.validate_on_submit():
-        label = db.session.scalar(
-            sa.select(m.Label).where(m.Label.unique_id == form.unique_id.data)
-        )
+        label = db.session.scalar(sa.select(m.Label).where(m.Label.unique_id == form.unique_id.data))
         if not label:
             log(log.ERROR, "Failed to find label : [%s]", form.unique_id.data)
             flash("Failed to find label", "danger")
@@ -305,9 +288,7 @@ def label_details():
 @login_required
 @role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def edit_cart_label(label_unique_id: str):
-    label = db.session.scalar(
-        sa.select(m.Label).where(m.Label.unique_id == label_unique_id)
-    )
+    label = db.session.scalar(sa.select(m.Label).where(m.Label.unique_id == label_unique_id))
     if not label:
         log(log.ERROR, "Failed to find label : [%s]", label_unique_id)
         flash("Failed to find label", "danger")
@@ -341,9 +322,7 @@ def edit_cart_label(label_unique_id: str):
         label.price = price
         label.url = form.url.data
         label.save()
-        return redirect(
-            url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
-        )
+        return redirect(url_for("labels.new_label_payment", user_unique_id=current_user.unique_id))
 
     elif form.is_submitted():
         log(log.ERROR, "User save errors: [%s]", form.errors)
@@ -408,25 +387,18 @@ def new_label_set_details(user_unique_id: str, amount: int):
         m.LabelLocation.select().where(m.LabelLocation.user_id == current_user.id)
     ).all()
     last_label = db.session.scalar(
-        sa.Select(m.Label)
-        .where(m.Label.user_id == current_user.id)
-        .order_by(m.Label.id.desc())
-        .limit(1)
+        sa.Select(m.Label).where(m.Label.user_id == current_user.id).order_by(m.Label.id.desc()).limit(1)
     )
     if request.method == "POST":
         for i in range(1, int(amount) + 1):
             make_input = request.form.get(f"make-{i}")
-            make = db.session.scalar(
-                m.CarMake.select().where(m.CarMake.name == make_input)
-            )
+            make = db.session.scalar(m.CarMake.select().where(m.CarMake.name == make_input))
             if not make:
                 make = m.CarMake(name=make_input)
                 make.save()
                 log(log.INFO, "Created new make: [%s]", make_input)
             model_input = request.form.get(f"vehicle_model-{i}")
-            model = db.session.scalar(
-                m.CarModel.select().where(m.CarModel.name == model_input)
-            )
+            model = db.session.scalar(m.CarModel.select().where(m.CarModel.name == model_input))
             if not model:
                 model = m.CarModel(
                     name=model_input,
@@ -435,9 +407,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 model.save()
                 log(log.INFO, "Created new model: [%s]", model_input)
             trim_input = request.form.get(f"trim-{i}")
-            trim = db.session.scalar(
-                m.CarTrim.select().where(m.CarTrim.name == trim_input)
-            )
+            trim = db.session.scalar(m.CarTrim.select().where(m.CarTrim.name == trim_input))
             if not trim:
                 m.CarTrim(
                     name=trim_input,
@@ -445,9 +415,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 ).save()
                 log(log.INFO, "Created new trim: [%s]", trim_input)
             type_input = request.form.get(f"type-{i}")
-            vehicle_type = db.session.scalar(
-                m.CarType.select().where(m.CarType.name == type_input)
-            )
+            vehicle_type = db.session.scalar(m.CarType.select().where(m.CarType.name == type_input))
             if not vehicle_type:
                 m.CarType(name=type_input).save()
                 log(log.INFO, "Created new type: [%s]", type_input)
@@ -483,9 +451,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
                 location_id=location_id,
             ).save()
             log(log.INFO, "Created label [%s]", label)
-        return redirect(
-            url_for("labels.new_label_payment", user_unique_id=user_unique_id)
-        )
+        return redirect(url_for("labels.new_label_payment", user_unique_id=user_unique_id))
 
     return render_template(
         "label/new_labels_details.html",
@@ -505,9 +471,7 @@ def new_label_set_details(user_unique_id: str, amount: int):
 @role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def new_label_payment(user_unique_id: str):
     labels = db.session.scalars(
-        m.Label.select()
-        .where(m.Label.user_id == current_user.id)
-        .where(m.Label.status == m.LabelStatus.cart)
+        m.Label.select().where(m.Label.user_id == current_user.id).where(m.Label.status == m.LabelStatus.cart)
     ).all()
     makes = db.session.scalars(m.CarMake.select()).all()
     models = db.session.scalars(m.CarModel.select()).all()
@@ -559,9 +523,7 @@ def new_label_payment(user_unique_id: str):
 @dealer_blueprint.route("/get_makes", methods=["POST"])
 def get_makes():
     make_name = request.json.get("makeTyped")
-    makes = db.session.scalars(
-        sa.select(m.CarMake.name).where(m.CarMake.name.ilike(f"%{make_name}%"))
-    ).all()
+    makes = db.session.scalars(sa.select(m.CarMake.name).where(m.CarMake.name.ilike(f"%{make_name}%"))).all()
     return {"makes": makes}
 
 
@@ -573,9 +535,7 @@ def get_models():
     models_query = sa.select(m.CarModel.name)
     if make_name:
         log(log.INFO, "Make name provided. Fetching all models for [%s]", make_name)
-        models_query = models_query.where(
-            m.CarModel.make.has(m.CarMake.name == make_name)
-        )
+        models_query = models_query.where(m.CarModel.make.has(m.CarMake.name == make_name))
     if model_typed:
         log(log.INFO, "Model name provided. Fetching all models for [%s]", model_typed)
         models_query = models_query.where(m.CarModel.name.ilike(f"%{model_typed}%"))
@@ -588,10 +548,7 @@ def get_models():
 
 def generate_alphanumeric_code():
     letters = "".join(secrets.choice(string.ascii_letters) for _ in range(2))
-    digits = "".join(
-        secrets.choice(string.digits)
-        for _ in range(app.config.get("ALPHANUMERIC_CODE_LENGTH") - 2)
-    )
+    digits = "".join(secrets.choice(string.digits) for _ in range(app.config.get("ALPHANUMERIC_CODE_LENGTH") - 2))
     return letters + digits
 
 
@@ -606,14 +563,10 @@ def get_trims():
             "Model name provided. Fetching make, type and all trims for [%s]",
             model_name,
         )
-        model = db.session.scalar(
-            sa.select(m.CarModel).where(m.CarModel.name == model_name)
-        )
+        model = db.session.scalar(sa.select(m.CarModel).where(m.CarModel.name == model_name))
         make = model.make.name
         vehicle_type = model.vehicle_type.name
-        trims_query = trims_query.where(
-            m.CarTrim.model.has(m.CarModel.name == model_name)
-        )
+        trims_query = trims_query.where(m.CarTrim.model.has(m.CarModel.name == model_name))
     else:
         log(log.INFO, "No model name provided. Fetching all trims.")
 
@@ -639,12 +592,8 @@ def generate(user_unique_id: str):
         for _ in range(labels_amount):
             generated_code = generate_alphanumeric_code()
             while True:
-                pending_labels = db.session.scalar(
-                    m.Sticker.select().where(m.Sticker.code == generated_code)
-                )
-                active_labels = db.session.scalar(
-                    m.Label.select().where(m.Label.sticker_id == generated_code)
-                )
+                pending_labels = db.session.scalar(m.Sticker.select().where(m.Sticker.code == generated_code))
+                active_labels = db.session.scalar(m.Label.select().where(m.Label.sticker_id == generated_code))
                 if not pending_labels and not active_labels:
                     break
                 generated_code = generate_alphanumeric_code()
@@ -719,11 +668,7 @@ def download():
     user: m.User | None = db.session.scalar(query)
 
     logo_link = None
-    stickers_query = (
-        m.Sticker.select()
-        .where(m.Sticker.pending.is_(True))
-        .order_by(m.Sticker.created_at.desc())
-    )
+    stickers_query = m.Sticker.select().where(m.Sticker.pending.is_(True)).order_by(m.Sticker.created_at.desc())
     if user:
         stickers_query = stickers_query.where(m.Sticker.user == user)
         if user.logo:
@@ -737,9 +682,7 @@ def download():
     end_date = request.args.get("end_date")
     if end_date:
         end_date = date_convert(end_date)
-        stickers_query = stickers_query.where(
-            m.Sticker.created_at <= (end_date + timedelta(days=1))
-        )
+        stickers_query = stickers_query.where(m.Sticker.created_at <= (end_date + timedelta(days=1)))
 
     stickers = db.session.scalars(stickers_query).all()
 
@@ -886,9 +829,7 @@ def add_new_model():
     else:
         log(log.INFO, "Make already exists: [%s]", make_input)
 
-    model = db.session.scalar(
-        sa.select(m.CarModel).where(m.CarModel.name == model_input)
-    )
+    model = db.session.scalar(sa.select(m.CarModel).where(m.CarModel.name == model_input))
     if make_input and not model:
         model = m.CarModel(
             name=model_input,
@@ -910,9 +851,7 @@ def add_new_model():
     else:
         log(log.INFO, "Trim already exists: [%s]", trim_input)
 
-    type_of_vehicle = db.session.scalar(
-        sa.select(m.CarType).where(m.CarType.name == type_input)
-    )
+    type_of_vehicle = db.session.scalar(sa.select(m.CarType).where(m.CarType.name == type_input))
     if type_input and not type_of_vehicle:
         type_of_vehicle = m.CarType(name=type_input)
         type_of_vehicle.save()
@@ -970,9 +909,7 @@ def new_type():
 def check_label_code():
     code = request.json.get("codeTyped")
 
-    existing_labels = db.session.scalars(
-        sa.select(m.Label).where(m.Label.sticker_id == code)
-    ).all()
+    existing_labels = db.session.scalars(sa.select(m.Label).where(m.Label.sticker_id == code)).all()
     label_exists = False
     if existing_labels:
         log(log.INFO, "Label with code [%s] already exists", code)
@@ -981,9 +918,7 @@ def check_label_code():
         log(log.INFO, "Label with code [%s] does not exist", code)
 
     pending_labels = db.session.scalars(
-        sa.select(m.Sticker)
-        .where(m.Sticker.code == code)
-        .where(m.Sticker.user_id == current_user.id)
+        sa.select(m.Sticker).where(m.Sticker.code == code).where(m.Sticker.user_id == current_user.id)
     ).all()
 
     label_is_pending = False
@@ -1000,23 +935,17 @@ def check_label_code():
 @login_required
 @role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def delete_from_cart(label_unique_id):
-    label = db.session.scalar(
-        sa.select(m.Label).where(m.Label.unique_id == label_unique_id)
-    )
+    label = db.session.scalar(sa.select(m.Label).where(m.Label.unique_id == label_unique_id))
 
     if not label:
         log(log.ERROR, "Failed to find label : [%s]", label_unique_id)
         flash("Failed to find label", "danger")
-        return redirect(
-            url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
-        )
+        return redirect(url_for("labels.new_label_payment", user_unique_id=current_user.unique_id))
 
     if label.status != m.LabelStatus.cart:
         log(log.ERROR, "Label is not in cart : [%s]", label_unique_id)
         flash("Label is not in cart", "danger")
-        return redirect(
-            url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
-        )
+        return redirect(url_for("labels.new_label_payment", user_unique_id=current_user.unique_id))
 
     try:
         db.session.delete(label)
@@ -1025,20 +954,14 @@ def delete_from_cart(label_unique_id):
     except Exception as e:
         log(log.ERROR, "Failed to delete label: [%s]", e)
         flash("Failed to delete label", "danger")
-        return redirect(
-            url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
-        )
+        return redirect(url_for("labels.new_label_payment", user_unique_id=current_user.unique_id))
 
-    return redirect(
-        url_for("labels.new_label_payment", user_unique_id=current_user.unique_id)
-    )
+    return redirect(url_for("labels.new_label_payment", user_unique_id=current_user.unique_id))
 
 
 @dealer_blueprint.route("/gift/<sticker_id>", methods=["GET", "POST"])
 def gift(sticker_id: str):
-    label: m.Label = db.session.scalar(
-        m.Label.select().where(m.Label.sticker_id == sticker_id)
-    )
+    label: m.Label = db.session.scalar(m.Label.select().where(m.Label.sticker_id == sticker_id))
 
     return render_template(
         "label/gift.html",
@@ -1053,9 +976,7 @@ def gift(sticker_id: str):
 @dealer_blueprint.route("/generic", methods=["GET", "POST"])
 def generic():
     if not current_user.role == m.UsersRole.admin:
-        return redirect(
-            url_for("labels.get_active_labels", user_unique_id=current_user.unique_id)
-        )
+        return redirect(url_for("labels.get_active_labels", user_unique_id=current_user.unique_id))
     generic_stickers_sql = (
         sa.select(m.Sticker)
         .where(m.Sticker.user.has(m.User.role == m.UsersRole.admin))
@@ -1101,9 +1022,7 @@ def generic():
         )
 
     count_query = (
-        sa.select(sa.func.count())
-        .select_from(m.Label)
-        .where(m.Label.user.has(m.User.role == m.UsersRole.admin))
+        sa.select(sa.func.count()).select_from(m.Label).where(m.Label.user.has(m.User.role == m.UsersRole.admin))
     )
     pagination = create_pagination(total=db.session.scalar(count_query))
 
@@ -1117,9 +1036,7 @@ def generic():
 @dealer_blueprint.route("/generate_generic_labels", methods=["GET", "POST"])
 def generate_generic_labels():
     if current_user.role != m.UsersRole.admin:
-        return redirect(
-            url_for("labels.get_active_labels", user_unique_id=current_user.unique_id)
-        )
+        return redirect(url_for("labels.get_active_labels", user_unique_id=current_user.unique_id))
     if request.method == "POST":
         labels_amount = int(request.form.get("amount", 1))
         log(
@@ -1131,9 +1048,7 @@ def generate_generic_labels():
         for _ in range(labels_amount):
             generated_code = generate_alphanumeric_code()
             while True:
-                existing_labels = db.session.scalars(
-                    m.Label.select().where(m.Label.sticker_id == generated_code)
-                ).all()
+                existing_labels = db.session.scalars(m.Label.select().where(m.Label.sticker_id == generated_code)).all()
                 existing_stickers = db.session.scalars(m.Sticker.select()).all()
 
                 if not existing_labels or not existing_stickers:
@@ -1163,9 +1078,7 @@ def assign_generic_labels():
         return redirect(url_for("labels.generic"))
     sticker_codes = request.form.getlist("sticker-codes")
     for sticker_code in sticker_codes:
-        sticker: m.Sticker = db.session.scalar(
-            m.Sticker.select().where(m.Sticker.code == sticker_code)
-        )
+        sticker: m.Sticker = db.session.scalar(m.Sticker.select().where(m.Sticker.code == sticker_code))
         if not sticker:
             log(log.ERROR, "Failed to find sticker : [%s]", sticker_code)
             flash("Failed to find sticker", "danger")

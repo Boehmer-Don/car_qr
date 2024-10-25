@@ -40,15 +40,11 @@ def test_label_views_graph(populate: FlaskClient, test_labels_data: dict):
     assert response.status_code == 200
     now = datetime.now().strftime("%A")
     assert now.encode(encoding="UTF-8") in response.data
-    all_views = db.session.scalars(
-        sa.Select(m.LabelView).order_by(m.LabelView.created_at.asc())
-    ).all()
+    all_views = db.session.scalars(sa.Select(m.LabelView).order_by(m.LabelView.created_at.asc())).all()
     start_date = all_views[0].created_at.strftime("%Y/%m/%d")
     end_date = all_views[-1].created_at.strftime("%Y/%m/%d")
 
-    response = populate.get(
-        f"/report/get_label_views_graph?start_date_graph={start_date}&end_date_graph={end_date}"
-    )
+    response = populate.get(f"/report/get_label_views_graph?start_date_graph={start_date}&end_date_graph={end_date}")
     assert response
     assert response.status_code == 200
     # TODO finish this

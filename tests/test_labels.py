@@ -34,9 +34,7 @@ def test_labels_archived(populate: FlaskClient):
     assert b"Archived Labels" in response.data
     assert b"Date Sold" in response.data
     archived_labels = db.session.scalars(
-        m.Label.select()
-        .where(m.Label.status == m.LabelStatus.archived)
-        .order_by(m.Label.date_deactivated.desc())
+        m.Label.select().where(m.Label.status == m.LabelStatus.archived).order_by(m.Label.date_deactivated.desc())
     ).all()
     for label in archived_labels[: app.config["DEFAULT_PAGE_SIZE"]]:
         assert label.name.encode() in response.data
@@ -51,9 +49,7 @@ def test_views_counter(populate: FlaskClient):
     assert response.status_code == 302
     assert response.location == label.url
 
-    label = db.session.scalar(
-        m.Label.select().where(m.Label.unique_id == label.unique_id)
-    )
+    label = db.session.scalar(m.Label.select().where(m.Label.unique_id == label.unique_id))
     assert label.views > views_before
 
     label.gift = "Some Cool Gift"
@@ -87,12 +83,8 @@ def test_label_add_new(populate: FlaskClient):
     assert response
     assert response.status_code == 302
 
-    assert db.session.scalar(
-        m.CarMake.select().where(m.CarMake.name == TEST_LABEL_MAKE)
-    )
-    assert db.session.scalar(
-        m.CarType.select().where(m.CarType.name == TEST_LABEL_TYPE)
-    )
+    assert db.session.scalar(m.CarMake.select().where(m.CarMake.name == TEST_LABEL_MAKE))
+    assert db.session.scalar(m.CarType.select().where(m.CarType.name == TEST_LABEL_TYPE))
 
     login(populate)
     response = populate.post(
@@ -156,10 +148,7 @@ def test_add_new_labels(client: FlaskClient):
     )
     assert response
     assert response.status_code == 302
-    assert (
-        response.location
-        == f"/labels/details/{current_user.unique_id}/{TEST_LABELS_AMOUNT}"
-    )
+    assert response.location == f"/labels/details/{current_user.unique_id}/{TEST_LABELS_AMOUNT}"
 
     forms = {}
     for i in range(1, TEST_LABELS_AMOUNT + 1):
@@ -206,9 +195,7 @@ def test_generic_stickers(runner: FlaskClient, populate: FlaskClient):
     runner.invoke(args=["create-admin"])
     login(populate)
     runner.invoke(args=["db-populate"])
-    admin = db.session.scalar(
-        sa.select(m.User).where(m.User.email == app.config["ADMIN_EMAIL"])
-    )
+    admin = db.session.scalar(sa.select(m.User).where(m.User.email == app.config["ADMIN_EMAIL"]))
     assert admin
     add_generic_labels()
     generic_stickers = db.session.scalars(
@@ -256,9 +243,7 @@ def test_assign_generic_labels(runner: FlaskClient, populate: FlaskClient):
     runner.invoke(args=["create-admin"])
     login(populate)
     add_generic_labels()
-    admin = db.session.scalar(
-        sa.select(m.User).where(m.User.email == app.config["ADMIN_EMAIL"])
-    )
+    admin = db.session.scalar(sa.select(m.User).where(m.User.email == app.config["ADMIN_EMAIL"]))
     assert admin
     login(populate)
     generic_labels = db.session.scalars(m.Sticker.select())
@@ -275,15 +260,11 @@ def test_assign_generic_labels(runner: FlaskClient, populate: FlaskClient):
 
 
 def test_sell_car_label(populate: FlaskClient):
-    label: m.Label = db.session.scalar(
-        m.Label.select().where(m.Label.status == m.LabelStatus.active)
-    )
+    label: m.Label = db.session.scalar(m.Label.select().where(m.Label.status == m.LabelStatus.active))
     db.session.delete(label.sale_report)
     db.session.commit()
     dealer = set_user(populate, role=m.UsersRole.dealer, is_login=True)
-    seller = db.session.scalar(
-        sa.select(m.User).where(m.User.role == m.UsersRole.seller)
-    )
+    seller = db.session.scalar(sa.select(m.User).where(m.User.role == m.UsersRole.seller))
     assert seller
     assert label
 
@@ -312,6 +293,4 @@ def test_sell_car_label(populate: FlaskClient):
 
     assert label.status == m.LabelStatus.archived
     assert label.date_deactivated
-    assert db.session.scalars(
-        sa.select(m.SaleReport).where(m.SaleReport.seller_id == seller.id)
-    ).all()
+    assert db.session.scalars(sa.select(m.SaleReport).where(m.SaleReport.seller_id == seller.id)).all()

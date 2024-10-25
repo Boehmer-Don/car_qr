@@ -18,7 +18,6 @@ class DelerGiftItem(BaseModel):
 
 
 class ReplenishmentGiftBoxe(BaseModel):
-
     sku: str
     total_quantity: int
     delaer_gift_item: DelerGiftItem

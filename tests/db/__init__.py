@@ -242,9 +242,7 @@ def add_pending_labels(user_id: int = 9):
 
 
 def add_generic_labels():
-    admin: m.User = db.session.scalar(
-        sa.select(m.User.id).where(m.User.role == m.UsersRole.admin)
-    )
+    admin: m.User = db.session.scalar(sa.select(m.User.id).where(m.User.role == m.UsersRole.admin))
     for i in range(1, TEST_STICKERS_QUANTITY):
         sticker = m.Sticker(
             code=f"QR0000{i + admin}",

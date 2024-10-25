@@ -21,9 +21,7 @@ def notify_missing_payment():
     ).all()
 
     admins = db.session.scalars(
-        sa.select(m.User).where(
-            m.User.role == m.UsersRole.admin, m.User.deleted.is_(False)
-        )
+        sa.select(m.User).where(m.User.role == m.UsersRole.admin, m.User.deleted.is_(False))
     ).all()
 
     if not missing_payments:

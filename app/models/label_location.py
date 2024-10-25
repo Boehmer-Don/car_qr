@@ -29,9 +29,7 @@ class LabelLocation(db.Model, ModelMixin):
         default=datetime.now,
     )
     labels: orm.Mapped[list["Label"]] = orm.relationship(back_populates="_location")
-    user: orm.Mapped["User"] = orm.relationship(
-        back_populates="label_locations", viewonly=True
-    )
+    user: orm.Mapped["User"] = orm.relationship(back_populates="label_locations", viewonly=True)
 
     def __repr__(self):
         return f"<{self.id}:{self.name} - {self.created_at}>"

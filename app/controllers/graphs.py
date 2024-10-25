@@ -29,9 +29,7 @@ WEEK_DAYS = [
 
 def create_graph(label_views_data: List[tuple[datetime.date, int]]) -> Markup:
     if not label_views_data:
-        return Markup(
-            "<h3 class='mt-6 md:mt-0 text-lg font-bold' >The label has no views</h3>"
-        )
+        return Markup("<h3 class='mt-6 md:mt-0 text-lg font-bold' >The label has no views</h3>")
 
     dates, values = zip(*label_views_data)
 
@@ -133,9 +131,7 @@ def create_location_graph(
         now = datetime.datetime.now()
         day_range = 14
         start_range = day_range * (now.weekday() + 1)
-        datazoom_opts = opts.DataZoomOpts(
-            range_start=start_range, range_end=start_range + day_range
-        )
+        datazoom_opts = opts.DataZoomOpts(range_start=start_range, range_end=start_range + day_range)
 
     bar = Bar(init_opts=opts.InitOpts(width="100%", height="300px"))
     bar.set_global_opts(

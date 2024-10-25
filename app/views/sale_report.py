@@ -17,7 +17,6 @@ from app.schema import ad_gift_boxes
 
 # from .utils import DATE_FORMAT
 
-
 sale_report = Blueprint("sale_report", __name__, url_prefix="/sale-reports")
 
 
@@ -30,24 +29,15 @@ def get_all():
         m.SaleReport.seller_id == current_user.id,
         sa.not_(sa.exists().where(m.GiftBox.sale_result_id == m.SaleReport.id)),
     )
-    query = (
-        sa.select(m.SaleReport)
-        .where(stmt)
-        .distinct()
-        .order_by(m.SaleReport.created_at.desc())
-    )
-    count_query = (
-        sa.select(sa.func.count()).where(stmt).distinct().select_from(m.SaleReport)
-    )
+    query = sa.select(m.SaleReport).where(stmt).distinct().order_by(m.SaleReport.created_at.desc())
+    count_query = sa.select(sa.func.count()).where(stmt).distinct().select_from(m.SaleReport)
 
     pagination = create_pagination(total=db.session.scalar(count_query))
 
     return render_template(
         "sale_report/sale_reports.html",
         sale_reports=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
     )
@@ -86,9 +76,7 @@ def get_all_panding_oil():
     return render_template(
         "sale_report/sale_reports_panding_oil.html",
         sale_reports=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
     )
@@ -100,9 +88,7 @@ def get_all_panding_oil():
 def get_all_expired_oil():
     log(log.INFO, "Get all expired oil")
 
-    sort_status = request.args.get(
-        "q", type=s.SaleReportSort, default=s.SaleReportSort.all
-    )
+    sort_status = request.args.get("q", type=s.SaleReportSort, default=s.SaleReportSort.all)
 
     where_stmt = sa.and_(
         m.SaleReport.seller_id == current_user.id,
@@ -129,11 +115,7 @@ def get_all_expired_oil():
         .order_by(m.SaleReport.created_at.desc())
     )
     count_query = (
-        sa.select(sa.func.count())
-        .join(m.SaleReport.oil_changes)
-        .where(where_stmt)
-        .distinct()
-        .select_from(m.SaleReport)
+        sa.select(sa.func.count()).join(m.SaleReport.oil_changes).where(where_stmt).distinct().select_from(m.SaleReport)
     )
 
     pagination = create_pagination(total=db.session.scalar(count_query))
@@ -141,9 +123,7 @@ def get_all_expired_oil():
     return render_template(
         "sale_report/sale_reports_expired_oil.html",
         sale_reports=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
         sort_status=sort_status,
@@ -155,9 +135,7 @@ def get_all_expired_oil():
 @role_required([m.UsersRole.seller])
 def gift_boxs_modal(sale_rep_unique_id: str):
     """htmx"""
-    sale_report = db.session.scalar(
-        sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_rep_unique_id)
-    )
+    sale_report = db.session.scalar(sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_rep_unique_id))
 
     if not sale_report or sale_report.seller_id != current_user.id:
         log(
@@ -165,9 +143,7 @@ def gift_boxs_modal(sale_rep_unique_id: str):
             "Sale report not found [%s], or not owned by current user",
             sale_rep_unique_id,
         )
-        return render_template(
-            "toast.html", message="Sale report not found", category="danger"
-        )
+        return render_template("toast.html", message="Sale report not found", category="danger")
 
     form = f.GiftBoxForm()
     form.sale_rep_unique_id.data = sale_rep_unique_id
@@ -201,16 +177,10 @@ def set_gift_boxes():
         return redirect(url_for("sale_report.get_all"))
 
     sale_report = db.session.scalar(
-        sa.select(m.SaleReport).where(
-            m.SaleReport.unique_id == form.sale_rep_unique_id.data
-        )
+        sa.select(m.SaleReport).where(m.SaleReport.unique_id == form.sale_rep_unique_id.data)
     )
 
-    if (
-        not sale_report
-        or sale_report.seller_id != current_user.id
-        or sale_report.with_gift_boxes
-    ):
+    if not sale_report or sale_report.seller_id != current_user.id or sale_report.with_gift_boxes:
         log(
             log.ERROR,
             "Sale report not found [%s], or not owned by current user or already has gift boxes",
@@ -342,9 +312,7 @@ def set_gift_boxes():
 def edit_modal(sale_rep_unique_id: str):
     """htmx"""
 
-    sale_report = db.session.scalar(
-        sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_rep_unique_id)
-    )
+    sale_report = db.session.scalar(sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_rep_unique_id))
 
     if (
         not sale_report
@@ -357,9 +325,7 @@ def edit_modal(sale_rep_unique_id: str):
             "Sale report not found [%s], or not owned by current user",
             sale_rep_unique_id,
         )
-        return render_template(
-            "toast.html", message="Sale report not found", category="danger"
-        )
+        return render_template("toast.html", message="Sale report not found", category="danger")
 
     form = f.EditSaleRepForm()
     form.sale_rep_unique_id.data = sale_rep_unique_id
@@ -380,7 +346,6 @@ def edit_modal(sale_rep_unique_id: str):
 @login_required
 @role_required([m.UsersRole.seller])
 def edit():
-
     form = f.EditSaleRepForm()
 
     if not form.validate_on_submit():
@@ -389,9 +354,7 @@ def edit():
         return redirect(url_for("sale_report.get_all_panding_oil"))
 
     sale_report = db.session.scalar(
-        sa.select(m.SaleReport).where(
-            m.SaleReport.unique_id == form.sale_rep_unique_id.data
-        )
+        sa.select(m.SaleReport).where(m.SaleReport.unique_id == form.sale_rep_unique_id.data)
     )
 
     if (
@@ -445,23 +408,15 @@ def edit():
 @login_required
 @role_required([m.UsersRole.seller])
 def buyer_modal_info(sale_rep_unique_id):
-    sale_report = db.session.scalar(
-        sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_rep_unique_id)
-    )
+    sale_report = db.session.scalar(sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_rep_unique_id))
 
-    if (
-        not sale_report
-        or sale_report.seller_id != current_user.id
-        or not sale_report.buyer
-    ):
+    if not sale_report or sale_report.seller_id != current_user.id or not sale_report.buyer:
         log(
             log.ERROR,
             "Sale report not found [%s], or not owned by current user",
             sale_rep_unique_id,
         )
-        return render_template(
-            "toast.html", message="Sale report not found", category="danger"
-        )
+        return render_template("toast.html", message="Sale report not found", category="danger")
 
     return render_template("sale_report/buyer_info.html", buyer=sale_report.buyer)
 

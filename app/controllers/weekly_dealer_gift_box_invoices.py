@@ -18,9 +18,7 @@ def weekly_dealer_gift_box_invoices():
     )
 
     dealers = db.session.scalars(
-        sa.select(m.User).where(
-            m.User.role == m.UsersRole.dealer, m.User.deleted.is_(False)
-        )
+        sa.select(m.User).where(m.User.role == m.UsersRole.dealer, m.User.deleted.is_(False))
     ).all()
 
     start_date, end_date = m.get_week_range()
@@ -80,9 +78,7 @@ def weekly_dealer_gift_box_invoices():
         )
         db.session.add(gifts_invoice)
         db.session.commit()
-        stripe.Invoice.modify(
-            invoice.id, metadata={"gifts_invoice_id": gifts_invoice.id}
-        )
+        stripe.Invoice.modify(invoice.id, metadata={"gifts_invoice_id": gifts_invoice.id})
         stripe.Invoice.send_invoice(invoice.id)
         log(log.INFO, "invoice sent to dealer [%s]", dealer.email)
         msg = Message(

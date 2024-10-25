@@ -30,10 +30,7 @@ def notify_missing_payment():
 
 
 def set_scheduler(scheduler: BackgroundScheduler, app: Flask):
-
-    JOB_STORES = {
-        "default": SQLAlchemyJobStore(url=app.config["ALCHEMICAL_DATABASE_URL"])
-    }
+    JOB_STORES = {"default": SQLAlchemyJobStore(url=app.config["ALCHEMICAL_DATABASE_URL"])}
     scheduler.configure(jobstores=JOB_STORES)
     scheduler.start()
     scheduler.remove_all_jobs()

@@ -144,13 +144,8 @@ def test_forgot(client: FlaskClient):
             follow_redirects=True,
         )
 
-        assert (
-            b"Password reset successful. For set new password please check your e-mail."
-            in response.data
-        )
-        user: m.User = db.session.scalar(
-            m.User.select().where(m.User.email == TEST_EMAIL)
-        )
+        assert b"Password reset successful. For set new password please check your e-mail." in response.data
+        user: m.User = db.session.scalar(m.User.select().where(m.User.email == TEST_EMAIL))
         assert user
 
         assert len(outbox) == 1
@@ -189,9 +184,7 @@ def test_upload_logo(client: FlaskClient):
     user: m.User = db.session.scalar(m.User.select().where(m.User.email == TEST_EMAIL))
     assert user
     with open(f"tests/{TEST_FILENAME}", "rb") as file:
-        response = client.post(
-            f"/auth/logo-upload/{user.unique_id}", data={"file": file}
-        )
+        response = client.post(f"/auth/logo-upload/{user.unique_id}", data={"file": file})
 
     assert response.status_code == 200
     user: m.User = db.session.scalar(m.User.select().where(m.User.email == TEST_EMAIL))

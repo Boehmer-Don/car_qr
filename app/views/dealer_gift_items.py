@@ -24,9 +24,7 @@ def gift_items_modal(unique_id: str):
     user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id))
     if not user:
         log(log.ERROR, "Not found user by id : [%s]", unique_id)
-        return render_template(
-            "toast.html", message="User not found", category="danger"
-        )
+        return render_template("toast.html", message="User not found", category="danger")
 
     user_gift_items_ids = tuple(item.gift_item_id for item in user.gift_items)
 
@@ -38,9 +36,7 @@ def gift_items_modal(unique_id: str):
     ).all()
 
     avaleble_gift_items = db.session.scalars(
-        sa.select(m.GiftItem).where(
-            m.GiftItem.is_available.is_(True), m.GiftItem.id.not_in(user_gift_items_ids)
-        )
+        sa.select(m.GiftItem).where(m.GiftItem.is_available.is_(True), m.GiftItem.id.not_in(user_gift_items_ids))
     ).all()
 
     return render_template(
@@ -60,14 +56,10 @@ def gift_items_modal(unique_id: str):
 @role_required([m.UsersRole.admin])
 def dealer_gift_item(user_unique_id: str, dealer_item_unque_id: str):
     """htmx"""
-    user = db.session.scalar(
-        sa.select(m.User).where(m.User.unique_id == user_unique_id)
-    )
+    user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == user_unique_id))
     if not user:
         log(log.ERROR, "Not found user by id : [%s]", user_unique_id)
-        return render_template(
-            "toast.html", message="User not found", category="danger"
-        )
+        return render_template("toast.html", message="User not found", category="danger")
     dealer_gift_item = db.session.scalar(
         sa.select(m.DealerGiftItem).where(
             m.DealerGiftItem.unique_id == dealer_item_unque_id,
@@ -76,9 +68,7 @@ def dealer_gift_item(user_unique_id: str, dealer_item_unque_id: str):
     )
     if not dealer_gift_item or dealer_gift_item.dealer_id != user.id:
         log(log.ERROR, "Not found dealer gift item by id : [%s]", dealer_item_unque_id)
-        return render_template(
-            "toast.html", message="Gift item not found", category="danger"
-        )
+        return render_template("toast.html", message="Gift item not found", category="danger")
 
     gift_item = dealer_gift_item.origin_item
     dealer_gift_item.is_deleted = True
@@ -86,13 +76,9 @@ def dealer_gift_item(user_unique_id: str, dealer_item_unque_id: str):
     log(log.INFO, "Gift item deleted from user: [%s]", user)
 
     if gift_item.is_available:
-        return render_template(
-            "user/dealer_gift_item/user_gift_item.html", item=gift_item, user=user
-        )
+        return render_template("user/dealer_gift_item/user_gift_item.html", item=gift_item, user=user)
 
-    return render_template(
-        "toast.html", message="Dealer gift item deleted", category="success"
-    )
+    return render_template("toast.html", message="Dealer gift item deleted", category="success")
 
 
 @bp.route(
@@ -103,22 +89,14 @@ def dealer_gift_item(user_unique_id: str, dealer_item_unque_id: str):
 @role_required([m.UsersRole.admin])
 def add_dealer_gift_item(user_unique_id: str, gift_item_unque_id: str):
     """htmx"""
-    user = db.session.scalar(
-        sa.select(m.User).where(m.User.unique_id == user_unique_id)
-    )
+    user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == user_unique_id))
     if not user:
         log(log.ERROR, "Not found user by id : [%s]", user_unique_id)
-        return render_template(
-            "toast.html", message="User not found", category="danger"
-        )
-    gift_item = db.session.scalar(
-        sa.select(m.GiftItem).where(m.GiftItem.unique_id == gift_item_unque_id)
-    )
+        return render_template("toast.html", message="User not found", category="danger")
+    gift_item = db.session.scalar(sa.select(m.GiftItem).where(m.GiftItem.unique_id == gift_item_unque_id))
     if not gift_item:
         log(log.ERROR, "Not found gift item by id : [%s]", gift_item_unque_id)
-        return render_template(
-            "toast.html", message="Gift item not found", category="danger"
-        )
+        return render_template("toast.html", message="Gift item not found", category="danger")
 
     dealer_gift_item = db.session.scalar(
         sa.select(m.DealerGiftItem).where(
@@ -145,9 +123,7 @@ def add_dealer_gift_item(user_unique_id: str, gift_item_unque_id: str):
     user_gift_item.save()
     log(log.INFO, "Gift item added to user: [%s]", user)
 
-    return render_template(
-        "user/dealer_gift_item/user_gift_item.html", item=user_gift_item, user=user
-    )
+    return render_template("user/dealer_gift_item/user_gift_item.html", item=user_gift_item, user=user)
 
 
 @bp.route(
@@ -166,9 +142,7 @@ def edit_dealer_gift_item(dealer_item_unque_id: str):
     )
     if not dealer_gift_item:
         log(log.ERROR, "Not found dealer gift item by id : [%s]", dealer_item_unque_id)
-        return render_template(
-            "toast.html", message="Gift item not found", category="danger"
-        )
+        return render_template("toast.html", message="Gift item not found", category="danger")
 
     return render_template(
         "user/dealer_gift_item/edit_user_gift_item.html",
@@ -193,9 +167,7 @@ def save_dealer_gift_item(dealer_item_unque_id: str):
     )
     if not dealer_gift_item:
         log(log.ERROR, "Not found dealer gift item by id : [%s]", dealer_item_unque_id)
-        return render_template(
-            "toast.html", message="Gift item not found", category="danger"
-        )
+        return render_template("toast.html", message="Gift item not found", category="danger")
 
     min_qty = request.form.get("min_qty", type=int)
     max_qty = request.form.get("max_qty", type=int)

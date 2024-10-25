@@ -9,9 +9,7 @@ from tests.utils import set_user
 
 def test_dealer_inventory(populate: FlaskClient):
     set_user(populate, role=m.UsersRole.admin)
-    delear = db.session.scalar(
-        sa.select(m.User).where(m.User.role == m.UsersRole.dealer)
-    )
+    delear = db.session.scalar(sa.select(m.User).where(m.User.role == m.UsersRole.dealer))
 
     gift_item = db.session.get(m.GiftItem, 1)
     assert gift_item
@@ -50,9 +48,7 @@ def test_dealer_inventory(populate: FlaskClient):
     assert gift_box.sku in res.data.decode()
     assert "mark_as_removed" in res.data.decode()
 
-    res = populate.post(
-        f"/user/inventory/mark_as_unreplenishment/{dealer_gift_item.unique_id}/{gift_box.sku}"
-    )
+    res = populate.post(f"/user/inventory/mark_as_unreplenishment/{dealer_gift_item.unique_id}/{gift_box.sku}")
     assert res.status_code == 200
     assert b"Removed" in res.data
 

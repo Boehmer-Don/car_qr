@@ -25,9 +25,7 @@ def days_active(date_received: datetime, date_deactivated: datetime):
 def labels_in_cart():
     if isinstance(current_user, m.User):
         labels = db.session.scalars(
-            m.Label.select()
-            .where(m.Label.user_id == current_user.id)
-            .where(m.Label.status == m.LabelStatus.cart)
+            m.Label.select().where(m.Label.user_id == current_user.id).where(m.Label.status == m.LabelStatus.cart)
         ).all()
         return len(labels)
     return 0

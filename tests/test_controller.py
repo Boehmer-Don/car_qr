@@ -20,7 +20,6 @@ from app.controllers.weekly_dealer_gift_box_invoices import (
 def test_notify_about_oil_change(
     populate: FlaskClient,
 ):
-
     sale_rep = db.session.scalar(sa.select(m.SaleReport))
     assert sale_rep
     buyer = set_user(populate, role=m.UsersRole.buyer, is_login=False)
@@ -70,9 +69,7 @@ def test_notify_about_oil_change(
 def test_weekly_notify(stripe_invoice_moke: FlaskClient):
     today = datetime.now()
     gift_item = db.session.get(m.GiftItem, 1)
-    dealer = db.session.scalar(
-        sa.select(m.User).where(m.User.role == m.UsersRole.dealer)
-    )
+    dealer = db.session.scalar(sa.select(m.User).where(m.User.role == m.UsersRole.dealer))
     dealer.stripe_customer_id = "123"
 
     dealer_gift_item_one = m.DealerGiftItem(
@@ -129,9 +126,7 @@ def test_missing_payment(populate: FlaskClient):
     today = datetime.now().date()
     before_4_days = today - timedelta(days=4)
 
-    dealer = db.session.scalar(
-        sa.select(m.User).where(m.User.role == m.UsersRole.dealer)
-    )
+    dealer = db.session.scalar(sa.select(m.User).where(m.User.role == m.UsersRole.dealer))
 
     invoice = m.GiftsInvoice(
         dealer_id=dealer.id,

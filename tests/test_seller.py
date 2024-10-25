@@ -27,10 +27,7 @@ def test_get_create_modal(client: FlaskClient):
 
 
 def test_seller_CRU(client: FlaskClient):
-
-    sellers = db.session.scalars(
-        sa.select(m.User).where(m.User.role == m.UsersRole.seller)
-    ).all()
+    sellers = db.session.scalars(sa.select(m.User).where(m.User.role == m.UsersRole.seller)).all()
     assert not sellers
     user = set_user(client, role=m.UsersRole.dealer)
 

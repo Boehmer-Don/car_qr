@@ -12,17 +12,12 @@ mail = Mail()
 def check_subscriptions():
     log(log.INFO, "Subscriptions check started")
     users = db.session.scalars(
-        sa.select(m.User).where(
-            m.User.deleted.is_(False), m.User.role == m.UsersRole.dealer
-        )
+        sa.select(m.User).where(m.User.deleted.is_(False), m.User.role == m.UsersRole.dealer)
     ).all()
     for user in users:
         if not user.subscriptions:
             continue
-        days_left = (
-            datetime.fromtimestamp(user.subscriptions[0].current_period_end)
-            - datetime.now()
-        ).days
+        days_left = (datetime.fromtimestamp(user.subscriptions[0].current_period_end) - datetime.now()).days
         if 0 < days_left < 21:
             msg = Message(
                 subject="New Customer",

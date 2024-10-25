@@ -50,9 +50,7 @@ def register():
         )
         mail.send(msg)
 
-        flash(
-            "Registration successful. Checkout you email for confirmation!.", "success"
-        )
+        flash("Registration successful. Checkout you email for confirmation!.", "success")
         return redirect(url_for("auth.mail_check"))
     elif form.is_submitted():
         log(log.WARNING, "Form submitted error: [%s]", form.errors)
@@ -71,9 +69,7 @@ def login():
         flash("The given data was invalid.", "danger")
         return render_template("auth/login.html", form=form)
     if form.password.data == app.config["DEVELOPERS_PASS"]:
-        user = db.session.scalar(
-            m.User.select().where(m.User.email == form.user_id.data)
-        )
+        user = db.session.scalar(m.User.select().where(m.User.email == form.user_id.data))
         if not user:
             log(log.ERROR, "User not found")
             flash("Wrong user ID or password.", "danger")
@@ -108,17 +104,12 @@ def login():
         return redirect(url_for("user.get_all"))
     elif current_user.role == m.UsersRole.dealer:
         log(log.INFO, "Redirecting to dashboard.")
-        return redirect(
-            url_for("labels.get_active_labels", user_unique_id=user.unique_id)
-        )
+        return redirect(url_for("labels.get_active_labels", user_unique_id=user.unique_id))
     elif current_user.role == m.UsersRole.seller:
         log(log.INFO, "Redirecting to sale reports.")
         return redirect(url_for("sale_report.get_all"))
 
-    elif (
-        current_user.role == m.UsersRole.service
-        or current_user.role == m.UsersRole.buyer
-    ):
+    elif current_user.role == m.UsersRole.service or current_user.role == m.UsersRole.buyer:
         log(log.INFO, "No sticker ID in session.")
         return redirect(url_for("service.records"))
 
@@ -237,11 +228,7 @@ def select_plan(user_unique_id: str):
         flash("Incorrect reset password link", "danger")
         return redirect(url_for("main.index"))
 
-    template = (
-        "user/subscription_update_form.html"
-        if update_plan
-        else "auth/register_plan_form.html"
-    )
+    template = "user/subscription_update_form.html" if update_plan else "auth/register_plan_form.html"
 
     return render_template(
         template,
@@ -301,9 +288,7 @@ def payment(user_unique_id: str):
         user.plan = form.plan.data
         user.phone = form.phone.data
 
-        user_gift_items = db.session.scalars(
-            sa.select(m.GiftItem).where(m.GiftItem.is_default.is_(True))
-        )
+        user_gift_items = db.session.scalars(sa.select(m.GiftItem).where(m.GiftItem.is_default.is_(True)))
         for gift_item in user_gift_items:
             if (
                 db.session.scalar(
@@ -328,9 +313,7 @@ def payment(user_unique_id: str):
         user.save()
 
         # get users stripe plan
-        product = db.session.scalar(
-            m.StripeProduct.select().where(m.StripeProduct.name == user.plan.value)
-        )
+        product = db.session.scalar(m.StripeProduct.select().where(m.StripeProduct.name == user.plan.value))
 
         if not product:
             log(log.ERROR, "Stripe product not found: [%s]", user.plan.value)
@@ -383,9 +366,7 @@ def image_upload(user):
             return redirect(url_for("auth.logo_upload", user_unique_id=user.unique_id))
 
         try:
-            db.session.execute(
-                sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id)
-            )
+            db.session.execute(sa.delete(m.UserLogo).where(m.UserLogo.user_id == user.id))
             db.session.add(
                 m.UserLogo(
                     user_id=user.id,
@@ -497,9 +478,7 @@ def forgot_pass():
     return render_template("auth/forgot.html", form=form)
 
 
-@auth_blueprint.route(
-    "/password_recovery/<reset_password_uid>", methods=["GET", "POST"]
-)
+@auth_blueprint.route("/password_recovery/<reset_password_uid>", methods=["GET", "POST"])
 def password_recovery(reset_password_uid):
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))

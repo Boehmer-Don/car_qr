@@ -58,13 +58,9 @@ def webhook():
         case "customer.subscription.created":
             log(log.INFO, "CREATING SUBSCRIPTION EVENT\n")
             response = event["data"]["object"]
-            user: m.User = db.session.scalar(
-                m.User.select().where(m.User.stripe_customer_id == response.customer)
-            )
+            user: m.User = db.session.scalar(m.User.select().where(m.User.stripe_customer_id == response.customer))
             product: m.StripeProduct = db.session.scalar(
-                m.StripeProduct.select().where(
-                    m.StripeProduct.stripe_product_id == response.plan.product
-                )
+                m.StripeProduct.select().where(m.StripeProduct.stripe_product_id == response.plan.product)
             )
             if not user:
                 log(log.ERROR, "User [%s] not found", response.customer)
@@ -94,9 +90,7 @@ def webhook():
             log(log.INFO, "UPDATING SUBSCRIPTION EVENT\n")
             response = event["data"]["object"]
             subscription: m.Subscription = db.session.scalar(
-                m.Subscription.select().where(
-                    m.Subscription.stripe_subscription_id == response.id
-                )
+                m.Subscription.select().where(m.Subscription.stripe_subscription_id == response.id)
             )
 
             subscription.is_active = not response.cancel_at_period_end
@@ -104,18 +98,14 @@ def webhook():
             subscription.current_period_end = response.current_period_end
             subscription.save()
             product: m.StripeProduct = db.session.scalar(
-                m.StripeProduct.select().where(
-                    m.StripeProduct.stripe_product_id == response.plan.product
-                )
+                m.StripeProduct.select().where(m.StripeProduct.stripe_product_id == response.plan.product)
             )
             log(
                 log.INFO,
                 "Subscription [%s] updated ",
                 subscription.stripe_subscription_id,
             )
-            user: m.User = db.session.scalar(
-                m.User.select().where(m.User.stripe_customer_id == response.customer)
-            )
+            user: m.User = db.session.scalar(m.User.select().where(m.User.stripe_customer_id == response.customer))
             if product.name == "Advanced Plan":
                 user.plan = m.UsersPlan.advanced
             elif product.name == "Basic Plan":
@@ -124,13 +114,9 @@ def webhook():
             log(log.INFO, "User [%s] updated. User's plan: [%s]", user, user.plan)
         case "customer.subscription.deleted":
             response = event["data"]["object"]
-            user: m.User = db.session.scalar(
-                m.User.select().where(m.User.stripe_customer_id == response.customer)
-            )
+            user: m.User = db.session.scalar(m.User.select().where(m.User.stripe_customer_id == response.customer))
             subscription: m.Subscription = db.session.scalar(
-                m.Subscription.select().where(
-                    m.Subscription.stripe_subscription_id == response.id
-                )
+                m.Subscription.select().where(m.Subscription.stripe_subscription_id == response.id)
             )
             subscription.is_active = False
             subscription.save()
@@ -145,26 +131,16 @@ def webhook():
         case "customer.updated":
             log(log.INFO, "UPDATING CUSTOMER EVENT\n")
             response = event["data"]["object"]
-            user: m.User = db.session.scalar(
-                m.User.select().where(m.User.stripe_customer_id == response.id)
-            )
+            user: m.User = db.session.scalar(m.User.select().where(m.User.stripe_customer_id == response.id))
             if not user:
                 log(log.ERROR, "User [%s] not found", response.id)
                 return jsonify(success=False), 404
-            user.first_name, user.last_name = (
-                response["name"].split(" ", 1) if response["name"] else ("", "")
-            )
+            user.first_name, user.last_name = response["name"].split(" ", 1) if response["name"] else ("", "")
             user.email = response["email"]
             user.country = response["address"]["country"]
-            user.city = (
-                response["address"]["city"] if response["address"]["city"] else ""
-            )
-            user.province = (
-                response["address"]["state"] if response["address"]["state"] else ""
-            )
-            user.address_of_dealership = (
-                response["address"]["line1"] if response["address"]["line1"] else ""
-            )
+            user.city = response["address"]["city"] if response["address"]["city"] else ""
+            user.province = response["address"]["state"] if response["address"]["state"] else ""
+            user.address_of_dealership = response["address"]["line1"] if response["address"]["line1"] else ""
             user.phone = response["phone"]
             user.postal_code = response["address"]["postal_code"]
 
@@ -174,9 +150,7 @@ def webhook():
         case "payment_intent.succeeded":
             log(log.INFO, "ONE TIME PAYMENT EVENT\n")
             response = event["data"]["object"]
-            user = db.session.scalar(
-                m.User.select().where(m.User.stripe_customer_id == response.customer)
-            )
+            user = db.session.scalar(m.User.select().where(m.User.stripe_customer_id == response.customer))
             if not user:
                 log(log.ERROR, "User [%s] not found", response.customer)
                 return jsonify(success=False), 404
@@ -186,13 +160,9 @@ def webhook():
                 "Payment intent succeeded. LABEL IDS ARE:\n [%s]",
                 label_unique_ids,
             )
-            label_unique_ids_list = (
-                label_unique_ids.split(",") if label_unique_ids else []
-            )
+            label_unique_ids_list = label_unique_ids.split(",") if label_unique_ids else []
             gifts_invoice_id = response.metadata.get("gifts_invoice_id")
-            gifts_invoice = db.session.scalar(
-                sa.select(m.GiftsInvoice).where(m.GiftsInvoice.id == gifts_invoice_id)
-            )
+            gifts_invoice = db.session.scalar(sa.select(m.GiftsInvoice).where(m.GiftsInvoice.id == gifts_invoice_id))
             if gifts_invoice:
                 log(log.INFO, "Gifts invoice [%s] updated", gifts_invoice_id)
                 gifts_invoice.is_paid = True
@@ -204,9 +174,7 @@ def webhook():
 
             labels_queryset = []
             for label_id in label_unique_ids_list:
-                label: m.Label = db.session.scalar(
-                    m.Label.select().where(m.Label.unique_id == label_id)
-                )
+                label: m.Label = db.session.scalar(m.Label.select().where(m.Label.unique_id == label_id))
                 if not label:
                     log(log.ERROR, "Label [%s] not found", label_id)
                     continue
@@ -216,9 +184,7 @@ def webhook():
                 labels_queryset.append(label)
 
                 # Cancel pending stickers
-                sticker: m.Sticker = db.session.scalar(
-                    m.Sticker.select().where(m.Sticker.code == label.sticker_id)
-                )
+                sticker: m.Sticker = db.session.scalar(m.Sticker.select().where(m.Sticker.code == label.sticker_id))
                 if sticker:
                     sticker.pending = False
                     sticker.save()
@@ -276,11 +242,7 @@ def subscription():
     form: f.SubscriptionPlanForm = f.SubscriptionPlanForm()
     if form.validate_on_submit():
         # get users stripe plan
-        product = db.session.scalar(
-            m.StripeProduct.select().where(
-                m.StripeProduct.name == form.selected_plan.data
-            )
-        )
+        product = db.session.scalar(m.StripeProduct.select().where(m.StripeProduct.name == form.selected_plan.data))
         if not product:
             log(log.ERROR, "Stripe product not found: [%s]", form.selected_plan.data)
             flash("Something went wrong. Please try again later.", "danger")

@@ -17,7 +17,6 @@ from .base import BaseForm
 
 
 class GiftItemForm(BaseForm):
-
     description = StringField(
         "Description",
         validators=[DataRequired(), Length(0, 264)],

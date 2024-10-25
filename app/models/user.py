@@ -42,9 +42,7 @@ class User(db.Model, UserMixin, ModelMixin):
         sa.ForeignKey("users.id"),
     )
 
-    role: orm.Mapped[UsersPlan] = orm.mapped_column(
-        sa.Enum(UsersRole), default=UsersRole.dealer
-    )
+    role: orm.Mapped[UsersPlan] = orm.mapped_column(sa.Enum(UsersRole), default=UsersRole.dealer)
     email: orm.Mapped[str] = orm.mapped_column(
         sa.String(255),
         unique=True,
@@ -52,9 +50,7 @@ class User(db.Model, UserMixin, ModelMixin):
     )
     password_hash: orm.Mapped[str] = orm.mapped_column(sa.String(255), default="")
     activated: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
-    deleted: orm.Mapped[bool] = orm.mapped_column(
-        sa.Boolean, default=False, nullable=True
-    )
+    deleted: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False, nullable=True)
     created_at: orm.Mapped[datetime] = orm.mapped_column(
         sa.DateTime,
         default=datetime.now,
@@ -71,27 +67,17 @@ class User(db.Model, UserMixin, ModelMixin):
     first_name: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     last_name: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     name_of_dealership: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
-    address_of_dealership: orm.Mapped[str] = orm.mapped_column(
-        sa.String(64), default=""
-    )
+    address_of_dealership: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     country: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     province: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     city: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     postal_code: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     phone: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
-    plan: orm.Mapped[UsersPlan] = orm.mapped_column(
-        sa.Enum(UsersPlan), default=UsersPlan.basic
-    )
-    stripe_customer_id: orm.Mapped[str] = orm.mapped_column(
-        sa.String(128), unique=True, nullable=True
-    )
-    extra_emails: orm.Mapped[str] = orm.mapped_column(
-        sa.String(255), nullable=True, default=""
-    )
+    plan: orm.Mapped[UsersPlan] = orm.mapped_column(sa.Enum(UsersPlan), default=UsersPlan.basic)
+    stripe_customer_id: orm.Mapped[str] = orm.mapped_column(sa.String(128), unique=True, nullable=True)
+    extra_emails: orm.Mapped[str] = orm.mapped_column(sa.String(255), nullable=True, default="")
 
-    label_locations: orm.Mapped[list["LabelLocation"]] = orm.relationship(
-        back_populates="user"
-    )
+    label_locations: orm.Mapped[list["LabelLocation"]] = orm.relationship(back_populates="user")
     shipping_price: orm.Mapped[float] = orm.mapped_column(sa.Float, default=0.0)
 
     sellers: orm.Mapped[list["User"]] = orm.relationship(order_by=created_at.desc())
@@ -101,9 +87,7 @@ class User(db.Model, UserMixin, ModelMixin):
         order_by="DealerGiftItem.created_at.desc()",
         primaryjoin="and_(User.id==DealerGiftItem.dealer_id, DealerGiftItem.is_deleted.is_(False))",
     )
-    subscriptions: orm.Mapped[list["Subscription"]] = orm.relationship(
-        back_populates="user"
-    )
+    subscriptions: orm.Mapped[list["Subscription"]] = orm.relationship(back_populates="user")
 
     @property
     def is_subscription_expired(self):
@@ -116,10 +100,7 @@ class User(db.Model, UserMixin, ModelMixin):
         # I don't know why the code is using the first subscription only
         subscription = self.subscriptions[0]
 
-        return (
-            not subscription.is_active
-            or subscription.current_period_end < datetime.now().timestamp()
-        )
+        return not subscription.is_active or subscription.current_period_end < datetime.now().timestamp()
 
     @hybrid_property
     def creator_id(self):

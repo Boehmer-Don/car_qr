@@ -17,9 +17,7 @@ class ServiceRecord(db.Model, ModelMixin):
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     service_id: orm.Mapped[int] = orm.mapped_column(sa.ForeignKey("users.id"))
     label_id: orm.Mapped[int] = orm.mapped_column(sa.ForeignKey("labels.id"))
-    oil_change_id: orm.Mapped[int | None] = orm.mapped_column(
-        sa.ForeignKey("oil_changes.id")
-    )
+    oil_change_id: orm.Mapped[int | None] = orm.mapped_column(sa.ForeignKey("oil_changes.id"))
 
     unique_id: orm.Mapped[str] = orm.mapped_column(
         sa.String(36),

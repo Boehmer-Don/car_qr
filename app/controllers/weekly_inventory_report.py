@@ -13,9 +13,7 @@ def weekly_inventory_report():
     log(log.INFO, "Weekly inventory report started [%s]", today)
 
     admins = db.session.scalars(
-        sa.select(m.User).where(
-            m.User.role == m.UsersRole.admin, m.User.deleted.is_(False)
-        )
+        sa.select(m.User).where(m.User.role == m.UsersRole.admin, m.User.deleted.is_(False))
     ).all()
 
     for admin in admins:

@@ -32,9 +32,7 @@ service = Blueprint("service", __name__, url_prefix="/services")
 def get_all():
     log(log.INFO, "Getting all services")
 
-    admin_ids = db.session.scalars(
-        sa.select(m.User.id).where(m.User.role == m.UsersRole.admin)
-    ).all()
+    admin_ids = db.session.scalars(sa.select(m.User.id).where(m.User.role == m.UsersRole.admin)).all()
 
     where_stmt = sa.and_(
         m.User.role == m.UsersRole.service,
@@ -51,9 +49,7 @@ def get_all():
     return render_template(
         "service/services.html",
         services=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
     )
@@ -127,16 +123,12 @@ def edit_modal(service_unique_id: str):
     """htmx"""
 
     service = db.session.scalar(
-        sa.select(m.User).where(
-            m.User.unique_id == service_unique_id, m.User.role == m.UsersRole.service
-        )
+        sa.select(m.User).where(m.User.unique_id == service_unique_id, m.User.role == m.UsersRole.service)
     )
 
     if not service or service.creator_id != current_user.id:
         log(log.INFO, f"Service not found or not allowed to edit [{service_unique_id}]")
-        return render_template(
-            "toast.html", message="Service not found", toast_type="danger"
-        )
+        return render_template("toast.html", message="Service not found", toast_type="danger")
 
     form = f.EditServiceForm()
 
@@ -215,32 +207,22 @@ def records():
     where_stmt = sa.and_(m.ServiceRecord.service_id == current_user.id)
     if is_buyer:
         oil_changes_ids = db.session.scalars(
-            sa.select(m.OilChange.id).where(
-                m.OilChange.sale_rep.has(m.SaleReport.buyer_id == current_user.id)
-            )
+            sa.select(m.OilChange.id).where(m.OilChange.sale_rep.has(m.SaleReport.buyer_id == current_user.id))
         ).all()
         where_stmt = sa.and_(
             m.ServiceRecord.oil_change_id.in_(oil_changes_ids),
         )
 
-    query = (
-        sa.select(m.ServiceRecord)
-        .where(where_stmt)
-        .order_by(m.ServiceRecord.created_at.desc())
-    )
+    query = sa.select(m.ServiceRecord).where(where_stmt).order_by(m.ServiceRecord.created_at.desc())
 
-    count_query = (
-        sa.select(sa.func.count()).where(where_stmt).select_from(m.ServiceRecord)
-    )
+    count_query = sa.select(sa.func.count()).where(where_stmt).select_from(m.ServiceRecord)
 
     pagination = create_pagination(total=db.session.scalar(count_query))
 
     return render_template(
         "service/records.html",
         records=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
     )
@@ -300,18 +282,12 @@ def add_record(sale_report_unique_id: str):
     form = f.ServiceRecordForm()
     if not sale_report_unique_id:
         log(log.INFO, "Sale_report_unique_id ID not found [%s]", sale_report_unique_id)
-        return render_template(
-            "toast.html", message="Car not found", toast_type="danger"
-        )
+        return render_template("toast.html", message="Car not found", toast_type="danger")
 
-    sale_rep = db.session.scalar(
-        sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_report_unique_id)
-    )
+    sale_rep = db.session.scalar(sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_report_unique_id))
     if not sale_rep:
         log(log.INFO, "Sale_report not found [%s]", sale_report_unique_id)
-        return render_template(
-            "toast.html", message="Oil changes already done", toast_type="danger"
-        )
+        return render_template("toast.html", message="Oil changes already done", toast_type="danger")
 
     oil_change = db.session.scalar(
         sa.select(m.OilChange).where(
@@ -322,9 +298,7 @@ def add_record(sale_report_unique_id: str):
     )
     if not oil_change:
         log(log.INFO, "Oil changes already done [%s]", sale_report_unique_id)
-        return render_template(
-            "toast.html", message="Oil changes already done", toast_type="danger"
-        )
+        return render_template("toast.html", message="Oil changes already done", toast_type="danger")
 
     if request.method == "GET":
         return render_template(

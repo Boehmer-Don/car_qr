@@ -32,7 +32,6 @@ def get_gift_boxes_data(
 def get_replenishment(
     start_date: datetime, end_date: datetime, sku: str, dealer_gift_item_id: int
 ) -> m.DealerGiftIteRreplenishment | None:
-
     return db.session.scalar(
         sa.select(m.DealerGiftIteRreplenishment).where(
             m.DealerGiftIteRreplenishment.dealer_gift_item_id == dealer_gift_item_id,

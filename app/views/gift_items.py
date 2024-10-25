@@ -29,9 +29,7 @@ def get_all():
     return render_template(
         "gift_item/gift_items.html",
         gift_items=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
     )
@@ -63,9 +61,7 @@ def get_all_dealer():
     return render_template(
         "gift_item/dealer_gift_items.html",
         dealer_gift_items=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
     )
@@ -111,9 +107,7 @@ def add():
 
     if form.apply_to_all.data:
         dealers = db.session.scalars(
-            sa.select(m.User).where(
-                m.User.role == m.UsersRole.dealer, m.User.deleted.is_(False)
-            )
+            sa.select(m.User).where(m.User.role == m.UsersRole.dealer, m.User.deleted.is_(False))
         )
 
         for dealer in dealers:
@@ -135,14 +129,10 @@ def add():
 def edit_modal(unique_id: str):
     """htmx"""
     log(log.INFO, "Getting gift item edit modal")
-    item = db.session.scalar(
-        sa.select(m.GiftItem).where(m.GiftItem.unique_id == unique_id)
-    )
+    item = db.session.scalar(sa.select(m.GiftItem).where(m.GiftItem.unique_id == unique_id))
     if not item:
         log(log.ERROR, f"Gift item with unique id [{unique_id}] not found")
-        return render_template(
-            "toast.html", message="Gift item not found", category="danger"
-        )
+        return render_template("toast.html", message="Gift item not found", category="danger")
     form = f.EditGiftItemForm()
     form.gift_item_unique_id.data = item.unique_id
     form.description.data = item.description
@@ -166,11 +156,7 @@ def edit():
         flash(f"Invalid data [{form.format_errors}]", "danger")
         return redirect(url_for("gift_item.get_all"))
 
-    item = db.session.scalar(
-        sa.select(m.GiftItem).where(
-            m.GiftItem.unique_id == form.gift_item_unique_id.data
-        )
-    )
+    item = db.session.scalar(sa.select(m.GiftItem).where(m.GiftItem.unique_id == form.gift_item_unique_id.data))
     if not item:
         log(
             log.ERROR,

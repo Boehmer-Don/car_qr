@@ -14,9 +14,7 @@ from app import db
 
 
 class LoginForm(FlaskForm):
-    user_id = StringField(
-        "Email", [DataRequired()], render_kw={"placeholder": "Enter your email"}
-    )
+    user_id = StringField("Email", [DataRequired()], render_kw={"placeholder": "Enter your email"})
     password = PasswordField(
         "Password",
         [DataRequired()],
@@ -55,12 +53,8 @@ class RegistrationForm(FlaskForm):
 class RegistrationStep2Form(FlaskForm):
     first_name = StringField("First Name", validators=[DataRequired(), Length(0, 64)])
     last_name = StringField("Last Name", validators=[DataRequired(), Length(0, 64)])
-    name_of_dealership = StringField(
-        "Name of Dealership", validators=[DataRequired(), Length(0, 64)]
-    )
-    address_of_dealership = StringField(
-        "Address of Dealership", validators=[DataRequired(), Length(0, 64)]
-    )
+    name_of_dealership = StringField("Name of Dealership", validators=[DataRequired(), Length(0, 64)])
+    address_of_dealership = StringField("Address of Dealership", validators=[DataRequired(), Length(0, 64)])
     country = StringField("Country", validators=[DataRequired(), Length(0, 64)])
     province = StringField("Province", validators=[DataRequired(), Length(0, 64)])
     city = StringField("City", validators=[DataRequired(), Length(0, 64)])
@@ -99,9 +93,7 @@ class ChangePasswordForm(FlaskForm):
         ],
         render_kw={"placeholder": "Password"},
     )
-    password_confirmation = PasswordField(
-        "Repeat Password", render_kw={"placeholder": "Repeat Password"}
-    )
+    password_confirmation = PasswordField("Repeat Password", render_kw={"placeholder": "Repeat Password"})
     submit = SubmitField("Change password")
 
 
@@ -120,12 +112,8 @@ class PaymentForm(FlaskForm):
     # Contact
     first_name = StringField("First Name", validators=[Optional(), Length(0, 64)])
     last_name = StringField("Last Name", validators=[Optional(), Length(0, 64)])
-    name_of_dealership = StringField(
-        "Name of Dealership", validators=[Optional(), Length(0, 64)]
-    )
-    address_of_dealership = StringField(
-        "Address of Dealership", validators=[Optional(), Length(0, 64)]
-    )
+    name_of_dealership = StringField("Name of Dealership", validators=[Optional(), Length(0, 64)])
+    address_of_dealership = StringField("Address of Dealership", validators=[Optional(), Length(0, 64)])
     country = StringField("Country", validators=[Optional(), Length(0, 64)])
     province = StringField("Province", validators=[Optional(), Length(0, 64)])
     city = StringField("City", validators=[Optional(), Length(0, 64)])

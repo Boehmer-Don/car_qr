@@ -13,10 +13,7 @@ from tests.db import populate as db_populate, add_labels
 
 @pytest.fixture()
 def app(monkeypatch):
-
-    def mock_create_subscription_checkout_session(
-        user: m.User, subscription_product: m.StripeProduct
-    ):
+    def mock_create_subscription_checkout_session(user: m.User, subscription_product: m.StripeProduct):
         return "https://checkout.stripe.com/pay/cs_test_123"
 
     monkeypatch.setattr(
@@ -170,7 +167,6 @@ def populate(client: FlaskClient, test_labels_data: dict):
 
 
 class InvoiceMock:
-
     @property
     def hosted_invoice_url(self):
         return "https://invoice.com"
@@ -182,7 +178,6 @@ class InvoiceMock:
 
 @pytest.fixture()
 def stripe_invoice_moke(populate: Flask, mocker):
-
     invoice = InvoiceMock()
 
     mocker.patch(

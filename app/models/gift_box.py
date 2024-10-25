@@ -15,12 +15,8 @@ class GiftBox(db.Model, ModelMixin):
     __tablename__ = "gift_boxes"
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
-    sale_result_id: orm.Mapped[int] = orm.mapped_column(
-        sa.ForeignKey("sale_reports.id")
-    )
-    dealer_gift_item_id: orm.Mapped[int] = orm.mapped_column(
-        sa.ForeignKey("dealer_gift_items.id")
-    )
+    sale_result_id: orm.Mapped[int] = orm.mapped_column(sa.ForeignKey("sale_reports.id"))
+    dealer_gift_item_id: orm.Mapped[int] = orm.mapped_column(sa.ForeignKey("dealer_gift_items.id"))
     # this field for a search query
     dealer_id: orm.Mapped[int] = orm.mapped_column(sa.ForeignKey("users.id"))
 

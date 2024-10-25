@@ -14,12 +14,8 @@ class GiftItem(db.Model, ModelMixin):
         sa.String(36),
         default=generate_uuid,
     )
-    created_at: orm.Mapped[datetime] = orm.mapped_column(
-        sa.DateTime, default=datetime.now
-    )
-    image_path: orm.Mapped[str] = orm.mapped_column(
-        sa.String(512), default=str(DEFUALT_IMAGE_PATH)
-    )
+    created_at: orm.Mapped[datetime] = orm.mapped_column(sa.DateTime, default=datetime.now)
+    image_path: orm.Mapped[str] = orm.mapped_column(sa.String(512), default=str(DEFUALT_IMAGE_PATH))
 
     SKU: orm.Mapped[str] = orm.mapped_column(sa.String(64), nullable=False, unique=True)
     description: orm.Mapped[str] = orm.mapped_column(sa.String(264))

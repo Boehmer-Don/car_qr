@@ -45,16 +45,12 @@ class SaleReport(db.Model, ModelMixin):
     is_electric_car: orm.Mapped[bool] = orm.mapped_column(sa.Boolean, default=False)
     description: orm.Mapped[str] = orm.mapped_column(sa.String(264), default="")
 
-    label: orm.Mapped["Label"] = orm.relationship(
-        viewonly=True, back_populates="sale_report"
-    )
+    label: orm.Mapped["Label"] = orm.relationship(viewonly=True, back_populates="sale_report")
 
     seller: orm.Mapped["User"] = orm.relationship(foreign_keys=[seller_id])
     buyer: orm.Mapped["User"] = orm.relationship(foreign_keys=[buyer_id])
 
-    gift_boxes: orm.Mapped[list["GiftBox"]] = orm.relationship(
-        back_populates="sale_rep"
-    )
+    gift_boxes: orm.Mapped[list["GiftBox"]] = orm.relationship(back_populates="sale_rep")
 
     oil_changes: orm.Mapped[list["OilChange"]] = orm.relationship(
         back_populates="sale_rep", order_by="OilChange.id.asc()"

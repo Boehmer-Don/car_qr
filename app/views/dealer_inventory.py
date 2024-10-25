@@ -31,7 +31,6 @@ bp = Blueprint("inventory", __name__, url_prefix="/inventory")
 @login_required
 @role_required([m.UsersRole.admin])
 def dealers():
-
     q = request.args.get("q", default="")
     week = request.args.get("week", default="")
 
@@ -85,9 +84,7 @@ def dealers():
     return render_template(
         "user/inventory/dealers.html",
         dealers=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
         q=q,
@@ -105,9 +102,7 @@ def view_orders(unique_id: str):
 
     if not dealer:
         log(log.ERROR, f"Dealer not found: {unique_id}")
-        return render_template(
-            "toast.html", message="Dealer not found", category="danger"
-        )
+        return render_template("toast.html", message="Dealer not found", category="danger")
     week = request.args.get("week", default="")
     start_date, end_date = get_week_range(week)
 
@@ -130,9 +125,7 @@ def view_replenishment(unique_id: str):
     dealer = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id))
     if not dealer:
         log(log.ERROR, f"Dealer not found: {unique_id}")
-        return render_template(
-            "toast.html", message="Dealer not found", category="danger"
-        )
+        return render_template("toast.html", message="Dealer not found", category="danger")
     week = request.args.get("week", default="")
     form = f.ReplenishAllInventoryForm()
     start_date, end_date = get_week_range(week)
@@ -144,17 +137,11 @@ def view_replenishment(unique_id: str):
     for sku, total_quantity, delaer_gift_item in gift_boxes_data:
         if delaer_gift_item.max_qty - total_quantity > delaer_gift_item.min_qty:
             continue
-        replenishment = get_replenishment(
-            start_date, end_date, sku, delaer_gift_item.id
-        )
+        replenishment = get_replenishment(start_date, end_date, sku, delaer_gift_item.id)
         status = s.ReplenishmentStatus.mark_as_removed
 
         if replenishment:
-            status = (
-                s.ReplenishmentStatus.done
-                if replenishment.is_done
-                else s.ReplenishmentStatus.removed
-            )
+            status = s.ReplenishmentStatus.done if replenishment.is_done else s.ReplenishmentStatus.removed
 
         item = s.ReplenishmentGiftBoxe(
             sku=sku,
@@ -166,9 +153,7 @@ def view_replenishment(unique_id: str):
         if status == s.ReplenishmentStatus.mark_as_removed:
             gift_boxes_without_replenishment.append(item)
 
-    form.dealers_gift_box_data.data = json.dumps(
-        [box.model_dump() for box in gift_boxes_without_replenishment]
-    )
+    form.dealers_gift_box_data.data = json.dumps([box.model_dump() for box in gift_boxes_without_replenishment])
     form.week.data = week
     is_all_replenished = len(gift_boxes_without_replenishment) > 0
 
@@ -187,24 +172,17 @@ def view_replenishment(unique_id: str):
 @login_required
 @role_required([m.UsersRole.admin])
 def mark_as_unreplenishment(unique_id: str, sku: str):
-
     week = request.args.get("week", default="")
-    delaer_gift_item = db.session.scalar(
-        sa.select(m.DealerGiftItem).where(m.DealerGiftItem.unique_id == unique_id)
-    )
+    delaer_gift_item = db.session.scalar(sa.select(m.DealerGiftItem).where(m.DealerGiftItem.unique_id == unique_id))
     if not delaer_gift_item:
         log(log.ERROR, f"Dealer gift item not found: {unique_id}")
-        return render_template(
-            "toast.html", message="Dealer gift item not found", category="danger"
-        )
+        return render_template("toast.html", message="Dealer gift item not found", category="danger")
 
     start_date, end_date = get_week_range(week)
     # TODO validatetion does not work properly, check it
     if get_replenishment(start_date, end_date, sku, delaer_gift_item.id):
         log(log.INFO, f"Replenishment already exists: {unique_id} {sku}")
-        return render_template(
-            "toast.html", message="Replenishment already exists", category="danger"
-        )
+        return render_template("toast.html", message="Replenishment already exists", category="danger")
 
     gift_boxes_data = db.session.scalars(
         sa.select(
@@ -245,16 +223,13 @@ def mark_as_unreplenishment(unique_id: str, sku: str):
 def replenish_all():
     form = f.ReplenishAllInventoryForm()
     if not form.validate_on_submit():
-
         log(log.ERROR, "Invalid form data for replenish all")
         flash("Invalid form data", "danger")
         return redirect(url_for("user.inventory.dealers"))
 
     week = form.week.data
     try:
-        dealers_gift_box_data = s.adapter_re_gift_boxes.validate_json(
-            form.dealers_gift_box_data.data
-        )
+        dealers_gift_box_data = s.adapter_re_gift_boxes.validate_json(form.dealers_gift_box_data.data)
     except ValidationError as e:
         log(log.ERROR, f"Invalid dealers data: {e}")
         flash("Invalid dealers data", "danger")
@@ -264,9 +239,7 @@ def replenish_all():
 
     for dealer_data in dealers_gift_box_data:
         delear_gift_item = db.session.scalar(
-            sa.select(m.DealerGiftItem).where(
-                m.DealerGiftItem.unique_id == dealer_data.delaer_gift_item.unique_id
-            )
+            sa.select(m.DealerGiftItem).where(m.DealerGiftItem.unique_id == dealer_data.delaer_gift_item.unique_id)
         )
         if not delear_gift_item:
             log(
@@ -276,9 +249,7 @@ def replenish_all():
             flash("Dealer gift item not found", "danger")
             return redirect(url_for("user.inventory.dealers", week=week))
 
-        if get_replenishment(
-            start_date, end_date, dealer_data.sku, delear_gift_item.id
-        ):
+        if get_replenishment(start_date, end_date, dealer_data.sku, delear_gift_item.id):
             log(
                 log.INFO,
                 f"Replenishment already exists: {delear_gift_item.id} {dealer_data.sku}",
