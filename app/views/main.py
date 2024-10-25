@@ -37,6 +37,13 @@ def redirect_to_outer_url(sticker_id: str):
         log(log.WARNING, "Label not found. Sticker ID: [%s]", sticker_id)
         return redirect(url_for("main.landing"))
 
+    if current_user.is_authenticated:
+        log(log.INFO, "Authorized user. Redirecting to outer URL. Label: [%s]", label)
+        if label.gift:
+            log(log.INFO, "Redirecting to gift page. Label: [%s]", label)
+            return redirect(url_for("labels.gift", sticker_id=sticker_id))
+        return redirect(label.url)
+
     log(log.INFO, "Unauthorized user. Counting views. Label: [%s]", label)
     log(log.INFO, "views before: [%s]", label.views)
     view = m.LabelView(label_id=label.id)
