@@ -21,7 +21,8 @@ class BaseConfig(BaseSettings, ABC):
     @property
     @abstractmethod
     @abstractmethod
-    def ENV(): ...
+    def ENV():
+        ...
 
     APP_NAME: str = "Car's QR Code"
     APP_VERSION: str = APP_VERSION
@@ -96,9 +97,7 @@ class TestingConfig(BaseConfig):
     WTF_CSRF_ENABLED: bool = False
     TESTING: bool = True
     PRESERVE_CONTEXT_ON_EXCEPTION: bool = False
-    ALCHEMICAL_DATABASE_URL: str = "sqlite:///" + os.path.join(
-        BASE_DIR, "database-test.sqlite3"
-    )
+    ALCHEMICAL_DATABASE_URL: str = "sqlite:///" + os.path.join(BASE_DIR, "database-test.sqlite3")
 
 
 class ProductionConfig(BaseConfig):

@@ -15,9 +15,7 @@ class DealerGiftIteRreplenishment(db.Model, ModelMixin):
     __tablename__ = "dealer_gift_item_replenishments"
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
-    dealer_gift_item_id: orm.Mapped[int] = orm.mapped_column(
-        sa.ForeignKey("dealer_gift_items.id")
-    )
+    dealer_gift_item_id: orm.Mapped[int] = orm.mapped_column(sa.ForeignKey("dealer_gift_items.id"))
 
     sku: orm.Mapped[str] = orm.mapped_column(sa.String(255))
 

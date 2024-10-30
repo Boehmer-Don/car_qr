@@ -65,9 +65,7 @@ def test_edit(client: FlaskClient):
     set_user(client, role=m.UsersRole.dealer)
     res = client.post("/pickers/add", data=test_data, follow_redirects=True)
     assert res.status_code == 200
-    picker = db.session.scalar(
-        sa.select(m.User).where(m.User.role == m.UsersRole.picker)
-    )
+    picker = db.session.scalar(sa.select(m.User).where(m.User.role == m.UsersRole.picker))
     assert picker
 
     res = client.get(f"/pickers/{picker.unique_id}/edit-modal")

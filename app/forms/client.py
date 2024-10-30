@@ -12,9 +12,7 @@ class Client(FlaskForm):
         "Last Name",
         validators=[DataRequired(message="Last name is required"), Length(3, 32)],
     )
-    email = StringField(
-        "Email Address", validators=[DataRequired(message="Email is required"), Email()]
-    )
+    email = StringField("Email Address", validators=[DataRequired(message="Email is required"), Email()])
     phone = StringField(
         "Phone Number",
         validators=[

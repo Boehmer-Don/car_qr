@@ -35,16 +35,12 @@ def test_sale_reports(populate: FlaskClient):
         "password": "123456",
         "password_confirmation": "123456",
         "email": "b@b.com",
-        "gift_boxes": json.dumps(
-            [{"dealerGiftItemId": user_gift_item.id, "qty": 1, "totalPrice": 1}]
-        ),
+        "gift_boxes": json.dumps([{"dealerGiftItemId": user_gift_item.id, "qty": 1, "totalPrice": 1}]),
         "is_notfy_by_email": True,
     }
     assert not sale_rep.gift_boxes
     assert not sale_rep.buyer
-    res = populate.post(
-        "/sale-reports/set-gift-boxes", follow_redirects=True, data=form_data
-    )
+    res = populate.post("/sale-reports/set-gift-boxes", follow_redirects=True, data=form_data)
     assert res.status_code == 200
     db.session.add(
         m.OilChange(

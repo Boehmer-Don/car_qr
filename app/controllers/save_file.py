@@ -29,11 +29,7 @@ def save_file(file: FileStorage, is_img: bool = False) -> Path:
     if file.content_length > MAX_FILE_SIZE:
         raise ValueError("File is too large.")
 
-    file_name = (
-        f"{str(uuid.uuid4())}_{file.filename}"
-        if file.filename
-        else str(uuid.uuid4()) + "." + kind.extension
-    )
+    file_name = f"{str(uuid.uuid4())}_{file.filename}" if file.filename else str(uuid.uuid4()) + "." + kind.extension
 
     file_path = BASE_FILE_PATH / file_name
 
@@ -41,6 +37,4 @@ def save_file(file: FileStorage, is_img: bool = False) -> Path:
         read = file.read()
         f.write(read)
 
-    return (
-        Path("uploads") / file_name if is_img else Path("/static/uploads") / file_name
-    )
+    return Path("uploads") / file_name if is_img else Path("/static/uploads") / file_name

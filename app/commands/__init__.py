@@ -136,9 +136,7 @@ def init(app: Flask):
     @app.cli.command()
     @click.option("--user-id", default=9, type=int)
     def get_pending_labels(user_id: int):
-        pending_labels = db.session.scalars(
-            m.Sticker.select().where(m.Sticker.user_id == user_id)
-        ).all()
+        pending_labels = db.session.scalars(m.Sticker.select().where(m.Sticker.user_id == user_id)).all()
         for label in pending_labels:
             print(label.code)
 
@@ -201,9 +199,7 @@ def init(app: Flask):
             print(f"User with id [{user_id}] not found")
             return
         labels = db.session.scalars(
-            sa.select(m.Label).where(
-                m.Label.user_id == user_id, m.Label.status == m.LabelStatus.cart
-            )
+            sa.select(m.Label).where(m.Label.user_id == user_id, m.Label.status == m.LabelStatus.cart)
         ).all()
 
         for label in labels:
@@ -212,9 +208,7 @@ def init(app: Flask):
             label.save()
 
             # Cancel pending stickers
-            sticker: m.Sticker = db.session.scalar(
-                m.Sticker.select().where(m.Sticker.code == label.sticker_id)
-            )
+            sticker: m.Sticker = db.session.scalar(m.Sticker.select().where(m.Sticker.code == label.sticker_id))
             if sticker:
                 sticker.pending = False
                 sticker.save()

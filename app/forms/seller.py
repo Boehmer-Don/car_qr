@@ -53,9 +53,7 @@ class EditSellerFrom(BaseSellerForm):
     )
 
     def validate_email(self, field):
-        query = sa.select(m.User).where(
-            m.User.email == field.data, m.User.unique_id != self.unique_id.data
-        )
+        query = sa.select(m.User).where(m.User.email == field.data, m.User.unique_id != self.unique_id.data)
         if db.session.scalar(query) is not None:
             raise ValidationError("This email is already registered.")
 

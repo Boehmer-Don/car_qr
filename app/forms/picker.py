@@ -29,7 +29,6 @@ class BasePickerForm(BaseForm):
 
 
 class PickerForm(BasePickerForm):
-
     password = PasswordField(
         "Password",
         [
@@ -38,9 +37,7 @@ class PickerForm(BasePickerForm):
         ],
         render_kw={"placeholder": "Password"},
     )
-    password_confirmation = PasswordField(
-        "Repeat Password", render_kw={"placeholder": "Repeat Password"}
-    )
+    password_confirmation = PasswordField("Repeat Password", render_kw={"placeholder": "Repeat Password"})
 
 
 class EditPickerForm(BasePickerForm):
@@ -52,14 +49,10 @@ class EditPickerForm(BasePickerForm):
         ],
         render_kw={"placeholder": "Password"},
     )
-    new_password_confirmation = PasswordField(
-        "Repeat Password", render_kw={"placeholder": "Repeat Password"}
-    )
+    new_password_confirmation = PasswordField("Repeat Password", render_kw={"placeholder": "Repeat Password"})
 
     def validate_email(form, field):
-        query = User.select().where(
-            User.email == field.data, User.unique_id != form.picker_unique_id.data
-        )
+        query = User.select().where(User.email == field.data, User.unique_id != form.picker_unique_id.data)
         if db.session.scalar(query) is not None:
             raise ValidationError("This email is already registered.")
 

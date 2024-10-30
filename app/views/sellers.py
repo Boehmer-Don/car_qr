@@ -1,7 +1,4 @@
 # flake8: noqa E712
-import io
-import json
-from datetime import datetime
 from flask import (
     Blueprint,
     render_template,
@@ -10,10 +7,8 @@ from flask import (
     redirect,
     session,
     url_for,
-    Response,
 )
 from flask_login import login_required, current_user, login_user, logout_user
-from flask_mail import Message
 import sqlalchemy as sa
 
 from app.controllers import create_pagination, role_required
@@ -41,14 +36,10 @@ def get_user_sellers():
 
     if q:
         query = query.where(
-            m.User.first_name.ilike(f"%{q}%")
-            | m.User.email.ilike(f"%{q}%")
-            | m.User.last_name.ilike(f"%{q}%")
+            m.User.first_name.ilike(f"%{q}%") | m.User.email.ilike(f"%{q}%") | m.User.last_name.ilike(f"%{q}%")
         )
         count_query = query.where(
-            m.User.first_name.ilike(f"%{q}%")
-            | m.User.email.ilike(f"%{q}%")
-            | m.User.last_name.ilike(f"%{q}%")
+            m.User.first_name.ilike(f"%{q}%") | m.User.email.ilike(f"%{q}%") | m.User.last_name.ilike(f"%{q}%")
         ).select_from(m.User)
 
     pagination = create_pagination(total=db.session.scalar(count_query))
@@ -56,9 +47,7 @@ def get_user_sellers():
     return render_template(
         "seller/sellers.html",
         sellers=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
         login_as_seller_form=login_as_seller_form,
@@ -103,17 +92,11 @@ def create():
 @login_required
 @role_required([m.UsersRole.dealer])
 def get_edit_modal(unique_id: str):
-    user = db.session.scalar(
-        sa.select(m.User).where(
-            m.User.unique_id == unique_id, m.User.role == m.UsersRole.seller
-        )
-    )
+    user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id, m.User.role == m.UsersRole.seller))
 
     if not user or user.creator_id != current_user.id:
         log(log.ERROR, "Seller not found [%s]", unique_id)
-        return render_template(
-            "toast.html", message="Seller not found", category="danger"
-        )
+        return render_template("toast.html", message="Seller not found", category="danger")
     form = f.EditSellerFrom()
     return render_template("seller/edit_modal.html", form=form, user=user)
 
@@ -128,9 +111,7 @@ def edit():
         flash(f"Invalid form data [{form.format_errors}]", "danger")
         return redirect(url_for("user.seller.get_user_sellers"))
     user = db.session.scalar(
-        sa.select(m.User).where(
-            m.User.unique_id == form.unique_id.data, m.User.role == m.UsersRole.seller
-        )
+        sa.select(m.User).where(m.User.unique_id == form.unique_id.data, m.User.role == m.UsersRole.seller)
     )
 
     if not user:
@@ -161,9 +142,7 @@ def login_as_seller():
         flash(f"Invalid form data [{form.format_errors}]", "danger")
         return redirect(url_for("user.seller.get_user_sellers"))
     seller = db.session.scalar(
-        sa.select(m.User).where(
-            m.User.unique_id == form.unique_id.data, m.User.role == m.UsersRole.seller
-        )
+        sa.select(m.User).where(m.User.unique_id == form.unique_id.data, m.User.role == m.UsersRole.seller)
     )
     if not seller or seller.creator_id != current_user.id:
         log(log.ERROR, "Seller not found [%s]", form.unique_id.data)

@@ -1,29 +1,19 @@
-# flake8: noqa F401
 import io
 import csv
-from datetime import datetime, timedelta, time
+from datetime import datetime
 from flask import (
     Blueprint,
     render_template,
     request,
-    flash,
-    redirect,
-    url_for,
     send_file,
 )
 from flask_pydantic import validate
 from flask_login import login_required, current_user
-from markupsafe import Markup
 import sqlalchemy as sa
-from flask import current_app as app
-
-from pyecharts import options as opts
-from pyecharts.charts import Bar
 
 
 from app.controllers import create_pagination
 from app import models as m, db
-from app import forms as f
 from app import schema as s
 from app.controllers.graphs import create_bar_graph, create_location_graph
 from app.controllers.user import role_required
@@ -53,15 +43,11 @@ def dashboard():
     price_lower = request.args.get("price_lower")
     price_lower = price_lower if price_lower and price_lower != "None" else ""
     price_sold_lower = request.args.get("price_sold_lower")
-    price_sold_lower = (
-        price_sold_lower if price_sold_lower and price_sold_lower != "None" else ""
-    )
+    price_sold_lower = price_sold_lower if price_sold_lower and price_sold_lower != "None" else ""
     price_upper = request.args.get("price_upper")
     price_upper = price_upper if price_upper and price_upper != "None" else ""
     price_sold_upper = request.args.get("price_sold_upper")
-    price_sold_upper = (
-        price_sold_upper if price_sold_upper and price_sold_upper != "None" else ""
-    )
+    price_sold_upper = price_sold_upper if price_sold_upper and price_sold_upper != "None" else ""
     start_date = request.args.get("start_date")
     start_date = start_date if start_date and start_date != "None" else ""
     end_date = request.args.get("end_date")
@@ -69,20 +55,12 @@ def dashboard():
     date_received = request.args.get("date_received")
     date_received = date_received if date_received and date_received != "None" else ""
     views_options_filter = request.args.get("views_options_filter")
-    views_options_filter = (
-        views_options_filter
-        if views_options_filter and views_options_filter != "None"
-        else ""
-    )
+    views_options_filter = views_options_filter if views_options_filter and views_options_filter != "None" else ""
     download = request.args.get("download")
 
     query = sa.select(m.Label).where(m.Label.user_id == current_user.id)
 
-    count_query = (
-        sa.select(sa.func.count())
-        .select_from(m.Label)
-        .where(m.Label.user_id == current_user.id)
-    )
+    count_query = sa.select(sa.func.count()).select_from(m.Label).where(m.Label.user_id == current_user.id)
     label_locations = db.session.scalars(
         m.LabelLocation.select().where(m.LabelLocation.user_id == current_user.id)
     ).all()
@@ -102,17 +80,13 @@ def dashboard():
         log(log.INFO, f"Filtering by start_date: {start_date}")
         start_date = datetime.strptime(start_date, "%m/%d/%Y")
         query = query.where(sa.func.DATE(m.Label.date_received) >= start_date)
-        count_query = count_query.where(
-            sa.func.DATE(m.Label.date_received) >= start_date
-        )
+        count_query = count_query.where(sa.func.DATE(m.Label.date_received) >= start_date)
     elif start_date and end_date:
         log(log.INFO, f"Filtering by start_date: {start_date} and end_date: {end_date}")
         start_date = date_convert(start_date)
         end_date = date_convert(end_date)
         query = query.where(sa.func.DATE(m.Label.date_received) >= start_date)
-        count_query = count_query.where(
-            sa.func.DATE(m.Label.date_received) >= start_date
-        )
+        count_query = count_query.where(sa.func.DATE(m.Label.date_received) >= start_date)
         query = query.where(sa.func.DATE(m.Label.date_received) <= end_date)
         count_query = count_query.where(sa.func.DATE(m.Label.date_received) <= end_date)
     elif date_received and date_received != "None":
@@ -121,9 +95,7 @@ def dashboard():
         date_received = date_convert(date_received)
 
         query = query.where(sa.func.DATE(m.Label.date_received) == date_received)
-        count_query = count_query.where(
-            sa.func.DATE(m.Label.date_received) == date_received
-        )
+        count_query = count_query.where(sa.func.DATE(m.Label.date_received) == date_received)
 
     if status_filter and status_filter != "All":
         log(log.INFO, f"Filtering by status: {status_filter}")
@@ -203,28 +175,18 @@ def dashboard():
 
     pagination = create_pagination(total=0 if count_query is None else count_query)
     labels = (
-        db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
-        )
+        db.session.execute(query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page))
         .scalars()
         .all()
     )
     types = db.session.scalars(
-        sa.select(m.Label.type_of_vehicle)
-        .where(m.Label.user_id == current_user.id)
-        .group_by(m.Label.type_of_vehicle)
+        sa.select(m.Label.type_of_vehicle).where(m.Label.user_id == current_user.id).group_by(m.Label.type_of_vehicle)
     ).all()
     makes = db.session.scalars(
-        sa.select(m.Label.make)
-        .where(m.Label.user_id == current_user.id)
-        .group_by(m.Label.make)
+        sa.select(m.Label.make).where(m.Label.user_id == current_user.id).group_by(m.Label.make)
     ).all()
     trims = db.session.scalars(
-        sa.select(m.Label.trim)
-        .where(m.Label.user_id == current_user.id)
-        .group_by(m.Label.trim)
+        sa.select(m.Label.trim).where(m.Label.user_id == current_user.id).group_by(m.Label.trim)
     ).all()
     if make_filter and make_filter != "All":
         log(log.INFO, f"Getting models for make: {make_filter}")
@@ -235,15 +197,13 @@ def dashboard():
             .group_by(m.Label.vehicle_model)
         ).all()
     else:
-        log(log.INFO, f"Getting models for all makes")
+        log(log.INFO, "Getting models for all makes")
         models = db.session.scalars(
-            sa.select(m.Label.vehicle_model)
-            .where(m.Label.user_id == current_user.id)
-            .group_by(m.Label.vehicle_model)
+            sa.select(m.Label.vehicle_model).where(m.Label.user_id == current_user.id).group_by(m.Label.vehicle_model)
         ).all()
     now = datetime.now()
     if download == "true":
-        log(log.INFO, f"Downloading report")
+        log(log.INFO, "Downloading report")
         labels = db.session.scalars(query).all()
         with io.StringIO() as proxy:
             writer = csv.writer(proxy)
@@ -343,9 +303,7 @@ def get_models():
 @login_required
 @role_required([m.UsersRole.dealer, m.UsersRole.admin])
 def get_label_views_datetime(unique_id: str):
-    label: m.Label | None = db.session.scalar(
-        m.Label.select().where(m.Label.unique_id == unique_id)
-    )
+    label: m.Label | None = db.session.scalar(m.Label.select().where(m.Label.unique_id == unique_id))
     download = request.args.get("download")
     if not label:
         log(log.ERROR, f"Label not found: {unique_id}")
@@ -354,7 +312,7 @@ def get_label_views_datetime(unique_id: str):
 
     if download == "True":
         now = datetime.now()
-        log(log.INFO, f"Downloading label views")
+        log(log.INFO, "Downloading label views")
         with io.StringIO() as proxy:
             writer = csv.writer(proxy)
             row = [
@@ -411,9 +369,7 @@ def all():
     return render_template(
         "report/all.html",
         labels=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
     )
@@ -471,9 +427,7 @@ def get_label_views_graph(query: s.QueryModelLabelsGraphView):
     if isinstance(status, m.LabelStatus):
         view_query = view_query.where(m.Label.status == status.name)
 
-    view_query = view_query.group_by(m.LabelView.created_at).order_by(
-        m.LabelView.created_at.desc()
-    )
+    view_query = view_query.group_by(m.LabelView.created_at).order_by(m.LabelView.created_at.desc())
 
     view_data = db.session.execute(view_query).all()
     graph = create_bar_graph(view_data, by_week=by_week)
@@ -525,20 +479,16 @@ def get_label_location_views_graph(query: s.QueryModelLocationsGraphView):
     if isinstance(status, m.LabelStatus):
         location_query = location_query.where(m.Label.status == status.name)
 
-    location_query = location_query.group_by(
-        m.LabelLocation.name, m.LabelView.created_at
-    ).order_by(m.LabelView.created_at.asc())
+    location_query = location_query.group_by(m.LabelLocation.name, m.LabelView.created_at).order_by(
+        m.LabelView.created_at.asc()
+    )
 
     result = db.session.execute(location_query).all()
 
     location_names = db.session.scalars(
-        sa.select(m.LabelLocation.name)
-        .where(where_location_names)
-        .order_by(m.LabelLocation.name)
+        sa.select(m.LabelLocation.name).where(where_location_names).order_by(m.LabelLocation.name)
     ).all()
 
-    graph = create_location_graph(
-        select_result=result, location_names=location_names, by_week=by_week
-    )
+    graph = create_location_graph(select_result=result, location_names=location_names, by_week=by_week)
 
     return render_template("report/graph_report_label.html", graph=graph)

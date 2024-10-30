@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+import sqlalchemy as sa
 from flask import (
     Blueprint,
     flash,
@@ -11,18 +12,15 @@ from flask import (
 )
 from flask_login import login_required
 from pydantic import ValidationError
-import sqlalchemy as sa
 
-from app.controllers import create_pagination
-from app import models as m, db
-from app import schema as s
+from app import db
 from app import forms as f
-from app.controllers import get_gift_boxes_data, get_replenishment
+from app import models as m
+from app import schema as s
+from app.controllers import create_pagination, get_gift_boxes_data, get_replenishment
 from app.controllers.user import role_required
-
 from app.logger import log
 from app.models import get_week_range
-
 
 bp = Blueprint("inventory", __name__, url_prefix="/inventory")
 
@@ -31,7 +29,6 @@ bp = Blueprint("inventory", __name__, url_prefix="/inventory")
 @login_required
 @role_required([m.UsersRole.admin])
 def dealers():
-
     q = request.args.get("q", default="")
     week = request.args.get("week", default="")
 
@@ -187,7 +184,6 @@ def view_replenishment(unique_id: str):
 @login_required
 @role_required([m.UsersRole.admin])
 def mark_as_unreplenishment(unique_id: str, sku: str):
-
     week = request.args.get("week", default="")
     delaer_gift_item = db.session.scalar(
         sa.select(m.DealerGiftItem).where(m.DealerGiftItem.unique_id == unique_id)
@@ -245,7 +241,6 @@ def mark_as_unreplenishment(unique_id: str, sku: str):
 def replenish_all():
     form = f.ReplenishAllInventoryForm()
     if not form.validate_on_submit():
-
         log(log.ERROR, "Invalid form data for replenish all")
         flash("Invalid form data", "danger")
         return redirect(url_for("user.inventory.dealers"))

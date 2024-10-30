@@ -26,12 +26,8 @@ class StripeProduct(db.Model, ModelMixin):
     __tablename__ = "stripe_products"
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
-    stripe_product_id: orm.Mapped[str] = orm.mapped_column(
-        sa.String(64), nullable=False
-    )
-    price_id: orm.Mapped[int] = orm.mapped_column(
-        sa.Integer, sa.ForeignKey("stripe_product_prices.id"), nullable=True
-    )
+    stripe_product_id: orm.Mapped[str] = orm.mapped_column(sa.String(64), nullable=False)
+    price_id: orm.Mapped[int] = orm.mapped_column(sa.Integer, sa.ForeignKey("stripe_product_prices.id"), nullable=True)
     name: orm.Mapped[str] = orm.mapped_column(sa.String(64), nullable=False)
     description: orm.Mapped[str] = orm.mapped_column(sa.String(64), default="")
     created_at: orm.Mapped[datetime] = orm.mapped_column(
@@ -39,9 +35,7 @@ class StripeProduct(db.Model, ModelMixin):
         default=datetime.now,
     )
 
-    price: orm.Mapped[StripeProductPrice] = orm.relationship(
-        "StripeProductPrice", backref="stripe_products"
-    )
+    price: orm.Mapped[StripeProductPrice] = orm.relationship("StripeProductPrice", backref="stripe_products")
 
     def __repr__(self):
         return f"<{self.id}: {self.name}>"

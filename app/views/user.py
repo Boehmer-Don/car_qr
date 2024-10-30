@@ -44,9 +44,7 @@ bp.register_blueprint(dealer_inventory_bp)
 def get_all():
     q = request.args.get("q", type=str, default=None)
     query = (
-        m.User.select()
-        .where(m.User.activated, m.User.deleted.is_(False), m.User.role == "dealer")
-        .order_by(m.User.id)
+        m.User.select().where(m.User.activated, m.User.deleted.is_(False), m.User.role == "dealer").order_by(m.User.id)
     )
     count_query = (
         sa.select(sa.func.count())
@@ -82,9 +80,7 @@ def get_all():
     return render_template(
         "user/users.html",
         users=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
         search_query=q,
@@ -123,15 +119,9 @@ def get_admins():
     if current_user.role != m.UsersRole.admin:
         return redirect(url_for("main.index"))
     q = request.args.get("q", type=str, default=None)
-    query = (
-        m.User.select()
-        .where(m.User.deleted.is_(False), m.User.role == "admin")
-        .order_by(m.User.id)
-    )
+    query = m.User.select().where(m.User.deleted.is_(False), m.User.role == "admin").order_by(m.User.id)
     count_query = (
-        sa.select(sa.func.count())
-        .where(m.User.deleted.is_(False), m.User.role == "admin")
-        .select_from(m.User)
+        sa.select(sa.func.count()).where(m.User.deleted.is_(False), m.User.role == "admin").select_from(m.User)
     )
     if q:
         query = (
@@ -162,9 +152,7 @@ def get_admins():
     return render_template(
         "user/admins.html",
         users=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
         search_query=q,
@@ -179,9 +167,7 @@ def edit_modal(unique_id: str):
     user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == unique_id))
     if not user:
         log(log.ERROR, "Not found user by id : [%s]", unique_id)
-        return render_template(
-            "toast.html", message="User not found", toast_type="danger"
-        )
+        return render_template("toast.html", message="User not found", toast_type="danger")
     form: f.UserForm = f.UserForm()
 
     return render_template("user/edit_modal.html", form=form, user=user)
@@ -195,9 +181,7 @@ def save():
         log(log.ERROR, "User save errors: [%s]", form.errors)
         flash(f"{form.errors}", "danger")
         return redirect(url_for("user.get_all"))
-    user = db.session.scalar(
-        sa.select(m.User).where(m.User.id == int(form.user_id.data))
-    )
+    user = db.session.scalar(sa.select(m.User).where(m.User.id == int(form.user_id.data)))
     if not user:
         log(log.ERROR, "Not found user by id : [%s]", form.user_id.data)
         flash("Failed to find user", "danger")
@@ -263,9 +247,7 @@ def shipping_price():
         user_unique_id = request.args.get("user_unique_id", type=str, default="")
         user = None
         if user_unique_id:
-            user = db.session.scalar(
-                sa.select(m.User).where(m.User.unique_id == user_unique_id)
-            )
+            user = db.session.scalar(sa.select(m.User).where(m.User.unique_id == user_unique_id))
 
         if user:
             form.price.data = user.shipping_price
@@ -321,9 +303,7 @@ def resend_invite():
     user = db.session.scalar(sa.select(m.User).where(m.User.email == form.email.data))
     if not user:
         log(log.ERROR, "Not found user by id. Creating a new user.")
-        user = m.User(
-            email=form.email.data, shipping_price=app.config["SHIPPING_PRICE"]
-        )
+        user = m.User(email=form.email.data, shipping_price=app.config["SHIPPING_PRICE"])
         log(log.INFO, "User created: [%s]", user)
         user.save()
         flash("A new user created", "info")
@@ -355,9 +335,7 @@ def resend_invite():
 def account(user_unique_id: str):
     query = m.User.select().where(m.User.unique_id == user_unique_id)
     user: m.User | None = db.session.scalar(query)
-    admin_emails = db.session.scalars(
-        sa.select(m.User.email).where(m.User.role == m.UsersRole.admin)
-    ).all()
+    admin_emails = db.session.scalars(sa.select(m.User.email).where(m.User.role == m.UsersRole.admin)).all()
     if not user:
         log(log.INFO, "User not found")
         flash("Incorrect reset password link", "danger")
@@ -396,11 +374,7 @@ def account(user_unique_id: str):
         form.extra_emails.data = user.extra_emails
 
     if form.validate_on_submit():
-        query = (
-            m.User.select()
-            .where(m.User.email == form.email.data)
-            .where(m.User.id != int(user.id))
-        )
+        query = m.User.select().where(m.User.email == form.email.data).where(m.User.id != int(user.id))
         if db.session.scalar(query) is not None:
             log(
                 log.INFO,
@@ -423,13 +397,9 @@ def account(user_unique_id: str):
         user.postal_code = form.postal_code.data
         user.plan = form.plan.data
         user.phone = form.phone.data
-        user.extra_emails = (
-            "" if not form.extra_emails.data.strip() else form.extra_emails.data.strip()
-        )
+        user.extra_emails = "" if not form.extra_emails.data.strip() else form.extra_emails.data.strip()
         if user.email in admin_emails:
-            log(
-                log.INFO, "User %s tried to switch email to admin email", user_unique_id
-            )
+            log(log.INFO, "User %s tried to switch email to admin email", user_unique_id)
             flash("Please, use another email", "danger")
             return redirect(url_for("user.account", user_unique_id=user_unique_id))
         user.save()
@@ -485,16 +455,12 @@ def subscription(user_unique_id: str):
 
 @bp.route("/client_data/<sticker_id>", methods=["GET", "POST"])
 def client_data(sticker_id: str):
-    label: m.Label = db.session.scalar(
-        m.Label.select().where(m.Label.sticker_id == sticker_id)
-    )
+    label: m.Label = db.session.scalar(m.Label.select().where(m.Label.sticker_id == sticker_id))
     user = label.user
 
     form: f.Client = f.Client()
     if form.validate_on_submit():
-        client = db.session.scalar(
-            m.Client.select().where(m.Client.email == form.email.data)
-        )
+        client = db.session.scalar(m.Client.select().where(m.Client.email == form.email.data))
         if client:
             log(log.INFO, "Client already exists: [%s]", client)
             return redirect(url_for("user.thx_client", sticker_id=sticker_id))
@@ -539,22 +505,16 @@ def client_data(sticker_id: str):
 
 @bp.route("/thx_client/<sticker_id>", methods=["GET"])
 def thx_client(sticker_id: str):
-    label: m.Label = db.session.scalar(
-        m.Label.select().where(m.Label.sticker_id == sticker_id)
-    )
+    label: m.Label = db.session.scalar(m.Label.select().where(m.Label.sticker_id == sticker_id))
     return render_template("user/thx_client.html", label_url=label.url, user=label.user)
 
 
 @bp.route("/logo/<user_unique_id>")
 def get_logo(user_unique_id: str):
-    user: m.User = db.session.scalar(
-        m.User.select().where(m.User.unique_id == user_unique_id)
-    )
+    user: m.User = db.session.scalar(m.User.select().where(m.User.unique_id == user_unique_id))
     if not user:
         log(log.INFO, "User not found")
-    logo: m.UserLogo = db.session.scalar(
-        m.UserLogo.select().where(m.UserLogo.user_id == user.id)
-    )
+    logo: m.UserLogo = db.session.scalar(m.UserLogo.select().where(m.UserLogo.user_id == user.id))
     if not logo:
         log(log.INFO, "Logo not found")
     buff = io.BytesIO(logo.file)

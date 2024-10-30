@@ -41,9 +41,7 @@ def get_all():
     return render_template(
         "picker/pickers.html",
         pickers=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
     )
@@ -83,9 +81,7 @@ def sale_reports():
     return render_template(
         "picker/sale_reports.html",
         sale_reports=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
     )
@@ -125,9 +121,7 @@ def sale_reports_history():
     return render_template(
         "picker/sale_reports_history.html",
         sale_reports=db.session.execute(
-            query.offset((pagination.page - 1) * pagination.per_page).limit(
-                pagination.per_page
-            )
+            query.offset((pagination.page - 1) * pagination.per_page).limit(pagination.per_page)
         ).scalars(),
         page=pagination,
     )
@@ -140,15 +134,11 @@ def sale_reports_gift_boxes(sale_report_unique_id: str):
     """htmx"""
     log(log.INFO, f"Getting all gift boxes for sale report [{sale_report_unique_id}]")
 
-    sale_report = db.session.scalar(
-        sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_report_unique_id)
-    )
+    sale_report = db.session.scalar(sa.select(m.SaleReport).where(m.SaleReport.unique_id == sale_report_unique_id))
 
     if not sale_report or not sale_report.gift_boxes:
         log(log.INFO, f"Sale report not found [{sale_report_unique_id}]")
-        return render_template(
-            "toast.html", message="Sale report not found", toast_type="danger"
-        )
+        return render_template("toast.html", message="Sale report not found", toast_type="danger")
 
     form = f.CompleteAllBoex()
     form.sale_report_unique_id.data = sale_report.unique_id
@@ -171,9 +161,7 @@ def sale_reports_gift_boxes_complete():
         flash(f"Invalid form data [{form.format_errors}]", "danger")
         return redirect(url_for("picker.sale_reports"))
     sale_report = db.session.scalar(
-        sa.select(m.SaleReport).where(
-            m.SaleReport.unique_id == form.sale_report_unique_id.data
-        )
+        sa.select(m.SaleReport).where(m.SaleReport.unique_id == form.sale_report_unique_id.data)
     )
 
     if not sale_report or not sale_report.gift_boxes:
@@ -232,16 +220,12 @@ def edit_modal(picker_unique_id: str):
     """htmx"""
 
     picker = db.session.scalar(
-        sa.select(m.User).where(
-            m.User.unique_id == picker_unique_id, m.User.role == m.UsersRole.picker
-        )
+        sa.select(m.User).where(m.User.unique_id == picker_unique_id, m.User.role == m.UsersRole.picker)
     )
 
     if not picker or picker.creator_id != current_user.id:
         log(log.INFO, f"Picker not found or not allowed to edit [{picker_unique_id}]")
-        return render_template(
-            "toast.html", message="picker not found", toast_type="danger"
-        )
+        return render_template("toast.html", message="picker not found", toast_type="danger")
 
     form = f.EditPickerForm()
     form.picker_unique_id.data = picker.unique_id

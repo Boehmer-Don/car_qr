@@ -32,11 +32,7 @@ class UserForm(FlaskForm):
     submit = SubmitField("Save")
 
     def validate_email(self, field):
-        query = (
-            m.User.select()
-            .where(m.User.email == field.data)
-            .where(m.User.id != int(self.user_id.data))
-        )
+        query = m.User.select().where(m.User.email == field.data).where(m.User.id != int(self.user_id.data))
         if db.session.scalar(query) is not None:
             raise ValidationError("This email is already registered.")
 
@@ -86,7 +82,5 @@ class ShippingPriceForm(FlaskForm):
 
 
 class ReplenishAllInventoryForm(FlaskForm):
-    dealers_gift_box_data = HiddenField(
-        "dealer_data", default="", validators=[DataRequired()]
-    )
+    dealers_gift_box_data = HiddenField("dealer_data", default="", validators=[DataRequired()])
     week = HiddenField("week", default="")

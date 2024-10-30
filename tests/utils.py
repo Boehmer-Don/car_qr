@@ -30,9 +30,7 @@ def login(client, email=TEST_ADMIN_EMAIL, password=TEST_ADMIN_PASSWORD):
     )
 
 
-def set_user(
-    client, role: m.UsersRole = m.UsersRole.admin, is_login: bool = True
-) -> User:
+def set_user(client, role: m.UsersRole = m.UsersRole.admin, is_login: bool = True) -> User:
     count = db.session.scalar(sa.select(sa.func.count()).select_from(User)) + 1
     user = User(
         email=f"test_user_{count}@gmail.com",

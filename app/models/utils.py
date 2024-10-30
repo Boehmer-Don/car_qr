@@ -20,7 +20,6 @@ def generate_uuid() -> str:
 
 
 def get_week_range(week: str = "") -> tuple[datetime, datetime]:
-
     if week:
         year, week = map(int, week.split("-W"))
         start_of_week = datetime.strptime(f"{year} {week} 1", "%G %V %u")

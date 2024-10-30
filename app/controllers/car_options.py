@@ -8,9 +8,7 @@ def create_models():
         models_data = json.load(f)
         for car in models_data:
             vehicle_type_name = car["vehicle_type"]
-            vehicle_type = db.session.scalar(
-                m.CarType.select().where(m.CarType.name == vehicle_type_name)
-            )
+            vehicle_type = db.session.scalar(m.CarType.select().where(m.CarType.name == vehicle_type_name))
             if not vehicle_type:
                 vehicle_type = m.CarType(name=vehicle_type_name)
                 vehicle_type.save()
@@ -20,16 +18,12 @@ def create_models():
                     vehicle_type_name,
                 )
             make_name = car["make"]
-            make = db.session.scalar(
-                m.CarMake.select().where(m.CarMake.name == make_name)
-            )
+            make = db.session.scalar(m.CarMake.select().where(m.CarMake.name == make_name))
             if not make:
                 make = m.CarMake(name=make_name)
                 make.save()
             model_name = car["model"]
-            model = db.session.scalar(
-                m.CarModel.select().where(m.CarModel.name == model_name)
-            )
+            model = db.session.scalar(m.CarModel.select().where(m.CarModel.name == model_name))
             log(log.INFO, "Model %s %s", make_name, model_name)
             if not model:
                 log(log.INFO, "Model does not exist %s", model_name)
@@ -40,9 +34,7 @@ def create_models():
                 )
                 model.save()
             model_trims = car["trims"]
-            trims = db.session.scalars(
-                m.CarTrim.select().where(m.CarTrim.model_id == model.id)
-            ).all()
+            trims = db.session.scalars(m.CarTrim.select().where(m.CarTrim.model_id == model.id)).all()
             log(log.INFO, "Trims %s", trims)
             if not trims:
                 # log(log.INFO, "Trims for model %s do not exist %s", model, trims)

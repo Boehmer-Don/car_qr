@@ -21,9 +21,7 @@ class LabelForm(FlaskForm):
     mileage = FloatField("Mileage", validators=[DataRequired()])
     color = StringField("Color", validators=[DataRequired(), Length(0, 255)])
     trim = StringField("Trim", validators=[DataRequired(), Length(0, 255)])
-    type_of_vehicle = StringField(
-        "Type of Vehicle", validators=[DataRequired(), Length(0, 255)]
-    )
+    type_of_vehicle = StringField("Type of Vehicle", validators=[DataRequired(), Length(0, 255)])
     price = FloatField("Price", validators=[DataRequired()])
     url = StringField("URL", validators=[DataRequired(), Length(0, 255)])
     user_id = IntegerField("User ID", validators=[DataRequired()])

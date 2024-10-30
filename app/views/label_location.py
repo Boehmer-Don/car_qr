@@ -14,9 +14,7 @@ from app import models as m, db
 from app import forms as f
 from app.logger import log
 
-location_blueprint = Blueprint(
-    "labels/locations", __name__, url_prefix="/labels/locations"
-)
+location_blueprint = Blueprint("labels/locations", __name__, url_prefix="/labels/locations")
 
 
 @location_blueprint.route("/create", methods=["GET"])

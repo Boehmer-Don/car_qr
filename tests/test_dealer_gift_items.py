@@ -20,9 +20,7 @@ def test_dealer_gift_items(populate: FlaskClient):
     assert gift_item.description in res.data.decode()
 
     assert not user.gift_items
-    res = populate.post(
-        f"/user/gift-items/{user.unique_id}/gift-item/{gift_item.unique_id}/add"
-    )
+    res = populate.post(f"/user/gift-items/{user.unique_id}/gift-item/{gift_item.unique_id}/add")
     assert res.status_code == 200
     assert user.gift_items
 

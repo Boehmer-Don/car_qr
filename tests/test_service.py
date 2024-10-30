@@ -74,9 +74,7 @@ def test_edit(client: FlaskClient):
     set_user(client, role=m.UsersRole.admin)
     res = client.post("/services/add", data=test_data, follow_redirects=True)
     assert res.status_code == 200
-    service = db.session.scalar(
-        sa.select(m.User).where(m.User.role == m.UsersRole.service)
-    )
+    service = db.session.scalar(sa.select(m.User).where(m.User.role == m.UsersRole.service))
     assert service
 
     res = client.get(f"/services/{service.unique_id}/edit-modal")
@@ -128,9 +126,7 @@ def test_confirm_oil_change(populate: FlaskClient, mocker):
 
     assert not oil_change.is_done
 
-    res = populate.get(
-        f"/services/add-records-search?q={oil_change.sale_rep.label.sticker_id}"
-    )
+    res = populate.get(f"/services/add-records-search?q={oil_change.sale_rep.label.sticker_id}")
     assert res.status_code == 200
     assert oil_change.sale_rep.unique_id in res.data.decode()
 

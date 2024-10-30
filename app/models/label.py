@@ -59,9 +59,7 @@ class Label(db.Model, ModelMixin):
         nullable=True,
     )
     url: orm.Mapped[str] = orm.mapped_column(sa.String(255), default="")
-    status: orm.Mapped[LabelStatus] = orm.mapped_column(
-        sa.Enum(LabelStatus), default=LabelStatus.cart
-    )
+    status: orm.Mapped[LabelStatus] = orm.mapped_column(sa.Enum(LabelStatus), default=LabelStatus.cart)
     user_id: orm.Mapped[int] = orm.mapped_column(
         sa.Integer,
         sa.ForeignKey("users.id"),

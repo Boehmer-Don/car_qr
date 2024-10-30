@@ -103,9 +103,7 @@ def get_stripe_products():
     log(log.INFO, "existing stripe prices: %s", prices)
     for price in prices:
         stripe_price = db.session.scalar(
-            m.StripeProductPrice()
-            .select()
-            .where(m.StripeProductPrice.stripe_price_id == price.id)
+            m.StripeProductPrice().select().where(m.StripeProductPrice.stripe_price_id == price.id)
         )
         log(log.INFO, "stripe_price: %s", stripe_price)
         if not stripe_price:
@@ -118,11 +116,7 @@ def get_stripe_products():
             stripe_price.save()
             log(log.INFO, "New stripe_price is saved: %s", price)
             product_id = price.product
-            product = db.session.scalar(
-                m.StripeProduct.select().where(
-                    m.StripeProduct.stripe_product_id == product_id
-                )
-            )
+            product = db.session.scalar(m.StripeProduct.select().where(m.StripeProduct.stripe_product_id == product_id))
             log(log.INFO, "product: %s", product)
             if not product:
                 log(log.INFO, "Retrieving stripe_product from stripe: %s", product_id)
@@ -146,9 +140,7 @@ def delete_stripe_products_local():
     db.session.commit()
 
 
-def create_subscription_checkout_session(
-    user: m.User, subscription_product: m.StripeProduct
-) -> str:
+def create_subscription_checkout_session(user: m.User, subscription_product: m.StripeProduct) -> str:
     try:
         log(log.INFO, "create_subscription_checkout_session for user: %s", user)
         checkout_session = stripe.checkout.Session.create(

@@ -30,9 +30,7 @@ def no_content():
 @main_blueprint.route("/l/<sticker_id>")
 def redirect_to_outer_url(sticker_id: str):
     log(log.INFO, "Current user: [%s]", current_user)
-    label: m.Label = db.session.scalar(
-        m.Label.select().where(m.Label.sticker_id == sticker_id)
-    )
+    label: m.Label = db.session.scalar(m.Label.select().where(m.Label.sticker_id == sticker_id))
     if not label:
         log(log.WARNING, "Label not found. Sticker ID: [%s]", sticker_id)
         return redirect(url_for("main.landing"))
@@ -72,9 +70,7 @@ def landing():
         if current_user.role.value == "admin":
             return redirect(url_for("user.get_all"))
         elif current_user.role.value == "dealer":
-            return redirect(
-                url_for("user.account", user_unique_id=current_user.unique_id)
-            )
+            return redirect(url_for("user.account", user_unique_id=current_user.unique_id))
 
     form = m.LandingForm()
     if request.method == "GET":
