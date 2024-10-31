@@ -18,7 +18,7 @@
   </head>
 
   <body class="overflow-x-hidden">
-    {% include 'toast.html' %}
+    {% include 'toast_list.html' %}
     <header class="shadow">
       <div class="flex items-center justify-between">
         <div
@@ -1008,6 +1008,10 @@
   <script src="https://anijs.github.io/lib/anijs/anijs-min.js"></script>
   <script
     src="{{ url_for('static', filename='js/landing.js') }}"
+    type="text/javascript"
+    defer></script>
+  <script
+    src="{{ url_for('static', filename='js/toast.js') }}"
     type="text/javascript"
     defer></script>
 </html>

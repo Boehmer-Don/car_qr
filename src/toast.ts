@@ -4,11 +4,8 @@ import {Dismiss, DismissInterface, DismissOptions} from 'flowbite';
 
 document.addEventListener('DOMContentLoaded', () => {
   // target element that will be dismissed
-  const $targetEl: HTMLElement = document.querySelector('[id^=custom-toast]');
-
-  // optional trigger element
-  const $triggerEl: HTMLElement = document.getElementById('close-toast-btn');
-
+  const targetElements: NodeListOf<HTMLElement> =
+    document.querySelectorAll('[id^=custom-toast]');
   // options object
   const options: DismissOptions = {
     transition: 'transition-opacity',
@@ -26,15 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
    * triggerEl: optional
    * options: optional
    */
-  const dismiss: DismissInterface = new Dismiss($targetEl, $triggerEl, options);
-
-  // programmatically hide it
-  if ($targetEl && $triggerEl) {
-    $triggerEl.addEventListener('click', () => {
+  targetElements.forEach(targetEl => {
+    if (!targetEl) return;
+    const el: HTMLElement = targetEl.querySelector('.close-toast-btn');
+    if (!el) {
+      console.error('Dismiss trigger element is missing');
+      return;
+    }
+    const dismiss: DismissInterface = new Dismiss(targetEl, el, options);
+    el.addEventListener('click', () => {
       dismiss.hide();
     });
-    // setTimeout(() => {
-    //   dismiss.hide();
-    // }, 7000);
-  }
+    setTimeout(() => {
+      dismiss.hide();
+    }, 7000);
+  });
 });
