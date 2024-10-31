@@ -67,6 +67,9 @@ class BaseConfig(BaseSettings, ABC):
     RECAPTCHA_PUBLIC_KEY: str
     RECAPTCHA_PRIVATE_KEY: str
 
+    RECAPTCHA_SITE_KEY: str
+    RECAPTCHA_SECRET_KEY: str
+
     @staticmethod
     def configure(app: Flask):
         # Implement this method to do further configuration on your app.
