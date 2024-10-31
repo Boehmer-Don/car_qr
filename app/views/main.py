@@ -86,12 +86,12 @@ def landing():
 
     if not form.validate_on_submit():
         log(log.WARNING, "Form submitted error: [%s]", form.errors)
-        flash("Form submitted error.")
+        flash("Form submitted error.", "danger")
         return redirect(url_for("main.landing"))
 
     if not validate_recaptcha():
         log(log.WARNING, "Recaptcha validation failed.")
-        flash("Recaptcha validation failed.")
+        flash("Recaptcha validation failed.", "danger")
         return redirect(url_for("main.landing"))
 
     mail = Mail()
@@ -108,6 +108,6 @@ def landing():
         message=form.message.data,
     )
     mail.send(msg)
-    flash("Thank you for your message. We will get back to you soon.")
+    flash("Thank you for your message. We will get back to you soon.", "success")
 
     return redirect(url_for("main.landing"))

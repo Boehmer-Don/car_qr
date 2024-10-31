@@ -155,6 +155,16 @@ const controllerPhone = {
   },
 };
 
+const toastConfig = {
+  entry: {
+    main: './src/toast.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/toast.js', // <--- Will be compiled to this single file
+  },
+};
+
 const giftBoxModal = {
   entry: {
     main: './src/gift_box_modal.ts',
@@ -181,6 +191,7 @@ const configs = [
   labelGenerateConfig,
   controllerConfig,
   landingConfig,
+  toastConfig,
 ].map(conf => merge(defaultConfig, conf));
 
 module.exports = configs;
