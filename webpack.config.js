@@ -25,6 +25,15 @@ const baseConfig = {
     filename: 'js/base.js', // <--- Will be compiled to this single file
   },
 };
+const landingConfig = {
+  entry: {
+    main: './src/landing.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/landing.js', // <--- Will be compiled to this single file
+  },
+};
 
 const userConfig = {
   entry: {
@@ -74,7 +83,7 @@ const labelGenerateConfig = {
     path: path.resolve(__dirname, './app/static'),
     filename: 'js/label_generate.js', // <--- Will be compiled to this single file
   },
-}
+};
 
 const newLabelConfig = {
   entry: {
@@ -126,41 +135,35 @@ const passwordConfig = {
   },
 };
 
-const controllerConfig = 
-  {
-    entry: {
-      main: './src/controllers/graph_view.ts',
-    },
-    output: {
-      path: path.resolve(__dirname, './app/static'),
-      filename: 'js/controllers/graph_view.js', // <--- Will be compiled to this single file
-    },
-  };
+const controllerConfig = {
+  entry: {
+    main: './src/controllers/graph_view.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/controllers/graph_view.js', // <--- Will be compiled to this single file
+  },
+};
 
-const controllerPhone =  {
-    entry: {
-      main: './src/controllers/phone.ts',
-    },
-    output: {
-      path: path.resolve(__dirname, './app/static'),
-      filename: 'js/controllers/phone.js', // <--- Will be compiled to this single file
-    },
-}
- 
+const controllerPhone = {
+  entry: {
+    main: './src/controllers/phone.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/controllers/phone.js', // <--- Will be compiled to this single file
+  },
+};
 
-
-const giftBoxModal =  {
-    entry: {
-      main: './src/gift_box_modal.ts',
-    },
-    output: {
-      path: path.resolve(__dirname, './app/static'),
-      filename: 'js/gift_box_modal.js', // <--- Will be compiled to this single file
-    },
-  }
-
-
-
+const giftBoxModal = {
+  entry: {
+    main: './src/gift_box_modal.ts',
+  },
+  output: {
+    path: path.resolve(__dirname, './app/static'),
+    filename: 'js/gift_box_modal.js', // <--- Will be compiled to this single file
+  },
+};
 
 const configs = [
   baseConfig,
@@ -176,7 +179,8 @@ const configs = [
   controllerPhone,
   labelConfig,
   labelGenerateConfig,
-  controllerConfig
+  controllerConfig,
+  landingConfig,
 ].map(conf => merge(defaultConfig, conf));
 
 module.exports = configs;
