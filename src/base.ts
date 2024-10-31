@@ -60,13 +60,6 @@ themeToggleButtons.forEach(function (themeToggleBtn) {
   });
 });
 
-const flashMessages = document.querySelectorAll('.flash-message');
-flashMessages.forEach(function (flashMessage) {
-  setTimeout(() => {
-    flashMessage.classList.add('hidden');
-  }, 2000);
-});
-
 // Sidebar image upload
 const sidebarLogoUpload = document.querySelector('#sidebar-logo-upload');
 const imageUploadInput = document.querySelector(
@@ -109,8 +102,7 @@ function handleImageUpload(file: File) {
   reader.readAsDataURL(file);
 }
 
-
-const spinner =  `<div tabindex="-1"
+const spinner = `<div tabindex="-1"
     class="fixed bg-opacity-40 z-100 bg-white top-0 left-0 right-0 z-50 items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full justify-end items-end flex">
     <div role="status" class="h-full flex justify-center items-center">
         <svg aria-hidden="true" class="inline w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -129,7 +121,13 @@ const spinner =  `<div tabindex="-1"
 window.addEventListener('submit', (event: Event) => {
   const target = event.target as HTMLFormElement;
   const method = target.method;
-  const sbmBtn = target.querySelector('button[type="submit"]') as HTMLButtonElement;
-  if (method.toLocaleLowerCase() === "get" || (sbmBtn && sbmBtn.hasAttribute('skipevent'))) return;
+  const sbmBtn = target.querySelector(
+    'button[type="submit"]',
+  ) as HTMLButtonElement;
+  if (
+    method.toLocaleLowerCase() === 'get' ||
+    (sbmBtn && sbmBtn.hasAttribute('skipevent'))
+  )
+    return;
   document.body.insertAdjacentHTML('beforeend', spinner);
 });

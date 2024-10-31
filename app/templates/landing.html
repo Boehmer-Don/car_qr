@@ -15,24 +15,10 @@
     <link
       href="{{ url_for('static', filename='css/custom.css') }}"
       rel="stylesheet" />
-
-    <!-- prettier-ignore -->
-    <script>
-        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-        if (
-            localStorage.getItem("color-theme") === "dark" ||
-            (!("color-theme" in localStorage) &&
-                window.matchMedia("(prefers-color-scheme: dark)").matches)
-        ) {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
-    </script>
   </head>
 
   <body class="overflow-x-hidden">
-    {% include 'toast.html' %}
+    {% include 'toast_list.html' %}
     <header class="shadow">
       <div class="flex items-center justify-between">
         <div
@@ -1022,6 +1008,10 @@
   <script src="https://anijs.github.io/lib/anijs/anijs-min.js"></script>
   <script
     src="{{ url_for('static', filename='js/landing.js') }}"
+    type="text/javascript"
+    defer></script>
+  <script
+    src="{{ url_for('static', filename='js/toast.js') }}"
     type="text/javascript"
     defer></script>
 </html>
