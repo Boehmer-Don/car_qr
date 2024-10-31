@@ -81,7 +81,7 @@ def landing():
         return render_template(
             "landing.html",
             form=form,
-            RE_SITE_KEY=app.config["RECAPTCHA_PUBLIC_KEY"],
+            RE_SITE_KEY=app.config["RECAPTCHA_SITE_KEY"],
         )
 
     if not form.validate_on_submit():

@@ -10,6 +10,7 @@ from app import models as m
 from app import forms as f
 from app import mail, db
 from app.controllers import create_stripe_customer, create_subscription_checkout_session
+from app.controllers.recaptcha import validate_recaptcha
 from app.controllers.user import role_required
 from app.logger import log
 
@@ -22,7 +23,13 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
     form: f.RegistrationForm = f.RegistrationForm()
+
     if form.validate_on_submit():
+        if not validate_recaptcha():
+            log(log.WARNING, "Recaptcha validation failed.")
+            flash("Recaptcha validation failed.")
+            return redirect(url_for("auth.register"))
+
         user = m.User(
             email=form.email.data,
             password=form.password.data,
@@ -57,7 +64,11 @@ def register():
     elif form.is_submitted():
         log(log.WARNING, "Form submitted error: [%s]", form.errors)
         flash("The given data was invalid.", "danger")
-    return render_template("auth/register.html", form=form)
+    return render_template(
+        "auth/register.html",
+        form=form,
+        RE_SITE_KEY=app.config["RECAPTCHA_SITE_KEY"],
+    )
 
 
 @auth_blueprint.route("/login", methods=["GET", "POST"])

@@ -1,6 +1,8 @@
-{% extends "base.html" %}
-{% block links %}
-<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+{% extends "base.html" %} {% block links %}
+<link
+  href="{{ url_for('static', filename='css/custom.css') }}"
+  rel="stylesheet" />
+<script src="https://www.google.com/recaptcha/enterprise.js?render={{ RE_SITE_KEY }}"></script>
 {% endblock %}
 <!-- prettier-ignore -->
 {% block body %}
@@ -17,7 +19,7 @@
           <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
             Sign Up
           </h2>
-          <form class="mt-8 space-y-6 from" role="form" action="{{ url_for('auth.register') }}" method="post">
+          <form class="mt-8 space-y-6 from" role="form" id="registrForm" action="{{ url_for('auth.register') }}" method="post">
             {{ form.hidden_tag() }}
 
             <div>
@@ -75,8 +77,8 @@
               <small class="text-danger">{{error}}</small>
               {% endfor %}
             </div>
-            <button type="submit"
-              class="w-full px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
+            <button type="submit" data-sitekey="{{ RE_SITE_KEY }}" data-callback="onSubmit" data-action="submit"
+              class="g-recaptcha w-full px-5 py-3 text-base font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-blue-800">
               Next step >
             </button>
             <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -94,6 +96,17 @@
 {% endblock %}
 <!-- prettier-ignore -->
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/custom.js') }}" type="text/javascript" defer></script>
-<script src="{{ url_for('static', filename='js/controllers/password.js') }}" type="text/javascript" defer></script>
+<script>
+  function onSubmit(token) {
+    document.getElementById('registrForm').submit();
+  }
+</script>
+<script
+  src="{{ url_for('static', filename='js/custom.js') }}"
+  type="text/javascript"
+  defer></script>
+<script
+  src="{{ url_for('static', filename='js/controllers/password.js') }}"
+  type="text/javascript"
+  defer></script>
 {% endblock %}

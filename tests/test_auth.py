@@ -18,6 +18,7 @@ TEST_CITY = "Kyiv"
 TEST_POSTAL_CODE = "10000"
 TEST_PHONE = "555-555-55-55"
 
+
 TEST_EMAIL_UPDATE = "dburimov@gmail.com"
 TEST_FIRSTNAME_UPDATE = "Denis"
 TEST_LASTNAME_UPDATE = "Burimov jr."
@@ -28,6 +29,10 @@ TEST_PROVINCE_UPDATE = "Kyiv Region"
 TEST_CITY_UPDATE = "Kyiv City"
 TEST_POSTAL_CODE_UPDATE = "10001"
 TEST_PHONE_UPDATE = "333-333-33-33"
+
+
+def mock_validate_recaptcha():
+    return True
 
 
 def test_auth_pages(client: FlaskClient):
@@ -41,7 +46,12 @@ def test_auth_pages(client: FlaskClient):
     assert response.status_code == 200
 
 
-def test_register(client: FlaskClient):
+def test_register(client: FlaskClient, monkeypatch):
+    monkeypatch.setattr(
+        "app.views.auth.validate_recaptcha",
+        mock_validate_recaptcha,
+    )
+
     with mail.record_messages() as outbox:
         response = client.post(
             "/auth/register",
