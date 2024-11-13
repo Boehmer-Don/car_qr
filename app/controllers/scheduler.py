@@ -4,9 +4,9 @@ from flask import Flask
 import subprocess
 
 
-# def subscriptions_expiration_notifier():
-#     flask_proc = subprocess.Popen(["flask", "subscriptions-check"])
-#     flask_proc.communicate()
+def subscriptions_expiration_notifier():
+    flask_proc = subprocess.Popen(["flask", "subscriptions-check"])
+    flask_proc.communicate()
 
 
 def notify_about_oil_change():
@@ -38,15 +38,15 @@ def set_scheduler(scheduler: BackgroundScheduler, app: Flask):
     scheduler.start()
     scheduler.remove_all_jobs()
 
-    # scheduler.add_job(
-    #     id="subscriptions_expiration_notifier",
-    #     func=subscriptions_expiration_notifier,
-    #     trigger="cron",
-    #     hour=app.config["SUBSCRIPTIONS_EXPIRATION_CHECK_HOUR"],
-    #     minute=0,
-    #     second=0,
-    #     replace_existing=True,
-    # )
+    scheduler.add_job(
+        id="subscriptions_expiration_notifier",
+        func=subscriptions_expiration_notifier,
+        trigger="cron",
+        hour=app.config["SUBSCRIPTIONS_EXPIRATION_CHECK_HOUR"],
+        minute=0,
+        second=0,
+        replace_existing=True,
+    )
     scheduler.add_job(
         id="notify_missing_payment",
         func=notify_missing_payment,
