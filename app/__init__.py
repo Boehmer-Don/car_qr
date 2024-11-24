@@ -77,10 +77,10 @@ def create_app(environment="development"):
     login_manager.login_message_category = "info"
     login_manager.anonymous_user = m.AnonymousUser
 
-    # Error handlers.
-    @app.errorhandler(HTTPException)
-    def handle_http_error(exc):
-        return render_template("error.html", error=exc), exc.code
+    # # Error handlers.
+    # @app.errorhandler(HTTPException)
+    # def handle_http_error(exc):
+    #     return render_template("error.html", error=exc), exc.code
 
     # Jinja globals
     from app.controllers.jinja_globals import (
