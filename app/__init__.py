@@ -1,8 +1,7 @@
 import os
-from flask import Flask, render_template
+from flask import Flask
 from flask_login import LoginManager
 from pyecharts.globals import CurrentConfig
-from werkzeug.exceptions import HTTPException
 from flask_migrate import Migrate
 from flask_mail import Mail
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -77,10 +76,10 @@ def create_app(environment="development"):
     login_manager.login_message_category = "info"
     login_manager.anonymous_user = m.AnonymousUser
 
-    # Error handlers.
-    @app.errorhandler(HTTPException)
-    def handle_http_error(exc):
-        return render_template("error.html", error=exc), exc.code
+    # # Error handlers.
+    # @app.errorhandler(HTTPException)
+    # def handle_http_error(exc):
+    #     return render_template("error.html", error=exc), exc.code
 
     # Jinja globals
     from app.controllers.jinja_globals import (
