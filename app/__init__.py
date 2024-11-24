@@ -1,8 +1,7 @@
 import os
-from flask import Flask, render_template
+from flask import Flask
 from flask_login import LoginManager
 from pyecharts.globals import CurrentConfig
-from werkzeug.exceptions import HTTPException
 from flask_migrate import Migrate
 from flask_mail import Mail
 from apscheduler.schedulers.background import BackgroundScheduler
