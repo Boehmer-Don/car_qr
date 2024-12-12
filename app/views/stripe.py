@@ -311,6 +311,10 @@ def subscription():
 @stripe_blueprint.route("/portal", methods=["GET"])
 def portal():
     log(log.INFO, "User [%s] is going to stripe portal", current_user)
+    if not current_user.stripe_customer_id:
+        log(log.ERROR, "User [%s] has no stripe customer id", current_user)
+        flash("This user have no stripe subscription.", "danger")
+        return redirect(url_for("stripe.subscription"))
     try:
         portal_response = stripe.billing_portal.Session.create(
             customer=current_user.stripe_customer_id,
@@ -318,6 +322,7 @@ def portal():
     except Exception as e:
         log(log.ERROR, "stripe_portal: %s", e)
         flash("Something went wrong. Please try again later.", "danger")
+        return redirect(url_for("stripe.subscription"))
 
     log(log.INFO, "User [%s] is redirected to stripe portal", current_user)
     return redirect(portal_response.url, code=302)
