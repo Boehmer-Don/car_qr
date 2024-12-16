@@ -1,0 +1,25 @@
+name: Test Actions Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-actions:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run a test command
+        run: |
+          echo "Test passed!"
+
+      - name: Verify Actions setup
+        run: |
+          echo "Actions are working correctly."
