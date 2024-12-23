@@ -240,3 +240,41 @@ def create_payment_subscription_checkout_session(
     log(log.INFO, "Created checkout_session: %s", checkout_session)
     flash("Checkout session created successfully", "success")
     return checkout_session.url
+
+
+def resume_stripe_subscription(user: m.User):
+    """Resume a Stripe subscription for the user."""
+    log(log.INFO, "resume subscription for user: %s", user)
+
+    active_subscription_id = [s.id for s in user.subscriptions if s.is_active][0]
+
+    if not active_subscription_id:
+        log(log.ERROR, "No active subscription found for user: %s", user)
+        flash("No active subscription found", "danger")
+        return redirect(url_for("user.account", user_unique_id=user.user_unique_id))
+
+    try:
+        resumed_subscription = resume_subscription(active_subscription_id)
+        log(log.INFO, "Updated subscription for: %s", user)
+        flash("Subscription renewed successfully", "success")
+
+    except InvalidRequestError as e:
+        # Handle Stripe API errors and log them
+        log(log.ERROR, "resume_stripe_subscription: %s", e)
+        flash("Error while updating a subscription", "danger")
+        return redirect(url_for("user.account", user_unique_id=user.user_unique_id))
+    # Redirect to the same page regardless of success or error
+    return resumed_subscription
+
+
+def resume_subscription(subscription_id):
+    try:
+        # Відновлення підписки шляхом встановлення cancel_at_period_end в False
+        subscription = stripe.Subscription.modify(
+            subscription_id,
+            cancel_at_period_end=False,
+        )
+        return subscription
+    except stripe.error.StripeError as e:
+        print(f"Error resuming subscription: {e}")
+        return None

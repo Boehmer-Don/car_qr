@@ -11,6 +11,7 @@ from app import forms as f
 from app import mail, db
 from app.controllers import create_stripe_customer, create_subscription_checkout_session
 from app.controllers.recaptcha import validate_recaptcha
+from app.controllers.stripe import resume_stripe_subscription, update_stripe_customer
 from app.controllers.user import role_required
 from app.logger import log
 
@@ -537,3 +538,23 @@ def password_recovery(reset_password_uid):
         form=form,
         unique_id=reset_password_uid,
     )
+
+
+@auth_blueprint.route("/renew/<user_unique_id>", methods=["GET"])
+def renew(user_unique_id):
+    query = m.User.select().where(m.User.unique_id == user_unique_id)
+    user: m.User = db.session.scalar(query)
+
+    if not user:
+        log(log.INFO, "User not found")
+        flash("No user found", "danger")
+        return redirect(url_for("main.index"))
+    if len(user.subscriptions) < 1:
+        log(log.INFO, "No subscription found")
+        flash("No subscription found", "danger")
+        return redirect(url_for("main.index"))
+
+    resume_stripe_subscription(user)
+    log(log.INFO, "User data updated. User: [%s]", user)
+    flash("Your account has been successfully updated", "success")
+    return redirect(url_for("user.account", user_unique_id=user_unique_id))
