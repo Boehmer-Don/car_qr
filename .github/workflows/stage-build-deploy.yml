@@ -131,6 +131,7 @@ jobs:
           script: |
             sudo mkdir -p /home/runner/dev_qr_labels &&
             sudo mv /home/runner/dev_qr_labels/docker-compose.dev.yaml /home/runner/dev_qr_labels/docker-compose.yaml &&
+            sudo chmod -R 755 /home/runner/dev_qr_labels &&
             sudo docker compose -f /home/runner/dev_qr_labels/docker-compose.yaml pull &&
             sudo docker compose -f /home/runner/dev_qr_labels/docker-compose.yaml up -d &&
             sudo docker system prune -f
