@@ -11,7 +11,7 @@ env:
   STAGE_HOST: ${{ secrets.SSH_HOST_IP }}
   STAGE_USERNAME: ${{ secrets.SSH_USER }}
   STAGE_SSH_KEY: ${{ secrets.SSH_KEY }}
-  STAGE_PORT: ${{secrets.SSH_PORT}}
+  STAGE_PORT: ${{ secrets.SSH_PORT }}
   SITE_DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
 jobs:
@@ -28,6 +28,7 @@ jobs:
         with:
           reference: 'develop'
           tag: '${{ github.ref }}'
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -79,10 +80,8 @@ jobs:
         id: project_meta
         uses: docker/metadata-action@v5
         with:
-          # list of Docker images to use as base name for tags
           images: |
             ${{ env.PROJECT_IMAGE }}
-          # generate Docker tags based on the following events/attributes
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -101,6 +100,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.project_meta.outputs.tags }}
           labels: ${{ steps.project_meta.outputs.labels }}
+
   deploy:
     name: Deploy to staging
     runs-on: ubuntu-latest
@@ -110,7 +110,8 @@ jobs:
     if: ${{ needs.on-develop-branch-check.outputs.on_develop == 'true' }}
     steps:
       - uses: actions/checkout@v3
-      - name: update compose file
+
+      - name: Copy docker-compose.dev.yaml to server
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ env.STAGE_HOST }}
@@ -118,8 +119,9 @@ jobs:
           key: ${{ env.STAGE_SSH_KEY }}
           port: ${{ env.STAGE_PORT }}
           source: docker-compose.dev.yaml
-          target: ~/dev_qr_labels
-      - name: deploy
+          target: /home/runner/dev_qr_labels
+
+      - name: Deploy to server
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ env.STAGE_HOST }}
