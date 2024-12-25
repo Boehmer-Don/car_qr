@@ -130,6 +130,7 @@ jobs:
           key: ${{ env.STAGE_SSH_KEY }}
           script: |
             sudo mkdir -p /home/runner/dev_qr_labels &&
+            sudo su -l runner &&
             sudo mv /home/runner/dev_qr_labels/docker-compose.dev.yaml /home/runner/dev_qr_labels/docker-compose.yaml &&
             sudo chmod -R 755 /home/runner/dev_qr_labels &&
             sudo docker compose -f /home/runner/dev_qr_labels/docker-compose.yaml pull &&
