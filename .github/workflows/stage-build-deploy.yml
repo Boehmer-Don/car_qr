@@ -16,7 +16,7 @@ env:
 
 jobs:
   on-develop-branch-check:
-    runs-on: Linux
+    runs-on: ubuntu-latest
     outputs:
       on_develop: ${{ steps.contains_tag.outputs.retval }}
     steps:
@@ -29,31 +29,44 @@ jobs:
           reference: 'develop'
           tag: '${{ github.ref }}'
   test:
-    runs-on: Linux
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
-          submodules: true
+          submodules: false
+
       - name: Set up Python 3.11
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.11
-      - name: Setup poetry
-        uses: abatilo/actions-poetry@v2.0.0
+
+      - name: Install Poetry
+        run: |
+          pip install poetry==1.5.0
+
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v3
         with:
-          poetry-version: 1.5.0
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
       - name: Install dependencies
         run: |
           poetry install
+
       - name: Lint with flake8
         run: |
           poetry run flake8 . --count --show-source --statistics
           poetry run flake8 . --count --exit-zero --max-complexity=10 --statistics
+
       - name: Run pytest
         run: |
           poetry run pytest
+
   build:
-    runs-on: Linux
+    runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Checkout
@@ -90,7 +103,7 @@ jobs:
           labels: ${{ steps.project_meta.outputs.labels }}
   deploy:
     name: Deploy to staging
-    runs-on: Linux
+    runs-on: ubuntu-latest
     needs:
       - on-develop-branch-check
       - build
@@ -105,7 +118,7 @@ jobs:
           key: ${{ env.STAGE_SSH_KEY }}
           port: ${{ env.STAGE_PORT }}
           source: docker-compose.dev.yaml
-          target: ~/car_qr
+          target: ~/dev_qr_labels
       - name: deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -114,7 +127,7 @@ jobs:
           port: ${{ env.STAGE_PORT }}
           key: ${{ env.STAGE_SSH_KEY }}
           script: |
-            cd /home/runner/car_qr &&
+            cd /home/runner/dev_qr_labels &&
             mv docker-compose.dev.yaml docker-compose.yaml &&
             docker compose pull &&
             docker compose up -d &&
