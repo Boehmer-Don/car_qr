@@ -121,6 +121,17 @@ jobs:
           source: 'docker-compose.dev.yaml'
           target: '/home/runner/dev_qr_labels'
 
+      - name: Set permissions
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.STAGE_HOST }}
+          username: ${{ env.STAGE_USERNAME }}
+          key: ${{ env.STAGE_SSH_KEY }}
+          port: ${{ env.STAGE_PORT }}
+          script: |
+            sudo chmod -R 775 /home/runner/dev_qr_labels &&
+            sudo chown -R ${{ env.STAGE_USERNAME }} /home/runner/dev_qr_labels
+
       - name: Deploy dev_qr_labels
         uses: appleboy/ssh-action@master
         with:
@@ -129,10 +140,9 @@ jobs:
           key: ${{ env.STAGE_SSH_KEY }}
           port: ${{ env.STAGE_PORT }}
           script: |
-            sudo chown -R ${{ env.STAGE_USERNAME }} /home/runner/dev_qr_labels &&
             cd /home/runner/dev_qr_labels &&
             mv docker-compose.dev.yaml docker-compose.yml &&
             sudo docker compose pull &&
-            sudo docker compose up -d
-            cd ../
+            sudo docker compose up -d &&
+            cd ../ &&
             sudo chown -R runner:runner dev_qr_labels
