@@ -26,7 +26,7 @@ COPY poetry.lock .
 COPY pyproject.toml .
 COPY poetry.toml .
 
-RUN poetry install --no-dev --no-interaction --no-ansi
+RUN poetry install --without dev --no-interaction --no-ansi --no-root
 # add gunicorn
 RUN poetry add gunicorn
 
