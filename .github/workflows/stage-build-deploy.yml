@@ -119,7 +119,7 @@ jobs:
           key: ${{ env.STAGE_SSH_KEY }}
           port: ${{ env.STAGE_PORT }}
           source: 'docker-compose.dev.yaml'
-          target: '/home/runner/dev_qr_labels'
+          target: '~/dev_qr_labels'
 
       - name: Deploy dev_qr_labels
         uses: appleboy/ssh-action@master
@@ -129,7 +129,7 @@ jobs:
           key: ${{ env.STAGE_SSH_KEY }}
           port: ${{ env.STAGE_PORT }}
           script: |
-            cd /home/runner/dev_qr_labels
+            cd dev_qr_labels
             mv docker-compose.dev.yaml docker-compose.yml
             docker compose pull
             docker compose up -d
