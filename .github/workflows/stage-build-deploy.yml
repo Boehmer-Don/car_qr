@@ -129,7 +129,10 @@ jobs:
           key: ${{ env.STAGE_SSH_KEY }}
           port: ${{ env.STAGE_PORT }}
           script: |
-            cd /home/runner/dev_qr_labels
-            mv docker-compose.dev.yaml docker-compose.yml
-            docker compose pull
-            docker compose up -d
+            sudo chown -R ${{ env.STAGE_USERNAME }} /home/runner/dev_qr_labels &&
+            cd /home/runner/dev_qr_labels &&
+            mv docker-compose.dev.yaml docker-compose.yml &&
+            sudo docker compose pull &&
+            sudo docker compose up -d
+            cd ../
+            sudo chown -R runner:runner dev_qr_labels
